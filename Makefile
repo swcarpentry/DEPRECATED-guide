@@ -1,5 +1,5 @@
 # Default value for output directory.
-OUT_DIR = $(PWD)/build
+OUT_DIR = ./build
 
 # Standard site compilation arguments.
 COMPILE = \
@@ -21,30 +21,9 @@ STATIC_SRC = \
              $(wildcard ./css/bootstrap/img/*.png)
 STATIC_DST = $(subst ./,$(OUT_DIR)/,$(STATIC_SRC))
 
-# Chapters in book version.
-BOOK_STEMS = \
-  index \
-  intro \
-  shell \
-  svn \
-  python \
-  pymedia \
-  funclib \
-  db \
-  numpy \
-  quality \
-  setdict \
-  dev \
-  web \
-  teach \
-  concl \
-  ack \
-  extras \
-  stylesheet \
-  bib \
-  ref
-
-BOOK_HTML = $(foreach stem,$(BOOK_STEMS),$(stem).html)
+# Pages to compile.
+PAGES_SRC = $(filter-out _%.html,$(wildcard ./*.html))
+PAGES_DST = $(subst ./,$(OUT_DIR)/,$(PAGES_SRC))
 
 #------------------------------------------------------------
 
@@ -54,31 +33,35 @@ BOOK_HTML = $(foreach stem,$(BOOK_STEMS),$(stem).html)
 commands :
 	@grep -E '^##' Makefile | sed -e 's/## //g'
 
+## files        : show filesets
+files :
+	@echo "PAGES_SRC:" $(PAGES_SRC)
+	@echo "PAGES_DST:" $(PAGES_DST)
+
 #------------------------------------------------------------
 
 ## check        : rebuild entire site locally for checking purposes.
 check : $(STATIC_DST)
-	@make ascii-chars
 	@make check-bare
+	@make ascii-chars
 	@make check-links
-	@make book-figref
 
 ## check-bare   : rebuild entire site locally, but do not validate html 
 check-bare: $(STATIC_DST)
-	$(COMPILE) $(BOOK_HTML)
+	$(COMPILE) $(PAGES_SRC)
+
+## ascii-chars  : check for non-ASCII characters or tab characters.
+ascii-chars :
+	@python bin/chars.py $(PAGES_DST)
 
 ## check-links  : check that local links resolve in generated HTML.
 check-links :
 	@find $(OUT_DIR) -type f -print | python bin/links.py $(OUT_DIR)
 
-## ascii-chars  : check for non-ASCII characters or tab characters.
-ascii-chars :
-	@python bin/chars.py $$(find . -name '*.html' -print)
-
 #------------------------------------------------------------
 
 # Copy static files.
-$(STATIC_DST) : $(OUT_DIR)/% : %
+$(OUT_DIR)/% : %
 	@mkdir -p $$(dirname $@)
 	cp $< $@
 

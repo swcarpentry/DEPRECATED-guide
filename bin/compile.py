@@ -25,7 +25,7 @@ STANDARD = {
     'contact_email'   : CONTACT_EMAIL,
     'facebook_url'    : FACEBOOK_URL,
     'google_plus_url' : GOOGLE_PLUS_URL,
-    'root_path'       : '.',
+    'root_path'       : 'templates',
     'twitter_name'    : TWITTER_NAME,
     'twitter_url'     : TWITTER_URL
 }

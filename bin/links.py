@@ -77,7 +77,9 @@ def main(root_dir):
     Main command-line driver.
     """
     filenames = set(os.path.abspath(f.strip()) for f in sys.stdin)
-    links = get_links(root_dir, [f for f in filenames if f.endswith('.html')])
+    links = get_links(root_dir, [f for f in filenames
+                                 if f.endswith('.html')
+                                 and not os.path.basename(f).startswith('_')])
     show_missing(filenames, links)
 
 #-------------------------------------------------------------------------------
