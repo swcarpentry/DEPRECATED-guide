@@ -1,10 +1,5 @@
-1.  [Sets](#s:sets)
-2.  [Storage](#s:storage)
-3.  [Dictionaries](#s:dict)
-4.  [Simple Examples](#s:examples)
-5.  [Nanotech Inventory](#s:nanotech)
-6.  [Phylogenetic Trees](#s:phylotree)
-7.  [Summing Up](#s:summary)
+Sets and Dictionaries in Python
+===============================
 
 Fan Fullerene has just joined Molecules'R'Us, a nanotechnology startup
 that fabricates molecules using only the highest quality atoms. His

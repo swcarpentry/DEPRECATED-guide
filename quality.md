@@ -1,11 +1,5 @@
-1.  [Defensive Programming](#s:defensive)
-2.  [Handling Errors](#s:except)
-3.  [Unit Testing](#s:unit)
-4.  [Numbers](#s:numbers)
-5.  [Coverage](#s:coverage)
-6.  [Debugging](#s:debug)
-7.  [Designing Testable Code](#s:testable)
-8.  [Summing Up](#s:summary)
+Software Quality
+================
 
 Laura Landscape is studying the impact of climate change on agriculture.
 She has several thousand aerial photographs of farms taken in the early

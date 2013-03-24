@@ -1,3 +1,6 @@
+License
+=======
+
 Instructional Material
 ----------------------
 

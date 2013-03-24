@@ -1,19 +1,5 @@
-1.  [Selecting](#s:select)
-2.  [Removing Duplicates](#s:distinct)
-3.  [Calculating New Values](#s:calc)
-4.  [Filtering](#s:filter)
-5.  [Sorting](#s:sort)
-6.  [Aggregation](#s:aggregate)
-7.  [Database Design](#s:design)
-8.  [Combining Data](#s:join)
-9.  [Self Join](#s:selfjoin)
-10. [Missing Data](#s:null)
-11. [Nested Queries](#s:nested)
-12. [Creating and Modifying Tables](#s:create)
-13. [Transactions](#s:transactions)
-14. [Programming With Databases](#s:programming)
-15. [Provenance Once More](#s:provenance)
-16. [Summing Up](#s:summary)
+Databases
+=========
 
 > We're here to do research, they pay us to teach, we spend our time on
 > administration. \

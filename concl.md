@@ -1,11 +1,5 @@
-1.  [Computers Don't Understand, They Obey](#s:meaning)
-2.  [Programs Are Data Too](#s:turing)
-3.  [Models for Computers, Views for People](#s:modelview)
-4.  [Programming is a Human Activity](#s:perf)
-5.  [Paranoia Makes Us Productive](#s:paranoia)
-6.  [Better Algorithms Beat Better Hardware](#s:algo)
-7.  [The Tool Shapes the Hand](#s:tools)
-8.  [Summary](#s:summary)
+Conclusion
+==========
 
 Our real goal in the preceding chapters was not to teach you the syntax
 of Python or how to commit a file to version control. Our real goal was

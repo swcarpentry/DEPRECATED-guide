@@ -1,9 +1,5 @@
-1.  [Basic Use](#s:basics)
-2.  [Merging Conflicts](#s:merge)
-3.  [Recovering Old Versions](#s:rollback)
-4.  [Setting up a Repository](#s:setup)
-5.  [Provenance](#s:provenance)
-6.  [Summing Up](#s:summary)
+Version Control With Subversion
+===============================
 
 Suppose that Wolfman and Dracula have been hired by Universal Monsters
 Inc. to figure out where the company should put its next secret lair.

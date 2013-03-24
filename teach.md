@@ -1,9 +1,5 @@
-1.  [What Does It Mean to Understand Computing?](#s:understand)
-2.  [There Are No Blank Slates](#s:conceptual)
-3.  [Relevance and Empowerment](#s:relevance)
-4.  [Cognitive Load](#s:load)
-5.  [Scaling Instruction](#s:scaling)
-6.  [Summing Up](#s:summary)
+What Everyone Ought To Know About Teaching
+==========================================
 
 Moses Messenger has just been awarded tenure at Euphoric State
 University. He knows how important basic computing skills are to

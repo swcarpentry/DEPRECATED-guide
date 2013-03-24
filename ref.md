@@ -1,9 +1,5 @@
-1.  [Booleans](#s:bool)
-2.  [The Shell](#s:shell)
-3.  [Subversion](#s:svn)
-4.  [Python](#s:python)
-5.  [Databases](#s:db)
-6.  [Cascading Style Sheets](#s:css)
+Reference Guides
+================
 
 Booleans
 --------

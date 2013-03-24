@@ -1,19 +1,5 @@
-1.  [Basic Operations](#s:basic)
-2.  [Creating Programs](#s:program)
-3.  [Types](#s:types)
-4.  [Reading Files](#s:io)
-5.  [Standard Input and Output](#s:stdio)
-6.  [Repeating Things](#s:for)
-7.  [Making Choices](#s:logic)
-8.  [Flags](#s:flag)
-9.  [Reading Data Files](#s:parse)
-10. [Provenance Revisited](#s:provenance)
-11. [Lists](#s:lists)
-12. [More About Lists](#s:morelist)
-13. [Nesting Loops](#s:nestloop)
-14. [Nesting Lists](#s:nestlist)
-15. [Aliasing](#s:alias)
-16. [Summing Up](#s:summary)
+Basic Programming With Python
+=============================
 
 A cochlear implant is a small device placed in the inner ear to give the
 hearing impaired a sense of sound. To test how effective they are,

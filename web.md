@@ -1,14 +1,5 @@
-1.  [How We Got Here](#s:history)
-2.  [Formatting Rules](#s:formatting)
-3.  [Attributes](#s:attributes)
-4.  [More HTML](#s:morehtml)
-5.  [Creating Documents](#s:templating)
-6.  [How the Web Works](#s:http)
-7.  [Getting Data](#s:client)
-8.  [Providing Data](#s:server)
-9.  [Creating an Index](#s:index)
-10. [Syndicating Data](#s:syndicate)
-11. [Summing Up](#s:summary)
+Web Programming With Python
+===========================
 
 Carla Climate is studying climate change in the Northern and Southern
 hemispheres. As part of her work, she wants to see whether the gap

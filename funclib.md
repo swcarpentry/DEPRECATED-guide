@@ -1,13 +1,5 @@
-1.  [How Functions Work](#s:basics)
-2.  [Global Variables](#s:global)
-3.  [Multiple Arguments](#s:args)
-4.  [Returning Values](#s:return)
-5.  [Aliasing](#s:aliasing)
-6.  [Libraries](#s:libraries)
-7.  [Standard Libraries](#s:stdlib)
-8.  [Building Filters](#s:filter)
-9.  [Functions as Objects](#s:funcobj)
-10. [Summing Up](#s:summary)
+Functions and Libraries in Python
+=================================
 
 On the first day of your post-doc at Euphoric State University, your
 supervisor calls you into her office to ask a favor. One of her previous

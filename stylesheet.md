@@ -1,14 +1,5 @@
-1.  [References Used](#s:references)
-2.  [Tables, Figures, Captions, Etc.](#s:tables)
-3.  [Dates and Numbers](#s:numbers)
-4.  [Bibliography](#s:bibliography)
-5.  [Punctuation](#s:punctuation)
-6.  [Abbreviations and Acronyms](#s:abbrev)
-7.  [Special Symbols](#s:symbols)
-8.  [Miscellaneous Notes](#s:misc)
-9.  [List of Terms, Names and Other Troublesome Words](#s:terms)
-    -   [A - D](#ss:ad) . [E - H](#ss:eh) . [I - L](#ss:il) . [M -
-        P](#ss:mp) . [Q - T](#ss:qt) . [U - Z](#ss:uz)
+Stylesheet
+==========
 
 This document is a place to record editorial decisions about the
 Software Carpentry book, for the reference of the editor, author(s) and

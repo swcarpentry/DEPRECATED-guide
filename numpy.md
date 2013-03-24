@@ -1,11 +1,5 @@
-1.  [Basics](#s:basics)
-2.  [Storage](#s:storage)
-3.  [Indexing](#s:indexing)
-4.  [Linear Algebra](#s:linalg)
-5.  [Plotting](#s:plotting)
-6.  [Making Recommendations](#s:recommend)
-7.  [The Game of Life](#s:life)
-8.  [Summing Up](#s:summary)
+Numerical Programming With NumPy
+================================
 
 Madica Medicine is studying patients with Babbage's Syndrome, a rare
 disorder whose sufferers believe they are living in Victorian England.

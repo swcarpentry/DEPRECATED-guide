@@ -1,3 +1,6 @@
+Basic Programming With Python and Images
+========================================
+
 Valerie Visual is studying human visual processing. More specifically,
 she is studying the way the brain interprets missing or noisy
 information. For one of her experiments, she wants to introduce

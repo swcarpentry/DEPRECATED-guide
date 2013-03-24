@@ -1,3 +1,6 @@
+Bibliography
+============
+
  David J. Agans: Debugging. Amacom, 2006, 0814474578. 
 :   A simple guide to debugging programs, organized around nine simple
     rules. More and larger examples would have been welcome, but it is

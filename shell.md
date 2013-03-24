@@ -1,11 +1,5 @@
-1.  [What and Why](#s:what)
-2.  [Files and Directories](#s:filedir)
-3.  [Creating Things](#s:create)
-4.  [Pipes, Filters, and Wildcards](#s:pipefilter)
-5.  [Loops](#s:loop)
-6.  [Shell Scripts](#s:scripts)
-7.  [Finding Things](#s:find)
-8.  [Summing Up](#s:summary)
+The Unix Shell
+==============
 
 Nelle Nemo, a marine biologist, has just returned from a six-month
 survey of the [North Pacific

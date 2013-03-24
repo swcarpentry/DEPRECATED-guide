@@ -1,17 +1,5 @@
-1.  [The Grid](#s:grid)
-2.  [Aliasing](#s:alias)
-3.  [Randomness](#s:random)
-4.  [Neighbors](#s:neighbors)
-5.  [Handling Ties](#s:ties)
-6.  [Putting It All Together](#s:assembly)
-7.  [Bugs](#s:bugs)
-8.  [Refactoring](#s:refactor)
-9.  [Testing](#s:test)
-10. [Performance](#s:performance)
-11. [Profiling](#s:profile)
-12. [Speeding It Up](#s:fail)
-13. [A New Beginning](#s:lazy)
-14. [Summing Up](#s:summary)
+Development
+===========
 
 Ethan Ecosystem is studying the way pollutants spreads through fractured
 rock ([Figure XXX](#f:invasion_percolation)). To simulate this, he wants
