@@ -62,9 +62,9 @@ check-links :
 
 ## md-test      : test Markdown conversion
 md-test :
-	@cat md-header.html > md-test.html
+	@cat markdown/md-header.html > md-test.html
 	@pandoc -t html setdict.md >> md-test.html
-	@cat md-footer.html >> md-test.html
+	@cat markdown/md-footer.html >> md-test.html
 
 #------------------------------------------------------------
 
