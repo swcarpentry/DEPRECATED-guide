@@ -158,6 +158,17 @@ div.footer {
     text-align: right;
 }
 
+/* Guide */
+div.guide {
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid #000000;
+}
+
 .swc-blue-bg {
    background-color: #20267D;
 }
@@ -170,6 +181,17 @@ div.mainmenu {
     padding: 3px 0px 3px 25px;
     border-bottom: 1px solid #A6A6A6;
     height:30px
+}
+
+/* Slides */
+div.slides {
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid #000000;
 }
 
 #menubar {

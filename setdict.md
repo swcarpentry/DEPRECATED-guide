@@ -3,13 +3,13 @@
 <div class="contents">
 **Contents:**
 
-1. [Sets](#s:sets)
-2. [Storage](#s:storage)
-3. [Dictionaries](#s:dict)
-4. [Simple Examples](#s:examples)
-5. [Nanotech Inventory](#s:nanotech)
-6. [Phylogenetic Trees](#s:phylotree)
-7. [Summing Up](#s:summary)
+1.  [Sets](#s:sets)
+2.  [Storage](#s:storage)
+3.  [Dictionaries](#s:dict)
+4.  [Simple Examples](#s:examples)
+5.  [Nanotech Inventory](#s:nanotech)
+6.  [Phylogenetic Trees](#s:phylotree)
+7.  [Summing Up](#s:summary)
 </div>
 
 Fan Fullerene has just joined Molecules'R'Us,
@@ -36,6 +36,34 @@ and "takes less computer time to execute":
 the data structures introduced in this chapter are both simpler to use and faster
 than the lists most programmers are introduced to first.
 
+<div class="guide">
+## For Instructors
+
+1.  Introduce learners to a non-linear data structure
+    -   Most have only ever seen lists/arrays
+2.  Introduce computational complexity (big-oh) via back-of-the-envelope calculations
+3.  Prepare learners for:
+    -   Performance optimization via improvements to algorithms and data structures (in invasion percolation example)
+    -   Relational databases (unordered and associative)
+4.  Teaching order:
+    -   Start with sets
+        - Familiar concept
+        - No confusion between keys and values
+    -   Explain hash tables (with lots of hand waving)
+        -   Why are they fast?
+        -   Why do elements have to be immutable?
+        -   What can go wrong in other languages if hashes can contain mutable values?
+    -   Then introduce dictionaries as "sets with extra information attached to each entry"
+    -   Canonical example: counting things
+    -   Solve original motivating problem
+        -   Requires a dictionary of dictionaries, but they have seen lists of lists
+        -   Re-emphasize modular breakdown of code into functions
+    -   For advanced learners: work through phylogenetic trees example
+        -   Usually presented as a table, which makes an array a natural representation
+        -   Showing how and why to use dictionaries instead is as important as showing vector operations when introducing NumPy
+        -   But example is currently hard to follow/debug without graphical representation of generated tree...
+</div>
+
 <section id="s:sets">
 
 ## 1. Sets
@@ -59,10 +87,10 @@ the unique atomic symbols we have seen.
 Here's a function that adds a new atom to such a list:
 
     def another_atom(seen, atom):
-	for i in range(len(seen)):
-	    if seen[i] == atom:
-		return <span class="comment"># atom is already present, so do not re-add</span>
-	seen.append(atom)
+        for i in range(len(seen)):
+            if seen[i] == atom:
+                return <span class="comment"># atom is already present, so do not re-add</span>
+        seen.append(atom)
 
 `another_atom`'s arguments are
 a list of the unique atoms we've already seen,
@@ -345,13 +373,12 @@ and our task is to produce a list of the their types.
 Here's how simple that code is:
   
     import sys
-
     filename = sys.argv[1]
     source = open(filename, 'r')
     atoms = set()
     for line in source:
-	name = line.strip()
-	atoms.add(name)
+        name = line.strip()
+        atoms.add(name)
     source.close()
     print atoms
 
@@ -428,8 +455,8 @@ Why don't Python's sets have a *`not` operator?
 
 2. Fan has created a set containing the names of five noble gases:
 
-    >>> print gases
-    <span class="out">set(['helium', 'argon', 'neon', 'xenon', 'radon'])</span>
+        >>> print gases
+        <span class="out">set(['helium', 'argon', 'neon', 'xenon', 'radon'])</span>
 
 <!-- continue -->
 He would like to print them in alphabetical order.  What is one simple way
@@ -437,11 +464,11 @@ to do this?  (Hint: the `list` function converts its arguments to a list.)
 
 3. Fan has the following code:
 
-    left = {'He', 'Ar', 'Ne'}
-    right = set()
-    while len(left) > len(right):
-        temp = left.pop()
-        right.add(temp)
+        left = {'He', 'Ar', 'Ne'}
+        right = set()
+        while len(left) > len(right):
+            temp = left.pop()
+            right.add(temp)
 
 <!-- continue -->
 What values could `left` and `right` have after this code is finished running?
@@ -449,12 +476,12 @@ Explain why your answer makes this code hard to test.
 
 4. Fan has written the following code:
 
-    left = {'He', 'Ar', 'Ne'}
-    right = {'Ar', 'Xe'}
-    for element in left:                <span class="comment"># X</span>
-        if element not in right:        <span class="comment"># X</span>
-            right.add(element)          <span class="comment"># X</span>
-    assert left.issuperset(right)
+        left = {'He', 'Ar', 'Ne'}
+        right = {'Ar', 'Xe'}
+        for element in left:                <span class="comment"># X</span>
+            if element not in right:        <span class="comment"># X</span>
+                right.add(element)          <span class="comment"># X</span>
+        assert left.issuperset(right)
 
 <!-- continue -->
 What single line could be used in place of the three marked with
@@ -462,4 +489,63 @@ What single line could be used in place of the three marked with
     
 </div>
 
+<div class="slides">
+
+### Slides
+
+#### Motivating Problem
+
+-   Want to know what kinds of atoms we have in our warehouse
+-   Could use a list of unique atomic symbols seen so far
+-   But checking and inserting are expensive
+    - Takes an average of N<sup>2</sup> steps to do either
+    - So doubling the size of the data slows the program down 4X
+
+#### Introducing Sets
+
+-   An unordered collection of distinct items
+    - Collection: contains zero or more values
+    - Distinct: each value is either in the set or not (no duplicates)
+    - Unordered: elements are present or not (no sense of "first", "next", or "last")
+-   Create a set using `{3, 5, 7}`
+    - But must use `set()` for empty sets, because `{}` already meant something else when sets were added to Python
+-   Support all the expected operations:
+    - Union and intersection
+    - Difference and symmetric difference (also called "exclusive or")
+    - Subset/superset
+    - Add/remove element
+    - Clear
+
+#### Solution to Problem
+
+    import sys
+    filename = sys.argv[1]
+    source = open(filename, 'r')
+    atoms = set()
+    for line in source:
+        name = line.strip()
+        atoms.add(name)
+    source.close()
+    print atoms
+
+Input:
+
+    Na
+    Fe
+    Na
+    Si
+    Pd
+    Na
+
+Output:
+
+    set(['Fe', 'Si', 'Na'])
+
+#### Why The Square Brackets?
+
+-   `set('Fe', 'Si', 'Na')` doesn't work: need to pass values as a single collection (like a list)
+-   So default printed representation looks like that
+
 </div>
+
+</section>
