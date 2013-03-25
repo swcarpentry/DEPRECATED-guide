@@ -1,0 +1,4 @@
+- How to do special characters in Markdown like &times; ?
+  - Put special characters in a file along with keyboard shortcuts for various platforms?
+- How to put anchors (for figures and tables) in Markdown?
+- How to do "direct" figures like the rhino ASCII art?

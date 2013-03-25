@@ -2,12 +2,11 @@ The Unix Shell
 ==============
 
 Nelle Nemo, a marine biologist, has just returned from a six-month
-survey of the [North Pacific
-Gyre](http://en.wikipedia.org/wiki/North_Pacific_Gyre), where she has
-been collecting samples of gelatinous marine life from the [Great
-Pacific Garbage
-Patch](http://en.wikipedia.org/wiki/Great_Pacific_Garbage_Patch). She
-has 1520 samples in all, and now needs to:
+survey of the
+[North Pacific Gyre](http://en.wikipedia.org/wiki/North_Pacific_Gyre),
+where she has been collecting samples of gelatinous marine life from the
+[Great Pacific Garbage Patch](http://en.wikipedia.org/wiki/Great_Pacific_Garbage_Patch).
+She has 1520 samples in all, and now needs to:
 
 1.  Run each sample through an assay machine that will measure the
     relative abundance of 300 different proteins. The machine's output
@@ -33,59 +32,58 @@ that's 750 hours, or 18 weeks, of mindless, repetitive, soul-destroying
 work. Not only would she miss her paper deadline, the chances of her
 getting all 90,000 commands right are approximately zero.
 
-This chapter is about what she should do instead. More specifically,
-it's about how she can use a command shell to automate all the
-repetitive steps in her processing pipeline, so that her computer can
-work 24 hours a day while she catches up on her reading. As a bonus,
-once she has put a processing pipeline together, she will be able to use
-it again in the future whenever she, or someone else, collects more data
-of this kind.
+This chapter is about what she should do instead—about how she can
+use a command shell to automate all the repetitive steps in her
+processing pipeline, so that her computer can work 24 hours a day
+while she catches up on her reading. As a bonus, once she has put a
+processing pipeline together, she will be able to use it again in the
+future whenever she, or someone else, collects more data of this kind.
+
+<section>
 
 What and Why
 ------------
 
+<div class="objectives">
+
 ### Learning Objectives:
 
--   Explain using a diagram where the shell lies between the computer,
-    the operating system, and the user's programs.
--   Explain when and why command-line interfaces should be used instead
-    of graphical interfaces.
+- Explain using a diagram where the shell lies between the computer,
+  the operating system, and the user's programs.
+- Explain when and why command-line interfaces should be used instead
+  of graphical interfaces.
 
-At a high level, computers really do four things:
+</div>
 
--   run programs;
--   store data;
--   communicate with each other; and
--   interact with us.
+At a high level, computers do four things:
 
-They can do the last of these in many different ways. For example, they
-can use direct brain-computer links. This technology is still in its
-infancy, but I for one look forward to being assimilated as it matures…
-Another way is to talk to them. No, *talk to them*, not *dock the pen*.
-This technology is also still somewhat immature.
+- run programs;
+- store data;
+- communicate with each other; and
+- interact with us.
 
-What most of us use for interacting with computers is a WIMP interface:
-windows, icons, mice, and pointers. These technologies didn't become
-widespread until the 1980s, but their roots go back to Doug Engelbart's
-work in the 1960s, which you can see in what has been called "[The
-Mother of All
-Demos](http://video.google.com/videoplay?docid=-8734787622017763097#)".
+They can do the last of these in many different ways, including direct
+brain-computer links and spoken commands.  What most of us use is a
+WIMP interface: windows, icons, mice, and pointers. These technologies
+didn't become widespread until the 1980s, but their roots go back to
+Doug Engelbart's work in the 1960s, which you can see in what has been
+called
+"[The Mother of All Demos](http://video.google.com/videoplay?docid=-8734787622017763097#)".
 
 Going back even further, the only way to interact with early computers
-was to rewire them. But in between, from the 1950s to the 1980s and into
-the present day, people used a technology that's based on the
-old-fashioned typewriter, and that technology is what we're going to
-explore in this lecture.
+was to rewire them. But in between, from the 1950s to the 1980s and
+into the present day, people used something based on the old-fashioned
+typewriter, and that's what we're going to explore in this lecture.
 
-![DECWriter LA-36](shell/decwriter.jpg)
+![Figure 1: DECWriter LA-36](shell/decwriter.jpg)
 
 When I say "typewriter", I actually mean a line printer connected to a
 keyboard ([Figure 1](#f:decwriter)). These devices only allowed input
 and output of the letters, numbers, and punctuation found on a standard
 keyboard, so programming languages and interfaces had to be designed
 around that constraint—although if you were clever enough, you could
-draw simple pictures using just those characters ([Figure
-2](#f:ascii_art)).
+draw simple pictures using just those characters
+([Figure 2](#f:ascii_art)).
 
                         ,-.             __
                       ,'   `---.___.---'  `.
@@ -103,54 +101,70 @@ draw simple pictures using just those characters ([Figure
         \__   /           _) (               _) (
           `--'           /____\             /____\
 
-ASCII Art
+Figure 2: ASCII Art
 
 This kind of interface is called a command-line user interface, or
 [CLUI](glossary.html#clui), to distinguish it from the graphical user
-interface, or [GUI](glossary.html#gui), that most of us now use. The
-heart of a CLUI is a read-evaluate-print loop: when the user types a
-command, the computer executes it and prints its output. (In the case of
-old teletype terminals, it literally printed the output onto paper, a
-line at a time.) The user then types another command, and so on until
-the user logs off.
+interface, or [GUI](glossary.html#gui), that most people now use. The
+heart of a CLUI is a [read-evaluate-print loop](glossary.html#repl),
+or REPL: when the user types a command, the computer executes it and
+prints its output. (In the case of old teletype terminals, it
+literally printed the output onto paper, a line at a time.) The user
+then types another command, and so on until the user logs off.
 
 From this description, you'd think that the user was sending commands
 directly to the computer, and that the computer was sending output
-directly to the user. In fact, there's a program in between called a
-[command shell](glossary.html#shell) ([Figure 3](#f:command_shell)).
-What the user types goes into the shell; it figures out what commands to
-run and orders the computer to execute them. The computer then sends the
-output of those programs back to the shell, which takes care of
-displaying things to the user.
+directly to the user. In fact, there's usually a program in between
+called a [command shell](glossary.html#shell)
+([Figure 3](#f:command_shell)).
+What the user types goes into the shell. It then figures out what
+commands to run and orders the computer to execute them. The computer
+then sends the output of those programs back to the shell, which takes
+care of displaying things to the user.
 
-![The Command Shell](shell/command_shell.svg)
+![Figure 3: The Command Shell](shell/command_shell.svg)
 
-A shell is just a program like any other. The only thing that's special
-about it is that its job is to run other programs, rather than to do
-calculations itself. The most popular Unix shell is Bash, the Bourne
-Again SHell (so-called because it's derived from a shell written by
-Stephen Bourne—this is what passes for wit among programmers). Bash is
-the default shell on most modern implementations of Unix, and also comes
-with [Cygwin](http://www.cygwin.org), a popular Unix-on-Windows toolkit.
+A shell is a program like any other; the only thing that's special
+about it is that it runs other programs instead of doing calculations
+itself. The most popular Unix shell is [Bash](glossary.html#bash), the
+Bourne Again SHell (so-called because it's derived from a shell
+written by Stephen Bourne—this is what passes for wit among
+programmers). Bash is the default shell on most modern implementations
+of Unix, and also comes with [Cygwin](http://www.cygwin.org), a
+popular Unix-on-Windows toolkit.
 
-Using Bash, or any other shell, feels more like programming that like
-using a mouse. Commands are terse (often only a couple of characters
-long), their names are often cryptic, and their only output is lines of
-text rather than a graph or diagram. On the other hand, the shell allows
-us to combine existing tools in powerful ways with only a few
-keystrokes, and to set up pipelines to handle large volumes of data
-automatically. In addition, the command line is often the easiest way to
-interact with remote machines. As clusters and cloud computing become
-more popular for scientific data crunching, being able to drive them is
-becoming a necessary skill.
+# FIXME: add mention of GitHub Bash
+
+Using a shell like Bash feels more like programming that like using a
+mouse. Commands are terse (sometimes only a couple of characters
+long), their names are often cryptic, and their output is usually
+lines of text rather than a graph or diagram. On the other hand, the
+shell allows us to combine existing tools in powerful ways with only a
+few keystrokes, and to repeat commands or groups of commands with only
+a few more. It is also often the easiest way to interact with remote
+machines, which is becoming more important as clusters and cloud
+computing become more popular for scientific data crunching.
+
+<div class="summary">
 
 ### Summary
 
--   The shell is a program whose primary purpose is to read commands,
-    run programs, and display results.
+- The shell is a program whose primary purpose is to read commands,
+  run programs, and display results.
+- Its main advantages are its terseness and scriptability.
+- Its main disadvantages are its terseness and its textual (rather
+  than graphical) nature.
+
+</div>
+
+</section>
+
+<section>
 
 Files and Directories
 ---------------------
+
+<div class="objectives">
 
 ### Learning Objectives:
 
@@ -164,9 +178,11 @@ Files and Directories
     call.
 -   Demonstrate the use of tab completion, and explain its advantages.
 
+</div>
+
 Some of the shell commands we will use most often are related to storing
-data on disk. The subsystem responsible for this is called the [file
-system](glossary.html#file-system). It organizes our data into files,
+data on disk. The subsystem responsible for this is called the
+[file system](glossary.html#file-system). It organizes our data into files,
 which hold information, and directories, which hold files or other
 directories.
 
@@ -182,7 +198,7 @@ is shoulder surfing behind us.
 Once we have logged in we'll see a [prompt](glossary.html#prompt), which
 is the computer's way of telling us that it's waiting for input. This is
 usually just a dollar sign, but which may show extra information such as
-our user ID. Type `whoami`{.in}, followed by enter. This command prints
+our user ID. Type `whoami`, followed by enter. This command prints
 out the ID of the current user, i.e., shows us who the shell thinks we
 are:
 
@@ -198,7 +214,7 @@ Now that we know *who* we are, we can find out *where* we are using
 `pwd`, which stands for "print working directory". This is our current
 default directory, i.e., the directory (or folder) that the computer
 assumes we want to run commands on unless we specify something else
-explicitly. Here, the computer's response is `/users/vlad`{.out}, which
+explicitly. Here, the computer's response is `/users/vlad`, which
 is Vlad's [home directory](glossary.html#home-directory):
 
     $ pwd
@@ -484,27 +500,26 @@ challenges below.
 ![File System Layout for Challenge
 Questions](shell/filedir_challenge.png)
 
-1.  If `pwd` displays `/users/thing`, what will `ls ../backup`{.in}
-    display?
-    1.  `../backup: No such file or directory`{.err}
-    2.  `2012-12-01 2013-01-08 2013-01-27`{.out}
-    3.  `2012-12-01/ 2013-01-08/ 2013-01-27/`{.out}
-    4.  `original pnas_submission pnas_final`{.out}
+1. If `pwd` displays `/users/thing`, what will `ls ../backup` display?
+   1. `../backup: No such file or directory`
+   2. `2012-12-01 2013-01-08 2013-01-27`
+   3. `2012-12-01/ 2013-01-08/ 2013-01-27/`
+   4. `original pnas_submission pnas_final`
 
-2.  If `pwd` displays `/users/fly`, what command will display
+2. If `pwd` displays `/users/fly`, what command will display
 
         thesis/ papers/ articles/
 
-    1.  `ls pwd`{.in}
-    2.  `ls -r -F`{.in}
-    3.  `ls -r -F /users/fly`{.in}
-    4.  Either \#2 or \#3 above, but not \#1.
+    1. `ls pwd`
+    2. `ls -r -F`
+    3. `ls -r -F /users/fly`
+    4. Either \#2 or \#3 above, but not \#1.
 
-3.  What does the command `cd`{.in} without a directory name do?
-    1.  It has no effect.
-    2.  It changes the working directory to `/`.
-    3.  It changes the working directory to the user's home directory.
-    4.  It is an error.
+3. What does the command `cd` without a directory name do?
+    1. It has no effect.
+    2. It changes the working directory to `/`.
+    3. It changes the working directory to the user's home directory.
+    4. It is an error.
 
 Creating Things
 ---------------
@@ -790,21 +805,21 @@ as we're stuck with the roolz uv Inglish speling.
 
 ### Challenges
 
-1.  Suppose that `pwd`{.in} displays `/home/thing/data`{.out}, and that
-    `ls`{.in} displays `proteins.dat`{.out}. What does `ls`{.in} display
+1.  Suppose that `pwd` displays `/home/thing/data`, and that
+    `ls` displays `proteins.dat`. What does `ls` display
     after the sequence of commands:
 
         $ mkdir recombine
         $ mv proteins.dat recombine
         $ cp recombine/proteins.dat ../proteins-saved.dat
 
-    1.  Nothing: `mv proteins.dat recombine`{.in} is an error, because
+    1.  Nothing: `mv proteins.dat recombine` is an error, because
         `recombine` already exists.
-    2.  `recombine`{.out}
-    3.  `proteins-saved.dat recombine`{.out}
-    4.  `proteins.dat proteins-saved.dat recombine`{.out}
+    2.  `recombine`
+    3.  `proteins-saved.dat recombine`
+    4.  `proteins.dat proteins-saved.dat recombine`
 
-2.  Suppose that `ls -F`{.in} displays:
+2.  Suppose that `ls -F` displays:
 
         analyzed/  fructose.dat    raw/   sucrose.dat
 
@@ -816,16 +831,16 @@ as we're stuck with the roolz uv Inglish speling.
         $ ls analyzed
         fructose.dat    sucrose.dat
 
-    1.  `mv fructose.dat sucrose.dat analyzed`{.in}
-    2.  `mv fructose.dat analyzed`{.in} and
-        `mv sucrose.dat analyzed`{.in} (in either order)
-    3.  `mv fructose.dat analyzed`{.in} and
-        `mv sucrose.dat analyzed`{.in} (in either order), and then
-        `rm fructose.dat`{.in} and `rm sucrose.dat`{.in} (in either
+    1.  `mv fructose.dat sucrose.dat analyzed`
+    2.  `mv fructose.dat analyzed` and
+        `mv sucrose.dat analyzed` (in either order)
+    3.  `mv fructose.dat analyzed` and
+        `mv sucrose.dat analyzed` (in either order), and then
+        `rm fructose.dat` and `rm sucrose.dat` (in either
         order)
-    4.  `cp fructose.dat analyzed`{.in} and
-        `cp sucrose.dat analyzed`{.in} (in either order), and then
-        `rm fructose.dat`{.in} and `rm sucrose.dat`{.in} (in either
+    4.  `cp fructose.dat analyzed` and
+        `cp sucrose.dat analyzed` (in either order), and then
+        `rm fructose.dat` and `rm sucrose.dat` (in either
         order)
     5.  \#1, \#2, and \#4 above, but not \#3.
     6.  \#2 or \#3 above, but not \#1 or \#4.
@@ -1184,7 +1199,7 @@ this matches all the valid data files she has.
 
 ### Challenges
 
-Suppose that `ls -F`{.in} initially displays:
+Suppose that `ls -F` initially displays:
 
     analyzed/  fructose.dat    raw/   sucrose.dat
 
@@ -1204,7 +1219,7 @@ Suppose that `ls -F`{.in} initially displays:
     4.  The first is an error, because there is no file whose name is
         literally `*.dat`.
 
-2.  What single command must be used so that after it, `ls *`{.in} will
+2.  What single command must be used so that after it, `ls *` will
     display:
 
         analyzed:
@@ -1212,9 +1227,9 @@ Suppose that `ls -F`{.in} initially displays:
 
         raw:
 
-    1.  `cat *.dat > analyzed`{.in}
-    2.  `mv *.dat analyzed`{.in}
-    3.  `ls | analyzed`{.in}
+    1.  `cat *.dat > analyzed`
+    2.  `mv *.dat analyzed`
+    3.  `ls | analyzed`
     4.  None of the above.
 
 3.  A file called `animals.txt` contains the following observations:
@@ -1546,7 +1561,7 @@ then she can re-run `goostats` on `NENE01729B.txt` simply by typing
 
 ### Challenges
 
-Suppose that `ls`{.in} initially displays:
+Suppose that `ls` initially displays:
 
     fructose.dat    glucose.dat   sucrose.dat
 
@@ -1804,7 +1819,7 @@ complexity; we'll explore this [later](quality.html).
 
 ### Challenges
 
-1.  Suppose that `ls`{.in} displays:
+1.  Suppose that `ls` displays:
 
         display.sh    fructose.dat    glucose.dat   sucrose.dat
 
