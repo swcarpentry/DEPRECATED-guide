@@ -40,6 +40,18 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
     color: darkgreen;
 }
 
+/* Keypoints (summary of sections). */
+.keypoints {
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: lightyellow;
+    border: 1px solid #000000;
+}
+
 /* Program output. */
 .out {
     color: darkblue;
@@ -55,7 +67,14 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
 
 /* Things to understand (lead-in to sections in book). */
 .understand {
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 10px;
+    padding-right: 10px;
     background-color: lightyellow;
+    border: 1px solid #000000;
 }
 
 /* Block quotations. */
