@@ -3,13 +3,13 @@
 <div class="contents">
 **Contents:**
 
-- [Sets](#s:sets)
-- [Storage](#s:storage)
-- [Dictionaries](#s:dict)
-- [Simple Examples](#s:examples)
-- [Nanotech Inventory](#s:nanotech)
-- [Phylogenetic Trees](#s:phylotree)
-- [Summing Up](#s:summary)
+1. [Sets](#s:sets)
+2. [Storage](#s:storage)
+3. [Dictionaries](#s:dict)
+4. [Simple Examples](#s:examples)
+5. [Nanotech Inventory](#s:nanotech)
+6. [Phylogenetic Trees](#s:phylotree)
+7. [Summing Up](#s:summary)
 </div>
 
 Fan Fullerene has just joined Molecules'R'Us,
@@ -38,7 +38,7 @@ than the lists most programmers are introduced to first.
 
 <section id="s:sets">
 
-## Sets
+## 1. Sets
 
 <div class="understand">
 
@@ -94,9 +94,9 @@ so we exit the function immediately.
 
 <table>
   <tr>
-    <td> *before* </td>
-    <td> *adding* </td>
-    <td> *after* </td>
+    <td> **Before** </td>
+    <td> **Adding** </td>
+    <td> **After** </td>
   </tr>
   <tr>
     <td> `[]` </td>
@@ -293,6 +293,11 @@ that don't have long-winded equivalents.
   
 <table>
   <tr>
+    <td> **Operation** </td>
+    <td> **Method** </td>
+    <td> **Operator** </td>
+  </tr>
+  <tr>
     <td> *difference* </td>
     <td> `lows.difference(odds)` </td>
     <td> `lows - odds` </td>
@@ -331,20 +336,6 @@ that don't have long-winded equivalents.
     <td> `lows | odds` </td>
   </tr>
 </table>
-
-<div class="box">
-
-### Negation
-
-One operator that *isn't* in this list is "not".
-Mathematicians are quite comfortable negating sets:
-for example, the negation of the set {1, 2} is all numbers that aren't 1 or 2.
-This is hard to express in a program, though.
-We'd expect the integer 3 to be in the negation of the set `{1, 2}`,
-but is 107.7382?
-Or the string "pterodactyl"?
-    
-</div>
 
 The fact that the values in a set are distinct makes them
 a convenient way to get rid of duplicate values,
@@ -424,5 +415,51 @@ and why they're stored that way.
 - Sets are mutable, i.e., they can be updated in place like lists.
 - A loop over a set produces each element once, in arbitrary order.
 - Use sets to find unique things.
+
+</div>
+
+<div class="challenges">
+
+### Challenges
+
+1. Mathematicians are quite comfortable negating sets:
+for example, the negation of the set `{1, 2}` is all numbers that aren't 1 or 2.
+Why don't Python's sets have a *`not` operator?
+
+2. Fan has created a set containing the names of five noble gases:
+
+    >>> print gases
+    <span class="out">set(['helium', 'argon', 'neon', 'xenon', 'radon'])</span>
+
+<!-- continue -->
+He would like to print them in alphabetical order.  What is one simple way
+to do this?  (Hint: the `list` function converts its arguments to a list.)
+
+3. Fan has the following code:
+
+    left = {'He', 'Ar', 'Ne'}
+    right = set()
+    while len(left) > len(right):
+        temp = left.pop()
+        right.add(temp)
+
+<!-- continue -->
+What values could `left` and `right` have after this code is finished running?
+Explain why your answer makes this code hard to test.
+
+4. Fan has written the following code:
+
+    left = {'He', 'Ar', 'Ne'}
+    right = {'Ar', 'Xe'}
+    for element in left:                <span class="comment"># X</span>
+        if element not in right:        <span class="comment"># X</span>
+            right.add(element)          <span class="comment"># X</span>
+    assert left.issuperset(right)
+
+<!-- continue -->
+What single line could be used in place of the three marked with
+'X' to achieve the same effect?
+    
+</div>
 
 </div>

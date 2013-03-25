@@ -1,4 +1,150 @@
 - How to do special characters in Markdown like &times; ?
-  - Put special characters in a file along with keyboard shortcuts for various platforms?
 - How to put anchors (for figures and tables) in Markdown?
 - How to do "direct" figures like the rhino ASCII art?
+- How to control highlighting inside code blocks (input vs. output vs. error, highlighting)?
+- How to put code blocks inside enumerated lists (like the challenges at the end)?
+
+========================================
+
+Elizabeth Patitsas (a grad student in Computer Science at the
+University of Toronto with an interest in CS education) looked at the
+questions I’d written for the Python section of the Software Carpentry
+instructors' guide. Her main comment was, "You need to have multiple
+styles of questions, probing multiple levels and types of
+understanding. Right now you just probe recognition of behavior." This
+relates directly to the multiple-choice questions I asked people to
+write for Round 2.4, so on the "better late than never" principle,
+here are her suggestions for improvements:
+
+----------------------------------------
+
+Greg has the code:
+
+    x = 2 * y
+
+And when he prints x, he gets 26. What is the value of y?
+
+*This probes backtracing rather than your linear style of reasoning forward from code to output.*
+
+----------------------------------------
+
+Greg has the code:
+
+    >>> oxygen = 'O'
+    >>> carbon = 'C
+    >>> molecule = carbon + oxygen * 2
+
+Why does molecule get the value ‘COO'?
+
+*Turns this into a reflection question (why) rather than a prediction question (what happens after it is run?)*
+
+----------------------------------------
+
+Greg has the code:
+
+    pi = 3.14
+    x = str(pi)
+
+which turns pi into a string.
+
+Rewrite the second line so it turns x into an integer instead.
+
+*This tests transfer of knowledge: rewriting code.
+Transfer is a very important skill for people to hone when programming.*
+
+----------------------------------------
+
+Greg has the following code:
+
+    handle = open('square.txt', 'r')
+    result = len(handle)
+    handle.close()
+    print result
+
+At the end of what line in the code does Python stop reading the content from square.txt?
+
+*This probes a ‘where' question (locating), another way of reflecting on code.*
+
+----------------------------------------
+
+Greg has this code:
+
+    text = 'abc'
+    for char in text:
+	 text = text + char
+    print text
+
+Fill in the table below (not shown) of the value of text for each iteration of the for loop.
+
+*This is a tracing question.*
+
+----------------------------------------
+
+What single change can be made to the first three lines below to get the output shown?
+
+
+    >>> scaling = 10 # line 1
+    >>> original = 7 # line 2
+    >>> adjusted = primary / scaling # line 3
+    >>> print original + adjusted # line 4
+    7.7
+
+*Omit the MCQ options and just make it fill in the blank: test recall rather than recognition.*
+
+----------------------------------------
+
+If species.txt is a text file, what do the following lines print?
+
+    info = open('species.txt', 'r')
+    print info.readline().strip()
+
+Why does Greg need the second line for him to process the file?
+
+*This here gets at conceptual knowledge, testing function rather than the behavior of the program.*
+
+----------------------------------------
+
+Greg has the code:
+
+    results = open('output.txt', 'w')
+    results.write('first')
+    results.close()
+    results = open('output.txt', 'a')
+    results.write('second')
+    results.close()
+
+What is another way to write this code so the same effect is accomplished, but in fewer lines?
+
+*This tests a students' ability to generate different approaches. (In this case, opening the file as ‘rw' allows for less code.)*
+
+----------------------------------------
+
+Greg has the code:
+
+    >>> female = 'GGT'
+    >>> male = 'CAC'
+    >>> female = female + female + male
+    >>> print female
+    GGTGGTCAC
+
+Elizabeth has the code:
+
+    >>> female = 'GGT'
+    >>> male = 'CAC'
+    >>> female = 2 * female + male
+    >>> print female
+    GGTGGTCAC
+
+Both have the same effect. Why would use Elizabeth's approach instead of Greg's?
+
+*This tests a student's ability to compare different solution approaches.*
+
+----------------------------------------
+
+A final note from Elizabeth: procedural flexibility (transferring a
+problem to an isomorphic one, generating new ways of solving a
+problem, evaluating different ways of solving a problem) is something
+she found in her MSc thesis to be important for long-term learning of
+Python as well as to be highly correlated to conceptual
+knowledge. This is generally easier to probe in short answer/MCQ
+questions than conceptual knowledge.
