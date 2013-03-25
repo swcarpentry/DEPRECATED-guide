@@ -481,7 +481,7 @@ Explain why your answer makes this code hard to test.
         for element in left:                <span class="comment"># X</span>
             if element not in right:        <span class="comment"># X</span>
                 right.add(element)          <span class="comment"># X</span>
-        assert left.issuperset(right)
+        assert left.issubset(right)
 
 <!-- continue -->
 What single line could be used in place of the three marked with
