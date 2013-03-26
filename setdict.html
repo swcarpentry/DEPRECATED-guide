@@ -100,13 +100,12 @@
 
   <h2>Sets</h2>
 
-  <div class="understand" id="u:sets">
-    <h3>Understand:</h3>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
     <ul>
-      <li>That one-dimensional structures like lists are not the only data structures available to programmers.</li>
-      <li>That a set stores unique values.</li>
-      <li>How to perform common operations on sets.</li>
-      <li>How to use a set to eliminate duplicate values from data.</li>
+      <li>Explain why some programs that use lists become proportionally slower as data sizes increase.</li>
+      <li>Explain the three adjectives in "unordered collection of distinct values".</li>
+      <li>Use a set to eliminate duplicate values from data.</li>
     </ul>
   </div>
 
@@ -352,8 +351,6 @@ def another_atom(seen, atom):
     which adds an element to the set:
   </p>
 
-<!-- TA: Maybe compare .add() to .append() ? -->
-
 <pre>
 &gt;&gt;&gt; lows.add(9)
 &gt;&gt;&gt; print lows
@@ -555,7 +552,7 @@ set('Na', 'Fe', 'Fl')
     and why they're stored that way.
   </p>
 
-  <div class="keypoints" id="k:sets">
+  <div class="keypoints">
     <h3>Summary</h3>
     <ul>
       <li idea="tools">Use sets to store distinct unique values.</li>
@@ -617,8 +614,35 @@ assert left.issubset(right)
         to achieve the same effect?
       </li>
 
+      <li>
+	Fan has written a program to print the names of the distinct atoms in a data file:
+<pre src="setdict/print_names.py">
+<span class="comment"># Print the name of each atom in the data file once.</span>
+reader = open('atoms.txt', 'r')
+seen = set()
+for line in reader:
+    name = line.strip()
+    if name in seen:
+        print name
+    else:
+        seen.add(name)
+reader.close()
+</pre>
+        When he runs the program on this data file:
+<pre src="setdict/atoms.txt">
+Na
+Fe
+Na
+</pre>
+        it only prints:
+<pre>
+<span class="out">Na</span>
+</pre>
+        What is the simplest change you can make to the program
+        so that it produces the correct answer?
+      </li>
+
     </ol>
-    
 </div>
 
 </section>
@@ -627,12 +651,15 @@ assert left.issubset(right)
 
   <h2>Storage</h2>
 
-  <div class="understand" id="u:storage">
-    <h3>Understand:</h3>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
     <ul>
-      <li>How a hash table stores data.</li>
-      <li>The problems that can arise if mutable values are stored in a hash table.</li>
-      <li>How to store multi-part values in a hash table.</li>
+      <li>Draw a diagram showing how hash tables are implemented, and correctly label the main parts.</li>
+      <li>Explain the purpose of a hash function.</li>
+      <li>Explain why using mutable values as keys in a hash table can cause problems.</li>
+      <li>Correctly identify the error messages Python produces when programs try to put mutable values in hashed data structures.</li>
+      <li>Explain the similarities and differences between tuples and lists.</li>
+      <li>Explain why using tuples is better than concatenating values when storing multi-part data in hashed data structures.</li>
     </ul>
   </div>
 
@@ -680,15 +707,17 @@ assert left.issubset(right)
     98 for lower-case 'b',
     and so on up to 122 for lower-case 'z'.
     When we add them up,
-    we will always get the same result.
-    We can use that result to figure out
-    where to store a reference to our string
-    in the memory set aside for our hash table
-    (<a href="#f:set_storage">Figure XXX</a>).
+    we will always get the same result:
+    in this case, 532.
+    If our hash table has 8 slots,
+    we can take the remainder <code>532%8=4</code>
+    to figure out
+    where to store a reference to our string in the hash table
+    (<a href="#f:set_storage_string">Figure XXX</a>).
   </p>
 
-  <figure id="f:set_storage">
-    <img src="img/shell/set_storage.png" alt="Hash Code for a String" />
+  <figure id="f:set_storage_string">
+    <img src="setdict/set_storage_string.png" alt="Hash Code for a String" />
   </figure>
 
   <p>
@@ -792,7 +821,7 @@ assert left.issubset(right)
     but our code will wind up being littered with string joins and string splits,
     which will make it slower to run and harder to read.
     More importantly,
-    it's oly safe to do if
+    it's only safe to do if
     we can find a concatenator that can never come up in our data.
     (If we join "Paul Antoine" and "St. Cyr" using a space,
     there would be three possible ways to split it apart again.)
@@ -845,14 +874,67 @@ assert left.issubset(right)
 <span class="out">set([('Charles', 'Darwin')])</span>
 </pre>
 
-  <div class="keypoints" id="k:storage">
-    <!-- TA: "for abitrary keys" is the first reference to the word "key" so far. Previously used "values". -->
+  <div class="keypoints">
     <h3>Summary</h3>
     <ul>
-      <li idea="algo">Sets are stored in hash tables, which guarantee fast access for arbitrary keys.</li>
+      <li>Sets are stored in hash tables, which guarantee fast access for arbitrary values.</li>
       <li>The values in sets must be immutable to prevent hash tables misplacing them.</li>
-      <li>Use tuples to store multi-part elements in sets.</li>
+      <li>Use tuples to store multi-part values in sets.</li>
     </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <ol>
+
+      <li>
+        A friend of yours argues,
+	"Finding a value in an unordered list of length <em>N</em> takes </em>N/2</em> steps on average.
+        Finding it in a hash table takes only one step,
+        but it's a more expensive step,
+        since we have to calculate a hash code for that value.
+        We should therefore use lists for small data sets,
+        and only use things like sets for large ones."
+        Explain the flaws in your friend's reasoning.
+      </li>
+
+      <li>
+	Nelle has inherited the following function:
+<pre>
+def is_sample_repeated(left_channel, right_channel, history):
+    '''Report repeated samples.  Both channels' values are integers in [0..10] inclusive.'''
+    combined = 1000 * left_channel + right_channel
+    if combined in history:
+        return True
+    else:
+        history.add(combined)
+        return False
+</pre>
+        How would you improve this function, and why?
+      </li>
+
+      <li>
+	Nelle has a function that extracts the latitudes and longitudes of data collection sites from a file:
+<pre>
+&gt;&gt;&gt; sites = extract_sites('north-pacific.dat')
+&gt;&gt;&gt; print sites[:3]
+[[52.097, -173.505], [52.071, -173.510], [51.985, -173.507]]
+</pre>
+        Write another function called <code>filter_duplicate_sites</code>
+        that takes a list of this kind as its only input,
+        and returns a set (not a list) containing only the unique latitude/longitude pairs.
+      </li>
+
+      <li>
+	Roughly how many operations does <code>filter_duplicate_sites</code> perform
+	for a data file containing <em>N</em> entries
+	of which <em>D</em> are duplicates (for 0&lt;<em>D</em>&lt;<em>N</em>)?
+	Does it matter whether the duplicates are evenly distributed
+	versus clustering at the start or end of the input data?
+      </li>
+
+    </ol>
   </div>
 
 </section>
