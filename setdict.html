@@ -232,6 +232,7 @@ def another_atom(seen, atom):
 
   <figure id="f:simple_set">
     <img src="setdict/simple_set.png" alt="A Simple Set" />
+    <figcaption>Figure 1: A Simple Set</figcaption>
   </figure>
 
   <p class="continue">
@@ -713,47 +714,43 @@ Na
     we can take the remainder <code>532%8=4</code>
     to figure out
     where to store a reference to our string in the hash table
-    (<a href="#f:set_storage_string">Figure XXX</a>).
+    (<a href="#f:set_storage_string">Figure 2</a>).
   </p>
 
   <figure id="f:set_storage_string">
-    <img src="setdict/set_storage_string.png" alt="Hash Code for a String" />
+    <img src="setdict/set_storage_string.png" alt="Hashing a String" />
+    <figcaption>Figure 2: Hashing a String</figcaption>
   </figure>
 
   <p>
     Now let's take a look at how a list would be stored.
     If the list contains the same five characters,
-    it will be stored in memory like this:
+    so that its hash code is still 4,
+    it would be stored as shown in
+    <a href="#f:set_storage_list">Figure 3</a>:
   </p>
 
-  <figure id="f:list_of_characters">
-    <img src="img/shell/list_of_characters.png" alt="A List of Characters" />
-  </figure>
-
-  <p>
-    Using addition as our hash function once again,
-    we would get a hash value of 532 for the list,
-    so we would store it in the set's memory like this:
-  </p>
-
-  <figure id="f:hash_list">
-    <img src="img/shell/hash_list.png" alt="Hashing a List" />
+  <figure id="f:set_storage_list">
+    <img src="setdict/set_storage_list.png" alt="Hashing a List" />
+    <figcaption>Figure 3: Hashing a List</figcaption>
   </figure>
 
   <p>
     But what happens if we change the characters in the list
     after we've added it to the set?
     For example,
-    suppose that we change the first letter in the list from 'z' to 's'.
-    The hash function's value is now 523 instead of 532,
-    which means that the modified list belongs in a different place in the set.
+    suppose that we change the first letter in the list from 'z' to 'X'.
+    The hash function's value is now 498 instead of 532,
+    which means that the modified list belongs in slot 2 rather than slot 4.
     However, the reference to the list is still in the old location:
     the set doesn't know that the list's contents have changed,
-    so it hasn't moved its reference to the right location:
+    so it hasn't moved its reference to the right location
+    (<a href="#f:set_storage_mutate">Figure 4</a>):
   </p>
 
-  <figure id="f:hash_mutate">
-    <img src="img/shell/hash_mutate.png" alt="After Mutation" />
+  <figure id="f:set_storage_mutate">
+    <img src="setdict/set_storage_mutate.png" alt="After Mutation" />
+    <figcaption>Figure 4: After Mutation</figcaption>
   </figure>
 
   <p>
@@ -927,11 +924,11 @@ def is_sample_repeated(left_channel, right_channel, history):
       </li>
 
       <li>
-	Roughly how many operations does <code>filter_duplicate_sites</code> perform
-	for a data file containing <em>N</em> entries
-	of which <em>D</em> are duplicates (for 0&lt;<em>D</em>&lt;<em>N</em>)?
-	Does it matter whether the duplicates are evenly distributed
-	versus clustering at the start or end of the input data?
+	A list containing just the number 5 is written as <code>[5]</code>,
+	and a set containing just that same number is written as <code>{5}</code>.
+	However,
+	a tuple containing just that number must be written with a comma as <code>(5,)</code>.
+	Why?
       </li>
 
     </ol>
