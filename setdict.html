@@ -161,9 +161,9 @@ def another_atom(seen, atom):
 
   <table>
     <tr>
-      <td><strong>Before</strong></td>
-      <td><strong>Adding</strong></td>
-      <td><strong>After</strong></td>
+      <th>Before</th>
+      <th>Adding</th>
+      <th>After</th>
     </tr>
     <tr>
       <td> <code>[]</code> </td>
@@ -235,7 +235,7 @@ def another_atom(seen, atom):
     <figcaption>Figure 1: A Simple Set</figcaption>
   </figure>
 
-  <p class="continue">
+  <p class="continue" id="a:previous-use">
     However,
     we have to use <code>set()</code> to create an empty set,
     because the symbol <code>{}</code> was already being used for something else
@@ -422,9 +422,9 @@ def another_atom(seen, atom):
 
   <table>
     <tr>
-      <td> <strong>Operation</strong> </td>
-      <td> <strong>As Method</strong> </td>
-      <td> <strong>Using Operator</strong> </td>
+      <th>Operation</th>
+      <th>As Method</th>
+      <th>Using Operator</th>
     </tr>
     <tr>
       <td> <em>difference</em> </td>
@@ -616,7 +616,7 @@ assert left.issubset(right)
       </li>
 
       <li>
-	Fan has written a program to print the names of the distinct atoms in a data file:
+        Fan has written a program to print the names of the distinct atoms in a data file:
 <pre src="setdict/print_names.py">
 <span class="comment"># Print the name of each atom in the data file once.</span>
 reader = open('atoms.txt', 'r')
@@ -887,7 +887,7 @@ Na
 
       <li>
         A friend of yours argues,
-	"Finding a value in an unordered list of length <em>N</em> takes </em>N/2</em> steps on average.
+        "Finding a value in an unordered list of length <em>N</em> takes <em>N/2</em> steps on average.
         Finding it in a hash table takes only one step,
         but it's a more expensive step,
         since we have to calculate a hash code for that value.
@@ -897,7 +897,7 @@ Na
       </li>
 
       <li>
-	Nelle has inherited the following function:
+        Nelle has inherited the following function:
 <pre>
 def is_sample_repeated(left_channel, right_channel, history):
     '''Report repeated samples.  Both channels' values are integers in [0..10] inclusive.'''
@@ -912,7 +912,7 @@ def is_sample_repeated(left_channel, right_channel, history):
       </li>
 
       <li>
-	Nelle has a function that extracts the latitudes and longitudes of data collection sites from a file:
+        Nelle has a function that extracts the latitudes and longitudes of data collection sites from a file:
 <pre>
 &gt;&gt;&gt; sites = extract_sites('north-pacific.dat')
 &gt;&gt;&gt; print sites[:3]
@@ -924,11 +924,11 @@ def is_sample_repeated(left_channel, right_channel, history):
       </li>
 
       <li>
-	A list containing just the number 5 is written as <code>[5]</code>,
-	and a set containing just that same number is written as <code>{5}</code>.
-	However,
-	a tuple containing just that number must be written with a comma as <code>(5,)</code>.
-	Why?
+        A list containing just the number 5 is written as <code>[5]</code>,
+        and a set containing just that same number is written as <code>{5}</code>.
+        However,
+        a tuple containing just that number must be written with a comma as <code>(5,)</code>.
+        Why?
       </li>
 
     </ol>
@@ -941,15 +941,10 @@ def is_sample_repeated(left_channel, right_channel, history):
   <h2>Dictionaries</h2>
 
   <div class="understand" id="u:dict">
-    <h3>Understand:</h3>
+    <h3>Learning Objectives:</h3>
     <ul>
-      <li>That a dictionary stores key-value pairs in a hash table.</li>
-      <!-- TA: "looked up by value" Not "by key"? -->
-      <li>That dictionaries allow things to be looked up by value.</li>
-      <li>That the keys in a dictionary must be unique.</li>
-      <li>That a dictionary's keys must be immutable.</li>
-      <li>How to perform common operations on dictionaries.</li>
-      <li>Why dictionaries are intrinsically more efficient than lists for some applications.</li>
+      <li>Explain the similarities and differences between sets and dictionaries.</li>
+      <li>Perform common operations on dictionaries.</li>
     </ul>
   </div>
 
@@ -961,14 +956,19 @@ def is_sample_repeated(left_channel, right_channel, history):
   </p>
 
   <p>
-    The right way to solve this problem is
-    to use a <a href="glossary.html#dictionary">dictionary</a> to store our data.
+    Once again,
+    we could use a list to store names and counts,
+    but the right solution is
+    to use another new data strucure called a <a href="glossary.html#dictionary">dictionary</a>.
     A dictionary is a unordered collection of key-value pairs
-    (<a href="#f:simple_dict">Fixture XXX</a>).
-    Like the elements in a set,
-    keys are immutable, unique, and not stored in any particular order.
+    (<a href="#f:simple_dict">Fixture 5</a>).
+    The keys are immutable, unique, and unordered,
+    just like the elements of a set.
     There are no restrictions on the values stored with those keys:
-    in particular, they don't have to be immutable or unique.
+    they don't have to be immutable or unique.
+    However,
+    we can only look up entries by their keys,
+    not by their values.
   </p>
 
   <figure id="f:simple_dict">
@@ -976,10 +976,8 @@ def is_sample_repeated(left_channel, right_channel, history):
   </figure>
 
   <p>
-    We can create a new dictionary by putting key-value pairs inside curly braces,
-    using a colon to connect each pair.
-    For example,
-    let's create a dictionary with two entries and assign it to the variable <code>birthdays</code>:
+    We create a new dictionary by putting key-value pairs inside curly braces
+    with a colon between the two parts of each pair:
   </p>
 
 <pre>
@@ -990,6 +988,30 @@ def is_sample_repeated(left_channel, right_channel, history):
     The dictionary's keys are the strings <code>'Newton'</code> and <code>'Darwin'</code>.
     The value associated with <code>'Newton'</code> is 1642,
     while the value associated with <code>'Darwin'</code> is 1809.
+    We can think of this as a two-column table:
+  </p>
+
+  <table>
+    <tr>
+      <th>Key</th>
+      <th>Value</th>
+    </tr>
+    <tr>
+      <td><code>'Newton'</code></td>
+      <td>1642</td>
+    </tr>
+    <tr>
+      <td><code>'Darwin'</code></td>
+      <td>1809</td>
+    </tr>
+  </table>
+
+  <p class="continue">
+    but it's important to remember that the entries aren't necessarily stored in this order
+    (or any other specific order).
+  </p>
+
+  <p>
     We can get the value associated with a key by putting the key in square brackets:
   </p>
 
@@ -1001,15 +1023,16 @@ def is_sample_repeated(left_channel, right_channel, history):
   <p class="continue">
     This looks just like subscripting a string or list,
     except dictionary keys don't have to be integers&mdash;they can be strings,
-    tuples, and so on.
+    tuples, or any other immutable object.
     It's just like using a phonebook or a real dictionary:
     instead of looking things up by location using an integer index,
     we look things up by name.
   </p>
 
   <p>
-    If we want to add another key-value pair to a dictionary,
-    all we have to do is assign a value to the key:
+    If we want to add another entry to a dictionary,
+    we just assign a value to the key,
+    just as we create a new variable in a program by assigning it a value:
   </p>
 
 <pre>
@@ -1034,8 +1057,10 @@ def is_sample_repeated(left_channel, right_channel, history):
 
   <p>
     Trying to get the value associated with a key that <em>isn't</em> in the dictionary is an error,
-    just like trying to get the fifth element of a three-element list.
-    For example, let's try to find Florence Nightingale's birthday:
+    just like trying to access a nonexistent variable
+    or get an out-of-bounds element from a list.
+    For example,
+    let's try to look up Florence Nightingale's birthday:
   </p>
 
 <pre>
@@ -1055,8 +1080,8 @@ def is_sample_repeated(left_channel, right_channel, history):
 <span class="out">True</span>
 </pre>
 
-  <p>
-    Finally, we can see how many entries are in the dictionary using <code>len</code>:
+  <p class="continue">
+    And we can see how many entries are in the dictionary using <code>len</code>:
   </p>
 
 <pre>
@@ -1079,15 +1104,15 @@ Darwin 1809</span>
 
   <p class="continue">
     This is a little bit different from looping over a list.
-    When we loop over a list,
-    the loop gives us the values,
-    since the "keys" 0, 1, 2, and so on usually aren't particularly informative.
-    When we loop over a dictionary, on the other hand,
-    the loop gives us the keys, which we can use to look up the values.
+    When we loop over a list we get the values in the list.
+    When we loop over a dictionary,
+    on the other hand,
+    the loop gives us the keys,
+    which we can use to look up the values.
   </p>
 
   <p>
-    Now, let's go back and count those atoms.
+    We're now ready to count atoms.
     The main body of our program looks like this:
   </p>
 
@@ -1117,7 +1142,7 @@ if __name__ == '__main__':
 
 <pre src="setdict/count_atoms.py">
 def count_atoms(lines):
-  '''Count unique lines of text, returning dictionary.'''
+  '''Count unique atoms, returning a dictionary.'''
 
     result = {}
     for atom in lines:
@@ -1134,6 +1159,9 @@ def count_atoms(lines):
     We start with a docstring to explain the function's purpose to whoever has to read it next.
     We then create an empty dictionary to fill with data,
     and use a loop to process the lines from the input file one by one.
+    Notice that the empty dictionary is written <code>{}</code>:
+    this is the "<a href="#a:previous-use">previous use</a>"
+    we referred to when explaining why an empty set had to be written <code>set()</code>.
   </p>
 
   <p>
@@ -1145,7 +1173,7 @@ def count_atoms(lines):
     If we <em>have</em> seen it before,
     we add one to the previous count
     and store that new value back in the dictionary.
-    Finally, when the loop is done, we return the dictionary we've created.
+    When the loop is done, we return the dictionary we have created.
   </p>
 
   <p>
@@ -1163,6 +1191,10 @@ def count_atoms(lines):
 
   <table>
     <tr>
+      <th>Input</th>
+      <th>Dictionary</th>
+    </tr>
+    <tr>
       <td> <em>start</em> </td>
       <td> <code>{}</code> </td>
     </tr>
@@ -1179,56 +1211,6 @@ def count_atoms(lines):
       <td> <code>{'Na' : 2, 'Fe' : 1}</code> </td>
     </tr>
   </table>
-
-  <p>
-    We could achieve the same thing using a list of lists,
-    where each sub-list is a <code>[symbol, count]</code> pair.
-    But just like sets,
-    dictionaries are stored using hash tables,
-    which guarantee that finding or modifying values takes roughly constant time.
-    This is a lot better than the list-based method,
-    where the time grows in proportion to the number of pairs in the list.
-  </p>
-
-  <p>
-    Suppose,
-    for example,
-    that we have 100,000 atoms in our inventory
-    of 50 different kinds.
-    If the file is randomly ordered,
-    we will soon have seen every symbol at least once.
-    After that,
-    every new observation will involve scanning approximately half of the list.
-    The total number of lookups required to build the list will therefore be
-    100,000&nbsp;&times;&nbsp;50/2,
-    or 2.5 million.
-  </p>
-
-  <p>
-    If we use a dictionary,
-    on the other hand,
-    each lookup will take about three times as long as looking at a single element of a list
-    (because we have to calculate a hash code).
-    However,
-    we never have to search the dictionary:
-    once we have the hash code,
-    we can find the corresponding entry in a single step.
-    The total number of steps required to build the dictionary
-    will therefore be roughly 3&nbsp;&times;&nbsp;100,000,
-    or 300,000.
-    That is more than eight times faster than the list-based implementation.
-  </p>
-
-  <p>
-    But now suppose that we have N patient records,
-    and that each patient is only seen once or twice.
-    <!-- TA: You mean list-of-pairs? -->
-    Using a pair-of-pairs approach,
-    it will take roughly N<sup>2</sup> steps to build our data structure,
-    but if we use a dictionary,
-    it will only takes 3 steps.
-    If N is a million, that's quite a savings.
-  </p>
 
   <p>
     Just as we use tuples for multi-part entries in sets,
@@ -1250,23 +1232,32 @@ birthdays = {
   <p class="continue">
     If we do this,
     though,
-    we have to look things up by the full key:
+    we always have to look things up by the full key:
     there is no way to ask for
-    all the entries whose keys contain the word <code>'Darwin'</code>.
-    On the other hand,
-    we <em>can</em> get all of the keys in a list:
+    all the entries whose keys contain the word <code>'Darwin'</code>,
+    because Python cannot match part of a tuple.
+  </p>
+
+  <p>
+    If we think of a dictionary as a two-column table,
+    it is occasionally useful to get one or the other column,
+    i.e.,
+    just the keys or just the values:
   </p>
 
 <pre>
 all_keys = birthdays.keys()
 print all_keys
 <span class="out">[('Isaac', 'Newton'), ('Alan', 'Mathison', 'Turing'), ('Charles', 'Robert', 'Darwin')]</span>
+all_values = birthday.values()
+print all_values
+<span class="out">[1642, 1912, 1809]</span>
 </pre>
 
   <p>
-    The <code>keys</code> method should be used sparingly,
-    since it actually creates a new list in memory
-    (the dictionary doesn't store the keys as a list internally).
+    These methods should be used sparingly:
+    the dictionary doesn't store the keys or values in a list,
+    these methods both actually create a new list as their result.
     In particular,
     we <em>shouldn't</em> loop over a dictionary's entries like this:
   </p>
@@ -1280,10 +1271,10 @@ for key in some_dict.keys():
     since "<code>for key in some_dict</code>" is shorter and much more efficient.
   </p>
 
-  <div class="keypoints" id="k:dict">
+  <div class="keypoints">
     <h3>Summary</h3>
     <ul>
-      <li idea="tools">Use dictionaries to store key-value pairs with distinct keys.</li>
+      <li>Use dictionaries to store key-value pairs with distinct keys.</li>
       <li>Create dictionaries using <code>{<em>k1</em>:<em>v1</em>, <em>k2</em>:<em>v2</em>, ...}</code></li>
       <li>Dictionaries are mutable, i.e., they can be updated in place.</li>
       <li>Dictionary keys must be immutable, but values can be anything.</li>
@@ -1295,6 +1286,98 @@ for key in some_dict.keys():
       <li><code><em>dict</em>.keys()</code> creates a list of the keys in a dictionary.</li>
       <li><code><em>dict</em>.values()</code> creates a list of the keys in a dictionary.</li>
     </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <ol>
+
+      <li>
+        What is one possible output of the following program?
+        And why does this question say
+        "one possible output"
+        instead of
+        "<em>the</em> output"?
+<pre>
+periods = {'Mercury' : 87.97, 'Venus' : 224.70}
+print periods
+periods.update({'Earth' : 3.6526, 'Mars' : 686.98})
+print periods
+periods['Earthy'] = 365.26
+print periods
+</pre>
+      </li>
+
+      <li>
+        Fan has a table with the pH levels of samples as the keys,
+        and the percentage of carbon-12 as the values:
+<table>
+  <tr>
+    <th>pH</th>
+    <th>C12</th>
+  </tr>
+  <tr>
+    <td>7.43</td>
+    <td>0.48</td>
+  </tr>
+  <tr>
+    <td>7.51</td>
+    <td>0.47</td>
+  </tr>
+  <tr>
+    <td>7.56</td>
+    <td>0.45</td>
+  </tr>
+</table>
+        He needs to interpolate between these values,
+        i.e.,
+        to predict the percentage of carbon-12 in the sample
+        for a pH 7.50.
+        Will storing his data in a dictionary:
+<pre>
+{7.43 : 0.48, 7.51 : 0.47, 7.56 : 0.45}
+</pre>
+        be any more efficient than storing it in a list of pairs:
+<pre>
+[ [7.43, 0.48], [7.51, 0.47], [7.56, 0.45] ]
+</pre>
+        Why or why not?
+      </li>
+
+      <li>
+        Before sets were added to Python,
+        people frequently imitated them using dictionaries;
+        the dictionary's keys were the set's elements,
+        and the dictionary's values were all <code>None</code>.
+        This function calculates the intersection of two such "sets":
+<pre>
+def setdict_intersect(left, right):
+    '''Return new dictionary with intersection of keys from left and right.'''
+    result = {}
+    for key in left:
+        if key in right:
+            result[key] = None
+    return result
+</pre>
+        Write a function <code>setdict_union</code> that calculates
+        the union of two sets represented in this way.
+      </li>
+
+      <li>
+        What does the following function do?
+        Explain when and why you would use it,
+        and write a small example that calls it with sample data.
+<pre>
+def show(writer, format, data):
+    keys = data.keys()
+    keys.sort()
+    for k in keys:
+        print &gt;&gt; writer, format % (key, data[key])
+</pre>
+      </li>
+
+    </ol>
   </div>
 
 </section>
