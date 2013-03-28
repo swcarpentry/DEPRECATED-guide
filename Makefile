@@ -60,14 +60,6 @@ check-links :
 
 #------------------------------------------------------------
 
-## md-test      : test Markdown conversion
-md-test :
-	@cat markdown/md-header.htm > md-test.html
-	@pandoc -t html setdict.md >> md-test.html
-	@cat markdown/md-footer.htm >> md-test.html
-
-#------------------------------------------------------------
-
 # Copy static files.
 $(OUT_DIR)/% : %
 	@mkdir -p $$(dirname $@)
