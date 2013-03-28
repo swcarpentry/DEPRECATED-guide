@@ -8,7 +8,7 @@ COMPILE = \
 # Static files.
 STATIC_SRC = \
              $(wildcard ./*/*.csv) \
-             $(wildcard ./*/*.html) \
+             $(filter-out build/%.html,$(wildcard ./*/*.html)) \
              $(wildcard ./*/*.jpg) \
              $(wildcard ./*/*.json) \
              $(wildcard ./*/*.png) \
