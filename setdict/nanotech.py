@@ -51,7 +51,7 @@ def dict_divide(inventory, molecule):
         required = molecule[atom]
         available = inventory.get(atom, 0)
         limit = available / required
-        if (number is None) or (limit &lt; number):
+        if (number is None) or (limit < number):
             number = limit
 
     return number
