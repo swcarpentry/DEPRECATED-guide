@@ -11,6 +11,7 @@
   <li><a href="#s:dict">Dictionaries</a></li>
   <li><a href="#s:aggregation">Aggregation</a></li>
   <li><a href="#s:nanotech">Nanotech Inventory</a></li>
+  <li><a href="#s:json">JSON</a></li>
   <li><a href="#s:phylotree">Phylogenetic Trees</a></li>
   <li><a href="#s:summary">Summing Up</a></li>
 </ol>
@@ -54,6 +55,7 @@
       </ul>
     </li>
     <li>Introduce computational complexity (big-oh) via back-of-the-envelope calculations</li>
+    <li>Introduce JSON as a better file format</li>
     <li>Prepare learners for:
       <ul>
         <li>Performance optimization via improvements to algorithms and data structures (in invasion percolation example)</li>
@@ -973,6 +975,7 @@ def is_sample_repeated(left_channel, right_channel, history):
 
   <figure id="f:simple_dict">
     <img src="setdict/simple_dict.png" alt="A Simple Dictionary" />
+    <figcaption>Figure 5: A Simple Dictionary</figcaption>
   </figure>
 
   <p>
@@ -1849,16 +1852,20 @@ data.get(key, 0) += 1
 
   <h2>Nanotech Inventory</h2>
 
-  <div class="understand" id="u:nanotech">
-    <h3>Understand:</h3>
+  <div class="understand:nanotech">
+    <h3>Learning Objectives:</h3>
     <ul>
-      <li>That dictionaries can be nested like lists.</li>
+      <li>Parse flat text files to create dictionaries.</li>
+      <li>Explain the pros and cons of JSON compared to flat text.</li>
+      <li>Create and manipulate nested dictionaries.</li>
+      <li>Explain the similarities and differences between nested dictionaries and nested lists.</li>
     </ul>
   </div>
 
   <p>
-    We can now build a solution to Fan's original nanotech inventory problem.
-    Our goal is to find out how many molecules of various kinds we can make using the atoms in our warehouse.
+    We can now solve Fan's original nanotech inventory problem.
+    As explained in the introduction,
+    our goal is to find out how many molecules of various kinds we can make using the atoms in our warehouse.
     The number of molecules of any particular type we can make
     is limited by the scarcest atom that molecule requires.
     For example,
@@ -1893,53 +1900,57 @@ O 3
 </pre>
 
   <p>
-    Let's start with our inventory.
-    Our input consists of pairs of strings and numbers,
+    Let's start by reading in our inventory.
+    It consists of pairs of strings and numbers,
     which by now should suggest using a dictionary for storage.
     The keys will be atomic symbols,
-    and the values will be the number of atoms of that kind we currently have in stock
-    (<a href="#f:nanotech_inventory">Figure XXX</a>).
+    and the values will be the number of atoms of that kind we currently have
+    (<a href="#f:nanotech_inventory">Figure 6</a>).
     If an atom isn't listed in our inventory,
-    we'll assume that we don't have any in stock.
+    we'll assume that we don't have any.
   </p>
 
   <figure id="f:nanotech_inventory">
     <img src="setdict/nanotech_inventory.png" alt="Nanotech Inventory" />
+    <figcaption>Figure 6: Nanotech Inventory</figcaption>
   </figure>
 
   <p>
-    What about the formulas for all the molecules we know how to make?
-    Again, the right answer is a dictionary:
-    its keys will be the name of molecules,
-    and each value will be a dictionary storing
+    What about the formulas for the molecules we know how to make?
+    Once again,
+    we want to use strings&mdash;the names of molecules&mdash;as indices,
+    which suggests a dictionary.
+    Each of its values will be something storing
     atomic symbols and the number of atoms of that type in the molecule&mdash;the same structure,
     in fact,
     that we're using for our inventory.
-    <a href="#f:nanotech_formulas">Figure XXX</a> shows
-    an outer dictionary that maps the word <code>'water'</code>
-    to a dictionary storing the number of oxygen and hydrogen atoms in a single water molecule,
-    and the word <code>'ammonia'</code> to a dictionary storing
-    the number of nitrogen and hydrogen atoms in a single ammonia molecule.
+    <a href="#f:nanotech_formulas">Figure 7</a> shows
+    what this looks like in memory
+    if the only molecules we know how to make are water and ammonia.
   </p>
 
   <figure id="f:nanotech_formulas">
     <img src="setdict/nanotech_formulas.png" alt="Storing Formulas" />
+    <figcaption>Figure 7: Storing Formulas</figcaption>
   </figure>
 
   <p>
     Finally,
     we'll store the results of our calculation in yet another dictionary,
     this one mapping the names of molecules to how many molecules of that kind we can make
-    (<a href="#f:nanotech_results">Figure XXX</a>):
+    (<a href="#f:nanotech_results">Figure 9</a>).
   </p>
 
   <figure id="f:nanotech_results">
     <img src="setdict/nanotech_results.png" alt="Nanotech Results" />
+    <figcaption>Figure 9: Nanotech Results</figcaption>
   </figure>
 
   <p>
     The main body of the program is straightforward:
-    it just reads in the input files, does our calculation, and prints the result.
+    it reads in the input files,
+    does our calculation,
+    and prints the result:
   </p>
 
 <pre src="setdict/nanotech.py">
@@ -1975,7 +1986,7 @@ def read_inventory(filename):
 
   <p class="continue">
     For clarity's sake, we have used a helper function called <code>read_lines</code>
-    to read a file and strip out blank lines and comments:
+    to remove blank lines and comments from our input:
   </p>
 
 <pre src="setdict/nanotech.py">
@@ -2003,31 +2014,33 @@ def read_lines(filename):
 def read_formulas(filename):
     '''Read molecular formulas from file.'''
 
-    result = {}                                        # 1
+    result = {}                                        <span class="comment"># 1</span>
     for line in read_lines(filename):
 
-        name, atoms = line.split(':')                  # 2
+        name, atoms = line.split(':')                  <span class="comment"># 2</span>
         name = name.strip()
 
-        atoms = atoms.strip().split(' ')               # 3
+        atoms = atoms.strip().split(' ')               <span class="comment"># 3</span>
         formula = {}
-        for i in range(0, len(atoms), 2):              # 4
-            formula[atoms[i]] = int(atoms[i+1])        # 5
+        for i in range(0, len(atoms), 2):              <span class="comment"># 4</span>
+            formula[atoms[i]] = int(atoms[i+1])        <span class="comment"># 5</span>
 
-        result[name] = formula                         # 6
+        result[name] = formula                         <span class="comment"># 6</span>
 
-    return result                                      # 7
+    return result                                      <span class="comment"># 7</span>
 </pre>
 
   <p class="continue">
-    We start by creating the dictionary we're going to store the results in (#1).
-    For each line in the file that has some data,
-    we split on the colon ':' to separate the molecule's name (which may contain spaces) from its formula (#2).
-    We then split the formulas into a list of strings that alternate between atomic symbols and counts (#3).
-    In the inner loop (#4),
+    We start by creating a dictionary to hold our results (#1).
+    We then split each interesting line in the data file on the colon ':'
+    to separate the molecule's name (which may contain spaces) from its formula (#2).
+    We then split the formulas into a list of strings (#3).
+    These alternate between atomic symbols and numbers,
+    so in the inner loop (#4),
     we move forward through those values two elements at a time,
     storing the atomic symbol and count in a dictionary (#5).
-    Once we're done, we store that dictionary as the value for the molecule name in the main dictionary (#6).
+    Once we're done,
+    we store that dictionary as the value for the molecule name in the main dictionary (#6).
     When we've processed all the lines,
     we return the final result (#7).
   </p>
@@ -2037,8 +2050,8 @@ def read_formulas(filename):
     it's time to calculate how many molecules of each kind we can make.
     <code>inventory</code> maps atomic symbols to counts,
     and so does <code>formulas[name]</code>,
-    so let's loop over all the molecules in our formulas and "divide" those two dictionaries
-    using another helper function:
+    so let's loop over all the molecules we know how to make
+    and "divide" the inventory by each one:
   </p>
 
 <pre src="setdict/nanotech.py">
@@ -2053,11 +2066,13 @@ def calculate_counts(inventory, formulas):
 </pre>
 
   <p class="continue">
-    It might seem like overkill to write yet another function in this case,
-    but experience shows that if we have a choice between big functions in which nothing is obviously wrong,
-    or little functions in which obviously nothing is wrong,
-    we should choose the latter.
-    Here's that helper function:
+    We say we're "dividing" the inventory by each molecule
+    because we're trying to find out how many of that molecule we can make
+    without requiring more of any particular atom than we actually have.
+    (By analogy,
+    when we divide 11 by 3,
+    we're trying to find out how many 3's we can make from 11.)
+    The function that does the division is:
   </p>
 
 <pre src="setdict/nanotech.py">
@@ -2077,45 +2092,49 @@ def dict_divide(inventory, molecule):
 
   <p class="continue">
     This function loops over all the atoms in the molecule we're trying to build,
-    see what limits the available inventory puts on us,
+    see what limit the available inventory puts on us,
     and return the minimum of all those results.
-    This function uses a few patterns that come up frequently in many kinds of programs,
-    so let's have a closer look.
+    This function uses a few patterns that come up frequently in many kinds of programs:
   </p>
 
-  <p>
-    The first pattern is to initialize the value we're going to return to <code>None</code>,
-    then test for that value inside the loop
-    to make sure we re-set it to a legal value the first time we have real data.
-    In this case, we could just as easily use -1
-    or some other impossible value as an "uninitialized" flag for <code>number</code>.
-  </p>
+  <ol>
 
-  <p>
-    Since we're looping over the keys of <code>molecule</code>,
-    we know that we can get the value stored in <code>molecule[atom]</code>.
-    However, that atom might not be a key in <code>inventory</code>,
-    so we use <code>inventory.get(atom, 0)</code> to get either the stored value or a sensible default.
-    In this case zero, the sensible default is 0,
-    because if the atom's symbol isn't in the dictionary, we don't have any of it.
-    This is our second pattern.
-  </p>
+    <li>
+      The first pattern is to initialize the value we're going to return to <code>None</code>,
+      then test for that value inside the loop
+      to make sure we re-set it to a legal value the first time we have real data.
+      In this case, we could just as easily use -1
+      or some other impossible value as an "uninitialized" flag for <code>number</code>.
+    </li>
 
-  <p>
-    The third is using calculate, test, and store to find a single value&mdash;in this case, the minimum&mdash;from
-    a set of calculated values.
-    We could calculate the list of available over required values,
-    then find the minimum of the list,
-    but doing the minimum test as we go along saves us having to store the list of intermediate values.
-    It's probably not a noticeable time saving in this case,
-    but it would be with larger data sets.
-  </p>
+    <li>
+      Since we're looping over the keys of <code>molecule</code>,
+      we know that we can get the value stored in <code>molecule[atom]</code>.
+      However, that atom might not be a key in <code>inventory</code>,
+      so we use <code>inventory.get(atom, 0)</code> to get either the stored value or a sensible default.
+      In this case zero, the sensible default is 0,
+      because if the atom's symbol isn't in the dictionary, we don't have any of it.
+      This is our second pattern.
+    </li>
+
+    <li>
+      The third is using calculate, test, and store to find a single value&mdash;in this case, the minimum&mdash;from
+      a set of calculated values.
+      We could calculate the list of available over required values,
+      then find the minimum of the list,
+      but doing the minimum test as we go along saves us having to store the list of intermediate values.
+      It's probably not a noticeable time saving in this case,
+      but it would be with larger data sets.
+    </li>
+
+  </ol>
 
   <p>
     The last step in building our program is to show how many molecules of each kind we can make.
     We could just loop over our result dictionary,
     printing each molecule's name and the number of times we could make it,
-    but let's sort the results by molecule name to make things easier to find:
+    but let's put the results in alphabetical order
+    to make it easier to read:
   </p>
 
 <pre src="setdict/nanotech.py">
@@ -2133,31 +2152,31 @@ def show_counts(counts):
     Let's start by using an empty inventory and a single formula:
   </p>
 
-  <table border="1" width="100%">
+  <table>
     <tr>
-      <td width="33%">
+      <th>
         Inventory
-      </td>
-      <td width="33%">
+      </th>
+      <th>
         Formulas
-      </td>
-      <td width="33%">
+      </th>
+      <th>
         Output
-      </td>
+      </th>
     </tr>
     <tr>
-      <td valign="top">
+      <td>
 <pre>
 # inventory-00.txt
 </pre>
       </td>
-      <td valign="top">
+      <td>
 <pre>
 # formulas-01.txt
 helium : He 1
 </pre>
       </td>
-      <td valign="top">
+      <td>
 <pre>
 </pre>
       </td>
@@ -2169,32 +2188,32 @@ helium : He 1
     Let's add one atom of helium to our inventory:
   </p>
 
-  <table border="1" width="100%">
+  <table>
     <tr>
-      <td width="33%">
+      <th>
         Inventory
-      </td>
-      <td width="33%">
+      </th>
+      <th>
         Formulas
-      </td>
-      <td width="33%">
+      </th>
+      <th>
         Output
-      </td>
+      </th>
     </tr>
     <tr>
-      <td valign="top">
+      <td>
 <pre>
 # inventory-01.txt
 He 1
 </pre>
       </td>
-      <td valign="top">
+      <td>
 <pre>
 # formulas-01.txt
 helium : He 1
 </pre>
       </td>
-      <td valign="top">
+      <td>
 <pre>
 helium 1
 </pre>
@@ -2207,33 +2226,33 @@ helium 1
     Let's add some hydrogen, but don't give the program any formulas that use hydrogen:
   </p>
 
-  <table border="1" width="100%">
+  <table>
     <tr>
-      <td width="33%">
+      <th>
         Inventory
-      </td>
-      <td width="33%">
+      </th>
+      <th>
         Formulas
-      </td>
-      <td width="33%">
+      </th>
+      <th>
         Output
-      </td>
+      </th>
     </tr>
     <tr>
-      <td valign="top">
+      <td>
 <pre>
 # inventory-02.txt
 He 1
 H 4
 </pre>
       </td>
-      <td valign="top">
+      <td>
 <pre>
 # formulas-01.txt
 helium : He 1
 </pre>
       </td>
-      <td valign="top">
+      <td>
 <pre>
 helium 1
 </pre>
@@ -2248,34 +2267,34 @@ helium 1
     but not providing any oxygen:
   </p>
 
-  <table border="1" width="100%">
+  <table>
     <tr>
-      <td width="33%">
+      <th>
         Inventory
-      </td>
-      <td width="33%">
+      </th>
+      <th>
         Formulas
-      </td>
-      <td width="33%">
+      </th>
+      <th>
         Output
-      </td>
+      </th>
     </tr>
     <tr>
-      <td valign="top">
+      <td>
 <pre>
 # inventory-02.txt
 He 1
 H 4
 </pre>
       </td>
-      <td valign="top">
+      <td>
 <pre>
 # formulas-02.txt
 helium : He 1
 water: H 2 O 1
 </pre>
       </td>
-      <td valign="top">
+      <td>
 <pre>
 helium 1
 </pre>
@@ -2288,27 +2307,27 @@ helium 1
     Let's add the formula for molecular hydrogen:
   </p>
 
-  <table border="1" width="100%">
+  <table>
     <tr>
-      <td width="33%">
+      <th>
         Inventory
-      </td>
-      <td width="33%">
+      </th>
+      <th>
         Formulas
-      </td>
-      <td width="33%">
+      </th>
+      <th>
         Output
-      </td>
+      </th>
     </tr>
     <tr>
-      <td valign="top">
+      <td>
 <pre>
 # inventory-02.txt
 He 1
 H 4
 </pre>
       </td>
-      <td valign="top">
+      <td>
 <pre>
 # formulas-03.txt
 helium : He 1
@@ -2316,7 +2335,7 @@ water: H 2 O 1
 hydrogen: H 2
 </pre>
       </td>
-      <td valign="top">
+      <td>
 <pre>
 helium 1
 hydrogen 2
@@ -2332,20 +2351,20 @@ hydrogen 2
     let's put some oxygen in the warehouse:
   </p>
 
-  <table border="1" width="100%">
+  <table>
     <tr>
-      <td width="33%">
+      <th>
         Inventory
-      </td>
-      <td width="33%">
+      </th>
+      <th>
         Formulas
-      </td>
-      <td width="33%">
+      </th>
+      <th>
         Output
-      </td>
+      </th>
     </tr>
     <tr>
-      <td valign="top">
+      <td>
 <pre>
 # inventory-03.txt
 He 1
@@ -2353,7 +2372,7 @@ H 4
 O 3
 </pre>
       </td>
-      <td valign="top">
+      <td>
 <pre>
 # formulas-03.txt
 helium : He 1
@@ -2361,7 +2380,7 @@ water: H 2 O 1
 hydrogen: H 2
 </pre>
       </td>
-      <td valign="top">
+      <td>
 <pre>
 helium 1
 hydrogen 2
@@ -2376,24 +2395,25 @@ water 2
     we can make two water molecules
     (because we don't have enough hydrogen to pair with our three oxygen atoms).
     There are quite a few other interesting tests still to run,
-    but things are looking good so far.
+    but before we do that,
+    we should take another look at how we're storing our data on disk.
   </p>
 
-  <p>
-    Our code is a <em>lot</em> simpler than it would be
-    if we used lists of pairs of atom names and counts to store things.
-    It's also a lot more efficient,
-    and (while it may not feel that way yet)
-    much easier to read.
-  </p>
-
-  <div class="keypoints" id="k:nanotech">
+  <div class="keypoints">
     <h3>Summary</h3>
     <ul>
-      <li>Nested dicionaries are as useful as nested lists.</li>
-      <li>Use names as keys rather than matching them to arbitrary integer indices.</li>
+      <li>Whenever names are used to label things, consider using dictionaries to store them.</li>
+      <li>Use nested dictionaries to store hierarchical values (like molecule names and atomic counts).</li>
     </ul>
   </div>
+
+</section>
+
+<section id="s:json">
+
+  <h2>JSON</h2>
+
+  <p class="fixme">explain JSON</p>
 
 </section>
 
