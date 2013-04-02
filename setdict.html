@@ -1844,9 +1844,9 @@ data.get(key, 0) += 1
       </li>
 
       <li>
-	Write a function <code>dict_subtract</code>
-	that "subtracts" one dictionary mapping names to numbers from another.
-	For example:
+        Write a function <code>dict_subtract</code>
+        that "subtracts" one dictionary mapping names to numbers from another.
+        For example:
 <pre>
 assert dict_subtract({'X' : 3},          {'X' : 2})          == {'X' : 1}
 assert dict_subtract({'X' : 3, 'Y' : 2}, {'X' : 5, 'Z' : 1}) == {'X' : -2, 'Y' : 2, 'Z' : -1}
@@ -2423,53 +2423,53 @@ water 2
     <ol>
 
       <li>
-	Trace the behavior of <code>read_formulas</code>
-	by showing the value of each variable each time line #6 finishes executing
-	when given the data file:
+        Trace the behavior of <code>read_formulas</code>
+        by showing the value of each variable each time line #6 finishes executing
+        when given the data file:
 <pre>
 helium  : He 1
 ammonia : N 1 H 3
 cyanide : H 1 C 1 N 1
 </pre>
         <table>
-	  <tr>
-	    <th></th>
-	    <th><code>result</code></th>
-	    <th><code>line</code></th>
-	    <th><code>name</code></th>
-	    <th><code>atoms</code></th>
-	    <th><code>formula</code></th>
-	  </tr>
-	  <tr>
-	    <td>1) after "helium":</td>
-	    <td></td>
-	    <td></td>
-	    <td></td>
-	    <td></td>
-	    <td></td>
-	  </tr>
-	  <tr>
-	    <td>2) after "ammonia":</td>
-	    <td></td>
-	    <td></td>
-	    <td></td>
-	    <td></td>
-	    <td></td>
-	  </tr>
-	  <tr>
-	    <td>3) after "cyanide":</td>
-	    <td></td>
-	    <td></td>
-	    <td></td>
-	    <td></td>
-	    <td></td>
-	  </tr>
-	</table>
+          <tr>
+            <th></th>
+            <th><code>result</code></th>
+            <th><code>line</code></th>
+            <th><code>name</code></th>
+            <th><code>atoms</code></th>
+            <th><code>formula</code></th>
+          </tr>
+          <tr>
+            <td>1) after "helium":</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>2) after "ammonia":</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>3) after "cyanide":</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </table>
       </li>
 
       <li>
-	Can one dictionary be used as a key in another?
-	I.e., is it possible to create the structure:
+        Can one dictionary be used as a key in another?
+        I.e., is it possible to create the structure:
 <pre>
 { {'site' : 3, 'affinity' : 6} : 'sampled'}
 </pre>
@@ -2477,6 +2477,73 @@ cyanide : H 1 C 1 N 1
         give an example showing when this would be useful.
         If not,
         explain why not.
+      </li>
+
+      <li>
+        A geographic information system stores the distance between survey points
+        in a dictionary of dictionaries like this:
+<pre>
+dist = {
+    'Left Bend'  : {'Sump Creek' : 25.6,
+                    'Brents Bay' : 31.1,
+                    'Ogalla'     :  4.0},
+    'Sump Creek' : {'Brents Bay' : 17.5,
+                    'Ogalla'     : 19.2},
+    'Brents Bay' : {'Ogalla'     : 20.1}
+}
+</pre>
+        Given this structure,
+        what is the simplest Python function that will return
+        the distance between any two survey points?
+      </li>
+
+      <li>
+        Fan has inherited an activity log for an experimental project
+        formatted as shown below:
+<pre>
+2012-11-30: Re-setting equipment.
+2012-12-12: First run with acidic reagants.
+2012-12-12: Re-ran acidic reagants.
+2012-12-14: Tried neutral reagants again.
+2013-02-05: Back to this stuff after writing up the CSRTI paper.
+2013-02-06: Trying basic reagants this time.
+</pre>
+        He has written a function to translate this into
+        a dictionary of dictionaries of sets,
+        where the outer dictionary's keys are years (as strings),
+        the inner dictionary's keys are months (also as strings),
+        and the innermost sets are the days (strings again)
+        for which there are comments.
+        For example,
+        the output of this function for the data sample above is supposed to be:
+<pre>
+{
+    '2012' : {
+        '11' : {'30'},
+        '12' : {'12', '14'}
+    },
+    '2013' : {
+        '02' : {'05', '06'}
+    }
+}
+</pre>
+        His function is:
+<pre>
+def extract_dates(filename):
+    reader = open(filename, 'r')
+    result = {}
+    for line in reader:
+        year, month, day = line.strip().split(' ', 1)[0].split('-')
+        if year not in result:
+            pass <span class="comment"># fill in 1</span>
+        if month not in result[year]:
+            pass <span class="comment"># fill in 2</span>
+        pass <span class="comment"># fill in 3</span>
+    reader.close()
+    return result
+</pre>
+        Fill in the three missing lines with a single statement each
+        so that this function returns the right answer.
       </li>
 
     </ol>

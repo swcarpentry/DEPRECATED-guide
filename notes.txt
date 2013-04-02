@@ -1,11 +1,3 @@
-- How to do special characters in Markdown like &times; ?
-- How to put anchors (for figures and tables) in Markdown?
-- How to do "direct" figures like the rhino ASCII art?
-- How to control highlighting inside code blocks (input vs. output vs. error, highlighting)?
-- How to put code blocks inside enumerated lists (like the challenges at the end)?
-
-========================================
-
 Elizabeth Patitsas (a grad student in Computer Science at the
 University of Toronto with an interest in CS education) looked at the
 questions I’d written for the Python section of the Software Carpentry
