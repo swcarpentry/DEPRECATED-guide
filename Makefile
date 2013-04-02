@@ -8,7 +8,7 @@ COMPILE = \
 # Static files.
 STATIC_SRC = \
              $(wildcard ./*/*.csv) \
-             $(filter-out build/%.html,$(wildcard ./*/*.html)) \
+             $(wildcard ./web/*.html) \
              $(wildcard ./*/*.jpg) \
              $(wildcard ./*/*.json) \
              $(wildcard ./*/*.png) \
@@ -22,7 +22,7 @@ STATIC_SRC = \
 STATIC_DST = $(subst ./,$(OUT_DIR)/,$(STATIC_SRC))
 
 # Pages to compile.
-PAGES_SRC = $(filter-out _%.html,$(wildcard ./*.html))
+PAGES_SRC = $(wildcard ./*.html)
 PAGES_DST = $(subst ./,$(OUT_DIR)/,$(PAGES_SRC))
 
 #------------------------------------------------------------
