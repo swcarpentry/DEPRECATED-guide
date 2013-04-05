@@ -18,23 +18,6 @@
   {% endif %}
 {%- endmacro %}
 
-{% macro disqus(title, ident) -%}
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-  var disqus_shortname = 'software-carpentry';
-  var disqus_developer = 1;
-  var disqus_identifier = '{{ident}}';
-  var disqus_title = '{{title}}';
-  (function() {
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-  })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-{%- endmacro %}
-
 {% macro navhighlight(section) -%}
 <script type="text/javascript">
   var nav = document.getElementById('nav-{{section}}');
@@ -88,27 +71,15 @@
           {% endblock title %}
           {% block content %}{% endblock content %}
           {% block details %}{% endblock details %}
-          {% block comments %}{{disqus(page.title, page.filename)}}{% endblock comments %}
+          {% block comments %}{% endblock comments %}
         </div>
       </div>
 
       <div class="footer">
-        <a class="label swc-blue-bg"
-           href="{{facebook_url}}">Facebook</a>
-        <a class="label swc-blue-bg"
-           href="{{google_plus_url}}">Google+</a>
-        <a class="label swc-blue-bg"
-           href="https://twitter.com/swcarpentry">Twitter</a>
-        <a class="label swc-blue-bg"
-           href="https://github.com/swcarpentry">GitHub</a>
-        <a class="label swc-blue-bg"
-           href="http://software-carpentry.org/feed.xml">RSS</a>
-        <a class="label swc-blue-bg"
-           href="{{root_path}}/license.html">License</a>
-        <a class="bugreport label swc-blue-bg"
-           href="mailto:{{contact_email}}?subject=bug%20in%20{{filename}}">
-          Bug Report
-        </a>
+	<p>
+	  Copyright &copy; Software Carpentry, 2012-13.
+	  See the <a href="{{root_path}}/license.html">license</a> for terms of re-use.
+	</p>
       </div>
 
     </div>
