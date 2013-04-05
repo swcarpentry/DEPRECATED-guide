@@ -48,7 +48,7 @@ check : $(STATIC_DST)
 
 ## check-bare   : rebuild entire site locally, but do not validate html 
 check-bare: $(STATIC_DST)
-	$(COMPILE) $(PAGES_SRC)
+	$(COMPILE) $(OUT_DIR) $(PAGES_SRC)
 
 ## ascii-chars  : check for non-ASCII characters or tab characters.
 ascii-chars :

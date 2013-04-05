@@ -32,22 +32,22 @@ STANDARD = {
 
 #----------------------------------------
 
-def main(args):
+def main(out_dir, source_files):
     '''Compile web pages.'''
 
     loader = jinja2.FileSystemLoader(['.'])
     environment = jinja2.Environment(loader=loader)
-    for (i, filename) in enumerate(args):
-        title = get_title(filename)
-        template = environment.get_template(filename)
+    for (i, f) in enumerate(source_files):
+        title = get_title(f)
+        template = environment.get_template(f)
         page = {
             'title'           : title,
-            'prev'            : get_prev(args, i),
-            'next'            : get_next(args, i),
+            'prev'            : get_prev(source_files, i),
+            'next'            : get_next(source_files, i),
             'uplink'          : 'index.html'
         }
         result = template.render(page=page, **STANDARD)
-        with open(os.path.join('build', filename), 'w') as writer:
+        with open(os.path.join(out_dir, f), 'w') as writer:
             writer.write(result)
 
 #----------------------------------------
@@ -84,4 +84,4 @@ def get_next(filenames, here):
 #----------------------------------------
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main(sys.argv[1], sys.argv[2:])
