@@ -48,53 +48,93 @@
 
   <h2>For Instructors</h2>
 
-  <ol>
-    <li>Introduce learners to a non-linear data structure
+  <p>
+    The ostensible goal of this set of lessons is
+    to introduce learners to non-linear data structures.
+    Most have ony ever seen arrays or lists,
+    i.e.,
+    things that are accessed using sequential numeric indices.
+    Sets and dictionaries are usually their first exposure
+    to accessing content by value rather than by location,
+    and to the bigger idea that there are lots of other data structures
+    they might want to learn about.
+    (Unfortunately,
+    there still isn't a good data structure handbook for Python programmers
+    that we can point them at.)
+  </p>
+
+  <p>
+    These lessons also introduce JSON as a general-purpose data format
+    that requires less effort to work with than flat text or CSV.
+    We discuss its shortcomings as well as its benefits to help learners see
+    what forces are at play when designing and/or choosing data representations.
+  </p>
+
+  <p>
+    Finally,
+    these lessons are also our first chance to introduce
+    the idea of computational complexity
+    via back-of-the-envelope calculations of how
+    the number of steps required to look things up in an unordered list
+    grows with the number of things being looked up.
+    We return to this idea in the <a href="dev.html">extended example of invasion percolation</a>,
+    and to the notion that algorithmic improvements help more than tuning code,
+    but this is a chance to touch on the idea in classes that don't get to that example.
+    The discussion of hash tables is also good preparation for the discussion of relational databases,
+    but isn't required.
+  </p>
+
+  <p>
+    <strong>Prerequisites:</strong>
+    basic data types (strings, numbers, lists);
+    loops;
+    file I/O;
+    conditional statements;
+    string operations;
+    references;
+    aliasing;
+    creating functions;
+    top-down development.
+  </p>
+
+  <p>
+    <strong>Teaching Notes:</strong>
+  </p>
+
+  <ul>
+    <li>Start with sets
       <ul>
-        <li>Most have only ever seen lists/arrays</li>
+        <li>Familiar concept</li>
+        <li>No confusion between keys and values</li>
+        <li>Enough to motivate discussion of hash tables</li>
       </ul>
     </li>
-    <li>Introduce computational complexity (big-oh) via back-of-the-envelope calculations</li>
-    <li>Introduce JSON as a better file format</li>
-    <li>Prepare learners for:
+    <li>Explain hash tables (with lots of hand waving)
       <ul>
-        <li>Performance optimization via improvements to algorithms and data structures (in invasion percolation example)</li>
-        <li>Relational databases (unordered and associative)</li>
+        <li>Explain "hash codes" and "hash functions"</li>
+        <li>Explain why hash tables are fast</li>
+        <li>Use an example to show why elements have to be immutable...</li>
+        <li>...and what can go wrong if hashes can contain mutable values</li>
+        <li>Show how to use tuples to store multi-part elements</li>
       </ul>
     </li>
-    <li>Teaching order:
+    <li>Then introduce dictionaries as "sets with extra information attached to each entry"</li>
+    <li>Canonical example: counting things</li>
+    <li>Solve original motivating problem
       <ul>
-        <li>Start with sets
-          <ul>
-            <li>Familiar concept</li>
-            <li>No confusion between keys and values</li>
-          </ul>
-        </li>
-        <li>Explain hash tables (with lots of hand waving)
-          <ul>
-            <li>Why are they fast?</li>
-            <li>Why do elements have to be immutable?</li>
-            <li>What can go wrong in other languages if hashes can contain mutable values?</li>
-          </ul>
-        </li>
-        <li>Then introduce dictionaries as "sets with extra information attached to each entry"</li>
-        <li>Canonical example: counting things</li>
-        <li>Solve original motivating problem
-          <ul>
-            <li>Requires a dictionary of dictionaries, but they have seen lists of lists</li>
-            <li>Re-emphasize modular breakdown of code into functions</li>
-          </ul>
-        </li>
-        <li>For advanced learners: work through phylogenetic trees example
-          <ul>
-            <li>Usually presented as a table, which makes an array a natural representation</li>
-            <li>Showing how and why to use dictionaries instead is as important as showing vector operations when introducing NumPy</li>
-            <li>But example is currently hard to follow/debug without graphical representation of generated tree...</li>
-          </ul>
-        </li>
+        <li>Requires a dictionary of dictionaries, but they have seen lists of lists</li>
+        <li>Re-emphasize modular breakdown of code into functions</li>
       </ul>
     </li>
-  </ol>
+    <li>For advanced learners: work through phylogenetic trees example
+      <ul>
+        <li>Usually presented as a table, which makes an array a natural representation</li>
+        <li>Showing how and why to use dictionaries instead is as important as showing vector operations when introducing NumPy</li>
+        <li>But example is currently hard to follow/debug without graphical representation of generated tree...</li>
+      </ul>
+    </li>
+  </ul>
+
 </div>
 
 <section id="s:sets">
