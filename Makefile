@@ -73,7 +73,7 @@ tidy :
 
 ## clean        : clean up generated files (but not copied files).
 clean : tidy
-	rm -f $$(find $(OUT_DIR) -name '*.html' -print)
+	rm -f $(OUT_DIR)/*.html
 
 ## sterile      : clean up everything.
 sterile : tidy
