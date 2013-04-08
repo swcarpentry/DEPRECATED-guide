@@ -234,16 +234,16 @@
     <h3>Summary</h3>
     <ul>
       <li>
-	A shell is a program whose primary purpose is to read commands and run other programs.
+        A shell is a program whose primary purpose is to read commands and run other programs.
       </li>
       <li>
-	The shell's main advantages are its high action-to-keystroke ratio,
-	its support for automating repetitive tasks,
-	and that it can be used to access networked machines.
+        The shell's main advantages are its high action-to-keystroke ratio,
+        its support for automating repetitive tasks,
+        and that it can be used to access networked machines.
       </li>
       <li>
-	The shell's main disadvantages are its primarily textual nature
-	and how cryptic its commands and operation can be.
+        The shell's main disadvantages are its primarily textual nature
+        and how cryptic its commands and operation can be.
       </li>
     </ul>
   </div>
@@ -658,7 +658,7 @@ pizza.cfg    solar/    solar.pdf    swc/</span>
     it also displays another special directory that's just called <code>.</code>,
     which means "the current working directory".
     It may seem redundant to have a name for it,
-    but we'll see some uses for it soon.
+    but we'll see some uses for it <a href="#a:move-to-here">soon</a>.
   </p>
 
   <div class="box">
@@ -830,7 +830,7 @@ $ <span class="in">ls north-pacific-gyre/</span>
 
   </section>
 
-  <div class="keypoints" id="k:filedir">
+  <div class="keypoints">
     <h3>Summary</h3>
     <ul>
       <li>The file system is responsible for managing information on disk.</li>
@@ -850,7 +850,7 @@ $ <span class="in">ls north-pacific-gyre/</span>
     </ul>
   </div>
 
-  <div class="challenges" id="c:filedir">
+  <div class="challenges">
     <h3>Challenges</h3>
 
     <p>
@@ -863,7 +863,7 @@ $ <span class="in">ls north-pacific-gyre/</span>
       <figcaption>Figure 10: File System Layout for Challenge Questions</figcaption>
     </figure>
 
-    <ol class="challenges">
+    <ol>
 
       <li>
         If <code>pwd</code> displays <code>/users/thing</code>,
@@ -883,11 +883,11 @@ $ <span class="in">ls north-pacific-gyre/</span>
 <span class="out">thesis/ papers/ articles/</span>
 </pre>
         <ol>
-	  <li><code class="in">ls pwd</code></li>
-	  <li><code class="in">ls -r -F</code></li>
-	  <li><code class="in">ls -r -F /users/fly</code></li>
-	  <li>Either #2 or #3 above, but not #1.</li>
-	</ol>
+          <li><code class="in">ls pwd</code></li>
+          <li><code class="in">ls -r -F</code></li>
+          <li><code class="in">ls -r -F /users/fly</code></li>
+          <li>Either #2 or #3 above, but not #1.</li>
+        </ol>
       </li>
 
       <li>
@@ -901,11 +901,11 @@ $ <span class="in">ls north-pacific-gyre/</span>
       </li>
 
       <li>
-	We said <a href="#a:space-in-filename">earlier</a> that
-	spaces in path names have to be marked with a leading backslash
-	in order for the shell to interpret them properly.
-	Why?
-	What happens if we run a command like:
+        We said <a href="#a:space-in-filename">earlier</a> that
+        spaces in path names have to be marked with a leading backslash
+        in order for the shell to interpret them properly.
+        Why?
+        What happens if we run a command like:
 <pre>
 $ <span class="in">ls my\ thesis\ files</span>
 </pre>
@@ -917,27 +917,27 @@ $ <span class="in">ls my\ thesis\ files</span>
 
 </section>
 
-    <section id="s:create">
+<section id="s:create">
 
-      <h2>Creating Things</h2>
+  <h2>Creating Things</h2>
 
-      <div class="understand" id="u:create">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Create a directory hierarchy that matches a given diagram.</li>
-          <li>Create files in that hierarchy using an editor or by copying and renaming existing files.</li>
-          <li>Display the contents of a directory using the command line.</li>
-          <li>Delete specified files and/or directories.</li>
-        </ul>
-      </div>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Create a directory hierarchy that matches a given diagram.</li>
+      <li>Create files in that hierarchy using an editor or by copying and renaming existing files.</li>
+      <li>Display the contents of a directory using the command line.</li>
+      <li>Delete specified files and/or directories.</li>
+    </ul>
+  </div>
 
-      <p>
-        We now know how to look at files and directories,
-        but how do we create them in the first place?
-        Let's go back to Vlad's home directory,
-        <code>/users/vlad</code>,
-        and use <code>ls -F</code> to see what files and directories it contains:
-      </p>
+  <p>
+    We now know how to explore files and directories,
+    but how do we create them in the first place?
+    Let's go back to Vlad's home directory,
+    <code>/users/vlad</code>,
+    and use <code>ls -F</code> to see what it contains:
+  </p>
 
 <pre>
 $ <span class="in">pwd</span>
@@ -949,445 +949,499 @@ solar.pdf    swc/</span>
 $
 </pre>
 
-      <p>
-        Let's create a new directory called <code>tmp</code>
-        using the command <code>mkdir tmp</code>
-        (which has no output):
-      </p>
+  <p>
+    Let's create a new directory called <code>thesis</code>
+    using the command <code>mkdir thesis</code>
+    (which has no output):
+  </p>
 
 <pre>
-$ <span class="in">mkdir tmp</span>
+$ <span class="in">mkdir thesis</span>
 $
 </pre>
 
-      <p class="continue">
-        As you might (or might not) guess from its name,
-        <code>mkdir</code> means "make directory".
-        Since <code>tmp</code> is a relative path
-        (i.e., doesn't have a leading slash),
-        the new directory is made below the current one:
-      </p>
+  <p class="continue">
+    As you might (or might not) guess from its name,
+    <code>mkdir</code> means "make directory".
+    Since <code>thesis</code> is a relative path
+    (i.e., doesn't have a leading slash),
+    the new directory is made below the current one:
+  </p>
 
 <pre>
 $ <span class="in">ls -F</span>
 <span class="out">bin/         data/     mail/      music/
 notes.txt    papers/   pizza.cfg  solar/
-solar.pdf    swc/      tmp/</span>
+solar.pdf    swc/      <span class="highlight">thesis/</span></span>
 $
 </pre>
 
-      <p class="continue">
-        However, there's nothing in it yet&mdash;<code>tmp</code> is empty:
-      </p>
+  <p class="continue">
+    However, there's nothing in it yet:
+  </p>
 
 <pre>
-$ <span class="in">ls -F tmp</span>
+$ <span class="in">ls -F thesis</span>
 $
 </pre>
 
-      <p>
-        Let's change our working directory to <code>tmp</code> using <code>cd</code>,
-        then run the command <code>nano junk</code>:
-      </p>
+  <p>
+    Let's change our working directory to <code>thesis</code> using <code>cd</code>,
+    then run an editor called Nano
+    to create a file called <code>nano draft.txt</code>:
+  </p>
 
 <pre>
-$ <span class="in">cd tmp</span>
-$ <span class="in">nano junk</span>
+$ <span class="in">cd thesis</span>
+$ <span class="in">nano draft.txt</span>
 </pre>
 
-      <p class="continue">
-        <code>nano</code> is a very simple text editor that only a programmer could really love.
-        <a href="#f:nano">Figure 10</a>
-        shows what it looks like when it runs:
-      </p>
+  <p class="continue">
+    Nano is a very simple text editor that only a programmer could really love.
+    <a href="#f:nano">Figure 11</a> shows what it looks like when it runs:
+    the cursor is the blinking square in the upper left,
+    and the two lines across the bottom show us the available commands.
+    (By convention,
+    Unix documentation uses the caret <code>^</code> followed by a letter
+    to mean "control plus that letter",
+    so <code>^O</code> means <span class="keyboard">Control+O</span>.)
+  </p>
 
-      <figure id="f:nano">
-        <img src="shell/nano.png" alt="The Nano Editor" />
-      </figure>
+  <figure id="f:nano">
+    <img src="shell/nano.png" alt="The Nano Editor" />
+    <figcaption>Figure 11: The Nano Editor</figcaption>
+  </figure>
 
-      <p class="continue">
-        The cursor is the blinking square in the upper left;
-        it shows us where what we type will be inserted.
-        Let's type in a short quotation:
-      </p>
+  <p>
+    Let's type in a short quotation
+    (<a href="#f:nano_quotation">Figure 12</a>)
+    then use <span class="in">Control-O</span> to write our data to disk.
+    Once our quotation is saved,
+    we can use <span class="in">Control-X</span> to quit the editor and return to the shell.
+  </p>
 
-      <figure id="f:nano_quotation">
-        <img src="shell/nano_quotation.png" alt="Nano in Action" />
-      </figure>
+  <figure id="f:nano_quotation">
+    <img src="shell/nano_quotation.png" alt="Nano in Action" />
+    <figcaption>Figure 12: Nano in Action</figcaption>
+  </figure>
 
-      <p class="continue">
-        then use <span class="in">Control-O</span> to write our data to disk.
-        (By convention,
-        Unix documentation uses the caret <code>^</code> followed by a letter
-        to mean "control plus that letter".)
-        Once our quotation is saved,
-        we can use <span class="in">Control-X</span> to quit the editor and return to the shell.
-      </p>
+  <div class="box">
+    <h3>Which Editor?</h3>
 
-      <div class="box">
+    <p>
+      When we say, "<code>nano</code> is a text editor,"
+      we really do mean "text":
+      it can only work with plain character data,
+      not tables,
+      images,
+      or any other human-friendly media.
+      We use it in examples because
+      almost anyone can drive it anywhere without training,
+      but please use something more powerful for real work.
+      On Unix systems (such as Linux and Mac OS&nbsp;X),
+      many programmers use <a href="http://www.gnu.org/software/emacs/">Emacs</a>
+      or <a href="http://www.vim.org/">Vim</a>
+      (both of which are completely unintuitive, even by Unix standards),
+      or a graphical editor such as <a href="http://projects.gnome.org/gedit/">Gedit</a>.
+      On Windows,
+      you may wish to use <a href="http://notepad-plus-plus.org/">Notepad++</a>.
+    </p>
 
-        <h3>Which Editor?</h3>
+    <p>
+      No matter what editor you use,
+      you will need to know where it searches for and saves files.
+      If you start it from the shell,
+      it will (probably) use your current working directory as its default location.
+      If you use your computer's start menu,
+      it may want to save files in your desktop or documents directory instead.
+      You can change this by navigating to another directory
+      the first time you "Save As..."
+    </p>
 
-        <p>
-          When we say, "<code>nano</code> is a text editor,"
-          we really do mean "text":
-          it can only work with plain character data,
-          not tables,
-          images,
-          or any other human-friendly media.
-          We'll use it in this chapter because
-          almost anyone can use it anywhere without training,
-          but please use something more powerful for real work.
-          On Unix systems (such as Linux and Mac OS&nbsp;X),
-          many programmers use <a href="http://www.gnu.org/software/emacs/">Emacs</a>
-          and <a href="http://www.vim.org/">Vim</a>
-          (neither of which is particularly easy to learn),
-          or a graphical editor such as <a href="http://projects.gnome.org/gedit/">Gedit</a>.
-          On Windows,
-          you may wish to use <a href="http://notepad-plus-plus.org/">Notepad++</a>.
-        </p>
+  </div>
 
-        <p>
-          No matter what editor you use,
-          you will need to know where it searches for and saves files.
-          If you start the editor from a shell,
-          it will (probably) use your current working directory as its default location.
-          If you use your computer's start menu,
-          it may want to save files in your desktop or documents directory instead.
-          You can change this by navigating to another directory
-          the first time you "Save As..."
-        </p>
-
-      </div>
-
-      <p>
-        <code>nano</code> doesn't leave any output on the screen after it exits.
-        But <code>ls</code> now shows that we have created a file called <code>junk</code>:
-      </p>
+  <p>
+    <code>nano</code> doesn't leave any output on the screen after it exits.
+    But <code>ls</code> now shows that we have created a file called <code>draft.txt</code>:
+  </p>
 
 <pre>
 $ <span class="in">ls</span>
-<span class="out">junk</span>
+<span class="out">draft.txt</span>
 $
 </pre>
 
-      <p>
-        We can run <code>ls</code> with the <code>-s</code> flag
-        to show us how big the file we just created is:
-      </p>
+  <p>
+    We can run <code>ls</code> with the <code>-s</code> flag
+    (for "size")
+    to show us how large <code>draft.txt</code> is:
+  </p>
 
 <pre>
 $ <span class="in">ls -s</span>
-<span class="out">   1  junk</span>
+<span class="out">   1  draft.txt</span>
 $
 </pre>
 
-      <p class="continue">
-        Unfortunately,
-        by default Unix reports sizes in disk blocks,
-        which just might be the least helpful default imaginable.
-        If we add the <code>-h</code> flag,
-        <code>ls</code> switches to more human-friendly units:
-      </p>
+  <p class="continue">
+    Unfortunately,
+    Unix reports sizes in <a href="glossary.html#disk-block">disk blocks</a> by default,
+    which might be the least helpful default imaginable.
+    If we add the <code>-h</code> flag,
+    <code>ls</code> switches to more human-friendly units:
+  </p>
 
 <pre>
 $ <span class="in">ls -s -h</span>
-<span class="out"> 512  junk</span>
+<span class="out"> 512  draft.txt</span>
 $
 </pre>
 
-      <p class="continue">
-        Here, 512 is the number of bytes the file takes up.
-        This is more than we actually typed in because
-        the smallest unit of storage on the disk is typically a block of 512 bytes.
-      </p>
+  <p class="continue">
+    Here, 512 is the number of bytes in the file.
+    This is more than we actually typed in because
+    the smallest unit of storage on the disk is typically a block of 512 bytes.
+  </p>
 
-      <p>
-        Let's tidy up by running <code>rm junk</code>:
-      </p>
+  <p>
+    Let's tidy up by running <code>rm draft.txt</code>:
+  </p>
 
 <pre>
-$ <span class="in">rm junk</span>
+$ <span class="in">rm draft.txt</span>
 $
 </pre>
 
-      <p class="continue">
-        This command removes files ("rm" is short for "remove").
-        If we now run <code>ls</code> again,
-        its output is empty once more,
-        which tells us that our file is gone:
-      </p>
+  <p class="continue">
+    This command removes files ("rm" is short for "remove").
+    If we now run <code>ls</code> again,
+    its output is empty once more,
+    which tells us that our file is gone:
+  </p>
 
 <pre>
 $ <span class="in">ls</span>
 $
 </pre>
 
-      <div class="box">
+  <div class="box">
+    <h3>Deleting Is Forever</h3>
 
-        <h3>Deleting Is Forever</h3>
+    <p>
+      Unix doesn't have a trash bin:
+      when we delete files,
+      they are unhooked from the file system
+      so that their storage space on disk can be recycled.
+      Tools for finding and recovering deleted files do exist,
+      but there's no guarantee they'll work in any particular situation,
+      since the computer may recycle the file's disk space right away.
+    </p>
 
-        <p>
-          It's important to remember that Unix doesn't have a trash bin:
-          when we delete files,
-          they are unhooked from the file system
-          so that their storage space on disk can be recycled.
-          Tools for finding and recovering deleted files do exist,
-          but there's no guarantee they'll work in any particular situation,
-          since the computer may recycle the file's disk space right away.
-        </p>
+  </div>
 
-      </div>
-
-      <p>
-        Let's re-create that file
-        and then move up one directory to <code>/users/vlad</code> using <code>cd ..</code>:
-      </p>
+  <p>
+    Let's re-create that file
+    and then move up one directory to <code>/users/vlad</code> using <code>cd&nbsp;..</code>:
+  </p>
 
 <pre>
 $ <span class="in">pwd</span>
-<span class="out">/users/vlad/tmp</span>
-$ <span class="in">nano junk</span>
+<span class="out">/users/vlad/thesis</span>
+$ <span class="in">nano draft.txt</span>
 $ <span class="in">ls</span>
-<span class="out">junk</span>
+<span class="out">draft.txt</span>
 $ <span class="in">cd ..</span>
 $
 </pre>
 
-      <p class="continue">
-        If we try to remove the <code>tmp</code> directory using <code>rm tmp</code>,
-        we get an error message:
-      </p>
+  <p class="continue">
+    If we try to remove the entire <code>thesis</code> directory using <code>rm thesis</code>,
+    we get an error message:
+  </p>
 
 <pre>
-$ <span class="in">rm tmp</span>
-<span class="err">rm: cannot remove `tmp': Is a directory</span>
+$ <span class="in">rm thesis</span>
+<span class="err">rm: cannot remove `thesis': Is a directory</span>
 $
 </pre>
 
-      <p class="continue">
-        This happens because <code>rm</code> only works on files, not directories.
-        The right command is <code>rmdir</code>, which is short for "remove directory":
-        It doesn't work yet either, though,
-        because the directory we're trying to remove isn't empty:
-      </p>
+  <p class="continue">
+    This happens because <code>rm</code> only works on files, not directories.
+    The right command is <code>rmdir</code>, which is short for "remove directory":
+    It doesn't work yet either, though,
+    because the directory we're trying to remove isn't empty:
+  </p>
 
 <pre>
-$ <span class="in">rmdir tmp</span>
-<span class="err">rmdir: failed to remove `tmp': Directory not empty</span>
+$ <span class="in">rmdir thesis</span>
+<span class="err">rmdir: failed to remove `thesis': Directory not empty</span>
 $
 </pre>
 
-      <p class="continue">
-        (This little safety feature can save you a lot of grief,
-        particularly if you are a bad typist.)
-        If we want to get rid of <code>tmp</code> we must first delete the file <code>junk</code>:
-      </p>
+  <p class="continue">
+    This little safety feature can save you a lot of grief,
+    particularly if you are a bad typist.
+    If we really want to get rid of <code>thesis</code>
+    we should first delete the file <code>draft.txt</code>:
+  </p>
 
 <pre>
-$ <span class="in">rm tmp/junk</span>
+$ <span class="in">rm thesis/draft.txt</span>
 $
 </pre>
 
-      <p class="continue">
-        The directory is now empty,
-        so <code>rmdir</code> can delete it:
-      </p>
+  <p class="continue">
+    The directory is now empty,
+    so <code>rmdir</code> can delete it:
+  </p>
 
 <pre>
-$ <span class="in">rmdir tmp</span>
+$ <span class="in">rmdir thesis</span>
 $
 </pre>
 
-      <p>
-        Let's create that directory and file one more time.
-        (Note that this time we're running <code>nano</code> with the path <code>tmp/junk</code>,
-        rather than going into the <code>tmp</code> directory
-        and running <code>nano</code> on <code>junk</code> there.)
-      </p>
+  <div class="box">
+    <h3>With Great Power Comes Great Responsibility</h3>
+
+    <p>
+      Removing the files in a directory
+      just so that we can remove the directory
+      quickly becomes tedious.
+      Instead,
+      we can use <code>rm</code> with the <code>-r</code> flag
+      (which stands for "recursive"):
+    </p>
+
+<pre>
+$ <span class="in">rm -r thesis</span>
+$
+</pre>
+
+    <p>
+      This removes everything in the directory,
+      then the directory itself.
+      If the directory contains sub-directories,
+      <code>rm&nbsp;-r</code> does the same thing to them,
+      and so on.
+      It's very handy,
+      but can do a lot of damage if used without care.
+    </p>
+
+  </div>
+
+  <p>
+    Let's create that directory and file one more time.
+    (Note that this time we're running <code>nano</code> with the path <code>thesis/draft.txt</code>,
+    rather than going into the <code>thesis</code> directory
+    and running <code>nano</code> on <code>draft.txt</code> there.)
+  </p>
 
 <pre>
 $ <span class="in">pwd</span>
-<span class="out">/users/vlad/tmp</span>
-$ <span class="in">mkdir tmp</span>
-$ <span class="in">nano tmp/junk</span>
-$ <span class="in">ls tmp</span>
-<span class="out">junk</span>
+<span class="out">/users/vlad/thesis</span>
+$ <span class="in">mkdir thesis</span>
+$ <span class="in">nano thesis/draft.txt</span>
+$ <span class="in">ls thesis</span>
+<span class="out">draft.txt</span>
 $
 </pre>
 
-      <p class="continue">
-        <code>junk</code> isn't a particularly informative name,
-        so let's change the file's name using <code>mv</code>,
-        which is short for "move":
-      </p>
+  <p class="continue">
+    <code>draft.txt</code> isn't a particularly informative name,
+    so let's change the file's name using <code>mv</code>,
+    which is short for "move":
+  </p>
 
 <pre>
-$ <span class="in">mv tmp/junk tmp/quotes.txt</span>
+$ <span class="in">mv thesis/draft.txt thesis/quotes.txt</span>
 $
 </pre>
 
-      <p class="continue">
-        The first argument tells <code>mv</code> what we're moving,
-        while the second is where it's to go.
-        In this case,
-        we're moving <code>tmp/junk</code> to <code>tmp/quotes.txt</code>,
-        which has the same effect as renaming the file.
-        Sure enough,
-        <code>ls</code> shows us that <code>tmp</code> now contains one file called <code>quotes.txt</code>:
-      </p>
+  <p class="continue">
+    The first argument tells <code>mv</code> what we're moving,
+    while the second is where it's to go.
+    In this case,
+    we're moving <code>thesis/draft.txt</code> to <code>thesis/quotes.txt</code>,
+    which has the same effect as renaming the file.
+    Sure enough,
+    <code>ls</code> shows us that <code>thesis</code> now contains one file called <code>quotes.txt</code>:
+  </p>
 
 <pre>
-$ <span class="in">ls tmp</span>
+$ <span class="in">ls thesis</span>
 <span class="out">quotes.txt</span>
 $
 </pre>
 
-      <p class="continue">
-        Just for the sake of inconsistency,
-        <code>mv</code> also works on directories&mdash;there
-        is no separate <code>mvdir</code> command.
-      </p>
+  <p class="continue">
+    Just for the sake of inconsistency,
+    <code>mv</code> also works on directories&mdash;there
+    is no separate <code>mvdir</code> command.
+  </p>
 
-      <p>
-        Let's move that file into the current working directory.
-        We use <code>mv</code> once again,
-        but this time,
-        the second argument is the name of a directory,
-        which is the directory we want that file to put in.
-        In this case,
-        the special directory name <code>.</code> that we <a href="#a:dot-directory">mentioned earlier</a>):
-      </p>
+  <p id="a:move-to-here">
+    Let's move <code>quotes.txt</code> into the current working directory.
+    We use <code>mv</code> once again,
+    but this time
+    we'll just use the name of a directory as the second argument
+    to tell <code>mv</code> that we want to keep the filename,
+    but put the file somewhere new.
+    In this case,
+    the directory name we use is
+    the special directory name <code>.</code> that we <a href="#a:dot-directory">mentioned earlier</a>):
+  </p>
 
 <pre>
-$ <span class="in">mv tmp/quotes.txt .</span>
+$ <span class="in">mv thesis/quotes.txt .</span>
 $
 </pre>
 
-      <p class="continue">
-        The effect is to move the file from the directory it was in
-        to the current directory.
-        <code>ls</code> now shows us that <code>tmp</code> is now empty,
-        and that <code>quotes.txt</code> is in our current directory.
-        Notice that <code>ls</code> with a filename or directory name as an argument
-        only lists that file or directory:
-      </p>
+  <p class="continue">
+    The effect is to move the file from the directory it was in
+    to the current directory.
+    <code>ls</code> now shows us that <code>thesis</code> is empty,
+    and that <code>quotes.txt</code> is in our current directory:
+  </p>
 
 <pre>
-$ <span class="in">ls tmp</span>
+$ <span class="in">ls thesis</span>
 $ <span class="in">ls quotes.txt</span>
 <span class="out">quotes.txt</span>
 $
 </pre>
 
-      <p>
-        The <code>cp</code> command works very much like <code>mv</code>,
-        except it copies a file instead of moving it.
-        We can check that it did the right thing
-        using <code>ls</code> with two paths as arguments&mdash;like many other Unix commands,
-        <code>ls</code> can process thousands of paths at once:
-      </p>
+  <p class="continue">
+    (Notice that <code>ls</code> with a filename or directory name as an argument
+    only lists that file or directory.)
+  </p>
+
+  <p>
+    The <code>cp</code> command works very much like <code>mv</code>,
+    except it copies a file instead of moving it.
+    We can check that it did the right thing
+    using <code>ls</code> with two paths as arguments&mdash;like most Unix commands,
+    <code>ls</code> can be given thousands of paths at once:
+  </p>
 
 <pre>
-$ <span class="in">cp quotes.txt tmp/quotations.txt</span>
-$ <span class="in">ls quotes.txt tmp/quotations.txt</span>
-<span class="out">quotes.txt   tmp/quotations.txt</span>
+$ <span class="in">cp quotes.txt thesis/quotations.txt</span>
+$ <span class="in">ls quotes.txt thesis/quotations.txt</span>
+<span class="out">quotes.txt   thesis/quotations.txt</span>
 $
 </pre>
 
-      <p>
-        To prove that we made a copy,
-        let's delete the <code>quotes.txt</code> file in the current directory,
-        and then run that same <code>ls</code> again.
-        This time,
-        it tells us that it can't find <code>quotes.txt</code> in the current directory,
-        but it does find the copy in <code>tmp</code> that we didn't delete:
-      </p>
+  <p>
+    To prove that we made a copy,
+    let's delete the <code>quotes.txt</code> file in the current directory,
+    and then run that same <code>ls</code> again.
+    This time,
+    it tells us that it can't find <code>quotes.txt</code> in the current directory,
+    but it does find the copy in <code>thesis</code> that we didn't delete:
+  </p>
 
 <pre>
-$ <span class="in">ls quotes.txt tmp/quotations.txt</span>
+$ <span class="in">ls quotes.txt thesis/quotations.txt</span>
 <span class="err">ls: cannot access quotes.txt: No such file or directory</span>
-<span class="out">tmp/quotations.txt</span>
+<span class="out">thesis/quotations.txt</span>
 $
 </pre>
 
-      <p>
-        Let's make one more copy.
-        This time,
-        though,
-        we don't specify the destination filename,
-        just a directory, so the copy will keep the original's filename:
-      </p>
+  <div class="box">
+    <h3>Another Useful Abbreviation</h3>
 
+    <p>
+      The shell interprets the character <code>~</code> (tilde) at the start of a path
+      to mean "the current user's home directory".
+      For example,
+      if Vlad's home directory is <code>/home/vlad</code>,
+      then <code>~/data</code> is equivalent to <code>/home/vlad/data</code>.
+      This only works if it is the first character in the path:
+      <code>/~</code> is <em>not</em> the user's home directory,
+      and <code>here/there/~/elsewhere</code> is <em>not</em> <code>/home/vlad/elsewhere</code>.
+    </p>
+  </div>
+
+  <div class="keypoints" id="k:create">
+    <h3>Summary</h3>
+    <ul>
+      <li>Unix documentation uses '^A' to mean "control-A".</li>
+      <li>The shell does <em>not</em> have a trash bin: once something is deleted, it's really gone.</li>
+      <li><code>mkdir <em>path</em></code> creates a new directory.</li>
+      <li><code>cp <em>old</em> <em>new</em></code> copies a file.</li>
+      <li><code>mv <em>old</em> <em>new</em></code> moves (renames) a file or directory.</li>
+      <li><code>nano</code> is a very simple text editor&mdash;please use something else for real work.</li>
+      <li><code>rm <em>path</em></code> removes (deletes) a file.</li>
+      <li><code>rmdir <em>path</em></code> removes (deletes) an empty directory.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <ol>
+
+      <li>
+        What is the output of the closing <code class="in">ls</code> command in the sequence shown below?
 <pre>
-$ <span class="in">cp tmp/quotations.txt .</span>
-$ <span class="in">ls quotations.txt</span>
-<span class="out">quotations.txt</span>
-$
-</pre>
-
-      <div class="keypoints" id="k:create">
-        <h3>Summary</h3>
-        <ul>
-          <li>Unix documentation uses '^A' to mean "control-A".</li>
-          <li>The shell does <em>not</em> have a trash bin: once something is deleted, it's really gone.</li>
-          <li><code>mkdir <em>path</em></code> creates a new directory.</li>
-          <li><code>cp <em>old</em> <em>new</em></code> copies a file.</li>
-          <li><code>mv <em>old</em> <em>new</em></code> moves (renames) a file or directory.</li>
-          <li><code>nano</code> is a very simple text editor&mdash;please use something else for real work.</li>
-          <li><code>rm <em>path</em></code> removes (deletes) a file.</li>
-          <li><code>rmdir <em>path</em></code> removes (deletes) an empty directory.</li>
-        </ul>
-      </div>
-
-      <div class="challenges" id="c:create">
-        <h3>Challenges</h3>
-        <ol class="challenges">
-
-          <li>
-            Suppose that <code class="in">pwd</code> displays <code class="out">/home/thing/data</code>,
-            and that <code class="in">ls</code> displays <code class="out">proteins.dat</code>.
-            What does <code class="in">ls</code> display after the sequence of commands:
-<pre>
+$ <span class="in">pwd</span>
+<span class="out">/home/thing/data</span>
+$ <span class="in">ls</span>
+<span class="out">proteins.dat</span>
 $ <span class="in">mkdir recombine</span>
 $ <span class="in">mv proteins.dat recombine</span>
 $ <span class="in">cp recombine/proteins.dat ../proteins-saved.dat</span>
+$ <span class="in">ls</span>
 </pre>
-            <ol class="choices">
-              <li>Nothing: <code class="in">mv proteins.dat recombine</code> is an error, because <code>recombine</code> already exists.</li>
-              <li><code class="out">recombine</code></li>
-              <li><code class="out">proteins-saved.dat recombine</code></li>
-              <li><code class="out">proteins.dat proteins-saved.dat recombine</code></li>
-            </ol>
-          </li>
+      </li>
 
-          <li>
-            Suppose that <code class="in">ls -F</code> displays:
+      <li>
+        Suppose that:
 <pre>
+$ <span class="in">ls -F</span>
 <span class="out">analyzed/  fructose.dat    raw/   sucrose.dat</span>
 </pre>
-            What command(s) have to be given <em>before</em> the commands shown below
-            will produce the output shown?
+        What command(s) could you run so that the commands below will produce the output shown?
 <pre>
 $ <span class="in">ls</span>
 <span class="out">analyzed   raw</span>
 $ <span class="in">ls analyzed</span>
 <span class="out">fructose.dat    sucrose.dat</span>
 </pre>
-            <ol class="choices">
-              <li><code class="in">mv fructose.dat sucrose.dat analyzed</code></li>
-              <li><code class="in">mv fructose.dat analyzed</code> and <code class="in">mv sucrose.dat analyzed</code> (in either order)</li>
-              <li><code class="in">mv fructose.dat analyzed</code> and <code class="in">mv sucrose.dat analyzed</code> (in either order), and then <code class="in">rm fructose.dat</code> and <code class="in">rm sucrose.dat</code> (in either order)</li>
-              <li><code class="in">cp fructose.dat analyzed</code> and <code class="in">cp sucrose.dat analyzed</code> (in either order), and then <code class="in">rm fructose.dat</code> and <code class="in">rm sucrose.dat</code> (in either order)</li>
-              <li>#1, #2, and #4 above, but not #3.</li>
-              <li>#2 or #3 above, but not #1 or #4.</li>
-            </ol>
-          </li>
+      </li>
 
-        </ol>
-      </div>
+      <li>
+	What does <code>cp</code> do
+	when given several filenames and a directory name,
+	as in:
+<pre>
+$ <span class="in">mkdir backup</span>
+$ <span class="in">cp thesis/citations.txt thesis/quotations.txt backup</span>
+</pre>
+        What does <code>cp</code> do when given three or more filenames,
+        as in:
+<pre>
+$ <span class="in">ls -F</span>
+<span class="out">intro.txt    methods.txt    survey.txt</span>
+$ <span class="in">cp intro.txt methods.txt survey.txt</span>
+</pre>
+        Why do you think <code>cp</code>'s behavior is different from <code>mv</code>'s?
+      </li>
 
-    </section>
+      <li>
+	The command <code>ls&nbsp;-R</code> lists the contents of directories recursively,
+	i.e.,
+	lists their sub-directories,
+	sub-sub-directories,
+	and so on
+	in alphabetical order at each level.
+	The command <code>ls&nbsp;-t</code> lists things by time of last change,
+	with most recently changed files or directories first.
+	In what order does <code>ls&nbsp;-R&nbsp;-t</code> display things?
+      </li>
+
+    </ol>
+  </div>
+
+</section>
 
     <section id="s:pipefilter">
 
@@ -3812,26 +3866,26 @@ done
       </p>
 
     </section>
+
+<ol class="fixme">
+
+  <li>Where do the text editors live? can they only be accessed through the terminal? why are there so many of them when they seem pretty much the same?</li>
+
+  <li>Mv is confusing - from the GUI you think of moving "physical" files because you drag and drop; my original intuition was that mv would work like cp - perhaps another sentence in the explanation could clarify this.</li>
+
+  <li>Standard input/output is a bit confusing.  Is standard input the keyboard for all processes? is standard output always printing to the monitor? I get that this is what enables you to pipe multiple commands, btu for some reason this section was just a bit hard for me to follow.</li>
+
+  <li>Semi-colons or commas to separate pieces of the loop on the same line? (p20)</li>
+
+  <li>What kinds of programs can you run directly from the shell? like, what kind of program might goostats be? shell script? python code? R code? matlab code?</li>
+
+  <li>How can you select things using negative characteristics, like filenames that don't contain a particular string?</li>
+
+  <li>Having done my grad work in a small, not-tech-savvy lab, permissions are not something I've thought about almost ever, except when windows throws up barriers to someone running an experiment I set up. Perhaps a few sentences about how/why you might think about permissions in a few common situations would be helpful for giving context. For example, do I need to think about permissions for a computer that only I use? Does that change if it is connected to the school's network?</li>
+
+  <li>Are there default permissions? do you have to give yourself permission to execute a script after you create it?</li>
+
+  <li>I would love just some more examples of tasks you use the shell for - the running example of the data analysis is really helpful. Just more examples would probably help me in thinking about how using shell scripts could help my workflow.</li>
+
+</ol>
 {% endblock content %}
-
-<!--
-where do the text editors live? can they only be accessed through the terminal? why are there so many of them when they seem pretty much the same?
-
-mv is confusing - from the GUI you think of moving "physical" files because you drag and drop; my original intuition was that mv would work like cp - perhaps another sentence in the explanation could clarify this.
-
-standard input/output is a bit confusing.
-is standard input the keyboard for all processes? is standard output always printing to the monitor? I get that this is what enables you to pipe multiple commands, btu for some reason this section was just a bit hard for me to follow.
-
-semi-colons or commas to separate pieces of the loop on the same line? (p20)
-
-what kinds of programs can you run directly from the shell? like, what kind of program might goostats be? shell script? python code? R code? matlab code?
-
-how can you select things using negative characteristics, like filenames that don't contain a particular string?
-
-having done my grad work in a small, not-tech-savvy lab, permissions are not something I've thought about almost ever, except when windows throws up barriers to someone running an experiment I set up. Perhaps a few sentences about how/why you might think about permissions in a few common situations would be helpful for giving context. For example, do I need to think about permissions for a computer that only I use? Does that change if it is connected to the school's network?
-
-are there default permissions?
-do you have to give yourself permission to execute a script after you create it?
-
-I would love just some more examples of tasks you use the shell for - the running example of the data analysis is really helpful. Just more examples would probably help me in thinking about how using shell scripts could help my workflow.
--->
