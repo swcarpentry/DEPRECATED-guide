@@ -3,9 +3,9 @@ import random
 import datetime
 
 Measures = {
-    'temp' : (-9.0,   14.0),
-    'sal'  : ( 3.0,    5.0),
-    'rad'  : ( 1.0, 1000.0)
+    'temp' : (-9.0, 14.0),
+    'sal'  : ( 3.0,  5.0),
+    'rad'  : ( 1.0, 10.0)
 }
 
 Expeditions = {
