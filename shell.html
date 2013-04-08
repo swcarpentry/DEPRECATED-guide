@@ -5,147 +5,149 @@
 {% endblock file_metadata %}
 
 {% block content %}
-    <ol class="toc">
-      <li><a href="#s:what">What and Why</a></li>
-      <li><a href="#s:filedir">Files and Directories</a></li>
-      <li><a href="#s:create">Creating Things</a></li>
-      <li><a href="#s:pipefilter">Pipes, Filters, and Wildcards</a></li>
-      <li><a href="#s:loop">Loops</a></li>
-      <li><a href="#s:scripts">Shell Scripts</a></li>
-      <li><a href="#s:find">Finding Things</a></li>
-      <li><a href="#s:summary">Summing Up</a></li>
-    </ol>
+  <ol class="toc">
+    <li><a href="#s:what">What and Why</a></li>
+    <li><a href="#s:filedir">Files and Directories</a></li>
+    <li><a href="#s:create">Creating Things</a></li>
+    <li><a href="#s:pipefilter">Pipes, Filters, and Wildcards</a></li>
+    <li><a href="#s:loop">Loops</a></li>
+    <li><a href="#s:scripts">Shell Scripts</a></li>
+    <li><a href="#s:find">Finding Things</a></li>
+    <li><a href="#s:summary">Summing Up</a></li>
+  </ol>
 
-    <p>
-      Nelle Nemo,
-      a marine biologist,
-      has just returned from a six-month survey of the
-      <a href="http://en.wikipedia.org/wiki/North_Pacific_Gyre">North Pacific Gyre</a>,
-      where she has been collecting samples of gelatinous marine life
-      from the <a href="http://en.wikipedia.org/wiki/Great_Pacific_Garbage_Patch">Great Pacific Garbage Patch</a>.
-      She has 1520 samples in all,
-      and now needs to:
-    </p>
+<p>
+  Nelle Nemo,
+  a marine biologist,
+  has just returned from a six-month survey of the
+  <a href="http://en.wikipedia.org/wiki/North_Pacific_Gyre">North Pacific Gyre</a>,
+  where she has been sampling gelatinous marine life
+  in the <a href="http://en.wikipedia.org/wiki/Great_Pacific_Garbage_Patch">Great Pacific Garbage Patch</a>.
+  She has 1520 samples in all,
+  and now needs to:
+</p>
 
-    <ol>
-      <li>
-        Run each sample through an assay machine that will measure the relative abundance of 300 different proteins.
-        The machine's output for a single sample is one file with one line for each protein.
-      </li>
-      <li>
-        Calculate statistics for each of the proteins separately
-        using a program her supervisor wrote called <code>goostat</code>.
-      </li>
-      <li>
-        Compare the statistics for each protein with corresponding statistics for each other protein
-        using a program one of the other graduate students wrote called <code>goodiff</code>.
-      </li>
-      <li>
-        Write up.
-        Her supervisor would really like her to do this by the end of the month
-        so that her paper can appear in
-        an upcoming special issue of <cite>Aquatic Goo Letters</cite>.
-      </li>
-    </ol>
+<ol>
+  <li>
+    Run each sample through an assay machine that will measure the relative abundance of 300 different proteins.
+    The machine's output for a single sample is a file with one line for each protein.
+  </li>
+  <li>
+    Calculate statistics for each of the proteins separately
+    using a program her supervisor wrote called <code>goostat</code>.
+  </li>
+  <li>
+    Compare the statistics for each protein with corresponding statistics for each other protein
+    using a program one of the other graduate students wrote called <code>goodiff</code>.
+  </li>
+  <li>
+    Write up.
+    Her supervisor would really like her to do this by the end of the month
+    so that her paper can appear in
+    an upcoming special issue of <cite>Aquatic Goo Letters</cite>.
+  </li>
+</ol>
 
-    <p>
-      It takes about half an hour for the assay machine to process each sample.
-      The good news is,
-      it only takes two minutes to set each one up.
-      Since her lab has eight assay machines that she can use in parallel,
-      this step will "only" take about two weeks.
-    </p>
+<p>
+  It takes about half an hour for the assay machine to process each sample.
+  The good news is,
+  it only takes two minutes to set each one up.
+  Since her lab has eight assay machines that she can use in parallel,
+  this step will "only" take about two weeks.
+</p>
 
-    <p>
-      The bad news is,
-      if she has to run <code>goostat</code> and <code>goodiff</code> by hand,
-      she'll have to enter filenames and click "OK" roughly 300<sup>2</sup> times
-      (300 runs of <code>goostat</code>, plus 300&times;299 runs of <code>goodiff</code>).
-      At 30 seconds each,
-      that's 750 hours, or 18 weeks, of mindless, repetitive, soul-destroying work.
-      Not only would she miss her paper deadline,
-      the chances of her getting all 90,000 commands right are approximately zero.
-    </p>
+<p>
+  The bad news is,
+  if she has to run <code>goostat</code> and <code>goodiff</code> by hand,
+  she'll have to enter filenames and click "OK" roughly 300<sup>2</sup> times
+  (300 runs of <code>goostat</code>, plus 300&times;299 runs of <code>goodiff</code>).
+  At 30 seconds each,
+  that will 750 hours, or 18 weeks.
+  Not only would she miss her paper deadline,
+  the chances of her getting all 90,000 commands right are approximately zero.
+</p>
 
-    <p>
-      This chapter is about what she should do instead.
-      More specifically,
-      it's about how she can use a command shell
-      to automate all the repetitive steps in her processing pipeline,
-      so that her computer can work 24 hours a day
-      while she catches up on her reading.
-      As a bonus,
-      once she has put a processing pipeline together,
-      she will be able to use it again in the future
-      whenever she, or someone else,
-      collects more data of this kind.
-    </p>
+<p>
+  This chapter is about what she should do instead.
+  More specifically,
+  it's about how she can use a command shell
+  to automate the repetitive steps in her processing pipeline,
+  so that her computer can work 24 hours a day
+  while she writes her paper.
+  As a bonus,
+  once she has put a processing pipeline together,
+  she will be able to use it again
+  whenever she collects more data.
+</p>
 
-    <section id="s:intro">
+<div class="guide">
+  
+  <h2>For Instructors</h2>
 
-      <h2>What and Why</h2>
+  <p class="fixme">Write guide</p>
 
-      <div class="understand" id="u:intro">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Explain using a diagram where the shell lies between the computer, the operating system, and the user's programs.</li>
-          <li>Explain when and why command-line interfaces should be used instead of graphical interfaces.</li>
-        </ul>
-      </div>
+</div>
 
-      <p>
-        At a high level, computers really do four things:
-      </p>
+<section id="s:intro">
 
-      <ul>
-        <li>run programs;</li>
-        <li>store data;</li>
-        <li>communicate with each other; and</li>
-        <li>interact with us.</li>
-      </ul>
+  <h2>What and Why</h2>
 
-      <p>
-        They can do the last of these in many different ways.
-        For example, they can use direct brain-computer links.
-        This technology is still in its infancy,
-        but I for one look forward to being assimilated as it matures&hellip;
-        Another way is to talk to them.
-        No, <em>talk to them</em>, not <em>dock the pen</em>.
-        This technology is also still somewhat immature.
-      </p>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Draw a diagram to show how the shell relates to the keyboard, the screen, the operating system, and users' programs.</li>
+      <li>Explain when and why command-line interfaces should be used instead of graphical interfaces.</li>
+    </ul>
+  </div>
 
-      <p>
-        What most of us use for interacting with computers is a WIMP interface:
-        windows, icons, mice, and pointers.
-        These technologies didn't become widespread until the 1980s,
-        but their roots go back to Doug Engelbart's work in the 1960s,
-        which you can see in what has been called
-        "<a href="http://video.google.com/videoplay?docid=-8734787622017763097#">The Mother of All Demos</a>".
-      </p>
+  <p>
+    At a high level, computers do four things:
+  </p>
 
-      <p>
-        Going back even further,
-        the only way to interact with early computers was to rewire them.
-        But in between,
-        from the 1950s to the 1980s and into the present day,
-        people used a technology that's based on the old-fashioned typewriter,
-        and that technology is what we're going to explore in this lecture.
-      </p>
+  <ul>
+    <li>run programs;</li>
+    <li>store data;</li>
+    <li>communicate with each other; and</li>
+    <li>interact with us.</li>
+  </ul>
 
-      <figure id="f:decwriter">
-        <img src="shell/decwriter.jpg" alt="DECWriter LA-36" />
-      </figure>
+  <p>
+    They can do the last of these in many different ways,
+    including direct brain-computer links and speech interfaces.
+    Since these are still in their infancy,
+    most of us use windows, icons, mice, and pointers.
+    These technologies didn't become widespread until the 1980s,
+    but their roots go back to Doug Engelbart's work in the 1960s,
+    which you can see in what has been called
+    "<a href="http://video.google.com/videoplay?docid=-8734787622017763097#">The Mother of All Demos</a>".
+  </p>
 
-      <p>
-        When I say "typewriter", I actually mean a line printer connected to a keyboard
-        (<a href="#f:decwriter">Figure 1</a>).
-        These devices only allowed input and output of the letters, numbers, and punctuation found on a standard keyboard,
-        so programming languages and interfaces had to be designed around that constraint&mdash;although
-        if you were clever enough, you could draw simple pictures using just those characters
-        (<a href="#f:ascii_art">Figure 2</a>).
-      </p>
+  <p>
+    Going back even further,
+    the only way to interact with early computers was to rewire them.
+    But in between,
+    from the 1950s to the 1980s,
+    most people used a technology based on the old-fashioned typewriter.
+    That technology is still widely used today,
+    and is the subject of this chapter.
+  </p>
 
-      <figure id="f:ascii_art">
+  <figure id="f:decwriter">
+    <img src="shell/decwriter.jpg" alt="DECWriter LA-36" />
+    <figcaption>DECWriter LA-36</figcaption>
+  </figure>
+
+  <p>
+    When I say "typewriter", I actually mean a line printer connected to a keyboard
+    (<a href="#f:decwriter">Figure 1</a>).
+    These devices only allowed input and output of the letters, numbers, and punctuation found on a standard keyboard,
+    so programming languages and interfaces had to be designed around that constraint&mdash;though
+    if you had enough time on your hands,
+    you could draw simple pictures using just those characters
+    (<a href="#f:ascii_art">Figure 2</a>).
+  </p>
+
+  <figure id="f:ascii_art">
 <pre>
                     ,-.             __
                   ,'   `---.___.---'  `.
@@ -163,75 +165,90 @@
     \__   /           _) (               _) (
       `--'           /____\             /____\
 </pre>
-        <figcaption>ASCII Art</figcaption>
-      </figure>
+    <figcaption>ASCII Art</figcaption>
+  </figure>
 
-      <p>
-        This kind of interface is called a command-line user interface,
-        or <a href="glossary.html#clui">CLUI</a>,
-        to distinguish it from the graphical user interface,
-        or <a href="glossary.html#gui">GUI</a>,
-        that most of us now use.
-        The heart of a CLUI is a read-evaluate-print loop:
-        when the user types a command,
-        the computer executes it and prints its output.
-        (In the case of old teletype terminals, it literally printed the output onto paper, a line at a time.)
-        The user then types another command,
-        and so on until the user logs off.
-      </p>
+  <p>
+    Today,
+    this kind of interface is called a <a href="glossary.html#clui">command-line user interface</a>,
+    or CLUI,
+    to distinguish it from the <a href="glossary.html#gui">graphical user interface</a>,
+    or GUI,
+    that most of us now use.
+    The heart of a CLUI is a <a href="glossary.html#repl">read-evaluate-print loop</a>,
+    or REPL:
+    when the user types a command,
+    the computer reads it,
+    executes it,
+    and prints its output.
+    (In the case of old teletype terminals, it literally printed the output onto paper, a line at a time.)
+    The user then types another command,
+    and so on until the user logs off.
+  </p>
 
-      <p>
-        From this description, you'd think that the user was sending commands directly to the computer,
-        and that the computer was sending output directly to the user.
-        In fact,
-        there's a program in between called a <a href="glossary.html#shell">command shell</a>
-        (<a href="#f:command_shell">Figure 3</a>).
-        What the user types goes into the shell;
-        it figures out what commands to run and orders the computer to execute them.
-        The computer then sends the output of those programs back to the shell,
-        which takes care of displaying things to the user.
-      </p>
+  <p>
+    This description makes it sound as though
+    the user sends commands directly to the computer,
+    and the computer sends output directly to the user.
+    In fact,
+    there is usually a program in between called a <a href="glossary.html#shell">command shell</a>
+    (<a href="#f:command_shell">Figure 3</a>).
+    What the user types goes into the shell;
+    it figures out what commands to run and orders the computer to execute them.
+  </p>
 
-      <figure id="f:command_shell">
-        <img src="shell/command_shell.svg" alt="The Command Shell" />
-      </figure>
+  <figure id="f:command_shell">
+    <img src="shell/command_shell.svg" alt="The Command Shell" />
+    <figcaption>The Command Shell</figcaption>
+  </figure>
 
-      <p>
-        A shell is just a program like any other.
-        The only thing that's special about it is that its job is to run other programs,
-        rather than to do calculations itself.
-        The most popular Unix shell is Bash, the Bourne Again SHell
-        (so-called because it's derived from a shell written by Stephen Bourne&mdash;this
-        is what passes for wit among programmers).
-        Bash is the default shell on most modern implementations of Unix,
-        and also comes with <a href="http://www.cygwin.org">Cygwin</a>,
-        a popular Unix-on-Windows toolkit.
-      </p>
+  <p>
+    A shell is a program like any other.
+    What's special about it is that its job is to run other programs,
+    rather than to do calculations itself.
+    The most popular Unix shell is Bash, the Bourne Again SHell
+    (so-called because it's derived from a shell written by Stephen Bourne&mdash;this
+    is what passes for wit among programmers).
+    Bash is the default shell on most modern implementations of Unix,
+    and in most packages that provide Unix-like tools for Windows,
+    such as <a href="http://www.cygwin.org">Cygwin</a>.
+  </p>
 
-      <p>
-        Using Bash,
-        or any other shell,
-        feels more like programming that like using a mouse.
-        Commands are terse (often only a couple of characters long),
-        their names are often cryptic,
-        and their only output is lines of text rather than a graph or diagram.
-        On the other hand,
-        the shell allows us to combine existing tools in powerful ways with only a few keystrokes,
-        and to set up pipelines to handle large volumes of data automatically.
-        In addition,
-        the command line is often the easiest way to interact with remote machines.
-        As clusters and cloud computing become more popular for scientific data crunching,
-        being able to drive them is becoming a necessary skill.
-      </p>
+  <p>
+    Using Bash,
+    or any other shell,
+    sometimes feels more like programming that like using a mouse.
+    Commands are terse (often only a couple of characters long),
+    their names are frequently cryptic,
+    and their output is lines of text rather than something visual like a graph.
+    On the other hand,
+    the shell allows us to combine existing tools in powerful ways with only a few keystrokes,
+    and to set up pipelines to handle large volumes of data automatically.
+    In addition,
+    the command line is often the easiest way to interact with remote machines.
+    As clusters and cloud computing become more popular for scientific data crunching,
+    being able to drive them is becoming a necessary skill.
+  </p>
 
-      <div class="keypoints" id="k:intro">
-        <h3>Summary</h3>
-        <ul>
-          <li>The shell is a program whose primary purpose is to read commands, run programs, and display results.</li>
-        </ul>
-      </div>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>
+	A shell is a program whose primary purpose is to read commands and run other programs.
+      </li>
+      <li>
+	The shell's main advantages are its high action-to-keystroke ratio,
+	its support for automating repetitive tasks,
+	and that it can be used to access networked machines.
+      </li>
+      <li>
+	The shell's main disadvantages are its primarily textual nature
+	and how cryptic its commands and operation can be.
+      </li>
+    </ul>
+  </div>
 
-    </section>
+</section>
 
     <section id="s:filedir">
 
