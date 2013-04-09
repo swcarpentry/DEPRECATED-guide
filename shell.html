@@ -491,7 +491,7 @@ $
   <p>
     Now let's take a look at what's in Vlad's <code>data</code> directory
     by running the command <code>ls -F data</code>.
-    The second argument&mdash;the one <em>without</em> a leading dash&mdash;tells
+    The second parameter&mdash;the one <em>without</em> a leading dash&mdash;tells
     <code>ls</code> that we want a listing of something other than our current working directory:
   </p>
 
@@ -555,7 +555,7 @@ $
     What if we want to change our current working directory?
     Before we do this,
     <code>pwd</code> shows us that we're in <code>/users/vlad</code>,
-    and <code>ls</code> without any arguments shows us that directory's contents:
+    and <code>ls</code> without any parameters shows us that directory's contents:
   </p>
 
 <pre>
@@ -585,7 +585,7 @@ $
     <code>cd</code> doesn't print anything,
     but if we run <code>pwd</code> after it,
     we can see that we are now in <code>/users/vlad/data</code>.
-    If we run <code>ls</code> without arguments now,
+    If we run <code>ls</code> without parameters now,
     it lists the contents of <code>/users/vlad/data</code>,
     because that's where we now are:
   </p>
@@ -1257,7 +1257,7 @@ $
 </pre>
 
   <p class="continue">
-    The first argument tells <code>mv</code> what we're moving,
+    The first parameter tells <code>mv</code> what we're "moving",
     while the second is where it's to go.
     In this case,
     we're moving <code>thesis/draft.txt</code> to <code>thesis/quotes.txt</code>,
@@ -1282,9 +1282,10 @@ $
     Let's move <code>quotes.txt</code> into the current working directory.
     We use <code>mv</code> once again,
     but this time
-    we'll just use the name of a directory as the second argument
+    we'll just use the name of a directory as the second parameter
     to tell <code>mv</code> that we want to keep the filename,
     but put the file somewhere new.
+    (This is why the command is called "move".)
     In this case,
     the directory name we use is
     the special directory name <code>.</code> that we <a href="#a:dot-directory">mentioned earlier</a>):
@@ -1310,7 +1311,7 @@ $
 </pre>
 
   <p class="continue">
-    (Notice that <code>ls</code> with a filename or directory name as an argument
+    (Notice that <code>ls</code> with a filename or directory name as an parameter
     only lists that file or directory.)
   </p>
 
@@ -1318,7 +1319,7 @@ $
     The <code>cp</code> command works very much like <code>mv</code>,
     except it copies a file instead of moving it.
     We can check that it did the right thing
-    using <code>ls</code> with two paths as arguments&mdash;like most Unix commands,
+    using <code>ls</code> with two paths as parameters&mdash;like most Unix commands,
     <code>ls</code> can be given thousands of paths at once:
   </p>
 
@@ -1654,14 +1655,14 @@ $
   </p>
 
 <pre>
-$ <span class="in">sort lengths > sorted-lengths</span>
+$ <span class="in">sort lengths &gt; sorted-lengths</span>
 $ <span class="in">head -1 sorted-lengths</span>
 <span class="out">  9  methane.pdb</span>
 $
 </pre>
 
   <p class="continue">
-    Giving <code>head</code> the argument <code>-1</code> tells us we only want the first line of the file;
+    Giving <code>head</code> the parameter <code>-1</code> tells us we only want the first line of the file;
     <code>-20</code> would get the first 20, and so on.
     Since <code>sorted-lengths</code> the lengths of our files ordered from least to greatest,
     the output of <code>head</code> must be the file with the fewest lines.
@@ -1766,7 +1767,7 @@ $
     <p>
       Here's what happens when we run <code>wc -l *.pdb &gt; lengths</code>.
       The shell starts by telling the computer to create a new process to run the <code>wc</code> program.
-      Since we've provided some filenames as arguments,
+      Since we've provided some filenames as parameters,
       <code>wc</code> reads from them instead of from standard input.
       And since we've used <code>&gt;</code> to redirect output to a file,
       the shell connects the process's standard output to that file
@@ -1849,9 +1850,9 @@ $
       For example, instead of writing <code>wc ammonia.pdb</code>,
       we could write <code>wc &lt; ammonia.pdb</code>.
       In the first case,
-      <code>wc</code> gets a command line argument telling it what file to open.
+      <code>wc</code> gets a command line parameter telling it what file to open.
       In the second,
-      <code>wc</code> doesn't have any command line arguments,
+      <code>wc</code> doesn't have any command line parameters,
       so it reads from standard input,
       but we have told the shell to send the contents of <code>ammonia.pdb</code> to <code>wc</code>'s standard input.
     </p>
@@ -1977,6 +1978,59 @@ NENE01971Z.txt    NENE02040Z.txt
     <h3>Challenges</h3>
 
     <ol>
+
+      <li>
+        If we run <code>sort</code> on each of the files shown on the left in the table below,
+        <em>without</em> the <code>-n</code> flag,
+        the output is as shown on the right:
+        <table>
+          <tr>
+            <td valign="top">
+<pre>
+1
+10
+2
+19
+22
+6
+</pre>
+            </td>
+            <td valign="top">
+<pre>
+1
+10
+19
+2
+22
+6
+</pre>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">
+<pre>
+ 1
+10
+ 2
+19
+22
+ 6
+</pre>
+            </td>
+            <td valign="top">
+<pre>
+ 1
+ 2
+ 6
+10
+19
+22
+</pre>
+            </td>
+          </tr>
+        </table>
+        Explain why we get different answers for the two files.
+      </li>
 
       <li>
         What is the difference between:
@@ -2240,7 +2294,7 @@ done
     for each of those files.
     The first,
     <code>echo</code>,
-    just prints its command-line arguments to standard output.
+    just prints its command-line parameters to standard output.
     For example:
   </p>
 
@@ -2632,7 +2686,7 @@ done
       </li>
 
       <li>
-        The <code>expr</code> does simple arithmetic using command-line arguments:
+        The <code>expr</code> does simple arithmetic using command-line parameters:
 <pre>
 $ <span class="in">expr 3 + 5</span>
 <span class="out">8</span>
@@ -2659,6 +2713,40 @@ for how in frog11 prcb redig
 do
     $how -limit 0.01 NENE01729B.txt
 done
+</pre>
+      </li>
+
+      <li>
+        The loop:
+<pre>
+for num in {1..3}
+do
+    print $num
+done
+</pre>
+        prints:
+<pre>
+<span class="out">1
+2
+3</span>
+</pre>
+        However,
+        the loop:
+<pre>
+for num in {0.1..0.3}
+do
+    print $num
+done
+</pre>
+        prints:
+<pre>
+<span class="out">{0.1..0.3}</span>
+</pre>
+        Write a loop that prints:
+<pre>
+<span class="out">0.1
+0.2
+0.3</span>
 </pre>
       </li>
 
@@ -2752,6 +2840,22 @@ ATOM     18  C           1      -4.705   2.108  -0.396  1.00  0.00</span>
       or be careful to save files as plain text.
     </p>
 
+  </div>
+
+  <div class="box">
+    <h3>Running Scripts Without Calling Bash</h3>
+
+    <p>
+      We actually don't need to call Bash explicitly
+      when we want to run a shell script.
+      Instead,
+      we can change the permissions on the shell script
+      so that the operating system knows it is runnable,
+      then put a special line at the start to tell the OS
+      what program to use to run it.
+      Please see the <a href="extras.html#s:permissions">appendix</a>
+      for an explanation of how to do this.
+    </p>
   </div>
 
   <p>
@@ -2971,7 +3075,7 @@ $ <span class="in">history | tail -4 &gt; redo-figure-3.sh</span>
 <pre>
  297 goostats -r NENE01729B.txt stats-NENE01729B.txt
  298 goodiff stats-NENE01729B.txt /data/validated/01729.txt &gt; 01729-differences.txt
- 299 cut -d ',' -f 2-3 01729-differences.txt > 01729-time-series.txt
+ 299 cut -d ',' -f 2-3 01729-differences.txt &gt; 01729-time-series.txt
  300 ygraph --format scatter --color bw --borders none 01729-time-series.txt figure-3.png
 </pre>
 
@@ -3067,7 +3171,7 @@ done
       or on the 'G' or 'H' files her colleagues in Antarctica are producing,
       without editing the script.
       If she wanted to be more adventurous,
-      she could modify her script to check for command-line arguments,
+      she could modify her script to check for command-line parameters,
       and use <code>*[AB].txt</code> if none were provided.
       Of course,
       this introduces another tradeoff between flexibility and complexity;
@@ -3081,8 +3185,8 @@ done
     <ul>
       <li>Save commands in files (usually called shell scripts) for re-use.</li>
       <li>Use <code>bash <em>filename</em></code> to run saved commands.</li>
-      <li><code>$*</code> refers to all of a shell script's command-line arguments.</li>
-      <li><code>$1</code>, <code>$2</code>, etc., refer to specified command-line arguments.</li>
+      <li><code>$*</code> refers to all of a shell script's command-line parameters.</li>
+      <li><code>$1</code>, <code>$2</code>, etc., refer to specified command-line parameters.</li>
       <li>Letting users decide what files to process is more flexible and more consistent with built-in Unix commands.</li>
     </ul>
   </div>
@@ -3113,7 +3217,7 @@ done
 
       <li>
         Write a shell script called <code>longest.sh</code>
-        that takes the name of a directory and a filename extension as its arguments,
+        that takes the name of a directory and a filename extension as its parameters,
         and prints out the name of the most recently modified file in that directory
         with that extension.
         For example:
@@ -3181,39 +3285,40 @@ echo $*.dat
 
 </section>
 
-    <section id="s:find">
+<section id="s:find">
 
-      <h2>Finding Things</h2>
+  <h2>Finding Things</h2>
 
-      <div class="understand" id="u:find">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Use <code>grep</code> to select lines from text files that match simple patterns.</li>
-          <li>Use <code>find</code> to find files whose names match simple patterns.</li>
-          <li>Use the output of one command as the command-line arguments to another command.</li>
-          <li>Explain what is meant by "text" and "binary" files, and why many common tools don't handle the latter well.</li>
-        </ul>
-      </div>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Use <code>grep</code> to select lines from text files that match simple patterns.</li>
+      <li>Use <code>find</code> to find files whose names match simple patterns.</li>
+      <li>Use the output of one command as the command-line parameters to another command.</li>
+      <li>Explain what is meant by "text" and "binary" files, and why many common tools don't handle the latter well.</li>
+    </ul>
+  </div>
 
-      <figure id="f:google_vs_grep">
-        <img src="shell/google_vs_grep.png" alt="Google vs. Grep" />
-      </figure>
+  <figure id="f:google_vs_grep">
+    <img src="shell/google_vs_grep.png" alt="Google vs. Grep" />
+    <figcaption>Figure 20: Google vs. Grep</figcaption>
+  </figure>
 
-      <p>
-        You can often guess someone's age by listening to how people talk about search.
-        Just as young people use "Google" as a verb,
-        crusty old Unix programmers use "grep".
-        The word is a contraction of "global/regular expression/print",
-        a common sequence of operations in early Unix text editors.
-        It is also the name of a very useful command-line program.
-      </p>
+  <p>
+    You can often guess someone's age by listening to how people talk about search.
+    Just as young people use "Google" as a verb,
+    crusty old Unix programmers use "grep".
+    The word is a contraction of "global/regular expression/print",
+    a common sequence of operations in early Unix text editors.
+    It is also the name of a very useful command-line program.
+  </p>
 
-      <p>
-        <code>grep</code> finds and prints lines in files that match a pattern.
-        For our examples,
-        we will use a file that contains three haikus
-        taken from a <a href="http://www.salonmagazine.com/21st/chal/1998/01/26chal.html">1998 competition in Salon magazine</a>:
-      </p>
+  <p>
+    <code>grep</code> finds and prints lines in files that match a pattern.
+    For our examples,
+    we will use a file that contains three haikus
+    taken from a <a href="http://www.salonmagazine.com/21st/chal/1998/01/26chal.html">1998 competition in Salon magazine</a>:
+  </p>
 
 <pre>
 The Tao that is seen
@@ -3229,9 +3334,9 @@ Today it is not working
 Software is like that.
 </pre>
 
-      <p>
-        Let's find lines that contain the word "not":
-      </p>
+  <p>
+    Let's find lines that contain the word "not":
+  </p>
 
 <pre>
 $ <span class="in">grep not haiku.txt</span>
@@ -3241,16 +3346,16 @@ Today it is not working</span>
 $
 </pre>
 
-      <p class="continue">
-        Here, <code>not</code> is the pattern we're searching for.
-        It's pretty simple: every alphanumeric character matches against itself.
-        After the pattern comes the name or names of the files we're searching in.
-        The output is the three lines in the file that contain the letters "not".
-      </p>
+  <p class="continue">
+    Here, <code>not</code> is the pattern we're searching for.
+    It's pretty simple: every alphanumeric character matches against itself.
+    After the pattern comes the name or names of the files we're searching in.
+    The output is the three lines in the file that contain the letters "not".
+  </p>
 
-      <p>
-        Let's try a different pattern: "day".
-      </p>
+  <p>
+    Let's try a different pattern: "day".
+  </p>
 
 <pre>
 $ <span class="in">grep day haiku.txt</span>
@@ -3259,27 +3364,27 @@ Today it is not working</span>
 $
 </pre>
 
-      <p class="continue">
-        This time,
-        the output is lines containing the words "Yesterday" and "Today",
-        which both have the letters "day".
-        If we give <code>grep</code> the <code>-w</code> flag,
-        it restricts matches to word boundaries,
-        so that only lines with the word "day" will be printed:
-      </p>
+  <p class="continue">
+    This time,
+    the output is lines containing the words "Yesterday" and "Today",
+    which both have the letters "day".
+    If we give <code>grep</code> the <code>-w</code> flag,
+    it restricts matches to word boundaries,
+    so that only lines with the word "day" will be printed:
+  </p>
 
 <pre>
 $ <span class="in">grep -w day haiku.txt</span>
 $
 </pre>
 
-      <p class="continue">
-        In this case, there aren't any, so <code>grep</code>'s output is empty.
-      </p>
+  <p class="continue">
+    In this case, there aren't any, so <code>grep</code>'s output is empty.
+  </p>
 
-      <p>
-        Another useful option is <code>-n</code>, which numbers the lines that match:
-      </p>
+  <p>
+    Another useful option is <code>-n</code>, which numbers the lines that match:
+  </p>
 
 <pre>
 $ <span class="in">grep -n it haiku.txt</span>
@@ -3289,18 +3394,18 @@ $ <span class="in">grep -n it haiku.txt</span>
 $
 </pre>
 
-      <p class="continue">
-        Here, we can see that lines 5, 9, and 10 contain the letters "it".
-      </p>
+  <p class="continue">
+    Here, we can see that lines 5, 9, and 10 contain the letters "it".
+  </p>
 
-      <p>
-        As with other Unix commands, we can combine flags.
-        For example,
-        since <code>-i</code> makes matching case-insensitive,
-        and <code>-v</code> inverts the match,
-        using them both only prints lines that <em>don't</em> match the pattern
-        in any mix of upper and lower case:
-      </p>
+  <p>
+    As with other Unix commands, we can combine flags.
+    For example,
+    since <code>-i</code> makes matching case-insensitive,
+    and <code>-v</code> inverts the match,
+    using them both only prints lines that <em>don't</em> match the pattern
+    in any mix of upper and lower case:
+  </p>
 
 <pre>
 $ <span class="in">grep -i -v the haiku.txt</span>
@@ -3314,13 +3419,13 @@ Software is like that.</span>
 $
 </pre>
 
-      <p>
-        <code>grep</code> has lots of other options.
-        To find out what they are, we can type <code>man grep</code>.
-        <code>man</code> is the Unix "manual" command.
-        It prints a description of a command and its options,
-        and (if you're lucky) provides a few examples of how to use it:
-      </p>
+  <p>
+    <code>grep</code> has lots of other options.
+    To find out what they are, we can type <code>man grep</code>.
+    <code>man</code> is the Unix "manual" command.
+    It prints a description of a command and its options,
+    and (if you're lucky) provides a few examples of how to use it:
+  </p>
 
 <pre>
 $ <span class="in">man grep</span>
@@ -3359,22 +3464,22 @@ OPTIONS
     &hellip;        &hellip;        &hellip;</span>
 </pre>
 
-      <div class="box">
-        <h3>Wildcards</h3>
+  <div class="box">
+    <h3>Wildcards</h3>
 
-        <p>
-          <code>grep</code>'s real power doesn't come from its options, though;
-          it comes from the fact that patterns can include wildcards.
-          (The technical name for these is
-          <a href="glossary.html#regular-expression">regular expressions</a>,
-          which is what the "re" in "grep" stands for.)
-          Regular expressions are complex enough that
-          we devotedan entire section of the website to them;
-          if you want to do complex searches,
-          please check it out.
-          As a taster,
-          we can find lines that have an 'o' in the second position like this:
-        </p>
+    <p>
+      <code>grep</code>'s real power doesn't come from its options, though;
+      it comes from the fact that patterns can include wildcards.
+      (The technical name for these is
+      <a href="glossary.html#regular-expression">regular expressions</a>,
+      which is what the "re" in "grep" stands for.)
+      Regular expressions are complex enough that
+      we devotedan entire section of the website to them;
+      if you want to do complex searches,
+      please check it out.
+      As a taster,
+      we can find lines that have an 'o' in the second position like this:
+    </p>
 
 <pre>
 $ <span class="in">grep -E '^.o' haiku.txt</span>
@@ -3383,44 +3488,46 @@ Today it is not working
 Software is like that.
 </pre>
 
-        <p class="continue">
-          We use the <code>-E</code> flag and put the pattern in quotes to prevent the shell from trying to interpret it.
-          (If the pattern contained a '*', for example, the shell would try to expand it before running <code>grep</code>.)
-          The '^' in the pattern anchors the match to the start of the line.
-          The '.' matches a single character
-          (just like '?' in the shell),
-          while the 'o' matches an actual 'o'.
-        </p>
+    <p class="continue">
+      We use the <code>-E</code> flag and put the pattern in quotes to prevent the shell from trying to interpret it.
+      (If the pattern contained a '*', for example, the shell would try to expand it before running <code>grep</code>.)
+      The '^' in the pattern anchors the match to the start of the line.
+      The '.' matches a single character
+      (just like '?' in the shell),
+      while the 'o' matches an actual 'o'.
+    </p>
+    
+  </div>
 
-      </div>
+  <p>
+    While <code>grep</code> finds lines in files,
+    the <code>find</code> command finds files themselves.
+    Again, it has a lot of options;
+    to show how the simplest ones work, we'll use the directory tree in
+    <a href="#f:find_file_tree">Figure 21</a>:
+  </p>
 
-      <p>
-        While <code>grep</code> finds lines in files,
-        the <code>find</code> command finds files themselves.
-        Again, it has a lot of options;
-        to show how the simplest ones work, we'll use the directory tree in
-        <a href="#f:find_file_tree">Figure 24</a>:
-      </p>
+  <figure id="f:find_file_tree">
+    <img src="shell/find_file_tree.png" alt="Sample Files and Directories" />
+    <figcaption>Figure 21: Sample Files and Directories</figcaption>
+  </figure>
 
-      <figure id="f:find_file_tree">
-        <img src="shell/find_file_tree.png" alt="Sample Files and Directories" />
-      </figure>
+  <p class="continue">
+    Vlad's home directory contains one file called <code>notes.txt</code> and four subdirectories:
+    <code>thesis</code> (which is sadly empty),
+    <code>data</code> (which contains two files <code>first.txt</code> and <code>second.txt</code>),
+    a <code>tools</code> directory that contains the programs <code>format</code> and <code>stats</code>,
+    and an empty subdirectory called <code>old</code>.
+  </p>
 
-      <p class="continue">
-        Vlad's home directory contains one file called <code>notes.txt</code> and four subdirectories:
-        <code>thesis</code> (which is sadly empty),
-        <code>data</code> (which contains two files <code>first.txt</code> and <code>second.txt</code>),
-        a <code>tools</code> directory that contains the programs <code>format</code> and <code>stats</code>,
-        and an empty subdirectory called <code>old</code>.
-      </p>
-
-      <p>
-        For our first command, let's run <code>find . -type d</code>.
-        <code>.</code> is the directory where we want our search to start;
-        <code>-type&nbsp;d</code> means "things that are directories".
-        Sure enough, <code>find</code>'s output is the names of the five directories in our little tree
-        (including <code>.</code>, the current working directory):
-      </p>
+  <p>
+    For our first command, let's run <code>find . -type d</code>.
+    <code>.</code> is the directory where we want our search to start;
+    <code>-type&nbsp;d</code> means "things that are directories".
+    Sure enough,
+    <code>find</code>'s output is the names of the five directories in our little tree
+    (including <code>.</code>, the current working directory):
+  </p>
 
 <pre>
 $ <span class="in">find . -type d</span>
@@ -3432,10 +3539,10 @@ $ <span class="in">find . -type d</span>
 $
 </pre>
 
-      <p>
-        If we change <code>-type&nbsp;d</code> to <code>-type&nbsp;f</code>,
-        we get a listing of all the files instead:
-      </p>
+  <p>
+    If we change <code>-type&nbsp;d</code> to <code>-type&nbsp;f</code>,
+    we get a listing of all the files instead:
+  </p>
 
 <pre>
 $ <span class="in">find . -type f</span>
@@ -3447,13 +3554,13 @@ $ <span class="in">find . -type f</span>
 $
 </pre>
 
-      <p class="continue">
-        <code>find</code> automatically goes into subdirectories,
-        their subdirectories,
-        and so on to find everything that matches the pattern we've given it.
-        If we don't want it to,
-        we can use <code>-maxdepth</code> to restrict the depth of search:
-      </p>
+  <p class="continue">
+    <code>find</code> automatically goes into subdirectories,
+    their subdirectories,
+    and so on to find everything that matches the pattern we've given it.
+    If we don't want it to,
+    we can use <code>-maxdepth</code> to restrict the depth of search:
+  </p>
 
 <pre>
 $ <span class="in">find . -maxdepth 1 -type f</span>
@@ -3461,11 +3568,11 @@ $ <span class="in">find . -maxdepth 1 -type f</span>
 $
 </pre>
 
-      <p>
-        The opposite of <code>-maxdepth</code> is <code>-mindepth</code>,
-        which tells <code>find</code> to only report things that are at or below a certain depth.
-        <code>-mindepth&nbsp;2</code> therefore finds all the files that are two or more levels below us:
-      </p>
+  <p>
+    The opposite of <code>-maxdepth</code> is <code>-mindepth</code>,
+    which tells <code>find</code> to only report things that are at or below a certain depth.
+    <code>-mindepth&nbsp;2</code> therefore finds all the files that are two or more levels below us:
+  </p>
 
 <pre>
 $ <span class="in">find . -mindepth 2 -type f</span>
@@ -3476,10 +3583,10 @@ $ <span class="in">find . -mindepth 2 -type f</span>
 $
 </pre>
 
-      <p>
-        Another option is <code>-empty</code>.
-        It restricts matches to empty files and directories, of which we have two:
-      </p>
+  <p>
+    Another option is <code>-empty</code>,
+    which restricts matches to empty files and directories:
+  </p>
 
 <pre>
 $ <span class="in">find . -empty</span>
@@ -3488,9 +3595,9 @@ $ <span class="in">find . -empty</span>
 $
 </pre>
 
-      <p>
-        Let's try matching by name:
-      </p>
+  <p>
+    Now let's try matching by name:
+  </p>
 
 <pre>
 $ <span class="in">find . -name *.txt</span>
@@ -3498,34 +3605,30 @@ $ <span class="in">find . -name *.txt</span>
 $
 </pre>
 
-      <p class="continue">
-        We expected it to find all the text files,
-        but it only prints out <code>./notes.txt</code>:
-        what's gone wrong?
-      </p>
-
-      <p>
-        The problem is that the shell expands wildcard characters like <code>*</code> <em>before</em> commands run.
-        Since <code>*.txt</code> in the current directory expands to <code>notes.txt</code>,
-        the command we actually ran was:
-      </p>
+  <p class="continue">
+    We expected it to find all the text files,
+    but it only prints out <code>./notes.txt</code>.
+    The problem is that the shell expands wildcard characters like <code>*</code> <em>before</em> commands run.
+    Since <code>*.txt</code> in the current directory expands to <code>notes.txt</code>,
+    the command we actually ran was:
+  </p>
 
 <pre>
 $ <span class="in">find . -name notes.txt</span>
 </pre>
 
-      <p class="continue">
-        <code>find</code> did what we asked; we just asked for the wrong thing.
-      </p>
+  <p class="continue">
+    <code>find</code> did what we asked; we just asked for the wrong thing.
+  </p>
 
-      <p>
-        To get what we want,
-        let's do what we did with <code>grep</code>:
-        put <code>*.txt</code> in single quotes to prevent the shell from expanding the <code>*</code> wildcard.
-        This way,
-        <code>find</code> actually gets the pattern <code>*.txt</code>,
-        not the expanded filename <code>notes.txt</code>:
-      </p>
+  <p>
+    To get what we want,
+    let's do what we did with <code>grep</code>:
+    put <code>*.txt</code> in single quotes to prevent the shell from expanding the <code>*</code> wildcard.
+    This way,
+    <code>find</code> actually gets the pattern <code>*.txt</code>,
+    not the expanded filename <code>notes.txt</code>:
+  </p>
 
 <pre>
 $ <span class="in">find . -name '*.txt'</span>
@@ -3535,17 +3638,17 @@ $ <span class="in">find . -name '*.txt'</span>
 $
 </pre>
 
-      <p>
-        As we said <a href="#s:pipefilter">earlier</a>,
-        the command line's power lies in combining tools.
-        We've seen how to do that with pipes; let's look at another technique.
-        As we just saw, <code>find . -name '*.txt'</code> gives us a list of all text files in or below the current directory.
-        How can we combine that with <code>wc -l</code> to count the lines in all those files?
-      </p>
+  <p>
+    As we said <a href="#s:pipefilter">earlier</a>,
+    the command line's power lies in combining tools.
+    We've seen how to do that with pipes; let's look at another technique.
+    As we just saw, <code>find . -name '*.txt'</code> gives us a list of all text files in or below the current directory.
+    How can we combine that with <code>wc -l</code> to count the lines in all those files?
+  </p>
 
-      <p>
-        One way is to put the <code>find</code> command inside <code>$()</code>:
-      </p>
+  <p>
+    One way is to put the <code>find</code> command inside <code>$()</code>:
+  </p>
 
 <pre>
 $ <span class="in">wc -l $(find . -name '*.txt')</span>
@@ -3556,32 +3659,32 @@ $ <span class="in">wc -l $(find . -name '*.txt')</span>
 $
 </pre>
 
-      <p class="continue">
-        When the shell executes this command,
-        the first thing it does is run whatever is inside the <code>$()</code>.
-        It then replaces the <code>$()</code> expression with that command's output.
-        Since the output of <code>find</code> is the three filenames
-        <code>./data/first.txt</code>, <code>./data/second.txt</code>, and <code>./notes.txt</code>,
-        the shell constructs the command:
-      </p>
+  <p class="continue">
+    When the shell executes this command,
+    the first thing it does is run whatever is inside the <code>$()</code>.
+    It then replaces the <code>$()</code> expression with that command's output.
+    Since the output of <code>find</code> is the three filenames
+    <code>./data/first.txt</code>, <code>./data/second.txt</code>, and <code>./notes.txt</code>,
+    the shell constructs the command:
+  </p>
 
 <pre>
 $ <span class="in">wc -l ./data/first.txt ./data/second.txt ./notes.txt</span>
 </pre>
 
-      <p class="continue">
-        which is what we wanted.
-        This expansion is exactly what the shell does when it expands wildcards like <code>*</code> and <code>?</code>,
-        but lets us use any command we want as our own "wildcard".
-      </p>
+  <p class="continue">
+    which is what we wanted.
+    This expansion is exactly what the shell does when it expands wildcards like <code>*</code> and <code>?</code>,
+    but lets us use any command we want as our own "wildcard".
+  </p>
 
-      <p>
-        It's very common to use <code>find</code> and <code>grep</code> together.
-        The first finds files that match a pattern;
-        the second looks for lines inside those files that match another pattern.
-        Here, for example, we can find PDB files that contain iron atoms
-        by looking for the string "FE" in all the <code>.pdb</code> files below the current directory:
-      </p>
+  <p>
+    It's very common to use <code>find</code> and <code>grep</code> together.
+    The first finds files that match a pattern;
+    the second looks for lines inside those files that match another pattern.
+    Here, for example, we can find PDB files that contain iron atoms
+    by looking for the string "FE" in all the <code>.pdb</code> files below the current directory:
+  </p>
 
 <pre>
 $ <span class="in">grep FE $(find . -name '*.pdb')</span>
@@ -3589,53 +3692,52 @@ $ <span class="in">grep FE $(find . -name '*.pdb')</span>
 $
 </pre>
 
-      <div class="box">
+  <div class="box">
+    <h3>Binary Files</h3>
 
-        <h3>Binary Files</h3>
+    <p>
+      We have focused exclusively on finding things in text files.
+      What if your data is stored as images, in databases, or in some other format?
+      One option would be to extend tools like <code>grep</code> to handle those formats.
+      This hasn't happened, and probably won't, because there are too many formats to support.
+    </p>
 
-        <p>
-          We have focused exclusively on finding things in text files.
-          What if your data is stored as images, in databases, or in some other format?
-          One option would be to extend tools like <code>grep</code> to handle those formats.
-          This hasn't happened, and probably won't, because there are too many formats to support.
-        </p>
+    <p>
+      The second option is to convert the data to text,
+      or extract the text-ish bits from the data.
+      This is probably the most common approach,
+      since it only requires people to build one tool per data format (to extract information).
+      On the one hand, it makes simple things easy to do.
+      On the negative side, complex things are usually impossible.
+      For example,
+      it's easy enough to write a program that will extract X and Y dimensions from image files for <code>grep</code> to play with,
+      but how would you write something to find values in a spreadsheet whose cells contained formulas?
+    </p>
 
-        <p>
-          The second option is to convert the data to text,
-          or extract the text-ish bits from the data.
-          This is probably the most common approach,
-          since it only requires people to build one tool per data format (to extract information).
-          On the one hand, it makes simple things easy to do.
-          On the negative side, complex things are usually impossible.
-          For example,
-          it's easy enough to write a program that will extract X and Y dimensions from image files for <code>grep</code> to play with,
-          but how would you write something to find values in a spreadsheet whose cells contained formulas?
-        </p>
+    <p>
+      The third choice is to recognize that the shell and text processing have their limits,
+      and to use a programming language such as Python instead.
+      When the time comes to do this, don't be too hard on the shell:
+      many modern programming languages, Python included, have borrowed a lot of ideas from it,
+      and imitation is also the sincerest form of praise.
+    </p>
 
-        <p>
-          The third choice is to recognize that the shell and text processing have their limits,
-          and to use a programming language such as Python instead.
-          When the time comes to do this, don't be too hard on the shell:
-          many modern programming languages, Python included, have borrowed a lot of ideas from it,
-          and imitation is also the sincerest form of praise.
-        </p>
+  </div>
 
-      </div>
+  <section>
+    <h3>Nelle's Pipeline: The Second Stage</h3>
 
-      <section>
-
-        <h3>Nelle's Pipeline: The Second Stage</h3>
-
-        <p>
-          Nelle now has a directory called <code>north-pacific-gyre/2012-07-03</code>
-          containing 1518 data files,
-          and needs to compare each one against all of the others
-          to find the hundred pairs with the highest pairwise scores.
-          Armed with what she has learned so far,
-          she writes the following script
-        </p>
+    <p>
+      Nelle now has a directory called <code>north-pacific-gyre/2012-07-03</code>
+      containing 1518 data files,
+      and needs to compare each one against all of the others
+      to find the hundred pairs with the highest pairwise scores.
+      Armed with what she has learned so far,
+      she writes the following script
+    </p>
 
 <pre>
+# Compare all pairs of files.
 for left in $*
 do
     for right in $*
@@ -3645,40 +3747,41 @@ do
 done
 </pre>
 
-        <p>
-          The outermost loop assigns the name of each file to the variable <code>left</code> in turn.
-          The inner loop does the same thing for the variable <code>right</code>
-          each time the outer loop executes,
-          so inside the inner loop,
-          <code>left</code> and <code>right</code> are given
-          each pair of filenames
-          (<a href="#f:nested_loops">Figure 25</a>).
-        </p>
+    <p>
+      The outermost loop assigns the name of each file to the variable <code>left</code> in turn.
+      The inner loop does the same thing for the variable <code>right</code>
+      each time the outer loop executes,
+      so inside the inner loop,
+      <code>left</code> and <code>right</code> are given
+      each pair of filenames
+      (<a href="#f:nested_loops">Figure 22</a>).
+    </p>
 
-        <figure id="f:nested_loops">
-          <img src="shell/nested_loops.png" alt="Nested Loops" />
-        </figure>
+    <figure id="f:nested_loops">
+      <img src="shell/nested_loops.png" alt="Nested Loops" />
+      <figcaption>Figure 22: Nested Loops</figcaption>
+    </figure>
 
-        <p>
-          Each time it runs the command inside the inner loop,
-          the shell starts by running <code>goodiff</code> on the two files
-          in order to expand the <code>$()</code> expression.
-          Once it's done that,
-          it passes the output,
-          along with the names of the files,
-          to <code>echo</code>.
-          Thus,
-          if Nelle saves this script as <code>pairwise.sh</code>
-          and runs it as:
-        </p>
+    <p>
+      Each time it runs the command inside the inner loop,
+      the shell starts by running <code>goodiff</code> on the two files
+      in order to expand the <code>$()</code> expression.
+      Once it's done that,
+      it passes the output,
+      along with the names of the files,
+      to <code>echo</code>.
+      Thus,
+      if Nelle saves this script as <code>pairwise.sh</code>
+      and runs it as:
+    </p>
 
 <pre>
 $ <span class="in">bash pairwise.sh stats-*.txt</span>
 </pre>
 
-        <p class="continue">
-          the shell runs:
-        </p>
+    <p class="continue">
+      the shell runs:
+    </p>
 
 <pre>
 echo stats-NENE01729A.txt stats-NENE01729A.txt $(goodiff stats-NENE01729A.txt stats-NENE01729A.txt)
@@ -3687,9 +3790,9 @@ echo stats-NENE01729A.txt stats-NENE01736A.txt $(goodiff stats-NENE01729A.txt st
 ...
 </pre>
 
-        <p class="continue">
-          which turns into:
-        </p>
+    <p class="continue">
+      which turns into:
+    </p>
 
 <pre>
 echo stats-NENE01729A.txt stats-NENE01729A.txt files are identical
@@ -3698,9 +3801,9 @@ echo stats-NENE01729A.txt stats-NENE01736A.txt 0.45223
 ...
 </pre>
 
-        <p class="continue">
-          which in turn prints:
-        </p>
+    <p class="continue">
+      which in turn prints:
+    </p>
 
 <pre>
 stats-NENE01729A.txt stats-NENE01729A.txt files are identical
@@ -3709,24 +3812,24 @@ stats-NENE01729A.txt stats-NENE01736A.txt 0.45223
 ...
 </pre>
 
-        <p>
-          That's a good start,
-          but Nelle can do better.
-          First,
-          she notices that when the two input files are the same,
-          the output is the words "files are identical"
-          instead of a numerical score.
-          She can remove these lines like this:
-        </p>
+    <p>
+      That's a good start,
+      but Nelle can do better.
+      First,
+      she notices that when the two input files are the same,
+      the output is the words "files are identical"
+      instead of a numerical score.
+      She can remove these lines like this:
+    </p>
 
 <pre>
 $ <span class="in">bash pairwise.sh stats-*.txt | grep -v 'files are identical'</span>
 </pre>
 
-        <p class="continue">
-          or put the call to <code>grep</code> inside the shell script
-          (which will be less error-prone):
-        </p>
+    <p class="continue">
+      or put the call to <code>grep</code> inside the shell script
+      (which will be less error-prone):
+    </p>
 
 <pre>
 for left in $*
@@ -3738,12 +3841,12 @@ do
 done <span class="highlight">| grep -v 'files are identical'</span>
 </pre>
 
-        <p>
-          This works because <code>do</code>&hellip;<code>done</code>
-          counts as a single command in Bash.
-          If Nelle wanted to make this clearer,
-          she could put parentheses around the loop:
-        </p>
+    <p>
+      This works because <code>do</code>&hellip;<code>done</code>
+      counts as a single command in Bash.
+      If Nelle wanted to make this clearer,
+      she could put parentheses around the loop:
+    </p>
 
 <pre>
 <span class="highlight">(</span>for left in $*
@@ -3755,117 +3858,105 @@ do
 done<span class="highlight">)</span> | grep -v 'files are identical'
 </pre>
 
-        <p class="continue">
-          or move the <code>grep</code> to a line of its own:
-        </p>
+    <p>
+      The last thing Nelle needs to do before writing up
+      is find the 100 best pairwise matches.
+      She has seen this before:
+      sort the lines numerically,
+      then use <code>head</code> to select the top lines.
+      However,
+      the numbers she wants to sort by are at the end of the line,
+      rather than beginning.
+      Reading the output of <code>man&nbsp;sort</code> tells her
+      that the <code>-k</code> flag will let her specify
+      which column of input she wants to use as a sort key,
+      but the syntax looks a little complicated.
+      Instead,
+      she moves the score to the front of each line:
+    </p>
 
 <pre>
-for left in $*
-do
-    for right in $*
-    do
-        echo $left $right $(goodiff $left $right)
-    done
-done <span class="highlight">\
-| grep -v 'files are identical'</span>
-</pre>
-
-        <p class="continue">
-          The backslash tells the shell
-          that the line doesn't really end after the outer <code>done</code>.
-          Without it,
-          the shell would see two commands:
-          the outer loop
-          (which would print to standard output),
-          and then a call to <code>grep</code> without any filenames
-          (which would wait forever waiting for the user to type something at the keyboard).
-        </p>
-
-        <p>
-          The last thing Nelle needs to do before writing up
-          is find the 100 best pairwise matches.
-          She has seen this before:
-          sort the lines numerically,
-          then use <code>head</code> to select the top lines.
-          However,
-          the numbers she wants to sort by are at the end of the line,
-          rather than beginning.
-          Reading the output of <code>man&nbsp;sort</code> tells her
-          that the <code>-k</code> flag will let her specify
-          which column of input she wants to use as a sort key,
-          but the syntax looks a little complicated.
-          Instead,
-          she moves the score to the front of each line:
-        </p>
-
-<pre>
-for left in $*
+(for left in $*
 do
     for right in $*
     do
         <span class="highlight">echo $(goodiff $left $right) $left $right</span>
     done
-done \
-| grep -v 'files are identical'
+done) | grep -v 'files are identical'
 </pre>
 
-        <p class="continue">
-          and then adds two more commands to the pipeline:
-        </p>
+    <p class="continue">
+      and then adds two more commands to the pipeline:
+    </p>
 
 <pre>
-for left in $*
+(for left in $*
 do
     for right in $*
     do
         <span class="highlight">echo $(goodiff $left $right) $left $right</span>
     done
-done \
+done) | grep -v 'files are identical' | sort -n -r | head -100
+</pre>
+
+    <p>
+      Since this is hard to read,
+      she uses <code>\</code> to tell the shell
+      that she's continuing commands on the next line:
+    </p>
+
+<pre>
+(for left in $*
+do
+    for right in $*
+    do
+        <span class="highlight">echo $(goodiff $left $right) $left $right</span>
+    done
+done) \
 | grep -v 'files are identical' \
-| sort -n -r
+| sort -n -r \
 | head -100
 </pre>
 
-        <p>
-          She then runs:
-        </p>
+    <p class="continue">
+      She then runs:
+    </p>
 
 <pre>
-$ <span class="in">bash pairwise.sh stats-*.txt > top100.txt</span>
+$ <span class="in">bash pairwise.sh stats-*.txt &gt; top100.txt</span>
 </pre>
 
-        <p class="continue">
-          and heads off to a seminar,
-          confident that by the time she comes back tomorrow,
-          <code>top100.txt</code> will contain
-          the results she needs for her paper.
-        </p>
+    <p class="continue">
+      and heads off to a seminar,
+      confident that by the time she comes back tomorrow,
+      <code>top100.txt</code> will contain
+      the results she needs for her paper.
+    </p>
 
-      </section>
+  </section>
 
-      <div class="keypoints" id="k:find">
-        <h3>Summary</h3>
-        <ul>
-          <li idea="meaning">Everything is stored as bytes, but the bytes in binary files do not represent characters.</li>
-          <li>Use nested loops to run commands for every combination of two lists of things.</li>
-          <li>Use '\' to break one logical line into several physical lines.</li>
-          <li>Use parentheses '()' to keep things combined.</li>
-          <li>Use <code>$(<em>command</em>)</code> to insert a command's output in place.</li>
-          <li><code>find</code> finds files with specific properties that match patterns.</li>
-          <li><code>grep</code> selects lines in files that match patterns.</li>
-          <li><code>man <em>command</em></code> displays the manual page for a given command.</li>
-        </ul>
-      </div>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li idea="meaning">Everything is stored as bytes, but the bytes in binary files do not represent characters.</li>
+      <li>Use nested loops to run commands for every combination of two lists of things.</li>
+      <li>Use <code>\</code> to break one logical line into several physical lines.</li>
+      <li>Use parentheses <code>()</code> to keep things combined.</li>
+      <li>Use <code>$(<em>command</em>)</code> to insert a command's output in place.</li>
+      <li><code>find</code> finds files with specific properties that match patterns.</li>
+      <li><code>grep</code> selects lines in files that match patterns.</li>
+      <li><code>man <em>command</em></code> displays the manual page for a given command.</li>
+    </ul>
+  </div>
 
-      <div class="challenges" id="c:find">
-
-        <ol class="challenges">
+  <div class="challenges">
+    <ol>
 
       <li>
-        The <code>middle.sh</code> script's numerical arguments are
+        The <code>middle.sh</code> script's numerical parameters are
         the number of lines to take from the head of the file,
         and the number of lines to take from the tail of that range.
-        It would be more intuitive if the arguments were
+        It would be more intuitive if the parameters were
         the index of the first line to keep and the number of lines,
         e.g.,
         if:
@@ -3877,163 +3968,118 @@ $ <span class="in">bash middle.sh somefile 50 5</span>
         to do this.
       </li>
 
-          <li>
-            Which description most accurately explains what the following pipeline does?
+      <li>
+        Write a short explanatory comment for the following shell script:
 <pre>
 find . -name '*.dat' -print | wc -l | sort -n
 </pre>
-            <ol class="choices">
-              <li>
-                Display the number of lines in each data file in or below the current directory,
-                ordered numerically from longest to shortest.
-              </li>
-              <li>
-                Display a single line showing the total number of lines in all data files
-                in or below the current directory.
-              </li>
-              <li>
-                Display the number of data files in order below the current directory.
-              </li>
-              <li>
-                None of the above.
-              </li>
-            </ol>
-          </li>
+      </li>
 
-          <li>
-            The <code>-v</code> flag to <code>grep</code> inverts pattern matching,
-            so that only lines which do <em>not</em> match the pattern are printed.
-            Given that,
-            which of the following commands will find all files in <code>/data</code>
-            whose names end in <code>ose.dat</code>
-            (e.g., <code>sucrose.dat</code> or <code>maltose.dat</code>),
-            but do <em>not</em> contain the word <code>temp</code>?
-            <table class="choices">
-              <tr>
-                <td>1.</td>
-                <td>2.</td>
-                <td>3.</td>
-                <td>4.</td>
-              </tr>
-              <tr>
-                <td>
+      <li>
+        The <code>-v</code> flag to <code>grep</code> inverts pattern matching,
+        so that only lines which do <em>not</em> match the pattern are printed.
+        Given that,
+        which of the following commands will find all files in <code>/data</code>
+        whose names end in <code>ose.dat</code>
+        (e.g., <code>sucrose.dat</code> or <code>maltose.dat</code>),
+        but do <em>not</em> contain the word <code>temp</code>?
+        <table>
+          <tr>
+            <td valign="top">1.</td>
+            <td valign="top">
 <pre>
 find /data -name '*.dat' -print | grep ose | grep -v temp
 </pre>
-                </td>
-                <td>
+            </td>
+            <td valign="top">2.</td>
+            <td valign="top">
 <pre>
 find /data -name ose.dat -print | grep -v temp
 </pre>
-                </td>
-                <td>
+            </td>
+            <td valign="top">3.</td>
+            <td valign="top">
 <pre>
 grep -v temp $(find /data -name '*ose.dat' -print)
 </pre>
-                </td>
-                <td>
+            </td>
+            <td valign="top">4.</td>
+            <td valign="top">
                   None of the above.
-                </td>
-              </tr>
-            </table>
-          </li>
+            </td>
+          </tr>
+        </table>
+      </li>
 
-          <li>
-            Nelle has saved the IDs of some suspicious observations
-            in a file called <code>maybe-faked.txt</code>:
+      <li>
+        Nelle has saved the IDs of some suspicious observations
+        in a file called <code>maybe-faked.txt</code>:
 <pre>
 NENE01909C
 NEMA04220A
 NEMA04301A
 </pre>
-            Which of the following scripts will search all of the <code>.txt</code> files
-            whose names begin with <code>NE</code>
-            for references of these records?
-            <table class="choices">
-              <tr>
-                <td>1.</td>
-                <td>2.</td>
-                <td>3.</td>
-                <td>4.</td>
-              </tr>
-              <tr>
-                <td>
+        Which of the following scripts will search all of the <code>.txt</code> files
+        whose names begin with <code>NE</code>
+        for references to these records?
+        <table>
+          <tr>
+            <td valign="top">1.<td>
+            <td valign="top">
 <pre>
 for pat in maybe-faked.txt
 do
     find . -name 'NE*.txt' -print | grep $pat
 done
 </pre>
-                </td>
-                <td>
+            </td>
+            <td valign="top">2.<td>
+            <td valign="top">
 <pre>
 for pat in $(cat maybe-faked.txt)
 do
     grep $pat $(find . -name 'NE*.txt' -print)
 done
 </pre>
-                </td>
-                <td>
+            </td>
+            <td valign="top">3.<td>
+            <td valign="top">
 <pre>
 for pat in $(cat maybe-faked.txt)
 do
     find . -name 'NE*.txt' -print | grep $pat
 done
 </pre>
-                </td>
-                <td>
-                  None of the above.
-                </td>
-              </tr>
-            </table>
-          </li>
-        </ol>
+            </td>
+            <td valign="top">4..<td>
+            <td valign="top">
+              None of the above.
+            </td>
+          </tr>
+        </table>
+      </li>
+    </ol>
+  </div>
 
-      </div>
+</section>
 
-    </section>
+<section id="s:summary">
 
-    <section id="s:summary">
+  <h2>Summing Up</h2>
 
-      <h2>Summing Up</h2>
+  <p>
+    The Unix shell is older than most of the people who use it.
+    It has survived so long because it is
+    one of the most productive programming environments ever created&mdash;maybe even
+    <em>the</em> most productive.
+    Its syntax may be cryptic,
+    but people who have mastered it can experiment with different commands interactively,
+    then use what they have learned to automate their work.
+    Graphical user interfaces may be better at the first,
+    but the shell is still unbeaten at the second.
+    And as Alfred North Whitehead wrote in 1911,
+    "Civilization advances by extending the number of important operations which we can perform without thinking about them."
+  </p>
 
-      <p>
-        The Unix shell is older than most of the people who use it.
-        It has survived so long because it is
-        one of the most productive programming environments ever created&mdash;maybe even
-        <em>the</em> most productive.
-        Its syntax may be cryptic,
-        but as Nelle's story shows,
-        people who have mastered it can experiment with different commands interactively,
-        then use what they have learned to automate their work.
-        Here's how it relates to the questions that motivate Software Carpentry:
-      </p>
-
-    </section>
-
-<ol class="fixme">
-
-  <li>Where do the text editors live? can they only be accessed through the terminal? why are there so many of them when they seem pretty much the same?</li>
-
-  <li>Mv is confusing - from the GUI you think of moving "physical" files because you drag and drop; my original intuition was that mv would work like cp - perhaps another sentence in the explanation could clarify this.</li>
-
-  <li>Standard input/output is a bit confusing.  Is standard input the keyboard for all processes? is standard output always printing to the monitor? I get that this is what enables you to pipe multiple commands, btu for some reason this section was just a bit hard for me to follow.</li>
-
-  <li>Semi-colons or commas to separate pieces of the loop on the same line? (p20)</li>
-
-  <li>What kinds of programs can you run directly from the shell? like, what kind of program might goostats be? shell script? python code? R code? matlab code?</li>
-
-  <li>How can you select things using negative characteristics, like filenames that don't contain a particular string?</li>
-
-  <li>Having done my grad work in a small, not-tech-savvy lab, permissions are not something I've thought about almost ever, except when windows throws up barriers to someone running an experiment I set up. Perhaps a few sentences about how/why you might think about permissions in a few common situations would be helpful for giving context. For example, do I need to think about permissions for a computer that only I use? Does that change if it is connected to the school's network?</li>
-
-  <li>Are there default permissions? do you have to give yourself permission to execute a script after you create it?</li>
-
-  <li>I would love just some more examples of tasks you use the shell for - the running example of the data analysis is really helpful. Just more examples would probably help me in thinking about how using shell scripts could help my workflow.</li>
-
-  <li>Introduce control-C for interrupting.</li>
-
-  <li>Give an example of sorting without -n that gives the wrong answer.</li>
-
-</ol>
+</section>
 {% endblock content %}
