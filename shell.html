@@ -84,7 +84,166 @@
   
   <h2>For Instructors</h2>
 
-  <p class="fixme">Write guide</p>
+  <p>
+    Many people have questioned whether we should still teach the shell.
+    After all,
+    anyone who wants to rename several thousand data files
+    can easily do so interactively in the Python interpreter,
+    and anyone who's doing serious data analysis
+    is probably going to do most of their work inside the IPython Notebook or R Studio.
+    So why teach the shell?
+  </p>
+
+  <p>
+    The first answer is,
+    "Because so much else depends on it."
+    Installing software,
+    configuring your default editor,
+    and controlling remote machines frequently assume a basic familiarity with the shell,
+    and with related ideas like standard input and output.
+    Many tools also use its terminology
+    (for example,
+    the <code>%ls</code> and <code>%cd</code> magic commands in IPython).
+  </p>
+
+  <p>
+    The second answer is,
+    "Because it's an easy way to introduce some fundamental ideas about how to use computers."
+    As we teach people how to use the Unix shell,
+    we teach them that they should get the computer to repeat things
+    (via tab completion,
+    <code>!</code> followed by a command number,
+    and <code>for</code> loops)
+    rather than repeating things themselves.
+    We also teach them to take things they've discovered they do frequently
+    and save them for later re-use
+    (via shell scripts),
+    to give things sensible names,
+    and to write a little bit of documentation
+    (like comment at the top of shell scripts)
+    to make their future selves' lives better.
+  </p>
+
+  <p>
+    Finally,
+    and perhaps most importantly,
+    teaching people the shell lets us teach them
+    to think about programming in terms of function composition.
+    In the case of the shell,
+    this takes the form of pipelines rather than nested function calls,
+    but the core idea of "small pieces, loosely joined" is the same.
+  </p>
+
+  <p>
+    The three biggest problems we have when teaching the shell are:
+  </p>
+
+  <ol>
+    <li>
+      Many people arrive knowing everything we're going to teach and more.
+      We can keep them engaged by having them help people beside them,
+      and by reiterating the philosophical parts of the presentation
+      (e.g., "save history and edit to create a shell script").
+    </li>
+    <li>
+      We have to leave out many important things because of time constraints,
+      including file permissions, job control, and SSH.
+      If learners already understand the basic material,
+      this can be covered instead using the online lessons as guidelines.
+    </li>
+    <li>
+      Installing Bash and a reasonable set of Unix commands on Windows
+      always involves some fiddling and frustration.
+      Please see the latest set of installation guidelines for advice,
+      and try it out yourself <em>before</em> teaching a class.
+    </li>
+  </ol>
+
+  <p>
+    <strong>Prerequisites:</strong>
+    none.
+  </p>
+
+  <p>
+    <strong>Teaching Notes</strong>
+  </p>
+
+  <ul>
+    <li>
+      Have learners open a shell
+      and then do <code>whoami</code>,
+      <code>pwd</code>,
+      and <code>ls</code>.
+      Then have them create a directory called <code>bootcamp</code>
+      and <code>cd</code> into it,
+      so that everything else they do during the lesson
+      is unlikely to harm whatever files they already have.
+    </li>
+    <li>
+      Get them to run an editor
+      and save a file in their <code>bootcamp</code> directory
+      as early as possible.
+      Doing this is usually the biggest stumbling block during the entire lesson:
+      many will try to run the same editor as the instructor
+      (which may leave them trapped in the awful nether hell that is Vim),
+      or will not know how to navigate to the right directory
+      to save their file,
+      or will run a word processor rather than a plain text editor.
+      The quickest way past these problems is to have more knowledgeable learners
+      help those who need it.
+    </li>
+    <li>
+      Live coding is by far the best way to teach people the shell.
+      However,
+      once the instructor enlarges the font in her window
+      so that people at the back of the room can read it,
+      she will typically only have 45 columns and 20 rows.
+      Previous commands and their output will therefore disappear quickly,
+      and the instructor may have to flip windows
+      back and forth between the shell and her editor,
+      which can confuse learners
+      (even when different background colors are used
+      for the different windows).
+      Other than using multiple screens,
+      there is no good solution for this problem.
+    </li>
+    <li>
+      Instructors are usually able to type faster than learners,
+      and even when they can't,
+      learners have the double burden of watching and then typing,
+      rather than simply typing.
+      Instructors must therefore be very careful not to race ahead.
+      They should also use Etherpad or some other collaborative real-time editor
+      to share commands and sample data files with learners.
+    </li>
+    <li>
+      Tab completion sounds like a small thing: it isn't.
+      Re-running old commands using <code>!123</code> or <code>!wc</code>
+      isn't a small thing either,
+      and neither are wildcard expansion and <code>for</code> loops.
+      Each one is an opportunity to repeat one of the big ideas of Software Carpentry:
+      if the computer <em>can</em> repeat it,
+      some programmer somewhere will almost certainly have built 
+      some way for the computer <em>to</em> repeat it.
+    </li>
+    <li>
+      Building up a pipeline with four or five stages,
+      then putting it in a shell script for re-use
+      and calling that script inside a <code>for</code> loop,
+      is a great opportunity to show how
+      "seven plus or minus two"
+      connects to programming.
+      Once we have figured out how to do something moderately complicated,
+      we make it re-usable and give it a name
+      so that it only takes up one slot in working memory
+      rather than several.
+      It is also a good opportunity to talk about exploratory programming:
+      rather than designing a program up front,
+      we can do a few useful things
+      and then retroactively decide which are worth encapsulating
+      for future re-use.
+    </li>
+  </ul>
 
 </div>
 
@@ -314,17 +473,15 @@ $
   <p class="continue">
     More specifically,
     when we type <code>whoami</code>
-    the shell finds a program called <code>whoami</code>,
-    runs it,
-    waits for it to display its output,
-    and then displays a new prompt to tell us that it's ready for more commands
-    (<a href="#f:shell_command_sequence">Figure 4</a>).
+    the shell:
   </p>
 
-  <figure id="f:shell_command_sequence">
-    <img src="shell/shell_command_sequence.png" alt="Shell Command Sequence" />
-    <figcaption>Figure 4: Shell Command Sequence</figcaption>
-  </figure>
+  <ol>
+    <li>finds a program called <code>whoami</code>,</li>
+    <li>runs it,</li>
+    <li>waits for it to display its output, and</li>
+    <li>displays a new prompt to tell us that it's ready for more commands.</li>
+  </ol>
 
   <p>
     Next,
@@ -374,7 +531,7 @@ $
   <p>
     To understand what a "home directory" is,
     let's have a look at how the file system as a whole is organized
-    (<a href="#f:filesystem">Figure 5</a>).
+    (<a href="#f:filesystem">Figure 4</a>).
     At the top is the <a href="glossary.html#root-directory">root directory</a>
     that holds everything else the computer is storing.
     We refer to it using a slash character <code>/</code> on its own;
@@ -383,7 +540,7 @@ $
 
   <figure id="f:filesystem">
     <img src="shell/filesystem.png" alt="File System" />
-    <figcaption>Figure 5: File System</figcaption>
+    <figcaption>Figure 4: File System</figcaption>
   </figure>
 
   <p>
@@ -402,7 +559,7 @@ $
   <p>
     Underneath <code>/users</code>,
     we find one directory for each user with an account on this machine
-    (<a href="#f:home_directories">Figure 6</a>).
+    (<a href="#f:home_directories">Figure 5</a>).
     The Mummy's files are stored in <code>/users/imhotep</code>,
     Wolfman's in <code>/users/larry</code>,
     and ours in <code>/users/vlad</code>,
@@ -414,7 +571,7 @@ $
 
   <figure id="f:home_directories">
     <img src="shell/home_directories.png" alt="Home Directories" />
-    <figcaption>Figure 6: Home Directories</figcaption>
+    <figcaption>Figure 5: Home Directories</figcaption>
   </figure>
 
   <p>
@@ -449,14 +606,14 @@ $
   <p class="continue">
     As you can see,
     <code>/users/vlad</code> contains seven <a href="glossary.html#sub-directory">sub-directories</a>
-    (<a href="#f:vlad_homedir">Figure 7</a>).
+    (<a href="#f:vlad_homedir">Figure 6</a>).
     The names that don't have trailing slashes&mdash;<code>notes.txt</code>, <code>pizza.cfg</code>, and <code>solar.pdf</code>&mdash;are
     plain old files.
   </p>
 
   <figure id="f:vlad_homedir">
     <img src="shell/vlad_homedir.png" alt="Vlad's Home Directory" />
-    <figcaption>Figure 7: Vlad's Home Directory</figcaption>
+    <figcaption>Figure 6: Vlad's Home Directory</figcaption>
   </figure>
 
   <div class="box">
@@ -523,12 +680,12 @@ $
     because it's a <a href="glossary.html#relative-path">relative path</a>,
     i.e., it tells <code>ls</code> how to find something from where we are,
     rather than from the root of the file system
-    (<a href="#f:relative_path">Figure 8</a>).
+    (<a href="#f:relative_path">Figure 7</a>).
   </p>
 
   <figure id="f:relative_path">
     <img src="shell/absolute_relative_path.png" alt="Absolute and Relative Paths" />
-    <figcaption>Figure 8: Absolute and Relative Paths</figcaption>
+    <figcaption>Figure 7: Absolute and Relative Paths</figcaption>
   </figure>
 
   <p>
@@ -779,14 +936,8 @@ pizza.cfg    solar/    solar.pdf    swc/</span>
       she will call her files <code>NENE01729A.txt</code>,
       <code>NENE01812A.txt</code>,
       and so on.
-      All 1520 files will go into the same directory
-      (<a href="#f:pipeline_source_file_layout">Figure 9</a>).
+      All 1520 files will go into the same directory.
     </p>
-
-    <figure id="f:pipeline_source_file_layout">
-      <img src="shell/pipeline_source_file_layout.png" alt="Source Files Layout" />
-      <figcaption>Figure 9: Source Files Layout</figcaption>
-    </figure>
 
     <p>
       If she is in her home directory,
@@ -853,13 +1004,13 @@ $ <span class="in">ls north-pacific-gyre/</span>
     <h3>Challenges</h3>
 
     <p>
-      Please refer to <a href="#f:filedir_challenge">Figure 10</a>
+      Please refer to <a href="#f:filedir_challenge">Figure 8</a>
       when answering the challenges below.
     </p>
 
     <figure id="f:filedir_challenge">
       <img src="shell/filedir_challenge.png" alt="File System Layout for Challenge Questions" />
-      <figcaption>Figure 10: File System Layout for Challenge Questions</figcaption>
+      <figcaption>Figure 8: File System Layout for Challenge Questions</figcaption>
     </figure>
 
     <ol>
@@ -871,7 +1022,7 @@ $ <span class="in">ls north-pacific-gyre/</span>
           <li><code class="err">../backup: No such file or directory</code></li>
           <li><code class="out">2012-12-01 2013-01-08 2013-01-27</code></li>
           <li><code class="out">2012-12-01/ 2013-01-08/ 2013-01-27/</code></li>
-          <li><code class="out">original pnas_submission pnas_final</code></li>
+          <li><code class="out">original pnas_final pnas_sub</code></li>
         </ol>
       </li>
 
@@ -997,7 +1148,7 @@ $ <span class="in">nano draft.txt</span>
 
   <p class="continue">
     Nano is a very simple text editor that only a programmer could really love.
-    <a href="#f:nano">Figure 11</a> shows what it looks like when it runs:
+    <a href="#f:nano">Figure 9</a> shows what it looks like when it runs:
     the cursor is the blinking square in the upper left,
     and the two lines across the bottom show us the available commands.
     (By convention,
@@ -1008,12 +1159,12 @@ $ <span class="in">nano draft.txt</span>
 
   <figure id="f:nano">
     <img src="shell/nano.png" alt="The Nano Editor" />
-    <figcaption>Figure 11: The Nano Editor</figcaption>
+    <figcaption>Figure 9: The Nano Editor</figcaption>
   </figure>
 
   <p>
     Let's type in a short quotation
-    (<a href="#f:nano_quotation">Figure 12</a>)
+    (<a href="#f:nano_quotation">Figure 10</a>)
     then use <span class="in">Control-O</span> to write our data to disk.
     Once our quotation is saved,
     we can use <span class="in">Control-X</span> to quit the editor and return to the shell.
@@ -1021,7 +1172,7 @@ $ <span class="in">nano draft.txt</span>
 
   <figure id="f:nano_quotation">
     <img src="shell/nano_quotation.png" alt="Nano in Action" />
-    <figcaption>Figure 12: Nano in Action</figcaption>
+    <figcaption>Figure 10: Nano in Action</figcaption>
   </figure>
 
   <div class="box">
@@ -1536,17 +1687,11 @@ $
     <p>
       When the shell sees a wildcard,
       it expands it to create a list of filenames
-      <em>before</em> passing those names to whatever command is being run
-      (<a href="#f:wildcard_expansion">Figure 13</a>).
+      <em>before</em> passing those names to whatever command is being run.
       This means that commands like <code>wc</code> and <code>ls</code> never see the wildcard characters,
       just what those wildcards matched.
       This is another example of orthogonal design.
     </p>
-
-    <figure id="f:wildcard_expansion">
-      <img src="shell/wildcard_expansion.png" alt="Wildcard Expansion" />
-      <figcaption>Figure 13: Wildcard Expansion</figcaption>
-    </figure>
 
   </div>
 
@@ -1730,12 +1875,12 @@ $
       most Unix programmers call it <a href="glossary.html#stdin">stdin</a>.)
       Every process also has a default output channel called <a href="glossary.html#standard-output">standard output</a>,
       or <a href="glossary.html#stdout">stdout</a>
-      (<a href="#f:process_stdin_stdout">Figure 14</a>).
+      (<a href="#f:process_stdin_stdout">Figure 11</a>).
     </p>
 
     <figure id="f:process_stdin_stdout">
       <img src="shell/process_stdin_stdout.png" alt="A Process with Standard Input and Output" />
-      <figcaption>Figure 14: A Process with Standard Input and Output</figcaption>
+      <figcaption>Figure 11: A Process with Standard Input and Output</figcaption>
     </figure>
 
     <p>
@@ -1743,12 +1888,12 @@ $
       Under normal circumstances,
       whatever we type on the keyboard is sent to the shell on its standard input,
       and whatever it produces on standard output is displayed on our screen
-      (<a href="#f:shell_as_process">Figure 15</a>):
+      (<a href="#f:shell_as_process">Figure 12</a>):
     </p>
 
     <figure id="f:shell_as_process">
       <img src="shell/shell_as_process.png" alt="The Shell as a Process" />
-      <figcaption>Figure 15: The Shell as a Process</figcaption>
+      <figcaption>Figure 12: The Shell as a Process</figcaption>
     </figure>
 
     <p>
@@ -1756,12 +1901,12 @@ $
       the shell creates a new process.
       It then temporarily sends whatever we type on our keyboard to that process's standard input,
       and whatever the process sends to standard output to the screen
-      (<a href="#f:running_a_process">Figure 16</a>):
+      (<a href="#f:running_a_process">Figure 13</a>):
     </p>
 
     <figure id="f:running_a_process">
       <img src="shell/running_a_process.png" alt="Running a Process" />
-      <figcaption>Figure 16: Running a Process</figcaption>
+      <figcaption>Figure 13: Running a Process</figcaption>
     </figure>
 
     <p>
@@ -1771,12 +1916,12 @@ $
       <code>wc</code> reads from them instead of from standard input.
       And since we've used <code>&gt;</code> to redirect output to a file,
       the shell connects the process's standard output to that file
-      (<a href="#f:running_wc">Figure 17</a>).
+      (<a href="#f:running_wc">Figure 14</a>).
     </p>
 
     <figure id="f:running_wc">
       <img src="shell/running_wc.png" alt="Running One Program with Redirection" />
-      <figcaption>Figure 17: Running One Program with Redirection</figcaption>
+      <figcaption>Figure 14: Running One Program with Redirection</figcaption>
     </figure>
 
     <p>
@@ -1786,17 +1931,17 @@ $
       so that <code>wc</code> and <code>sort</code> run simultaneously.
       The standard output of <code>wc</code> is fed directly to the standard input of <code>sort</code>;
       since there's no redirection with <code>&gt;</code>, <code>sort</code>'s output goes to the screen
-      (<a href="#f:running_wc_sort">Figure 18</a>):
+      (<a href="#f:running_wc_sort">Figure 15</a>):
     </p>
 
     <figure id="f:running_wc_sort">
       <img src="shell/running_wc_sort.png" alt="Running Two Programs in a Pipe" />
-      <figcaption>Figure 18: Running Two Programs in a Pipe</figcaption>
+      <figcaption>Figure 15: Running Two Programs in a Pipe</figcaption>
     </figure>
 
     <p class="continue">
       And if we run <code>wc -l *.pdb | sort | head -1</code>,
-      we get the three processes shown in <a href="#f:running_wc_sort_head">Figure 19</a>
+      we get the three processes shown in <a href="#f:running_wc_sort_head">Figure 16</a>
       with data flowing from the files,
       through <code>wc</code> to <code>sort</code>,
       and from <code>sort</code> through <code>head</code> to the screen.
@@ -1804,7 +1949,7 @@ $
 
     <figure id="f:running_wc_sort_head">
       <img src="shell/running_wc_sort_head.png" alt="Running the Full Pipeline" />
-      <figcaption>Figure 19: Running the Full Pipeline</figcaption>
+      <figcaption>Figure 16: Running the Full Pipeline</figcaption>
     </figure>
 
   </div>
@@ -3084,6 +3229,15 @@ $ <span class="in">history | tail -4 &gt; redo-figure-3.sh</span>
     we have a completely accurate record of how we created that figure.
   </p>
 
+  <div class="box">
+    <h3>Unnumbering</h3>
+    <p>
+      Nelle could also use <code>colrm</code>
+      (short for "column removal")
+      to remove the serial numbers on her previous commands.
+    </p>
+  </div>
+
   <p>
     In practice,
     most people develop shell scripts by running commands at the shell prompt a few times
@@ -3301,11 +3455,12 @@ echo $*.dat
 
   <figure id="f:google_vs_grep">
     <img src="shell/google_vs_grep.png" alt="Google vs. Grep" />
-    <figcaption>Figure 20: Google vs. Grep</figcaption>
+    <figcaption>Figure 17: Google vs. Grep</figcaption>
   </figure>
 
   <p>
-    You can often guess someone's age by listening to how people talk about search.
+    You can often guess someone's age by listening to how people talk about search
+    (<a href="#f:google_vs_grep">Figure 17</a>).
     Just as young people use "Google" as a verb,
     crusty old Unix programmers use "grep".
     The word is a contraction of "global/regular expression/print",
@@ -3504,12 +3659,12 @@ Software is like that.
     the <code>find</code> command finds files themselves.
     Again, it has a lot of options;
     to show how the simplest ones work, we'll use the directory tree in
-    <a href="#f:find_file_tree">Figure 21</a>:
+    <a href="#f:find_file_tree">Figure 18</a>:
   </p>
 
   <figure id="f:find_file_tree">
     <img src="shell/find_file_tree.png" alt="Sample Files and Directories" />
-    <figcaption>Figure 21: Sample Files and Directories</figcaption>
+    <figcaption>Figure 18: Sample Files and Directories</figcaption>
   </figure>
 
   <p class="continue">
@@ -3753,14 +3908,8 @@ done
       each time the outer loop executes,
       so inside the inner loop,
       <code>left</code> and <code>right</code> are given
-      each pair of filenames
-      (<a href="#f:nested_loops">Figure 22</a>).
+      each pair of filenames.
     </p>
-
-    <figure id="f:nested_loops">
-      <img src="shell/nested_loops.png" alt="Nested Loops" />
-      <figcaption>Figure 22: Nested Loops</figcaption>
-    </figure>
 
     <p>
       Each time it runs the command inside the inner loop,
