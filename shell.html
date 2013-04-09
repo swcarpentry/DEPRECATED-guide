@@ -1717,7 +1717,6 @@ $
   </p>
 
   <div class="box" id="b:pipefilter:pipes">
-
     <h3>Inside Pipes</h3>
 
     <p>
@@ -2196,7 +2195,7 @@ UPDATED: 1738-11-24</span>
 <pre>
 for x in basilisk.dat unicorn.dat
 do
-  head -3 $x
+    head -3 $x
 done
 </pre>
 
@@ -2207,7 +2206,7 @@ done
 <pre>
 for temperature in basilisk.dat unicorn.dat
 do
-  head -3 $temperature
+    head -3 $temperature
 done
 </pre>
 
@@ -2229,8 +2228,8 @@ done
 <pre>
 for filename in *.dat
 do
-  echo $filename
-  head -100 $filename | tail -20
+    echo $filename
+    head -100 $filename | tail -20
 done
 </pre>
 
@@ -2267,8 +2266,8 @@ hello there
 <pre>
 for filename in *.dat
 do
-  <span class="highlight">$filename</span>
-  head -100 $filename | tail -20
+    <span class="highlight">$filename</span>
+    head -100 $filename | tail -20
 done
 </pre>
 
@@ -2303,8 +2302,8 @@ unicorn.dat
 <pre>
 for filename in *.dat
 do
-  echo $filename
-  head -100 $filename | tail -20
+    echo $filename
+    head -100 $filename | tail -20
 done
 </pre>
 
@@ -2350,7 +2349,7 @@ unicorn.dat
 <pre>
 for filename in *.dat
 do
-  mv $filename original-$filename
+    mv $filename original-$filename
 done
 </pre>
 
@@ -2391,7 +2390,7 @@ mv unicorn.dat original-unicorn.dat
 <pre>
 for filename in *.dat
 do
-  <span class="highlight">echo</span> mv $filename original-$filename
+    <span class="highlight">echo</span> mv $filename original-$filename
 done
 </pre>
 
@@ -2435,7 +2434,7 @@ mv unicorn.dat original-unicorn.dat
 $ <span class="in">cd north-pacific-gyre/2012-07-03</span>
 $ <span class="in">for datafile in *[AB].txt
 do
-  echo $datafile
+    echo $datafile
 done</span>
 <span class="out">NENE01729A.txt
 NENE01729B.txt
@@ -2456,7 +2455,7 @@ $
 <pre>
 $ <span class="in">for datafile in *[AB].txt
 do
-  echo $datafile stats-$datafile
+    echo $datafile stats-$datafile
 done</span>
 <span class="out">NENE01729A.txt stats-NENE01729A.txt
 NENE01729B.txt stats-NENE01729B.txt
@@ -2609,8 +2608,8 @@ done
 <pre>
 for sugar in *.dat
 do
-  echo $sugar
-  cat $sugar &gt; xylose.dat
+    echo $sugar
+    cat $sugar &gt; xylose.dat
 done
 </pre>
         <ol>
@@ -2645,10 +2644,10 @@ $ <span class="in">expr 30 / 5 - 2</span>
 <pre>
 for left in 2 3
 do
-  for right in $left
-  do
-    expr $left + $right
-  done
+    for right in $left
+    do
+        expr $left + $right
+    done
 done
 </pre>
       </li>
@@ -2669,207 +2668,351 @@ done
 
 </section>
 
-    <section id="s:scripts">
+<section id="s:scripts">
 
-      <h2>Shell Scripts</h2>
+  <h2>Shell Scripts</h2>
 
-      <div class="understand" id="u:scripts">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Write a shell script that runs a command or series of commands for a fixed set of files.</li>
-          <li>Run a shell script from the command line.</li>
-          <li>Write a shell script that operates on a set of files defined by the user on the command line.</li>
-          <li>Create pipelines that include user-written shell scripts.</li>
-        </ul>
-      </div>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Write a shell script that runs a command or series of commands for a fixed set of files.</li>
+      <li>Run a shell script from the command line.</li>
+      <li>Write a shell script that operates on a set of files defined by the user on the command line.</li>
+      <li>Create pipelines that include user-written shell scripts.</li>
+    </ul>
+  </div>
 
-      <p>
-        We can now start creating "programs" using nothing but shell commands.
-        Let's start by putting the following line in the file <code>smallest</code>:
-      </p>
+  <p>
+    We are finally ready to see what makes the shell such a powerful programming environment.
+    We are going to take the commands we repeat frequently
+    and save them in files
+    so that we can re-run all those operations again later
+    by typing a single command.
+    For historical reasons,
+    a bunch of commands saved in a file is usually called a <a href="glossary.html#shell-script">shell script</a>,
+    but make no mistake:
+    these are actually small programs.
+  </p>
+
+  <p>
+    Let's start by putting the following line in the file <code>middle.sh</code>:
+  </p>
 
 <pre>
-<span class="in">wc -l *.pdb | sort -n</span>
+head -20 cholesterol.pdb | tail -5
 </pre>
 
-      <p class="continue">
-        This is a variation on the pipe we constructed <a href="#s:pipefilter">earlier</a>:
-        it displays all of the files sorted by the number of lines
-        (the <code>-n</code> flag to <code>sort</code> means "sort numerically").
-        Remember, we are <em>not</em> running it as a command just yet:
-        we are putting the commands in a file.
-        Once we're done,
-        let's ask the shell (which is called <code>bash</code>) to run those saved commands:
-      </p>
+  <p class="continue">
+    This is a variation on the pipe we constructed <a href="#s:pipefilter">earlier</a>:
+    it selects lines 15-20 of the file <code>cholesterol.pdb</code>.
+    Remember,
+    we are <em>not</em> running it as a command just yet:
+    we are putting the commands in a file.
+  </p>
+
+  <p>
+    Once we have saved the file,
+    we can ask the shell to execute the commands it contains.
+    Our shell is called <code>bash</code>,
+    so we run the following command:
+  </p>
 
 <pre>
-$ <span class="in">bash smallest</span>
-<span class="out">  9  methane.pdb
- 12  ethane.pdb
- 15  propane.pdb
- 20  cubane.pdb
- 21  pentane.pdb
- 30  octane.pdb
-107  total</span>
+$ <span class="in">bash middle.sh</span>
+<span class="out">ATOM     14  C           1      -1.463  -0.666   1.001  1.00  0.00
+ATOM     15  C           1       0.762  -0.929   0.295  1.00  0.00
+ATOM     16  C           1       0.771  -0.937   1.840  1.00  0.00
+ATOM     17  C           1      -0.664  -0.610   2.293  1.00  0.00
+ATOM     18  C           1      -4.705   2.108  -0.396  1.00  0.00</span>
 </pre>
 
-      <p>
-        Sure enough, our little program's output is exactly what we'd get if we ran that pipeline ourselves.
-      </p>
+  <p class="continue">
+    Sure enough, our script's output is exactly what we would get
+    if we ran that pipeline directly.
+  </p>
 
-      <p>
-        We can make this script a little more flexible by changing <code>*.pdb</code> to <code>$*</code>,
-        a shortcut which means "all of the command-line arguments".
-        The new <code>smallest</code> looks like this:
-      </p>
+  <div class="box">
+    <h3>Text vs. Whatever</h3>
+
+    <p>
+      We usually call programs like Microsoft Word or LibreOffice Writer "text editors",
+      but we need to be a bit more careful when it comes to programming.
+      By default,
+      Microsoft Word uses <code>.doc</code> files to store not only text,
+      but also formatting information about fonts,
+      headings,
+      and so on.
+      This extra information isn't stored as characters,
+      and doesn't mean anything to the Python interpreter:
+      it expects input files to contain nothing but the letters, digits, and punctuation
+      on a standard computer keyboard.
+      When editing programs,
+      therefore,
+      you must either use a plain text editor,
+      or be careful to save files as plain text.
+    </p>
+
+  </div>
+
+  <p>
+    What if we want to select lines from an arbitrary file?
+    We could edit <code>middle.sh</code> each time to change the filename,
+    but that would probably take longer than just retyping the command.
+    Instead,
+    let's edit <code>middle.sh</code>
+    and replace <code>cholesterol.pdb</code> with a special variable called <code>$1</code>:
+  </p>
 
 <pre>
-$ <span class="in">cat smallest</span>
+$ <span class="in">cat middle.sh</span>
+head -20 <span class="highlight">$1</span> | tail -5
+</pre>
+
+  <p>
+    Inside a shell script,
+    <code>$1</code> means "the first filename (or other parameter) on the command line".
+    We can now run our script like this:
+  </p>
+
+<pre>
+$ <span class="in">bash middle.sh cholesterol.pdb</span>
+<span class="out">ATOM     14  C           1      -1.463  -0.666   1.001  1.00  0.00
+ATOM     15  C           1       0.762  -0.929   0.295  1.00  0.00
+ATOM     16  C           1       0.771  -0.937   1.840  1.00  0.00
+ATOM     17  C           1      -0.664  -0.610   2.293  1.00  0.00
+ATOM     18  C           1      -4.705   2.108  -0.396  1.00  0.00</span>
+</pre>
+
+  <p class="continue">
+    or on a different file like this:
+  </p>
+
+<pre>
+$ <span class="in">bash middle.sh vitamin_a.pdb</span>
+<span class="out">ATOM     14  C           1       1.788  -0.987  -0.861
+ATOM     15  C           1       2.994  -0.265  -0.829
+ATOM     16  C           1       4.237  -0.901  -1.024
+ATOM     17  C           1       5.406  -0.117  -1.087
+ATOM     18  C           1      -0.696  -2.628  -0.641</span>
+</pre>
+
+  <p>
+    We still need to edit <code>middle.sh</code> each time we want to adjust the range of lines, though.
+    Let's fix that by using the special variables <code>$2</code> and <code>$3</code>:
+  </p>
+
+<pre>
+$ <span class="in">cat middle.sh</span>
+head <span class="highlight">$2</span> $1 | tail <span class="highlight">$3</span>
+$ <span class="in">bash middle.sh vitamin_a.pdb -20 -5</span>
+<span class="out">ATOM     14  C           1       1.788  -0.987  -0.861
+ATOM     15  C           1       2.994  -0.265  -0.829
+ATOM     16  C           1       4.237  -0.901  -1.024
+ATOM     17  C           1       5.406  -0.117  -1.087
+ATOM     18  C           1      -0.696  -2.628  -0.641</span>
+</pre>
+
+  <p>
+    What if we want to process many files in a single pipeline?
+    For example,
+    if we want to sort our PDB files by length,
+    we would type:
+  </p>
+
+<pre>
+$ <span class="in">wc -l *.pdb | sort -n</span>
+</pre>
+
+  <p class="continue">
+    because <code>wc&nbsp;-l</code> lists the number of lines in the files,
+    and <code>sort&nbsp;-n</code> sorts things numerically.
+    We could put this in a file,
+    but then it would only ever sort a list of PDB files in the current directory.
+    If we want to be able to get a sorted list of other kinds of files,
+    possibly from many sub-directories,
+    we need a way to get all those names into the script.
+    We can't use <code>$1</code>, <code>$2</code>, and so on
+    because we don't know how many files there are.
+    Instead,
+    we use the special variable <code>$*</code>,
+    which means, "All of the command-line parameters to the shell script."
+    Here's an example:
+  </p>
+
+<pre>
+$ <span class="in">cat sorted.sh</span>
 <span class="out">wc -l $* | sort -n</span>
-$
+$ <span class="in">bash sorted.sh *.dat backup/*.dat</span>
+<span class="out">      29 chloratin.dat
+      89 backup/chloratin.dat
+      91 sphagnoi.dat
+     156 sphag2.dat
+     172 backup/sphag-merged.dat
+     182 girmanis.dat</span>
 </pre>
 
-      <p class="continue">
-        Once we have done this,
-        we can use our program&mdash;usually called a <a href="glossary.html#shell-script">shell script</a>&mdash;to sort
-        any set of files by size:
-      </p>
+  <div class="box" id="a:not-doing-anything">
+    <h3>Why Isn't It Doing Anything?</h3>
+
+    <p>
+      What happens if a script is supposed to process a bunch of files,
+      but we don't give it any filenames?
+      For example,
+      what if we type:
+    </p>
 
 <pre>
-$ <span class="in">bash smallest *.txt</span>
-<span class="out">419  paper.txt
-2718 thesis.txt</span>
-$
+$ <span class="in">bash sorted.sh</span>
 </pre>
 
-      <div class="box">
-
-        <h3>Why Isn't It Doing Anything?</h3>
-
-        <p>
-          What happens if a script is supposed to process a bunch of files,
-          but we don't give it any filenames?
-          For example,
-          what if we type:
-        </p>
-
-<pre>
-$ <span class="in">bash smallest</span>
-</pre>
-
-        <p class="continue">
-          but don't say <code>*.txt</code> (or anything else)?
-          In this case,
-          <code>$*</code> expands to nothing at all,
-          so the pipeline inside the script is effectively:
-        </p>
+    <p class="continue">
+      but don't say <code>*.dat</code> (or anything else)?
+      In this case,
+      <code>$*</code> expands to nothing at all,
+      so the pipeline inside the script is effectively:
+    </p>
 
 <pre>
 wc -l | sort -n
 </pre>
 
-        <p class="continue">
-          Since it doesn't have any filenames,
-          <code>wc</code> assumes it is supposed to process standard input,
-          so it just sits there and waits for us to give it some data interactively.
-          From the outside,
-          though,
-          all we see is it sitting there:
-          the script doesn't appear to do anything.
-        </p>
+    <p>
+      Since it doesn't have any filenames,
+      <code>wc</code> assumes it is supposed to process standard input,
+      so it just sits there and waits for us to give it some data interactively.
+      From the outside,
+      though,
+      all we see is it sitting there:
+      the script doesn't appear to do anything.
+    </p>
 
-        <p>
-          This is not a bug:
-          it's actually very useful,
-          because it lets us use our scripts as components in pipelines in their own right.
-          For example,
-          we can do this:
-        </p>
+    <p>
+      But now consider a script called <code>distinct.sh</code>:
+    </p>
 
 <pre>
-$ <span class="in">cat sugar/*.pdb | bash smallest</span>
+sort $* | uniq
 </pre>
 
-        <p class="continue">
-          to concatenate all the molecule data in the <code>sugar</code> directory
-          into a single stream,
-          and run it through <code>smallest</code> in one step.
-          The results aren't particularly useful in this case,
-          but stepping back,
-          the fact that we can combine the tools we build to create larger tools,
-          which can in turn be combined to create even larger tools,
-          is possibly the single most powerful idea in programming.
-        </p>
-
-      </div>
-
-      <p>
-        If we want,
-        we can use <code>$1</code>, <code>$2</code>, and so on to select particular arguments
-        instead of always running on all the arguments.
-        Together,
-        these facilities let us write some very complicated programs
-        using only the commands we would type interactively.
-      </p>
-
-      <p>
-        In practice,
-        most people develop shell scripts by running commands at the shell prompt a few times
-        to make sure they are doing what we want,
-        then copying them into a file so that we can re-use them in a single step.
-        If we follow the Unix convention of reading data from standard input when we're not given filenames,
-        and writing results to standard output,
-        we can combine those programs with others using pipes and redirection
-        to create even more powerful programs.
-        Trying doing <em>that</em> with a bunch of GUIs&hellip;
-      </p>
-
-      <div class="box">
-
-        <h3>Text vs. Whatever</h3>
-
-        <p>
-          We usually call programs like Microsoft Word or LibreOffice Writer "text editors",
-          but we need to be a bit more careful when it comes to programming.
-          By default,
-          Microsoft Word uses <code>.doc</code> files to store not only text,
-          but also formatting information about fonts,
-          headings,
-          and so on.
-          This extra information isn't stored as characters,
-          and doesn't mean anything to the Python interpreter:
-          it expects input files to contain nothing but the letters, digits, and punctuation
-          on a standard computer keyboard.
-          When editing programs,
-          therefore,
-          you must either use a plain text editor,
-          or be careful to save files as plain text.
-        </p>
-
-      </div>
-
-      <section>
-
-        <h3>Nelle's Pipeline: Creating a Script</h3>
-
-        <p>
-          An off-hand comment from her supervisor has made Nelle realize that
-          she should have provided a couple of extra parameters to <code>goostats</code>
-          when she processed her files.
-          This might have been a disaster if she had done all the analysis by hand,
-          but thanks to for loops,
-          it will only take a couple of hours to re-do.
-        </p>
-
-        <p>
-          Experience has taught her,
-          though,
-          that if something needs to be done twice,
-          it will probably need to be done a third or fourth time as well.
-          She runs the editor and writes the following:
-        </p>
+    <p class="continue">
+      Let's run it as part of a pipeline without any filenames:
+    </p>
 
 <pre>
+$ <span class="in">head -5 *.dat | bash distinct.sh</span>
+</pre>
+
+    <p class="continue">
+      This is equivalent to:
+    </p>
+
+<pre>
+$ <span class="in">head -5 *.dat | sort | uniq</span>
+</pre>
+
+    <p class="continue">
+      which is actually what we want.
+    </p>
+
+  </div>
+
+  <p>
+    We have two more things to do
+    before we're finished with our simple shell scripts.
+    If you look at a script like:
+  </p>
+
+<pre>
+wc -l $* | sort -n
+</pre>
+
+  <p class="continue">
+    you can probably puzzle out what it does.
+    On the other hand,
+    if you look at this script:
+  </p>
+
+<pre>
+<span class="comment"># List files sorted by number of lines.</span>
+wc -l $* | sort -n
+</pre>
+
+  <p class="continue">
+    you don't have to puzzle it out&mdash;the comment at the top of the script
+    tells you what it does.
+    A line or two of documentation like this make it much easier for other people
+    (including your future self)
+    to re-use your work.
+    The only caveat is that each time you modify the script,
+    you should check that the comment is still accurate:
+    an explanation that sends the reader in the wrong direction
+    is worse than none at all.
+  </p>
+
+  <p>
+    Second,
+    suppose we have just run a series of commands that did something useful&mdash;for example,
+    that created a graph we'd like to use in a paper.
+    We'd like to be able to re-create the graph later if we need to,
+    so we want to save the commands in a file.
+    Instead of typing them in again
+    (and potentially getting them wrong),
+    we can do this:
+  </p>
+
+<pre>
+$ <span class="in">history | tail -4 &gt; redo-figure-3.sh</span>
+</pre>
+
+  <p class="continue">
+    The file <code>redo-figure-3.sh</code> now contains:
+  </p>
+
+<pre>
+ 297 goostats -r NENE01729B.txt stats-NENE01729B.txt
+ 298 goodiff stats-NENE01729B.txt /data/validated/01729.txt &gt; 01729-differences.txt
+ 299 cut -d ',' -f 2-3 01729-differences.txt > 01729-time-series.txt
+ 300 ygraph --format scatter --color bw --borders none 01729-time-series.txt figure-3.png
+</pre>
+
+  <p class="continue">
+    After a moment's work in an editor to remove the serial numbers on the command,
+    we have a completely accurate record of how we created that figure.
+  </p>
+
+  <p>
+    In practice,
+    most people develop shell scripts by running commands at the shell prompt a few times
+    to make sure they're doing something useful,
+    and doing it correctly,
+    then saving them in a file for re-use.
+    This style of work allows people to recycle what they discover
+    about their data and their workflow
+    with just a few extra keystrokes.
+  </p>
+
+  <section>
+    <h3>Nelle's Pipeline: Creating a Script</h3>
+
+    <p>
+      An off-hand comment from her supervisor has made Nelle realize that
+      she should have provided a couple of extra parameters to <code>goostats</code>
+      when she processed her files.
+      This might have been a disaster if she had done all the analysis by hand,
+      but thanks to for loops,
+      it will only take a couple of hours to re-do.
+    </p>
+
+    <p>
+      Experience has taught her,
+      though,
+      that if something needs to be done twice,
+      it will probably need to be done a third or fourth time as well.
+      She runs the editor and writes the following:
+    </p>
+
+<pre>
+# Calculate reduced stats for data files at J = 100 c/bp.
 for datafile in $*
 do
     echo $datafile
@@ -2877,37 +3020,38 @@ do
 done
 </pre>
 
-        <p class="continue">
-          (The parameters <code>-J&nbsp;100</code> and <code>-r</code>
-          are the ones her supervisor said she should have used.)
-          She saves this in a file called <code>do-stats.sh</code>,
-          so that she can now re-do the first stage of her analysis by typing:
-        </p>
+    <p class="continue">
+      (The parameters <code>-J&nbsp;100</code> and <code>-r</code>
+      are the ones her supervisor said she should have used.)
+      She saves this in a file called <code>do-stats.sh</code>,
+      so that she can now re-do the first stage of her analysis by typing:
+    </p>
 
 <pre>
 $ <span class="in">bash do-stats.sh *[AB].txt</span>
 </pre>
 
-        <p>
-          She can also do this:
-        </p>
+    <p>
+      She can also do this:
+    </p>
 
 <pre>
 $ <span class="in">bash do-stats.sh *[AB].txt | wc -l</span>
 </pre>
 
-        <p class="continue">
-          so that the output is just the number of files processed,
-          rather than the names of the files that were processed.
-        </p>
+    <p class="continue">
+      so that the output is just the number of files processed,
+      rather than the names of the files that were processed.
+    </p>
 
-        <p>
-          One thing to note about Nelle's script is
-          her choice to let the person running it decide what files to process.
-          She could have written the script as:
-        </p>
+    <p>
+      One thing to note about Nelle's script is
+      her choice to let the person running it decide what files to process.
+      She could have written the script as:
+    </p>
 
 <pre>
+# Calculate reduced stats for  A and Site B data files at J = 100 c/bp.
 for datafile in <span class="highlight">*[AB].txt</span>
 do
     echo $datafile
@@ -2915,118 +3059,127 @@ do
 done
 </pre>
 
-        <p>
-          The advantage is that this always selects the right files:
-          she doesn't have to remember to exclude the 'Z' files.
-          The disadvantage is that it <em>always</em> selects just those files&mdash;she
-          can't run it on all files (including the 'Z' files),
-          or on the 'G' or 'H' files her colleagues in Antarctica are producing,
-          without editing the script.
-          If she wanted to be more adventurous,
-          she could modify her script to check for command-line arguments,
-          and use <code>*[AB].txt</code> if none were provided.
-          Of course,
-          this introduces another tradeoff between flexibility and complexity;
-          we'll explore this <a href="quality.html">later</a>.
-        </p>
+    <p>
+      The advantage is that this always selects the right files:
+      she doesn't have to remember to exclude the 'Z' files.
+      The disadvantage is that it <em>always</em> selects just those files&mdash;she
+      can't run it on all files (including the 'Z' files),
+      or on the 'G' or 'H' files her colleagues in Antarctica are producing,
+      without editing the script.
+      If she wanted to be more adventurous,
+      she could modify her script to check for command-line arguments,
+      and use <code>*[AB].txt</code> if none were provided.
+      Of course,
+      this introduces another tradeoff between flexibility and complexity;
+      we'll explore this <a href="quality.html">later</a>.
+    </p>
 
-      </section>
+  </section>
 
-      <div class="keypoints" id="k:scripts">
-        <h3>Summary</h3>
-        <ul>
-          <li idea="perf;paranoia">Save commands in files (usually called shell scripts) for re-use.</li>
-          <li>Use <code>bash <em>filename</em></code> to run saved commands.</li>
-          <li><code>$*</code> refers to all of a shell script's command-line arguments.</li>
-          <li><code>$1</code>, <code>$2</code>, etc., refer to specified command-line arguments.</li>
-          <li idea="tools">Letting users decide what files to process is more flexible and more consistent with built-in Unix commands.</li>
-        </ul>
-      </div>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Save commands in files (usually called shell scripts) for re-use.</li>
+      <li>Use <code>bash <em>filename</em></code> to run saved commands.</li>
+      <li><code>$*</code> refers to all of a shell script's command-line arguments.</li>
+      <li><code>$1</code>, <code>$2</code>, etc., refer to specified command-line arguments.</li>
+      <li>Letting users decide what files to process is more flexible and more consistent with built-in Unix commands.</li>
+    </ul>
+  </div>
 
-      <div class="challenges" id="c:scripts">
-        <h3>Challenges</h3>
+  <div class="challenges">
+    <h3>Challenges</h3>
 
-        <ol class="challenges">
+    <ol>
 
-          <li>
-            Suppose that <code class="in">ls</code> displays:
+      <li>
+        Leah has several hundred data files,
+        each of which is formatted like this:
 <pre>
-<span class="out">display.sh    fructose.dat    glucose.dat   sucrose.dat</span>
+2013-11-05,deer,5
+2013-11-05,rabbit,22
+2013-11-05,raccoon,7
+2013-11-06,rabbit,19
+2013-11-06,deer,2
+2013-11-06,fox,1
+2013-11-07,rabbit,18
+2013-11-07,bear,1
 </pre>
-            What must <code>display.sh</code> contain in order for:
+        Write a shell script called <code>species.sh</code>
+        that takes any number of filenames as command-line parameters,
+        and uses <code>cut</code>, <code>sort</code>, and <code>uniq</code>
+        to print a list of the unique species appearing in each of those files separately.
+      </li>
+
+      <li>
+        Write a shell script called <code>longest.sh</code>
+        that takes the name of a directory and a filename extension as its arguments,
+        and prints out the name of the most recently modified file in that directory
+        with that extension.
+        For example:
 <pre>
-$ <span class="in">bash display.sh *.dat</span>
+$ <span class="in">bash largest.sh /tmp/data pdb</span>
 </pre>
-            to display each sugar data file exactly once (and nothing else)?
-            <table class="choices">
-              <tr>
-                <td>1.</td>
-                <td>2.</td>
-                <td>3.</td>
-                <td>4.</td>
-              </tr>
-              <tr>
-                <td>
+        would print the name of the PDB file in <code>/tmp/data</code>
+        that has been changed most recently.
+      </li>
+
+      <li>
+        If you run the command:
+<pre>
+history | tail -5 &gt; recent.sh
+</pre>
+        the last command in the file is the <code>history</code> command itself,
+        i.e.,
+        the shell has added <code>history</code> to the command log
+        before actually running it.
+        In fact,
+        the shell <em>always</em> adds commands to the log before running them.
+        Why do you think it does this?
+      </li>
+
+      <li>
+        Joel's <code>data</code> directory contains three files:
+        <code>fructose.dat</code>,
+        <code>glucose.dat</code>,
+        and <code>sucrose.dat</code>.
+        Explain what each of the following shell scripts does
+        when run as <code>bash <em>scriptname</em> *.dat</code>.
+        <table>
+          <tr>
+            <td valign="top">1.</td>
+            <td valign="top">
 <pre>
 echo *.*
 </pre>
-                </td>
-                <td>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">2.</td>
+            <td valign="top">
 <pre>
 for filename in $1 $2 $3
 do
-  cat $filename
+    cat $filename
 done
 </pre>
-                </td>
-                <td>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">3.</td>
+            <td valign="top">
 <pre>
 echo $*.dat
 </pre>
-                </td>
-                <td>
-                  None of the above.
-                </td>
-              </tr>
-            </table>
-          </li>
+            </td>
+          </tr>
+        </table>
+      </li>
 
-          <li>
-            Nelle wants to save the last five commands she ran as a shell script to re-use later.
-            She runs:
-<pre>
-$ <span class="in">history | tail -5 &gt; redo-last-5.sh</span>
-</pre>
-            To test it out, she then runs:
-<pre>
-$ <span class="in">bash redo-last-5.sh</span>
-</pre>
-            What happens?
-            <ol class="choices">
-              <li>
-                The five commands she wanted to re-run are re-run.
-              </li>
-              <li>
-                Only the last <em>four</em> commands are re-run,
-                because the command <code>history</code> is also saved in <code>redo-last-5.sh</code>.
-              </li>
-              <li>
-                No commands are re-run,
-                because <code>redo-last-5.sh</code> also contains the serial numbers of commands
-                (which aren't legally commands themselves).
-              </li>
-              <li>
-                Each time she runs this,
-                the most recent five commands are replayed
-                (whether they're the five she originally wanted to save or not).
-              </li>
-            </ol>
-          </li>
+    </ol>
+  </div>
 
-        </ol>
-      </div>
-
-    </section>
+</section>
 
     <section id="s:find">
 
@@ -3207,7 +3360,6 @@ OPTIONS
 </pre>
 
       <div class="box">
-
         <h3>Wildcards</h3>
 
         <p>
@@ -3709,6 +3861,22 @@ $ <span class="in">bash pairwise.sh stats-*.txt > top100.txt</span>
 
         <ol class="challenges">
 
+      <li>
+        The <code>middle.sh</code> script's numerical arguments are
+        the number of lines to take from the head of the file,
+        and the number of lines to take from the tail of that range.
+        It would be more intuitive if the arguments were
+        the index of the first line to keep and the number of lines,
+        e.g.,
+        if:
+<pre>
+$ <span class="in">bash middle.sh somefile 50 5</span>
+</pre>
+        selected lines 50-54 instead of lines 46-50.
+        Use <code>$()</code> and the <code>expr</code> command
+        to do this.
+      </li>
+
           <li>
             Which description most accurately explains what the following pipeline does?
 <pre>
@@ -3864,6 +4032,8 @@ done
   <li>I would love just some more examples of tasks you use the shell for - the running example of the data analysis is really helpful. Just more examples would probably help me in thinking about how using shell scripts could help my workflow.</li>
 
   <li>Introduce control-C for interrupting.</li>
+
+  <li>Give an example of sorting without -n that gives the wrong answer.</li>
 
 </ol>
 {% endblock content %}
