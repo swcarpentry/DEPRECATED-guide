@@ -1,16 +1,12 @@
-import sys, sqlite3
+import sys
+import sqlite3
 
-statement = '''
-SELECT PersonID, Project, Hours FROM Experiments WHERE PersonID = ? and Project = ?;
-'''
+statement = 'select reading from survey where taken=? and quant=?;'
 
-connection = sqlite3.connect("lab.db")
+connection = sqlite3.connect('survey.db')
 cursor = connection.cursor()
-for line in sys.stdin:
-    person, project = line.strip().split(' ', 1)
-    cursor.execute(statement, (person, project))
-    results = cursor.fetchall();
-    for r in results:
-        print r
+cursor.execute(statement, (int(sys.argv[1]), sys.argv[2]))
+for r in cursor.fetchall():
+    print r[0]
 cursor.close()
 connection.close()
