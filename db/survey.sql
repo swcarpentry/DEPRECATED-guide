@@ -1,3 +1,5 @@
+-- The `person` table is used to explain the most basic queries.
+-- Note that `danforth` has no measurements.
 create table person(
 	ident    text,
 	personal text,
@@ -10,6 +12,9 @@ insert into person values('lake',     'Anderson',  'Lake');
 insert into person values('roe',      'Valentina', 'Roerich');
 insert into person values('danforth', 'James',     'Danforth');
 
+-- The `site` table is equally simple.  Use it to explain the
+-- difference between databases and spreadsheets: in a spreadsheet,
+-- the lat/long of measurements would probably be duplicated.
 create table site(
 	name text,
 	lat  real,
@@ -20,6 +25,9 @@ insert into site values('DR-1', -49.85, -128.57);
 insert into site values('DR-3', -47.15, -126.72);
 insert into site values('MS-4', -48.87, -123.40);
 
+-- `visited` is an enhanced `join` table: it connects to the lat/long
+-- of specific measurements, and also provides their dates.
+-- Note that #752 is missing a date; we use this to talk about NULL.
 create table visited(
 	ident integer,
 	site  text,
@@ -35,6 +43,13 @@ insert into visited values(752, 'DR-3', NULL);
 insert into visited values(837, 'MS-4', '1932-01-14');
 insert into visited values(844, 'DR-1', '1932-03-22');
 
+-- The `survey` table is the actual readings.  Join it with `site` to
+-- get lat/long, and with `visited` to get dates (except for #752).
+-- Note that Roerich's salinity measurements are an order of magnitude
+-- too large (use this to talk about data cleanup).  Note also that
+-- there are two cases where we don't know who took the measurement,
+-- and that in most cases we don't have an entry (NULL or not) for the
+-- temperature.
 create table survey(
 	taken   integer,
 	person  text,
