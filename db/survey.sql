@@ -1,159 +1,327 @@
--- Back story: expeditions in the Pacific to sample sea water to check
--- on lingering effects of nuclear tests.  Easy to use data to show
--- how to do Boolean tests in "where" clauses, how to aggregate using
--- "group by", how to do simple "join" statements, etc.  The tables
--- and data are also set up to motivate discussion of:
--- * handling missing data
--- * data inconsistencies and cleanup
--- * re-designing tables to make things simpler
-
--- Voyages into the unknown, keyed by name of ship and launch date.
--- * Will later come back and give each Expedition entry an "ident"
---   field so that "Crew" entries can have simpler foreign keys.
--- * Some "Reading" entries will be found to have dates that aren't
---   within the (start, end) of the expedition (look for these as part
---   of the data cleanup discussion).
--- * Some "ended" entries are null (duration of expedition has to be
---   inferred from date of final reading associated with it, but that
---   is hard to do, and not reliable).
--- * Explain use of "YYYY-MM-DD" strings for dates in SQLite, and that
---   "grown-up" databases have real date and duration types.
-create table Expedition(
-       vessel   text not null,
-       started  text not null, -- "YYYY-MM-DD"
-       ended    text,          -- "YYYY-MM-DD"
-       primary key(vessel, started)
+create table person(
+	ident    text,
+	personal text,
+	family	 text
 );
-insert into Expedition values('Miskatonic 1927',  '1927-03-08', '1928-09-15');
-insert into Expedition values('Miskatonic 1929',  '1929-04-15', NULL);
-insert into Expedition values('Pabodie',          '1930-09-26', '1931-05-27');
-insert into Expedition values('Derby Foundation', '1931-09-04', NULL);
 
--- Where have measurements been taken?
--- * Will motivate one-to-many joins (all measurements from a site)
--- * Should we start by having lat/long in the "Reading" table, then
---   separate it so that identifying mistakes in data entry is easier?
-create table Site(
-       ident text not null,
-       lat   real not null, -- signed decimal degrees
-       long  real not null, -- signed decimal degrees
-       primary key(ident)
-);
-insert into Site values('RL-1', -47.15, -126.716667);
-insert into Site values('RL-2', -49.85, -128.566667);
-insert into Site values('PoI',  -48.876667, -123.393333);
+insert into person values('dyer',     'William',   'Dyer');
+insert into person values('pb',       'Frank',     'Pabodie');
+insert into person values('lake',     'Anderson',  'Lake');
+insert into person values('roe',      'Valentina', 'Roerich');
+insert into person values('danforth', 'James',     'Danforth');
 
--- Who has taken measurements?
--- * Explain need for "ident" field by having two surveyors with
---   the same personal/family names.
--- * Include box on why "personal" and "family" rather than "first"
---   and "last" (cultural differences).
--- * Can also test "who didn't go on any expeditions?"
-create table Surveyor(
-       ident    text not null,
-       personal text not null,
-       family   text not null,
-       primary key(ident)
+create table site(
+	name text,
+	lat  real,
+	long real
 );
-insert into Surveyor values('danforth.j', 'James', 'Danforth');
-insert into Surveyor values('danforth.c', 'Charles', 'Danforth');
-insert into Surveyor values('deroure', 'Elspeth', 'De Roure');
-insert into Surveyor values('dyer', 'William', 'Dyer');
-insert into Surveyor values('lake', 'Anderson', 'Lake');
-insert into Surveyor values('pabodie', 'Frank', 'Pabodie');
-insert into Surveyor values('roe', 'Valentina', 'Roerich');
-insert into Surveyor values('zymmer', 'Nikolai', 'Zymantsev');
 
--- Who was part of which expedition?
--- * This is a classic "join table" for representing a many-to-many
---   relationship.
--- * Complexity of two-part foreign key into "Expedition" table will
---   motivate having explicit identifiers for "Expedition" entries.
-create table Crew(
-       vessel   text not null,
-       started  text not null, -- "YYYY-MM-DD"
-       person   text not null,
-       foreign key(vessel, started)
-               references Expedition(vessel, started),
-       unique(vessel, started, person)
-);
-insert into Crew values('Miskatonic 1927',  '1927-03-08', 'dyer');
-insert into Crew values('Miskatonic 1927',  '1927-03-08', 'pabodie');
-insert into Crew values('Miskatonic 1929',  '1929-04-15', 'danforth.j');
-insert into Crew values('Miskatonic 1929',  '1929-04-15', 'danforth.c');
-insert into Crew values('Miskatonic 1929',  '1929-04-15', 'pabodie');
-insert into Crew values('Pabodie',          '1930-09-26', 'pabodie');
-insert into Crew values('Pabodie',          '1930-09-26', 'dyer');
-insert into Crew values('Pabodie',          '1930-09-26', 'lake');
-insert into Crew values('Derby Foundation', '1931-09-04', 'roerich');
+insert into site values('DR-1', -49.85, -128.57);
+insert into site values('DR-3', -47.15, -126.72);
+insert into site values('MS-4', -48.87, -123.40);
 
--- What units are used for various measurements?
--- * Explain that explicit metadata increases longevity of data
---   (without it, can't know if temperatures are C or F).  Compare
---   with lack of units for elevation in "Site" table.
--- * Include units for several measures (e.g., "pressure") that
---   aren't actually used.
-create table Units(
-       measure  text not null,
-       unitname text not null,
-       primary key(measure)
+create table visited(
+	ident integer,
+	site  text,
+	dated text
 );
-insert into Units values('temp',  'C');
-insert into Units values('tempF', 'F');
-insert into Units values('sal',   'pct');
-insert into Units values('rad',   'mBq/l');
-insert into Units values('pres',  'psi');
 
--- Temperature, salinity, and radioactivity measurements.
--- * "measure" is supposed to be one of "temp", "sal", "rad", but have
---   at least one entry that is misspelled.
--- * Often don't know who took a reading (so have null for "person").
--- * Expedition is not explicitly recorded; should be possible to infer
---   by comparing date of reading to dates of expeditions, but since
---   some expeditions overlap, need to use information about person as
---   well.  (This may be too advanced for our lesson.)
-create table Reading(
-       taken    text not null, -- "YYYY-MM-DD"
-       place    text not null, -- a site identifier
-       person   text,          -- a person or NULL
-       measure  text not null, -- one of {"temp", "sal", "rad"}
-       amount   real not null, -- actual reading
-       primary key(place, taken, measure),
-       foreign key(person)
-               references Surveyor(ident),
-       foreign key(place)
-               references Site(ident),
-       foreign key(measure)
-               references Units(measure)
+insert into visited values(619, 'DR-1', '1927-02-08');
+insert into visited values(622, 'DR-1', '1927-02-10');
+insert into visited values(734, 'DR-3', '1939-01-07');
+insert into visited values(735, 'DR-3', '1930-01-12');
+insert into visited values(751, 'DR-3', '1930-02-26');
+insert into visited values(752, 'DR-3', NULL);
+insert into visited values(837, 'MS-4', '1932-01-14');
+insert into visited values(844, 'DR-1', '1932-03-22');
+
+create table survey(
+	taken   integer,
+	person  text,
+	quant   real,
+	reading real
 );
--- FIXME: need to introduce some NULLs for person, and some invalid measurements
-insert into Reading values('1928-02-10', 'RL-1', 'dyer',       'temp',  -3.59);
-insert into Reading values('1928-02-10', 'RL-1', 'pabodie',    'rad',   78.56);
-insert into Reading values('1928-02-11', 'RL-1', 'dyer',       'sal',    3.40);
-insert into Reading values('1928-02-12', 'RL-1', 'dyer',       'temp',  -6.63);
-insert into Reading values('1928-02-12', 'RL-1', 'pabodie',    'rad',   97.68);
-insert into Reading values('1928-02-12', 'RL-1', 'pabodie',    'sal',    4.28);
-insert into Reading values('1929-11-11', 'RL-1', 'danforth.c', 'sal',    4.36);
-insert into Reading values('1929-11-14', 'RL-1', 'danforth.j', 'sal',    3.07);
-insert into Reading values('1929-11-15', 'RL-1', 'pabodie',    'rad',   53.94);
-insert into Reading values('1930-01-02', 'RL-2', 'danforth.j', 'rad',  100.14);
-insert into Reading values('1930-01-05', 'RL-2', 'danforth.j', 'temp',  -0.34);
-insert into Reading values('1930-12-27', 'PoI',  'dyer',       'rad',   47.61);
-insert into Reading values('1930-12-27', 'PoI',  'lake',       'temp',   8.47);
-insert into Reading values('1930-12-28', 'PoI',  'lake',       'sal',    3.10);
-insert into Reading values('1930-12-28', 'PoI',  'lake',       'temp',  10.98);
-insert into Reading values('1931-01-06', 'RL-2', 'pabodie',    'temp',  -4.48);
-insert into Reading values('1931-01-07', 'RL-2', 'pabodie',    'sal',    3.27);
-insert into Reading values('1931-01-08', 'RL-2', 'dyer',       'sal',    4.78);
-insert into Reading values('1931-01-09', 'RL-2', 'dyer',       'sal',    4.72);
-insert into Reading values('1931-01-09', 'RL-2', 'lake',       'temp',  13.77);
-insert into Reading values('1931-01-10', 'RL-2', 'dyer',       'rad',   74.64);
-insert into Reading values('1931-01-10', 'RL-2', 'lake',       'sal',    4.62);
-insert into Reading values('1931-01-10', 'RL-2', 'pabodie',    'temp',   7.69);
-insert into Reading values('1931-12-20', 'PoI',  'roerich',    'rad',   94.42);
-insert into Reading values('1931-12-20', 'PoI',  'roerich',    'sal',    3.24);
-insert into Reading values('1932-01-03', 'RL-2', 'roerich',    'rad',   63.88);
-insert into Reading values('1932-01-04', 'RL-2', 'roerich',    'rad',    9.66);
-insert into Reading values('1932-01-04', 'RL-2', 'roerich',    'temp',   4.34);
-insert into Reading values('1932-01-30', 'RL-1', 'roerich',    'temp',  12.21);
-insert into Reading values('1932-02-02', 'RL-1', 'roerich',    'sal',    4.43);
+
+insert into survey values(619, 'dyer', 'rad',    9.82);
+insert into survey values(619, 'dyer', 'sal',    0.13);
+insert into survey values(622, 'dyer', 'rad',    7.80);
+insert into survey values(622, 'dyer', 'sal',    0.09);
+insert into survey values(734, 'pb',   'rad',    8.41);
+insert into survey values(734, 'lake', 'sal',    0.05);
+insert into survey values(734, 'pb',   'temp', -21.50);
+insert into survey values(735, 'pb',   'rad',    7.22);
+insert into survey values(735, NULL,   'sal',    0.06);
+insert into survey values(735, NULL,   'temp', -26.00);
+insert into survey values(751, 'pb',   'rad',    4.35);
+insert into survey values(751, 'pb',   'temp', -18.50);
+insert into survey values(751, 'lake', 'sal',    0.10);
+insert into survey values(752, 'lake', 'rad',    2.19);
+insert into survey values(752, 'lake', 'sal',    0.09);
+insert into survey values(752, 'lake', 'temp', -16.00);
+insert into survey values(752, 'roe',  'sal',   41.60);
+insert into survey values(837, 'lake', 'rad',    1.46);
+insert into survey values(837, 'lake', 'sal',    0.21);
+insert into survey values(837, 'roe',  'sal',   22.50);
+insert into survey values(844, 'roe',  'rad',   11.25);
+
+select '----------------------------------------';
+select 'Selecting';
+
+select '----------------------------------------';
+select 'get scientist names';
+select family, personal from person;
+
+select '----------------------------------------';
+select 'commands are case insensitive';
+SeLeCt famILY, PERSonal frOM PERson;
+
+select '----------------------------------------';
+select 'we control column order';
+select personal, family from person;
+
+select '----------------------------------------';
+select 'repeat columns';
+select ident, ident, ident from person;
+
+select '----------------------------------------';
+select 'use * for wildcard';
+select * from person;
+
+select '----------------------------------------';
+select 'Removing Duplicates';
+
+select '----------------------------------------';
+select 'show data in survey table';
+select * from survey;
+
+select '----------------------------------------';
+select 'unique quantity names';
+select distinct quant from survey;
+
+select '----------------------------------------';
+select 'tuple uniqueness';
+select distinct taken, quant from survey;
+
+select '----------------------------------------';
+select 'Filtering';
+
+select '----------------------------------------';
+select 'when a particular site was visited';
+select * from visited where site='DR-1';
+
+select '----------------------------------------';
+select 'when a particular site was visited after 1930';
+select * from visited where site='DR-1' and dated>='1930-00-00';
+
+select '----------------------------------------';
+select 'using "or" instead of "and"';
+select * from survey where person in ('lake', 'roe');
+
+select '----------------------------------------';
+select 'using "in" instead of "or"';
+select * from survey where person='lake' or person='roe';
+
+select '----------------------------------------';
+select 'using distinct with "in"';
+select distinct person, quant from survey where person='lake' or person='roe';
+
+select '----------------------------------------';
+select 'Calculating New Values';
+
+select '----------------------------------------';
+select 'correct radiation readings';
+select 1.05 * reading from survey where quant='rad';
+
+select '----------------------------------------';
+select 'convert temperatures to Celsius';
+select taken, round(5*(reading-32)/9, 2) from survey where quant='temp';
+
+select '----------------------------------------';
+select 'Ordering Results';
+
+select '----------------------------------------';
+select 'ascending is the default';
+select reading from survey where quant='rad' order by reading;
+
+select '----------------------------------------';
+select 'order descending';
+select reading from survey where quant='rad' order by reading desc;
+
+select '----------------------------------------';
+select 'ordering and sub-ordering';
+select taken, person from survey order by taken, person;
+
+select '----------------------------------------';
+select 'removing duplicates';
+select distinct taken, person from survey order by taken, person;
+
+select '----------------------------------------';
+select 'Missing Data';
+
+select '----------------------------------------';
+select 'visits before 1930';
+select * from visited where dated<'1930-00-00';
+
+select '----------------------------------------';
+select 'visits after 1930';
+select * from visited where dated>='1930-00-00';
+
+select '----------------------------------------';
+select 'visits with unknown dates (wrong)';
+select * from visited where dated=NULL;
+
+select '----------------------------------------';
+select 'visits with unknown dates (right)';
+select * from visited where dated is NULL;
+
+select '----------------------------------------';
+select 'visits with known dates';
+select * from visited where dated is not NULL;
+
+select '----------------------------------------';
+select 'Combining Data';
+
+select '----------------------------------------';
+select 'combine "site" with "visited"';
+select * from site join visited;
+
+select '----------------------------------------';
+select 'filter where sites match';
+select * from site join visited where site.name=visited.site;
+
+select '----------------------------------------';
+select 'get latitude, longitude, and date';
+select site.lat, site.long, visited.dated
+from   site join visited
+where  site.name=visited.site;
+
+select '----------------------------------------';
+select 'get all radiation readings from DR-1';
+select visited.dated, survey.reading
+from   survey join visited
+where  survey.taken=visited.ident
+  and  visited.site='DR-1'
+  and survey.quant='rad';
+
+select '----------------------------------------';
+select 'get all radiation readings since 1930';
+select 'but notice that #752 is missing (NULL)...';
+select survey.reading
+from   survey join visited
+where  survey.taken=visited.ident
+  and  survey.quant='rad'
+  and  visited.dated>='1930-00-00';
+
+select '----------------------------------------';
+select 'Self-Join';
+
+select '----------------------------------------';
+select 'who has worked together?';
+select 'start by joining "survey" with itself';
+select count(*)
+from   survey X join survey Y;
+
+select '----------------------------------------';
+select 'now keep rows where the two "person" values are different';
+select count(*)
+from   survey X join survey Y
+where  X.person!=Y.person;
+
+select '----------------------------------------';
+select 'now keep distinct values';
+select distinct X.person, Y.person
+from   survey X join survey Y
+where  X.person!=Y.person;
+
+select '----------------------------------------';
+select 'and finally eliminate mirrored duplicates';
+select distinct X.person, Y.person
+from   survey X join survey Y
+where  X.person>Y.person;
+
+select '----------------------------------------';
+select 'Aggregation';
+
+select '----------------------------------------';
+select 'date range';
+select min(dated) from visited;
+select max(dated) from visited;
+select min(dated), max(dated) from visited;
+
+select '----------------------------------------';
+select 'averaging';
+select avg(reading) from survey where quant='sal';
+
+select 'averaging sensible values';
+select avg(reading) from survey
+where quant='sal'
+  and reading<10.0;
+
+select 'counting';
+select count(reading) from survey
+where quant='sal'
+  and reading<10.0;
+
+select 'can count anything';
+select count(*) from survey
+where quant='sal'
+  and reading<10.0;
+
+select 'unaggregated with aggregated takes arbitrary';
+select person, count(*) from survey
+where quant='sal'
+  and reading<10.0;
+
+select '----------------------------------------';
+select 'Grouping';
+
+select '----------------------------------------';
+select   'grouping visited by site only keeps arbitrary';
+select   * from visited
+group by site;
+
+select '----------------------------------------';
+select 'get date ranges for sites';
+select   site, min(dated), max(dated) from visited
+group by site;
+
+select '----------------------------------------';
+select 'radiation readings by person';
+select   person, count(reading), round(avg(reading), 2)
+from     survey
+where    survey.quant='rad'
+group by survey.person;
+
+select '----------------------------------------';
+select 'radiation readings by site';
+select   visited.site, count(survey.reading), round(avg(survey.reading), 2)
+from     visited join survey
+where    visited.ident=survey.taken
+  and    survey.quant='rad'
+group by visited.site;
+
+select '----------------------------------------';
+select 'Sub-Queries';
+
+select '----------------------------------------';
+select 'what measurements do we have with temperatures?';
+select * from survey
+ where taken in
+       (select taken from survey where quant='temp');
+
+select '----------------------------------------';
+select 'who took no measurements (incorrect: not filtering null)?';
+select *
+from   person
+where  person.ident not in
+       (select distinct(person)
+        from survey);
+
+select '----------------------------------------';
+select 'who took no measurements (correct: not filtering null)?';
+select *
+from   person
+where  person.ident not in
+       (select distinct(person)
+        from survey
+        where person is not NULL);
