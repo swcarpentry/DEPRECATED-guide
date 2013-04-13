@@ -1061,6 +1061,33 @@ select * from Site where (lat &gt; -30) or (lat &lt; 30);
       </li>
 
       <li>
+        The <code>union</code> operator combines the results of two queries:
+        <table class="db">
+          <tr>
+            <td colspan="1">
+<pre>select * from Person where ident='dyer' union select * from Person where ident='roe';</pre>
+            </td>
+          </tr>
+          <tr><td>dyer</td><td>William</td><td>Dyer</td></tr>
+          <tr><td>roe</td><td>Valentina</td><td>Roerich</td></tr>
+        </table>
+        Use <code>union</code> to create a consolidated list of salinity measurements
+        in which Roerich's, and only Roerich's,
+        have been corrected as described in the previous challenge.
+        The output should be something like:
+        <table class="db">
+          <tr><td>619</td><td>0.13</td></tr>
+          <tr><td>622</td><td>0.09</td></tr>
+          <tr><td>734</td><td>0.05</td></tr>
+          <tr><td>751</td><td>0.1</td></tr>
+          <tr><td>752</td><td>0.09</td></tr>
+          <tr><td>752</td><td>0.416</td></tr>
+          <tr><td>837</td><td>0.21</td></tr>
+          <tr><td>837</td><td>0.225</td></tr>
+        </table>
+      </li>
+
+      <li>
         The site identifiers in the <code>Visited</code> table have two parts
         separated by a '-':
   <table class="db">
@@ -1097,220 +1124,263 @@ select * from Site where (lat &gt; -30) or (lat &lt; 30);
 
 </section>
 
-    <section id="s:sort">
+<section id="s:sort">
+  <h2>Ordering Results</h2>
 
-      <h2>Sorting</h2>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Write queries that order results according to fields' values.</li>
+      <li>Write queries that order results according to calculated values.</li>
+      <li>Explain why it is possible to sort records using the values of fields that are not displayed.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:sort">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Write queries that order results according to fields' values.</li>
-          <li>Write queries that order results according to calculated values.</li>
-          <li>Explain why it is possible to sort records using the values of fields that are not displayed.</li>
-        </ul>
-      </div>
+  <p>
+    As we mentioned earlier,
+    database records are not stored in any particular order.
+    This means that query results aren't necessarily sorted,
+    and even if they are,
+    we often want to sort them in a different way,
+    e.g., by the name of the project instead of by the name of the scientist.
+    We can do this in SQL by adding an <code>order by</code> clause to our query:
+  </p>
 
-      <p>
-        As we mentioned earlier,
-        database records are not stored in any particular order.
-        This means that query results aren't necessarily sorted,
-        and even if they are,
-        we often want to sort them in a different way,
-        e.g., by the name of the project instead of by the name of the scientist.
-        We can do this in SQL by adding an <code>ORDER BY</code> clause to our query
-        as shown here:
-      </p>
+  <table class="db">
+    <tr>
+      <td colspan="1">
+<pre>select reading from Survey where quant='rad' order by reading;</pre>
+      </td>
+    </tr>
+    <tr><td>1.46</td></tr>
+    <tr><td>2.19</td></tr>
+    <tr><td>4.35</td></tr>
+    <tr><td>7.22</td></tr>
+    <tr><td>7.8</td></tr>
+    <tr><td>8.41</td></tr>
+    <tr><td>9.82</td></tr>
+    <tr><td>11.25</td></tr>
+  </table>
 
-<pre src="src/db/select_order_project_asc.sql">
-SELECT * FROM Experiments ORDER BY Project ASC;
+  <p>
+    By default,
+    results are sorted in ascending order
+    (i.e.,
+    from least to greatest).
+    We can sort in the opposite order using <code>desc</code> (for "descending"):
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="1">
+<pre>select reading from Survey where quant='rad' order by reading desc;</pre>
+      </td>
+    </tr>
+    <tr><td>11.25</td></tr>
+    <tr><td>9.82</td></tr>
+    <tr><td>8.41</td></tr>
+    <tr><td>7.8</td></tr>
+    <tr><td>7.22</td></tr>
+    <tr><td>4.35</td></tr>
+    <tr><td>2.19</td></tr>
+    <tr><td>1.46</td></tr>
+  </table>
+
+  <p class="continue">
+    (And if we want to make it clear that we're sorting in ascending order,
+    we can use <code>asc</code> instead of <code>desc</code>.)
+  </p>
+
+    <p>
+      We can also sort on several fields at once.
+      For example,
+      this query sorts results first in ascending order by <code>taken</code>,
+      and then in descending order by <code>person</code>
+      within each group of equal <code>taken</code> values:
+    </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="2">
+<pre>select taken, person from Survey order by taken asc, person desc;</pre>
+      </td>
+    </tr>
+    <tr><td>619</td><td>dyer</td></tr>
+    <tr><td>619</td><td>dyer</td></tr>
+    <tr><td>622</td><td>dyer</td></tr>
+    <tr><td>622</td><td>dyer</td></tr>
+    <tr><td>734</td><td>pb</td></tr>
+    <tr><td>734</td><td>pb</td></tr>
+    <tr><td>734</td><td>lake</td></tr>
+    <tr><td>735</td><td>pb</td></tr>
+    <tr><td>735</td><td>None</td></tr>
+    <tr><td>735</td><td>None</td></tr>
+    <tr><td>751</td><td>pb</td></tr>
+    <tr><td>751</td><td>pb</td></tr>
+    <tr><td>751</td><td>lake</td></tr>
+    <tr><td>752</td><td>roe</td></tr>
+    <tr><td>752</td><td>lake</td></tr>
+    <tr><td>752</td><td>lake</td></tr>
+    <tr><td>752</td><td>lake</td></tr>
+    <tr><td>837</td><td>roe</td></tr>
+    <tr><td>837</td><td>lake</td></tr>
+    <tr><td>837</td><td>lake</td></tr>
+    <tr><td>844</td><td>roe</td></tr>
+  </table>
+
+  <p>
+    This is easier to understand if we also remove duplicates:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="2">
+<pre>select <span class="highlight">distinct</span> taken, person from Survey order by taken asc, person desc;</pre>
+      </td>
+    </tr>
+    <tr><td>619</td><td>dyer</td></tr>
+    <tr><td>622</td><td>dyer</td></tr>
+    <tr><td>734</td><td>pb</td></tr>
+    <tr><td>734</td><td>lake</td></tr>
+    <tr><td>735</td><td>pb</td></tr>
+    <tr><td>735</td><td>None</td></tr>
+    <tr><td>751</td><td>pb</td></tr>
+    <tr><td>751</td><td>lake</td></tr>
+    <tr><td>752</td><td>roe</td></tr>
+    <tr><td>752</td><td>lake</td></tr>
+    <tr><td>837</td><td>roe</td></tr>
+    <tr><td>837</td><td>lake</td></tr>
+    <tr><td>844</td><td>roe</td></tr>
+  </table>
+
+  <p>
+    Since sorting happens before columns are filtered,
+    we can sort by a field that isn't actually displayed:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="1">
+<pre>select reading from Survey where quant='rad' order by taken;</pre>
+      </td>
+    </tr>
+    <tr><td>9.82</td></tr>
+    <tr><td>7.8</td></tr>
+    <tr><td>8.41</td></tr>
+    <tr><td>7.22</td></tr>
+    <tr><td>4.35</td></tr>
+    <tr><td>2.19</td></tr>
+    <tr><td>1.46</td></tr>
+    <tr><td>11.25</td></tr>
+  </table>
+
+  <p>
+    We can also sort results by the value of an expression.
+    In SQLite,
+    for example,
+    the <code>random</code> function returns a pseudo-random integer
+    each time it is called
+    (i.e.,
+    once per record):
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="2">
+<pre>select random(), ident from Person;</pre>
+      </td>
+    </tr>
+    <tr><td>-6309766557809954936</td><td>dyer</td></tr>
+    <tr><td>-2098461436941487136</td><td>pb</td></tr>
+    <tr><td>-2248225962969032314</td><td>lake</td></tr>
+    <tr><td>6062184424509295966</td><td>roe</td></tr>
+    <tr><td>-1268956870222271271</td><td>danforth</td></tr>
+  </table>
+
+  <p class="continue">
+    So to randomize the order of our query results,
+    e.g., when doing clinical trials,
+    we can sort them by the value of this function:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="1">
+<pre>select ident from Person order by random();</pre>
+      </td>
+    </tr>
+    <tr><td>danforth</td></tr>
+    <tr><td>pb</td></tr>
+    <tr><td>dyer</td></tr>
+    <tr><td>lake</td></tr>
+    <tr><td>roe</td></tr>
+  </table>
+
+  <table class="db">
+    <tr>
+      <td colspan="1">
+<pre>select ident from Person order by random();</pre>
+      </td>
+    </tr>
+    <tr><td>roe</td></tr>
+    <tr><td>dyer</td></tr>
+    <tr><td>pb</td></tr>
+    <tr><td>lake</td></tr>
+    <tr><td>danforth</td></tr>
+  </table>
+
+  <p>
+    Our query pipeline now has four stages
+    (<a href="#f:pipeline_sort_distinct">Figure 5</a>):
+  </p>
+
+  <ol>
+    <li>Select the rows that pass the <code>where</code> criteria.</li>
+    <li>Sort them if required.</li>
+    <li>Filter the columns according to the <code>select</code> criteria.</li>
+    <li>Remove duplicates if required.</li>
+  </ol>
+
+  <figure id="f:pipeline_sort_distinct">
+    <img src="db/pipeline_sort_distinct.png" alt="Four-Stage Query Processing Pipeline" />
+    <figcaption>Figure 5: Four-Stage Query Processing Pipeline</figcaption>
+  </figure>
+
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Use <code>order by</code> (with <code>asc</code> or <code>desc</code>) to order a query's results.</li>
+      <li>Use <code>random</code> to generate pseudo-random numbers.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <ol>
+
+      <li>
+        Create a list of sites identifiers
+        and their distance from the equator in kilometers,
+        sorted from furthest to closest.
+        (A degree of latitude corresponds to 111.12 km.)
+      </li>
+
+      <li>
+        Gina needs a list of radiation measurements from all sites
+        sorted by when they were taken.
+        The query:
+<pre>
+select * from Survey where quant='rad' order by taken;
 </pre>
+        produces the correct answer for the data used in our examples.
+        Explain when and why it might produce the wrong answer.
+      </li>
 
-      <table class="outlined">
-        <tr><td>Sofia Kovalevskaya</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>Dmitri Mendeleev</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Time Travel</td><td>-7.0</td></tr>
-      </table>
+    </ol>
+  </div>
 
-      <p>
-        The keyword <code>ASC</code> at the end is short for "ascending",
-        and means "smallest first".
-        We can sort in the opposite order using <code>DESC</code> (for "descending") instead:
-      </p>
-
-<pre src="src/db/select_order_project_desc.sql">
-SELECT * FROM Experiments ORDER BY Project DESC;
-</pre>
-
-      <table class="outlined">
-        <tr><td>Mikhail Lomonosov</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Time Travel</td><td>-7.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>Dmitri Mendeleev</td><td>Antigravity</td><td>9.0</td></tr>
-      </table>
-
-      <p>
-        We can also sort on several fields at once.
-        For example,
-        this query sorts results in ascending order by project name,
-        and then sorts the results for each project in descending order by name:
-      </p>
-
-<pre src="src/db/select_order_multiple.sql">
-SELECT * FROM Experiments ORDER BY Project ASC, Scientist DESC;
-</pre>
-
-      <table class="outlined">
-        <tr><td>Sofia Kovalevskaya</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>Dmitri Mendeleev</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Time Travel</td><td>-7.0</td></tr>
-      </table>
-
-      <p>
-        We can even sort the results by the value of an expression.
-        In SQLite,
-        for example,
-        the <code>RANDOM</code> function returns a pseudo-random integer:
-      </p>
-
-<pre src="src/db/select_random.sql">
-SELECT RANDOM() FROM Experiments;
-</pre>
-
-      <table class="outlined">
-        <tr><td>-4333583529515760313</td></tr>
-        <tr><td>3661398752594229354</td></tr>
-        <tr><td>-1239522849593007459</td></tr>
-        <tr><td>5085104577194332809</td></tr>
-        <tr><td>7406392079669228295</td></tr>
-        <tr><td>8157275644606127629</td></tr>
-        <tr><td>4936669514230061450</td></tr>
-        <tr><td>3027346145930117288</td></tr>
-      </table>
-
-      <p class="continue">
-        (Try running the query twice and watch the random values change.)
-        So to randomize the order of our query results,
-        we can sort them by the value of this function:
-      </p>
-
-<pre src="src/db/select_order_random.sql">
-SELECT * FROM Experiments ORDER BY RANDOM();
-</pre>
-
-      <table class="outlined">
-        <tr><td>Mikhail Lomonosov</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>Dmitri Mendeleev</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Time Travel</td><td>-7.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Antigravity</td><td>6.5</td></tr>
-      </table>
-
-      <p>
-        We don't actually have to display a column in order to sort by it.
-        For example, the query below sorts by the project name,
-        but only displays the scientist's name and hours.
-        (It is also split across several lines to make it easier to read,
-        which is a good practice for complicated queries).
-      </p>
-
-<pre src="src/db/select_order_project_display_scientist_hours.sql">
-SELECT   Scientist, Hours
-FROM     Experiments
-ORDER BY Project;
-</pre>
-
-      <table class="outlined">
-        <tr><td>Sofia Kovalevskaya</td><td>6.5</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>4.0</td></tr>
-        <tr><td>Dmitri Mendeleev</td><td>9.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>11.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>5.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>9.0</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>-2.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>-7.0</td></tr>
-      </table>
-
-      <p>
-        We can sort on fields that aren't displayed because
-        sorting happens earlier in the processing pipeline than field selection
-        (<a href="#f:pipeline_sort">Figure XXX</a>).
-        Once we include sorting,
-        our pipeline:
-      </p>
-
-      <ul>
-
-        <li>
-          filters rows according to the <code>WHERE</code> clause (if any);
-        </li>
-
-        <li>
-          sorts the results according to the <code>ORDER BY</code> clause (if there is one);
-          and
-        </li>
-
-        <li>
-          displays the specified columns and/or expressions.
-        </li>
-
-      </ul>
-
-      <figure id="f:pipeline_sort">
-        <img src="img/db/pipeline_sort.png" alt="Three-Stage Query Processing Pipeline" />
-      </figure>
-
-      <p>
-        Let's put everything we've seen so far together in a single query:
-      </p>
-
-<pre src="src/db/select_all_options.sql">
-SELECT   *, ROUND(0.1 * Hours, 1)
-FROM     Experiments
-WHERE    Hours > 3
-ORDER BY Project DESC;
-</pre>
-
-      <table class="outlined">
-        <tr><td>Sofia Kovalevskaya</td><td>Teleportation</td><td>11.0</td><td>1.1</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Teleportation</td><td>5.0</td><td>0.5</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Teleportation</td><td>9.0</td><td>0.9</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Antigravity</td><td>6.5</td><td>0.7</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>Antigravity</td><td>4.0</td><td>0.4</td></tr>
-        <tr><td>Dmitri Mendeleev</td><td>Antigravity</td><td>9.0</td><td>0.9</td></tr>
-      </table>
-
-      <p class="continue">
-        The order of the clauses is required by <code>SQL</code>:
-        the <code>SELECT</code> must come before the <code>FROM</code>,
-        the <code>WHERE </code> clause must come next,
-        and the <code>ORDER BY </code> clause must come last.
-      </p>
-
-      <div class="keypoints" id="k:sort">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use <code>ORDER BY <em>field</em> ASC</code> (or <code>DESC</code>) to order a query's results in ascending (or descending) order.</li>
-        </ul>
-      </div>
-
-    </section>
+</section>
 
     <section id="s:aggregate">
 

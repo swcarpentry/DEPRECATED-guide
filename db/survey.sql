@@ -176,11 +176,23 @@ select reading from Survey where quant='rad' order by reading desc;
 
 select '----------------------------------------';
 select 'ordering and sub-ordering';
-select taken, person from Survey order by taken, person;
+select taken, person from Survey order by taken asc, person desc;
 
 select '----------------------------------------';
 select 'removing duplicates';
-select distinct taken, person from Survey order by taken, person;
+select distinct taken, person from Survey order by taken asc, person desc;
+
+select '----------------------------------------';
+select 'sorted by undisplayed column';
+select reading from Survey where quant='rad' order by taken;
+
+select '----------------------------------------';
+select 'randomization';
+select random(), ident from Person;
+
+select '----------------------------------------';
+select 'random sorting';
+select ident from Person order by random();
 
 select '----------------------------------------';
 select 'Missing Data';
