@@ -5,333 +5,400 @@
 {% endblock file_metadata %}
 
 {% block content %}
-<!-- AB: In the text the section are numbered, I would number them here as well. -->
-<!-- AB: It might be nice to have the commands explained in a section either in the section title or listed right under it in the text. -->
-    <ol class="toc">
-      <li><a href="#s:select">Selecting</a></li>
-      <li><a href="#s:distinct">Removing Duplicates</a></li>
-      <li><a href="#s:calc">Calculating New Values</a></li>
-      <li><a href="#s:filter">Filtering</a></li>
-      <li><a href="#s:sort">Sorting</a></li>
-      <li><a href="#s:aggregate">Aggregation</a></li>
-      <li><a href="#s:design">Database Design</a></li>
-      <li><a href="#s:join">Combining Data</a></li>
-      <li><a href="#s:selfjoin">Self Join</a></li>
-      <li><a href="#s:null">Missing Data</a></li>
-      <li><a href="#s:nested">Nested Queries</a></li>
-      <li><a href="#s:create">Creating and Modifying Tables</a></li>
-      <li><a href="#s:transactions">Transactions</a></li>
-      <li><a href="#s:programming">Programming With Databases</a></li>
-      <li><a href="#s:provenance">Provenance Once More</a></li>
-      <li><a href="#s:summary">Summing Up</a></li>
-    </ol>
+<ol class="toc">
+  <li class="fixme">fill in ToC</li>
+</ol>
 
-    <blockquote>
-      We're here to do research,
-      they pay us to teach,
-      we spend our time on administration.
-      <br/>
-      &mdash; Eleni Stroulia
-    </blockquote>
-<!-- AB: I'd like to see some kind of motivation other than administration. -->
-<!-- AB: Databases are used to store information about HST data which I would not call administrative. -->
-<!-- AB: It's more about organzing large quantities of data in an easily searchable way. Maybe there is another word. -->
-    <p>
-      As many scientists have found out the hard way,
-      the real challenges in research have nothing to do with quantum mechanics,
-      protein folding,
-      or the rate at which vulgar toads reproduce in the absence of natural predators.
-      No,
-      the real challenges are all about accounting and administration.
-      In this chapter,
-      we'll see how to use a database to keep track of
-      what our graduate students have worked on.
-      The techniques we'll explore apply directly to other kinds of databases as well,
-      and as we'll see,
-      knowing how to get information <em>out</em> of a database is essential to
-      figuring out how to put data <em>in</em>.
-    </p>
+<p>
+  In the late 1920s and early 1930s,
+  William Dyer,
+  Frank Pabodie,
+  and Valentina Roerich each led expeditions to the
+  <a href="http://en.wikipedia.org/wiki/Pole_of_inaccessibility">Pole of Inaccessibility</a>
+  in the South Pacific,
+  and then onward to Antarctica.
+  Two years ago,
+  Gina Geographer discovered their expedition journals
+  in a storage locker at Miskatonic University.
+  She has scanned and OCR'd the data they contain,
+  and wants to store that information in a way that will make search and analysis easy.
+</p>
 
-    <section id="s:select">
+<p>
+  Gina basically has three options:
+  text files,
+  a spreadsheet,
+  or a database.
+  Text files are easiest to create,
+  and work well with version control,
+  but she would then have to build all her search and analysis herself.
+  Spreadsheets are good for doing simple analysis,
+  but as she found in her last project,
+  they don't handle large or complex data sets very well.
+  She would therefore like to put her data in a database,
+  and this chapter will show her how.
+</p>
 
-      <h2>Selecting</h2>
+<p>
+  As many scientists have found out the hard way,
+  if collecting data is the first 90% of the work,
+  managing it is the other 90%.
+  In this chapter,
+  we'll see how to use a database to store and analyze field observations.
+  The techniques we will explore apply directly to other kinds of databases as well,
+  and as we'll see,
+  knowing how to get information <em>out</em> of a database is essential to
+  figuring out how to put data <em>in</em>.
+</p>
 
-      <div class="understand" id="u:select">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Explain the difference between a table, a database, and a database manager.</li>
-          <li>Explain the difference between a field and a record.</li>
-          <li>Select specific fields from specific tables, and display them in a specific order.</li>
-        </ul>
-      </div>
+<div class="guide">
+  <h2>For Instructors</h2>
 
-      <p>
-        A <a href="glossary.html#relational-database">relational database</a>
-        is a way to store and manipulate information
-        that is arranged as <a href="glossary.html#table">tables</a>.
-        Each table has columns (also known as <a href="glossary.html#field-database">fields</a>) which describe the data,
-        and rows (also known as <a href="glossary.html#record-database">records</a>) which contain the data.
-      </p>
+  <p class="fixme">
+    Write the instructors' introduction.
+  </p>
+</div>
 
-      <p id="a:dbms">
-        When we are using a spreadsheet,
-        we put formulas into cells to calculate new values based on old ones.
-        When we are using a database,
-        we send commands
-        (usually called <a href="glossary.html#query">queries</a>)
-        to a <a href="glossary.html#database-manager">database manager</a>:
-        a program that manipulates the database for us.
-        The database manager does whatever lookups and calculations the query specifies,
-        returning the results in a tabular form
-        that we can then use as a starting point for further queries.
-      </p>
+<section id="s:select">
+  <h2>Selecting</h2>
 
-      <p>
-        Queries are written in a language called <a href="glossary.html#sql">SQL</a>,
-        which stands for "Structured Query Language".
-        SQL provides hundreds of different ways to analyze and recombine data;
-        we will only look at a handful,
-        but that handful accounts for most of what scientists do.
-      </p>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Explain the difference between a table, a database, and a database manager.</li>
+      <li>Explain the difference between a field and a record.</li>
+      <li>Select specific fields from specific tables, and display them in a specific order.</li>
+    </ul>
+  </div>
 
-      <p>
-        Here's a simple database that records how many hours scientists have spent
-        on various projects in a research lab.
-        It consists of a single table called <code>Experiments</code>
-        with three fields&mdash;scientists, experiment, and hours&mdash;and eight records.
-        Each record stores a scientist's hours on one project.
-      </p>
+  <p>
+    A <a href="glossary.html#relational-database">relational database</a>
+    is a way to store and manipulate information
+    that is arranged as <a href="glossary.html#table">tables</a>.
+    Each table has columns (also known as <a href="glossary.html#field-database">fields</a>) which describe the data,
+    and rows (also known as <a href="glossary.html#record-database">records</a>) which contain the data.
+  </p>
 
-      <table class="outlined" src="db/create_single_table_experiments.sql">
-        <tr><td colspan="3" align="center"><strong>Experiments</strong></td></tr>
-        <tr>
-          <td><strong>Scientist</strong></td>
-          <td><strong>Project</strong></td>
-          <td><strong>Hours</strong></td>
-        </tr>
-        <tr>
-          <td>Sofia Kovalevskaya</td>
-          <td>Antigravity</td>
-          <td>6.5</td>
-        </tr>
-        <tr>
-          <td>Sofia Kovalevskaya</td>
-          <td>Teleportation</td>
-          <td>11.0</td>
-        </tr>
-        <tr>
-          <td>Sofia Kovalevskaya</td>
-          <td>Teleportation</td>
-          <td>5.0</td>
-        </tr>
-        <tr>
-          <td>Mikhail Lomonosov</td>
-          <td>Antigravity</td>
-          <td>4.0</td>
-        </tr>
-        <tr>
-          <td>Mikhail Lomonosov</td>
-          <td>Time Travel</td>
-          <td>-2.0</td>
-        </tr>
-        <tr>
-          <td>Dmitri Mendeleev</td>
-          <td>Antigravity</td>
-          <td>9.0</td>
-        </tr>
-        <tr>
-          <td>Ivan Pavlov</td>
-          <td>Teleportation</td>
-          <td>9.0</td>
-        </tr>
-        <tr>
-          <td>Ivan Pavlov</td>
-          <td>Time Travel</td>
-          <td>-7.0</td>
-        </tr>
-      </table>
+  <p id="a:dbms">
+    When we are using a spreadsheet,
+    we put formulas into cells to calculate new values based on old ones.
+    When we are using a database,
+    we send commands
+    (usually called <a href="glossary.html#query">queries</a>)
+    to a <a href="glossary.html#database-manager">database manager</a>:
+    a program that manipulates the database for us.
+    The database manager does whatever lookups and calculations the query specifies,
+    returning the results in a tabular form
+    that we can then use as a starting point for further queries.
+  </p>
 
-      <p class="continue">
-        Notice that there are two entries for Sofia Kovalevskaya's work on
-        the Teleportation project.
-        This could mean that she worked on it at two different times,
-        or it could be a data entry error.
-        We'll come back to this question <a href="#a:keys">later</a>.
-      </p>
+  <p>
+    Queries are written in a language called <a href="glossary.html#sql">SQL</a>,
+    which stands for "Structured Query Language".
+    SQL provides hundreds of different ways to analyze and recombine data;
+    we will only look at a handful,
+    but that handful accounts for most of what scientists do.
+  </p>
 
-      <p>
-        For now,
-        let's write an SQL query that gets people's names and hours.
-        We do this using the SQL command <code>SELECT</code>,
-        giving it the names of the columns we want to read and the table to read them from.
-        (We have to provide the table name because most databases contain more than one table.)
-        Our query looks like this:
-      </p>
-<!-- AB: I would indent the command line text -->
-<pre src="src/db/select_scientist_hours.sql">
-SELECT Scientist, Hours FROM Experiments;
-</pre>
+  <p>
+    <a href="#f:survey_db">Figure 1</a> shows
+    a simple database that stores some of the data
+    Gina extracted from the logs of those long-ago expeditions.
+    It contains four tables:
+  </p>
 
-      <p>
-        We have capitalized the words <code>SELECT</code> and <code>FROM</code> because they are SQL keywords.
-        SQL is actually case insensitive&mdash;we could write <code>select</code>
-        or <code>sElEcT</code>&mdash;but
-        we will stick to upper case so that it is clear what is a keyword and what is not.
-        The semi-colon at the end tells the database manager that the command is complete.
-        <!-- AB: You can still write commands without the semi-colon. However, after you hit enter, you will have to type -->
-        <!-- AB: go to tell the database manager that the command is complete. -->
-        When it runs,
-        it shows us the two columns of the <code>Experiments</code> table that we asked for:
-      </p>
-<!-- AB: Put in a little more cell padding in all of your tables. -->
-      <table class="outlined">
-        <tr><td>Sofia Kovalevskaya</td><td>6.5</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>11.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>5.0</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>4.0</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>-2.0</td></tr>
-        <tr><td>Dmitri Mendeleev</td><td>9.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>9.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>-7.0</td></tr>
-      </table>
+  <table>
+    <tr>
+      <th>Table</th>
+      <th>Purpose</th>
+    </tr>
+    <tr>
+      <td><code>Person</code></td>
+      <td>People who took readings.</td>
+    </tr>
+    <tr>
+      <td><code>Site</code></td>
+      <td>Locations of observation sites.</td>
+    </tr>
+    <tr>
+      <td><code>Visited</code></td>
+      <td>When readings were taken at specific sites.</td>
+    </tr>
+    <tr>
+      <td><code>Survey</code></td>
+      <td>The actual measurement values.</td>
+    </tr>
+  </table>
 
-      <p class="continue">
-        Exactly <em>how</em> the database displays the query's results
-        depends on what kind of interface we are using.
-        If we are running <code>sqlite</code> from the shell,
-        its default output looks like this:
-      </p>
+  <figure id="f:survey_db">
+    <table>
+      <tr>
+        <td valign="top">
+          <table>
+            <tr><th colspan="3">Person</th></tr>
+            <tr><td>dyer</td><td>William</td><td>Dyer</td></tr>
+            <tr><td>pb</td><td>Frank</td><td>Pabodie</td></tr>
+            <tr><td>lake</td><td>Anderson</td><td>Lake</td></tr>
+            <tr><td>roe</td><td>Valentina</td><td>Roerich</td></tr>
+            <tr><td>danforth</td><td>James</td><td>Danforth</td></tr>
+          </table>
+          <table>
+            <tr><th colspan="3">Site</th></tr>
+            <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td></tr>
+            <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td></tr>
+            <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td></tr>
+          </table>
+          <table>
+            <tr><th colspan="3">Visited</th></tr>
+            <tr><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
+            <tr><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
+            <tr><td>734</td><td>DR-3</td><td>1939-01-07</td></tr>
+            <tr><td>735</td><td>DR-3</td><td>1930-01-12</td></tr>
+            <tr><td>751</td><td>DR-3</td><td>1930-02-26</td></tr>
+            <tr><td>752</td><td>DR-3</td><td>NULL</td></tr>
+            <tr><td>837</td><td>MS-4</td><td>1932-01-14</td></tr>
+            <tr><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
+          </table>
+        </td>
+        <td valign="top">
+          <table>
+            <tr><th colspan="4">Survey</th></tr>
+            <tr><td>619</td><td>dyer</td><td>rad</td><td>9.82</td></tr>
+            <tr><td>619</td><td>dyer</td><td>sal</td><td>0.13</td></tr>
+            <tr><td>622</td><td>dyer</td><td>rad</td><td>7.8</td></tr>
+            <tr><td>622</td><td>dyer</td><td>sal</td><td>0.09</td></tr>
+            <tr><td>734</td><td>pb</td><td>rad</td><td>8.41</td></tr>
+            <tr><td>734</td><td>lake</td><td>sal</td><td>0.05</td></tr>
+            <tr><td>734</td><td>pb</td><td>temp</td><td>-21.5</td></tr>
+            <tr><td>735</td><td>pb</td><td>rad</td><td>7.22</td></tr>
+            <tr><td>735</td><td>NULL</td><td>sal</td><td>0.06</td></tr>
+            <tr><td>735</td><td>NULL</td><td>temp</td><td>-26.0</td></tr>
+            <tr><td>751</td><td>pb</td><td>rad</td><td>4.35</td></tr>
+            <tr><td>751</td><td>pb</td><td>temp</td><td>-18.5</td></tr>
+            <tr><td>751</td><td>lake</td><td>sal</td><td>0.1</td></tr>
+            <tr><td>752</td><td>lake</td><td>rad</td><td>2.19</td></tr>
+            <tr><td>752</td><td>lake</td><td>sal</td><td>0.09</td></tr>
+            <tr><td>752</td><td>lake</td><td>temp</td><td>-16.0</td></tr>
+            <tr><td>752</td><td>roe</td><td>sal</td><td>41.6</td></tr>
+            <tr><td>837</td><td>lake</td><td>rad</td><td>1.46</td></tr>
+            <tr><td>837</td><td>lake</td><td>sal</td><td>0.21</td></tr>
+            <tr><td>837</td><td>roe</td><td>sal</td><td>22.5</td></tr>
+            <tr><td>844</td><td>roe</td><td>rad</td><td>11.25</td></tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <figcaption>Figure 1: Survey Database</figcaption>
+  </figure>
+
+  <p>
+    Notice that three entries&mdash;one in the <code>Visited</code> table,
+    and two in the <code>Survey</code> table&mdash;are shown as <code>NULL</code>.
+    We'll return to these values <a href="#s:null">later</a>.
+    For now,
+    let's write an SQL query that displays scientists' names.
+    We do this using the SQL command <code>select</code>,
+    giving it the names of the columns we want and the table we want them from.
+    Our query and its output look like this:
+  </p>
 
 <pre>
-<span class="out">Sofia Kovalevskaya|6.5
-Sofia Kovalevskaya|11.0
-Sofia Kovalevskaya|5.0
-Mikhail Lomonosov|4.0
-Mikhail Lomonosov|-2.0
-Dmitri Mendeleev|9.0
-Ivan Pavlov|9.0
-Ivan Pavlov|-7.0</span>
+sqlite&gt; <span class="in">select family, personal from Person;</span>
+</pre>
+<table class="db">
+  <tr><td>Dyer</td><td>William</td></tr>
+  <tr><td>Pabodie</td><td>Frank</td></tr>
+  <tr><td>Lake</td><td>Anderson</td></tr>
+  <tr><td>Roerich</td><td>Valentina</td></tr>
+  <tr><td>Danforth</td><td>James</td></tr>
+</table>
+
+  <p>
+    The semi-colon at the end of the query
+    tells the database manager that the query is complete and ready to run.
+    If we enter the query without the semi-colon,
+    or press <span class="key">enter</span> part-way through the query,
+    the SQLite interpreter will give us a different prompt
+    to show us that it's waiting for more input:
+  </p>
+
+<pre>
+sqlite&gt; <span class="in">select family, personal</span>
+   ...&gt; <span class="in">from Person</span>
+   ...&gt; <span class="in">;</span>
+</pre>
+<table class="db">
+<tr><td>Dyer</td><td>William</td></tr>
+<tr><td>Pabodie</td><td>Frank</td></tr>
+<tr><td>Lake</td><td>Anderson</td></tr>
+<tr><td>Roerich</td><td>Valentina</td></tr>
+<tr><td>Danforth</td><td>James</td></tr>
+</table>
+
+  <p class="continue">
+    From now on,
+    we won't bother to display the prompt(s) with our commands.
+  </p>
+
+  <div class="box">
+    <h3>Case and Consistency</h3>
+
+    <p>
+      We have written our command and the column names in lower case,
+      and the table name in title case,
+      but we could use any mix:
+      SQL is <a href="glossary.html#case-insensitive">case insensitive</a>,
+      so we could write them all in upper case,
+      or even like this:
+    </p>
+
+<pre>
+<span class="in">SeLeCt famILY, PERSonal frOM PERson;</span>
 </pre>
 
-      <p class="continue">
-        If we are using a graphical interface,
-        such as the <a href="https://addons.mozilla.org/en-US/firefox/addon/sqlite-manager/">SQLite Manager</a>
-        plugin for Firefox,
-        our output will be displayed more readably
-        (<a href="#f:firefox_plugin">Figure XXX</a>).
-        We'll use a simple table-based display for now.
-      </p>
+    <p>    
+      But please don't:
+      large SQL queries are hard enough to read
+      without the extra cognitive load of random capitalization.
+    </p>
+  </div>
 
-      <figure id="f:firefox_plugin">
-        <img src="img/db/firefox_plugin.png" alt="SQLite Manager Plugin for Firefox" />
-      </figure>
+  <div class="box">
+    <h3>Displaying Results</h3>
 
-      <p>
-        If we want the project name to our output,
-        we can just add that to the list of fields:
-      </p>
+    <p>
+      Exactly <em>how</em> the database displays the query's results
+      depends on what kind of interface we are using.
+      If we are running SQLite directly from the shell,
+      its default output looks like this:
+    </p>
 
-<pre src="src/db/select_scientist_hours_project.sql">
-SELECT Scientist, Hours, Project FROM Experiments;
+<span class="out">Dyer|William
+Pabodie|Frank
+Lake|Anderson
+Roerich|Valentina
+Danforth|James</span>
+
+    <p class="continue">
+      If we are using a graphical interface,
+      such as the <a href="https://addons.mozilla.org/en-US/firefox/addon/sqlite-manager/">SQLite Manager</a> plugin for Firefox
+      or the <a href="fixme">database extension</a> for the IPython Notebook,
+      our output will be displayed graphically
+      (<a href="#f:firefox_output">Figure 2</a>
+      and <a href="#f:notebook_output">Figure 3</a>).
+      We'll use a simple table-based display in these notes.
+    </p>
+
+    <figure id="f:firefox_output">
+      <img src="db/firefox_output.png" alt="Firefox SQLite Manager Output" />
+      <figcaption>Firefox SQLite Manager Output</figcaption>
+    </figure>
+
+    <figure id="f:notebook_output">
+      <img src="db/notebook_output.png" alt="IPython Notebook Database Extension Output" />
+      <figcaption>IPython Notebook Database Extension Output</figcaption>
+    </figure>
+
+  </div>
+
+  <p>
+    Going back to our query,
+    it's important to understand that
+    the rows and columns in a database table aren't actually stored in any particular order.
+    They will always be <em>displayed</em> in some order,
+    but we can control that in various ways.
+    For example,
+    we could swap the columns in the output by writing our query as:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="2">
+<pre>select personal, family from Person;</pre>
+      </td>
+    </tr>
+    <tr><td>William</td><td>Dyer</td></tr>
+    <tr><td>Frank</td><td>Pabodie</td></tr>
+    <tr><td>Anderson</td><td>Lake</td></tr>
+    <tr><td>Valentina</td><td>Roerich</td></tr>
+    <tr><td>James</td><td>Danforth</td></tr>
+  </table>
+
+  <p class="continue">
+    or even repeat columns:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="3">
+<pre>select ident, ident, ident from Person;</pre>
+      </td>
+    </tr>
+    <tr><td>dyer</td><td>dyer</td><td>dyer</td></tr>
+    <tr><td>pb</td><td>pb</td><td>pb</td></tr>
+    <tr><td>lake</td><td>lake</td><td>lake</td></tr>
+    <tr><td>roe</td><td>roe</td><td>roe</td></tr>
+    <tr><td>danforth</td><td>danforth</td><td>danforth</td></tr>
+  </table>
+
+  <p class="continue">
+    We will see ways to rearrange the rows <a href="#s:sort">later</a>.
+  </p>
+
+  <p>
+    As a shortcut, we can select all of the columns in a table
+    using the wildcard <code>*</code>:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="3">
+<pre>select * from Person;</pre>
+      </td>
+    </tr>
+    <tr><td>dyer</td><td>William</td><td>Dyer</td></tr>
+    <tr><td>pb</td><td>Frank</td><td>Pabodie</td></tr>
+    <tr><td>lake</td><td>Anderson</td><td>Lake</td></tr>
+    <tr><td>roe</td><td>Valentina</td><td>Roerich</td></tr>
+    <tr><td>danforth</td><td>James</td><td>Danforth</td></tr>
+  </table>
+
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>A relational database stores information in tables with fields and records.</li>
+      <li>A database manager is a program that manipulates a database.</li>
+      <li>The commands or queries given to a database manager are usually written in a specialized language called SQL.</li>
+      <li>SQL is case insensitive.</li>
+      <li>The rows and columns of a database table aren't stored in any particular order.</li>
+      <li>Use <code>select <em>fields</em> from <em>table</em></code> to get all the values for specific fields from a single table.</li>
+      <li>Use <code>select * from <em>table</em></code> to select everything from a table.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <ol>
+      <li>
+        Write a query that selects only site names from the <code>Site</code> table.
+      </li>
+
+      <li>
+        Many people format queries as:
+<pre>
+SELECT personal, family FROM person;
 </pre>
-
-      <table class="outlined">
-        <tr><td>Sofia Kovalevskaya</td><td>6.5</td><td>Antigravity</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>11.0</td><td>Teleportation</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>5.0</td><td>Teleportation</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>4.0</td><td>Antigravity</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>-2.0</td><td>Time Travel</td></tr>
-        <tr><td>Dmitri Mendeleev</td><td>9.0</td><td>Antigravity</td></tr>
-        <tr><td>Ivan Pavlov</td><td>9.0</td><td>Teleportation</td></tr>
-        <tr><td>Ivan Pavlov</td><td>-7.0</td><td>Time Travel</td></tr>
-      </table>
-
-      <p>
-        It's important to understand that
-        the rows and columns in a database table aren't actually stored in any particular order.
-        They will always be <em>displayed</em> in some order,
-        but we can control that in various ways.
-        For example,
-        we could rearrange the columns in the output by writing our query as:
-      </p>
-
-<pre src="src/db/select_project_scientist_hours.sql">
-SELECT Project, Scientist, Hours FROM Experiments;
+        or as:
+<pre>
+select Personal, Family from PERSON;
 </pre>
+        what style do you find easiest to read, and why?
+      </li>
+    </ol>
+  </div>
 
-      <table class="outlined">
-        <tr><td>Antigravity</td><td>Sofia Kovalevskaya</td><td>6.5</td></tr>
-        <tr><td>Teleportation</td><td>Sofia Kovalevskaya</td><td>11.0</td></tr>
-        <tr><td>Teleportation</td><td>Sofia Kovalevskaya</td><td>5.0</td></tr>
-        <tr><td>Antigravity</td><td>Mikhail Lomonosov</td><td>4.0</td></tr>
-        <tr><td>Time Travel</td><td>Mikhail Lomonosov</td><td>-2.0</td></tr>
-        <tr><td>Antigravity</td><td>Dmitri Mendeleev</td><td>9.0</td></tr>
-        <tr><td>Teleportation</td><td>Ivan Pavlov</td><td>9.0</td></tr>
-        <tr><td>Time Travel</td><td>Ivan Pavlov</td><td>-7.0</td></tr>
-      </table>
-
-      <p class="continue">
-        or even repeat columns:
-      </p>
-
-<pre make="select_project_project">
-SELECT Project, Project FROM Experiments;
-</pre>
-
-      <table class="outlined">
-        <tr><td>Antigravity</td><td>Antigravity</td></tr>
-        <tr><td>Teleportation</td><td>Teleportation</td></tr>
-        <tr><td>Teleportation</td><td>Teleportation</td></tr>
-        <tr><td>Antigravity</td><td>Antigravity</td></tr>
-        <tr><td>Time Travel</td><td>Time Travel</td></tr>
-        <tr><td>Antigravity</td><td>Antigravity</td></tr>
-        <tr><td>Teleportation</td><td>Teleportation</td></tr>
-        <tr><td>Time Travel</td><td>Time Travel</td></tr>
-      </table>
-
-      <p class="continue">
-        We will see ways to rearrange the rows <a href="#s:sort">later</a>.
-      </p>
-
-      <p>
-        As a shortcut, we can select all of the columns in a table
-        using the wildcard <code>*</code>.
-        For example:
-      </p>
-
-<pre src="src/db/select_star">
-SELECT * FROM Experiments;
-</pre>
-
-      <p class="continue">
-        selects all of the data in the <code>Experiments</code> table:
-      </p>
-
-      <table class="outlined">
-        <tr><td>Sofia Kovalevskaya</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>Dmitri Mendeleev</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Time Travel</td><td>-7.0</td></tr>
-      </table>
-
-      <div class="keypoints" id="k:select">
-        <h3>Summary</h3>
-        <ul>
-          <li idea="modelview">A relational database stores information in tables with fields and records.</li>
-          <li>A database manager is a program that manipulates a database.</li>
-          <li>The commands or queries given to a database manager are usually written in a specialized language called SQL.</li>
-          <li>SQL is case insensitive.</li>
-          <li>The rows and columns of a database table aren't stored in any particular order.</li>
-          <li>Use <code>SELECT <em>fields</em> FROM <em>table</em></code> to get all the values for specific fields from a single table.</li>
-          <li>Use <code>SELECT * FROM <em>table</em></code> to select everything from a table.</li>
-        </ul>
-      </div>
-
-    </section>
+</section>
 
     <section id="s:distinct">
 
