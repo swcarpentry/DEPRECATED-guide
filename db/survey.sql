@@ -52,7 +52,7 @@ insert into Visited values(844, 'DR-1', '1932-03-22');
 -- temperature.
 create table Survey(
 	taken   integer,
-	Person  text,
+	person  text,
 	quant   real,
 	reading real
 );
@@ -106,8 +106,8 @@ select '----------------------------------------';
 select 'Removing Duplicates';
 
 select '----------------------------------------';
-select 'show data in survey table';
-select * from Survey;
+select 'show quantities in survey table';
+select quant from Survey;
 
 select '----------------------------------------';
 select 'unique quantity names';
@@ -125,16 +125,24 @@ select 'when a particular site was visited';
 select * from Visited where site='DR-1';
 
 select '----------------------------------------';
+select 'filtering columns after "where"';
+select ident from Visited where site='DR-1';
+
+select '----------------------------------------';
 select 'when a particular site was visited after 1930';
-select * from Visited where site='DR-1' and dated>='1930-00-00';
+select * from Visited where (site='DR-1') and (dated>='1930-00-00');
 
 select '----------------------------------------';
 select 'using "or" instead of "and"';
-select * from Survey where person in ('lake', 'roe');
+select * from Survey where person='lake' or person='roe';
 
 select '----------------------------------------';
 select 'using "in" instead of "or"';
-select * from Survey where person='lake' or person='roe';
+select * from Survey where person in ('lake', 'roe');
+
+select '----------------------------------------';
+select 'with parentheses';
+select * from Survey where quant='sal' and person='lake' or person='roe';
 
 select '----------------------------------------';
 select 'using distinct with "in"';

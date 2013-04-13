@@ -299,12 +299,12 @@ Danforth|James</span>
 
     <figure id="f:firefox_output">
       <img src="db/firefox_output.png" alt="Firefox SQLite Manager Output" />
-      <figcaption>Firefox SQLite Manager Output</figcaption>
+      <figcaption>Figure 2: Firefox SQLite Manager Output</figcaption>
     </figure>
 
     <figure id="f:notebook_output">
       <img src="db/notebook_output.png" alt="IPython Notebook Database Extension Output" />
-      <figcaption>IPython Notebook Database Extension Output</figcaption>
+      <figcaption>Figure 3: IPython Notebook Database Extension Output</figcaption>
     </figure>
 
   </div>
@@ -408,107 +408,496 @@ select Personal, Family from PERSON;
 
 </section>
 
-    <section id="s:distinct">
+<section id="s:distinct">
+  <h2>Removing Duplicates</h2>
 
-      <h2>Removing Duplicates</h2>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Write queries that only display distinct results once.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:distinct">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Write queries that only display each different result once.</li>
-        </ul>
-      </div>
+  <p>
+    Data is often redundant,
+    so queries often return redundant information.
+    For example,
+    if we select the quantitites that have been measured
+    from the <code>survey</code> table,
+    we get this:
+  </p>
 
-      <p>
-        Queries often return redundant information.
-        For example:
-      </p>
+  <table class="db">
+    <tr>
+      <td colspan="1">
+<pre>select quant from Survey;</pre>
+      </td>
+    </tr>
+    <tr><td>rad</td></tr>
+    <tr><td>sal</td></tr>
+    <tr><td>rad</td></tr>
+    <tr><td>sal</td></tr>
+    <tr><td>rad</td></tr>
+    <tr><td>sal</td></tr>
+    <tr><td>temp</td></tr>
+    <tr><td>rad</td></tr>
+    <tr><td>sal</td></tr>
+    <tr><td>temp</td></tr>
+    <tr><td>rad</td></tr>
+    <tr><td>temp</td></tr>
+    <tr><td>sal</td></tr>
+    <tr><td>rad</td></tr>
+    <tr><td>sal</td></tr>
+    <tr><td>temp</td></tr>
+    <tr><td>sal</td></tr>
+    <tr><td>rad</td></tr>
+    <tr><td>sal</td></tr>
+    <tr><td>sal</td></tr>
+    <tr><td>rad</td></tr>
+  </table>
 
-<pre src="src/db/select_project.sql">
-SELECT Project FROM Experiments;
+  <p>
+    We can eliminate the redundant output
+    to make the result more readable
+    by adding the <code>distinct</code> keyword
+    to our query:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="1">
+<pre>select distinct quant from Survey;</pre>
+      </td>
+    </tr>
+    <tr><td>rad</td></tr>
+    <tr><td>sal</td></tr>
+    <tr><td>temp</td></tr>
+  </table>
+
+  <p>
+    If we select more than one column&mdash;for example,
+    both the survey site ID and the quantity measured&mdash;then
+    the distinct pairs of values are returned:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="2">
+<pre>select distinct taken, quant from Survey;</pre>
+      </td>
+    </tr>
+    <tr><td>619</td><td>rad</td></tr>
+    <tr><td>619</td><td>sal</td></tr>
+    <tr><td>622</td><td>rad</td></tr>
+    <tr><td>622</td><td>sal</td></tr>
+    <tr><td>734</td><td>rad</td></tr>
+    <tr><td>734</td><td>sal</td></tr>
+    <tr><td>734</td><td>temp</td></tr>
+    <tr><td>735</td><td>rad</td></tr>
+    <tr><td>735</td><td>sal</td></tr>
+    <tr><td>735</td><td>temp</td></tr>
+    <tr><td>751</td><td>rad</td></tr>
+    <tr><td>751</td><td>temp</td></tr>
+    <tr><td>751</td><td>sal</td></tr>
+    <tr><td>752</td><td>rad</td></tr>
+    <tr><td>752</td><td>sal</td></tr>
+    <tr><td>752</td><td>temp</td></tr>
+    <tr><td>837</td><td>rad</td></tr>
+    <tr><td>837</td><td>sal</td></tr>
+    <tr><td>844</td><td>rad</td></tr>
+  </table>
+
+  <p>
+    Notice in both cases that duplicates are removed
+    even if they didn't appear to be adjacent in the database.
+    Again,
+    it's important to remember that rows aren't actually ordered:
+    they're just displayed that way.
+  </p>
+
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Use <code>distinct</code> to eliminate duplicates from a query's output.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <ol>
+
+      <li>
+        Write a query that selects distinct dates from the <code>Site</code> table.
+      </li>
+
+      <li>
+        If you are using SQLite from the command line,
+        you can run a single query by passing it to the interpreter
+        right after the path to the database file:
+<pre>
+$ <span class="in">sqlite3 survey.db 'select * from Person;'</span>
+<span class="out">dyer|William|Dyer
+pb|Frank|Pabodie
+lake|Anderson|Lake
+roe|Valentina|Roerich
+danforth|James|Danforth</span>
 </pre>
-
-      <p class="continue">
-        displays some project names multiple times (once for each occurrence):
-      </p>
-
-      <table class="outlined">
-        <tr><td>Antigravity</td></tr>
-        <tr><td>Teleportation</td></tr>
-        <tr><td>Teleportation</td></tr>
-        <tr><td>Antigravity</td></tr>
-        <tr><td>Time Travel</td></tr>
-        <tr><td>Antigravity</td></tr>
-        <tr><td>Teleportation</td></tr>
-        <tr><td>Time Travel</td></tr>
-      </table>
-
-      <p class="continue">
-        We can eliminate the redundant copies by adding the <code>DISTINCT</code> keyword
-        to our query:
-      </p>
-
-<pre src="src/db/select_distinct_project.sql">
-SELECT DISTINCT Project FROM Experiments;
+        Fill in the missing commands in the pipeline below
+        so that the output contains no redundant values.
+<pre>
+$ <span class="in">sqlite3 survey.db 'select person, quant from Survey;' | <em>command 1</em> | <em>command 2</em></span>
 </pre>
+        Do you think this is less efficient, just as efficient, or more efficient
+        that using <code>distinct</code> for large data?
+      </li>
 
-      <table class="outlined">
-        <tr><td>Antigravity</td></tr>
-        <tr><td>Teleportation</td></tr>
-        <tr><td>Time Travel</td></tr>
-      </table>
+    </ol>
+  </div>
 
-      <p>
-        If we select more than one column&mdash;for example,
-        both the project name and the hours&mdash;then
-        the distinct pairs of values are returned.
-        For example,
-        the query below only displays Sofia Kovalevskaya and the Teleportation project once,
-        even though there are two entries in the database for
-        the hours she spent on it:
-      </p>
+</section>
 
-<pre src="src/db/select_distinct_project_hours.sql">
-SELECT DISTINCT Project, Scientist FROM Experiment;
+<section id="s:filter">
+  <h2>Filtering</h2>
+
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Write queries that select records based on the values of their fields.</li>
+      <li>Write queries that select records using combinations of several tests on their fields' values.</li>
+      <li>Build up complex filtering criteria incrementally.</li>
+      <li>Explain the logical order in which filtering by field value and displaying fields takes place.</li>
+    </ul>
+  </div>
+
+  <p>
+    One of the most powerful features of a database is
+    the ability to <a href="glossary.html#filter">filter</a> data,
+    i.e.,
+    to select only those records that match certain criteria.
+    For example,
+    suppose we want to see when a particular site was visited.
+    We can select these records from the <code>Visited</code> table
+    by using a <code>where</code> clause in our query:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="3">
+<pre>select * from Visited where site='DR-1';</pre>
+      </td>
+    </tr>
+    <tr><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
+    <tr><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
+    <tr><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
+  </table>
+
+  <p>
+    The database manager executes this query in two stages
+    (<a href="#f:pipeline_where">Figure 4</a>).
+    First,
+    it checks at each row in the <code>Visited</code> table
+    to see which ones satisfy the <code>where</code>.
+    It then uses the column names following the <code>select</code> keyword
+    to determine what columns to display.
+  </p>
+
+  <figure id="f:pipeline_where">
+    <img src="db/pipeline_where.png" alt="Two-Stage Query Processing Pipeline" />
+    <figcaption>Figure 4: Two-Stage Query Processing Pipeline</figcaption>
+  </figure>
+
+  <p>
+    This processing order means that
+    we can filter records using <code>where</code>
+    based on values in columns that aren't then displayed:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="1">
+<pre>select ident from Visited where site='DR-1';</pre>
+      </td>
+    </tr>
+    <tr><td>619</td></tr>
+    <tr><td>622</td></tr>
+    <tr><td>844</td></tr>
+  </table>
+
+  <p>
+    We can use many other Boolean operators to filter our data.
+    For example,
+    we can ask for all information from the DR-1 site collected since 1930:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="3">
+<pre>select * from Visited where (site='DR-1') and (dated>='1930-00-00');</pre>
+      </td>
+    </tr>
+    <tr><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
+  </table>
+
+  <p class="continue">
+    (The parentheses around the individual tests aren't strictly required,
+    but they help make the query easier to read.)
+  </p>
+
+  <div class="box">
+    <h3>Working With Dates</h3>
+
+    <p>
+      Most database managers have a special data type for dates.
+      In fact, many have two:
+      one for dates,
+      such as "May 31, 1971",
+      and one for durations,
+      such as "31 days".
+      SQLite doesn't:
+      instead,
+      it stores dates as either text
+      (in the ISO-8601 standard format "YYYY-MM-DD HH:MM:SS.SSSS"),
+      real numbers
+      (the number of days since November 24, 4714 BCE),
+      or integers
+      (the number of seconds since midnight, January 1, 1970).
+      If this sounds complicated,
+      it is,
+      but not nearly as complicated as figuring out
+      <a href="http://en.wikipedia.org/wiki/Swedish_calendar">historical dates in Sweden</a>.
+    </p>
+
+  </div>
+
+  <p>
+    If we want to find out what measurements were taken by either Lake or Roerich,
+    we can combine the tests on their names using <code>or</code>:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="4">
+<pre>select * from Survey where person='lake' or person='roe';</pre>
+      </td>
+    </tr>
+    <tr><td>734</td><td>lake</td><td>sal</td><td>0.05</td></tr>
+    <tr><td>751</td><td>lake</td><td>sal</td><td>0.1</td></tr>
+    <tr><td>752</td><td>lake</td><td>rad</td><td>2.19</td></tr>
+    <tr><td>752</td><td>lake</td><td>sal</td><td>0.09</td></tr>
+    <tr><td>752</td><td>lake</td><td>temp</td><td>-16.0</td></tr>
+    <tr><td>752</td><td>roe</td><td>sal</td><td>41.6</td></tr>
+    <tr><td>837</td><td>lake</td><td>rad</td><td>1.46</td></tr>
+    <tr><td>837</td><td>lake</td><td>sal</td><td>0.21</td></tr>
+    <tr><td>837</td><td>roe</td><td>sal</td><td>22.5</td></tr>
+    <tr><td>844</td><td>roe</td><td>rad</td><td>11.25</td></tr>
+  </table>
+
+  <p>
+    Alternatively,
+    we can use <code>in</code> to see if a value is in a specific set:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="4">
+<pre>select * from Survey where person in ('lake', 'roe');</pre>
+      </td>
+    </tr>
+    <tr><td>734</td><td>lake</td><td>sal</td><td>0.05</td></tr>
+    <tr><td>751</td><td>lake</td><td>sal</td><td>0.1</td></tr>
+    <tr><td>752</td><td>lake</td><td>rad</td><td>2.19</td></tr>
+    <tr><td>752</td><td>lake</td><td>sal</td><td>0.09</td></tr>
+    <tr><td>752</td><td>lake</td><td>temp</td><td>-16.0</td></tr>
+    <tr><td>752</td><td>roe</td><td>sal</td><td>41.6</td></tr>
+    <tr><td>837</td><td>lake</td><td>rad</td><td>1.46</td></tr>
+    <tr><td>837</td><td>lake</td><td>sal</td><td>0.21</td></tr>
+    <tr><td>837</td><td>roe</td><td>sal</td><td>22.5</td></tr>
+    <tr><td>844</td><td>roe</td><td>rad</td><td>11.25</td></tr>
+  </table>
+
+  <p>
+    We can combine <code>and</code> with <code>or</code>,
+    but we need to be careful about which operator is executed first.
+    If we <em>don't</em> use parentheses,
+    we get this:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="4">
+<pre>select * from Survey where quant='sal' and person='lake' or person='roe';</pre>
+      </td>
+    </tr>
+    <tr><td>734</td><td>lake</td><td>sal</td><td>0.05</td></tr>
+    <tr><td>751</td><td>lake</td><td>sal</td><td>0.1</td></tr>
+    <tr><td>752</td><td>lake</td><td>sal</td><td>0.09</td></tr>
+    <tr><td>752</td><td>roe</td><td>sal</td><td>41.6</td></tr>
+    <tr><td>837</td><td>lake</td><td>sal</td><td>0.21</td></tr>
+    <tr><td>837</td><td>roe</td><td>sal</td><td>22.5</td></tr>
+    <tr><td>844</td><td>roe</td><td>rad</td><td>11.25</td></tr>
+  </table>
+
+  <p class="continue">
+    which is salinity measurements by Lake,
+    and <em>any</em> measurement by Roerich.
+    We probably want this instead:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="4">
+<pre>select * from Survey where quant='sal' and <span class="highlight">(</span>person='lake' or person='roe'<span class="highlight">)</span>;</pre>
+      </td>
+    </tr>
+    <tr><td>734</td><td>lake</td><td>sal</td><td>0.05</td></tr>
+    <tr><td>751</td><td>lake</td><td>sal</td><td>0.1</td></tr>
+    <tr><td>752</td><td>lake</td><td>sal</td><td>0.09</td></tr>
+    <tr><td>752</td><td>roe</td><td>sal</td><td>41.6</td></tr>
+    <tr><td>837</td><td>lake</td><td>sal</td><td>0.21</td></tr>
+    <tr><td>837</td><td>roe</td><td>sal</td><td>22.5</td></tr>
+  </table>
+
+  <p>
+    Finally,
+    we can use <code>distinct</code> with <code>where</code>
+    to give a second level of filtering:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="2">
+<pre>select distinct person, quant from Survey where person='lake' or person='roe';</pre>
+      </td>
+    </tr>
+    <tr><td>lake</td><td>sal</td></tr>
+    <tr><td>lake</td><td>rad</td></tr>
+    <tr><td>lake</td><td>temp</td></tr>
+    <tr><td>roe</td><td>sal</td></tr>
+    <tr><td>roe</td><td>rad</td></tr>
+  </table>
+
+  <p class="continue">
+    But remember:
+    <code>distinct</code> is applied to the values displayed in the chosen columns,
+    not to the entire rows as they are being processed.
+  </p>
+
+  <div class="box">
+    <h3>Growing Queries</h3>
+
+    <p>
+      What we have just done is how most people "grow" their SQL queries.
+      We started with something simple that did part of what we wanted,
+      then added more clauses one by one,
+      testing their effects as we went.
+      This is a good strategy&mdash;in fact,
+      for complex queries it's often the <em>only</em> strategy&mdash;but
+      it depends on quick turnaround,
+      and on us recognizing the right answer when we get it.
+    </p>
+
+    <p>
+      The best way to achieve quick turnaround is often
+      to put a subset of data in a temporary database
+      and run our queries against that,
+      or to fill a small database with synthesized records.
+      For example,
+      instead of trying our queries against an actual database of 20 million Australians,
+      we could run it against a sample of ten thousand,
+      or write a small program to generate ten thousand random (but plausible) records
+      and use that.
+    </p>
+
+  </div>
+
+  <div class="keypoints" id="k:filter">
+    <h3>Summary</h3>
+    <ul>
+      <li>Use <code>where <em>test</em></code> in a query to filter records based on Boolean tests.</li>
+      <li>Use <code>and</code> and <code>or</code> to combine tests.</li>
+      <li>Use <code>in</code> to check if a value is in a set.</li>
+      <li>Build up queries a bit at a time, and test them against small data sets.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <ol>
+
+      <li>
+        Gina wants to select all sites that lie within 30&deg; of the equator.
+        Her query is:
+<pre>
+select * from Site where (lat &gt; -30) or (lat &lt; 30);
 </pre>
+        Explain why this is wrong,
+        and rewrite the query so that it is correct.
+      </li>
 
-      <table class="outlined">
-        <tr><td>Antigravity</td><td>Dmitri Mendeleev</td></tr>
-        <tr><td>Antigravity</td><td>Mikhail Lomonosov</td></tr>
-        <tr><td>Antigravity</td><td>Sofia Kovalevskaya</td></tr>
-        <tr><td>Teleportation</td><td>Ivan Pavlov</td></tr>
-        <tr><td>Teleportation</td><td>Sofia Kovalevskaya</td></tr>
-        <tr><td>Time Travel</td><td>Ivan Pavlov</td></tr>
-        <tr><td>Time Travel</td><td>Mikhail Lomonosov</td></tr>
-      </table>
+      <li>
+        Normalized salinity readings are supposed to be between 0.0 and 1.0.
+        Write a query that selects all records from <code>Survey</code>
+        with salinity values outside this range.
+      </li>
 
-      <p>
-        Notice in both cases that duplicates are removed
-        even if they didn't appear to be adjacent in the database.
-        Once again,
-        it's important to remember that rows aren't actually ordered:
-        they're just displayed that way.
-      </p>
+      <li>
+        The SQL test <code><em>column-name</em> like <em>pattern</em></code>
+        is true if the value in the named column
+        matches the pattern given;
+        the character '%' can be used any number of times in the pattern
+        to mean "match zero or more characters".
+        <table>
+          <tr>
+            <th>Expression</th>
+            <th>Value</th>
+          </tr>
+          <tr>
+            <td><code>'a' like 'a'</code></td>
+            <td><code>True</code></td>
+          </tr>
+          <tr>
+            <td><code>'a' like '%a'</code></td>
+            <td><code>True</code></td>
+          </tr>
+          <tr>
+            <td><code>'b' like '%a'</code></td>
+            <td><code>False</code></td>
+          </tr>
+          <tr>
+            <td><code>'alpha' like 'a%'</code></td>
+            <td><code>True</code></td>
+          </tr>
+          <tr>
+            <td><code>'alpha' like 'a%p%'</code></td>
+            <td><code>True</code></td>
+          </tr>
+          <tr>
+            <td><code>'beta' like 'a%p%'</code></td>
+            <td><code>False</code></td>
+          </tr>
+        </table>
+        The expression <code><em>column-name</em> not like <em>pattern</em></code>
+        inverts the test.
+        Using <code>like</code>,
+        write a query that finds all the records in <code>Visited</code>
+        that <em>aren't</em> from sites labelled 'DR-something'.
+      </li>
 
-      <div class="keypoints" id="k:distinct">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use <code>SELECT DISTINCT</code> to eliminate duplicates from a query's output.</li>
-        </ul>
-      </div>
+    </ol>
 
-    </section>
+  </div>
 
-    <section id="s:calc">
+</section>
 
-      <h2>Calculating New Values</h2>
+<section id="s:calc">
+  <h2>Calculating New Values</h2>
 
-      <div class="understand" id="u:calc">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Write queries that do arithmetic using the values in individual records.</li>
-        </ul>
-      </div>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Write queries that do arithmetic using the values in individual records.</li>
+    </ul>
+  </div>
 
       <p>
         Suppose that 10% of the time spent on each experiment was prep work
@@ -563,210 +952,6 @@ SELECT Scientist, ROUND(0.1 * Hours, 1) FROM Experiments;
         <h3>Summary</h3>
         <ul>
           <li>Use expressions in place of field names to calculate per-record values.</li>
-        </ul>
-      </div>
-
-    </section>
-
-    <section id="s:filter">
-
-      <h2>Filtering</h2>
-
-      <div class="understand" id="u:filter">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Write queries that select records based on the values of their fields.</li>
-          <li>Write queries that select records using combinations of several tests on their fields' values.</li>
-          <li>Build up complex filtering criteria incrementally.</li>
-          <li>Explain the logical order in which filtering by field value and displaying fields takes place.</li>
-        </ul>
-      </div>
-
-      <p>
-        One of the most powerful features of a database is
-        the ability to <a href="glossary.html#filter">filter</a> data,
-        i.e.,
-        to select only those records that match certain criteria.
-        For example,
-        suppose we want to see all of the experiments that took more than two hours to complete.
-        We can select these by adding a <code>WHERE</code> clause to our query:
-      </p>
-
-<pre src="src/db/select_where_hours.sql">
-SELECT * FROM Experiments WHERE Hours &gt; 2.0;
-</pre>
-
-      <table class="outlined">
-        <tr><td>Sofia Kovalevskaya</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>Dmitri Mendeleev</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Teleportation</td><td>9.0</td></tr>
-      </table>
-
-      <p>
-        We can understand how this query works by imagining that the database executes it in two stages
-        (<a href="#f:pipeline_where">Figure XXX</a>).
-        First, the database looks at each row in the <code>Experiments</code> table
-        to see which ones satisfy the <code>WHERE</code> condition.
-        It then uses the column names immediately following the <code>SELECT</code> keyword
-        to determine what columns to keep
-        (or, if there are expressions, what new values to calculate).
-      </p>
-
-      <figure id="f:pipeline_where">
-        <img src="img/db/pipeline_where.png" alt="Two-Stage Query Processing Pipeline" />
-      </figure>
-
-      <p>
-        We can use many other operators to filter our data.
-        For example, we could ask for all of the experiments that were done by Ivan Pavlov:
-      </p>
-
-<pre src="src/db/select_where_pavlov.sql">
-SELECT * FROM Experiment WHERE Scientist = "Ivan Pavlov";
-</pre>
-
-      <table class="outlined">
-        <tr><td>Ivan Pavlov</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Time Travel</td><td>-7.0</td></tr>
-      </table>
-
-      <p>
-        We can also make our <code>WHERE</code> conditions more sophisticated
-        by combining tests with <code>AND</code> and <code>OR</code>.
-        For example, suppose we want to know which project Mikhail Lomonosov
-        spent more than three hours working on.
-        We're only interested in rows that satisfy <em>both</em> criteria,
-        so we combine the two tests with <code>AND</code>:
-      </p>
-
-<pre src="src/db/select_where_lomonosov_three_hours.sql">
-SELECT * FROM Experiments WHERE (Hours &gt; 3) AND (Scientist = "Mikhail Lomonosov");
-</pre>
-
-      <table class="outlined">
-        <tr><td>Mikhail Lomonosov</td><td>Antigravity</td><td>4.0</td></tr>
-      </table>
-
-      <p class="continue">
-        (The parentheses around each test aren't strictly required,
-        but they help make the query easier to read.)
-      </p>
-
-      <p>
-        If we wanted experiments that either Ivan or Mikhail had worked on,
-        we would combine the tests on their names like this:
-      </p>
-
-<pre src="src/db/select_where_lomonosov_or_pavlov.sql">
-SELECT * FROM Experiments WHERE (Scientist = "Mikhail Lomonosov") OR (Scientist = "Ivan Pavlov");
-</pre>
-
-      <table class="outlined">
-        <tr><td>Mikhail Lomonosov</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Time Travel</td><td>-7.0</td></tr>
-      </table>
-
-      <p>
-        And if we wanted project that either scientist had spent more than three hours on,
-        we would combine our tests:
-      </p>
-
-<pre src="src/db/select_where_lomonosov_or_pavlov_three_hours.sql">
-SELECT * FROM Experiments WHERE (Hours > 3) AND ((Scientist = "Mikhail Lomonosov") OR (Scientist = "Ivan Pavlov"));
-</pre>
-
-      <table class="outlined">
-        <tr><td>Mikhail Lomonosov</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Teleportation</td><td>9.0</td></tr>
-      </table>
-
-      <p>
-        The extra parentheses around the checks on the scientists' names
-        ensure that the <code>AND</code> and <code>OR</code> are combined the way we want.
-        Without them, the computer might decide that we meant:
-      </p>
-
-<pre src="src/db/select_where_badly_grouped.sql">
-SELECT * FROM Experiments WHERE ((Hours > 3) AND (Scientist = "Mikhail Lomonosov")) OR (Scientist = "Ivan Pavlov");
-</pre>
-
-      <p class="continue">
-        i.e., that we want projects where Mikhail spent a lot of time,
-        or any projects that Ivan worked on, regardless of hours.
-        Since this is actually a different query,
-        it gives a different (and wrong) answer:
-      </p>
-
-      <table class="outlined">
-        <tr><td>Mikhail Lomonosov</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Time Travel</td><td>-7.0</td></tr>
-      </table>
-
-      <p>
-        Instead of using <code>OR</code> to match one of several values,
-        we can use the <code>IN</code> operator
-        along with a list of values we would like to match.
-        For example, we could rewrite our query as:
-      </p>
-
-<pre src="src/db/select_where_using_in.sql">
-SELECT * FROM Experiments WHERE (Hours > 3) AND (Scientist IN ("Mikhail Lomonosov", "Ivan Pavlov"));
-</pre>
-
-      <p class="continue">
-        This produces the same two rows as the correctly-parenthesized query,
-        but is easier to understand,
-        particularly as the number of options grows.
-      </p>
-
-      <p>
-        Knowing how to translate what we want into appropriate <code>WHERE</code> clauses
-        When in doubt,
-        refer to the earlier discussion of <a href="python.html#s:bool">Boolean logic</a>.
-      </p>
-
-      <div class="box">
-
-        <h3>Growing Queries</h3>
-
-        <p>
-          What we have just done is how most people "grow" their SQL queries.
-          We started with something simple that did part of what we wanted,
-          then added more clauses one by one,
-          testing their effects as we went.
-          This is a good strategy&mdash;in fact,
-          for complex queries it's often the <em>only</em> strategy&mdash;but
-          it depends on quick turnaround,
-          and on us recognizing the right answer when we get it.
-        </p>
-
-        <p>
-          The best way to achieve quick turnaround is often
-          to put a subset of data in a temporary database
-          and run our queries against that,
-          or to fill a small database with synthesized records.
-          For example,
-          instead of trying our queries against an actual database of 20 million Australians,
-          we could run it against a sample of ten thousand,
-          or write a small program to generate ten thousand random (but plausible) records
-          and use that.
-        </p>
-
-      </div>
-
-      <div class="keypoints" id="k:filter">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use <code>WHERE <em>test</em></code> in a query to filter records based on logical tests.</li>
-          <li>Use <code>AND</code> and <code>OR</code> to combine tests in filters.</li>
-          <li>Use <code>IN</code> to test whether a value is in a set.</li>
-          <li idea="perf">Build up queries a bit at a time, and test them against small data sets.</li>
         </ul>
       </div>
 
