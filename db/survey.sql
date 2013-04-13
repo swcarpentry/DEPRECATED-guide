@@ -23,7 +23,7 @@ create table Site(
 
 insert into Site values('DR-1', -49.85, -128.57);
 insert into Site values('DR-3', -47.15, -126.72);
-insert into Site values('MS-4', -48.87, -123.40);
+insert into Site values('MSK-4', -48.87, -123.40);
 
 -- `Visited` is an enhanced `join` table: it connects to the lat/long
 -- of specific measurements, and also provides their dates.
@@ -34,14 +34,14 @@ create table Visited(
 	dated text
 );
 
-insert into Visited values(619, 'DR-1', '1927-02-08');
-insert into Visited values(622, 'DR-1', '1927-02-10');
-insert into Visited values(734, 'DR-3', '1939-01-07');
-insert into Visited values(735, 'DR-3', '1930-01-12');
-insert into Visited values(751, 'DR-3', '1930-02-26');
-insert into Visited values(752, 'DR-3', NULL);
-insert into Visited values(837, 'MS-4', '1932-01-14');
-insert into Visited values(844, 'DR-1', '1932-03-22');
+insert into Visited values(619, 'DR-1',  '1927-02-08');
+insert into Visited values(622, 'DR-1',  '1927-02-10');
+insert into Visited values(734, 'DR-3',  '1939-01-07');
+insert into Visited values(735, 'DR-3',  '1930-01-12');
+insert into Visited values(751, 'DR-3',  '1930-02-26');
+insert into Visited values(752, 'DR-3',  NULL);
+insert into Visited values(837, 'MSK-4', '1932-01-14');
+insert into Visited values(844, 'DR-1',  '1932-03-22');
 
 -- The `Survey` table is the actual readings.  Join it with `Site` to
 -- get lat/long, and with `Visited` to get dates (except for #752).
@@ -158,6 +158,10 @@ select 1.05 * reading from Survey where quant='rad';
 select '----------------------------------------';
 select 'convert temperatures to Celsius';
 select taken, round(5*(reading-32)/9, 2) from Survey where quant='temp';
+
+select '----------------------------------------';
+select 'formatting names';
+select personal || ' ' || family from Person;
 
 select '----------------------------------------';
 select 'Ordering Results';
