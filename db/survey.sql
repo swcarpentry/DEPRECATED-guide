@@ -79,7 +79,7 @@ insert into Survey values(837, 'lake', 'sal',    0.21);
 insert into Survey values(837, 'roe',  'sal',   22.50);
 insert into Survey values(844, 'roe',  'rad',   11.25);
 
-select '----------------------------------------';
+select '========================================';
 select 'Selecting';
 
 select '----------------------------------------';
@@ -102,7 +102,7 @@ select '----------------------------------------';
 select 'use * for wildcard';
 select * from Person;
 
-select '----------------------------------------';
+select '========================================';
 select 'Removing Duplicates';
 
 select '----------------------------------------';
@@ -117,7 +117,7 @@ select '----------------------------------------';
 select 'tuple uniqueness';
 select distinct taken, quant from Survey;
 
-select '----------------------------------------';
+select '========================================';
 select 'Filtering';
 
 select '----------------------------------------';
@@ -148,7 +148,7 @@ select '----------------------------------------';
 select 'using distinct with "in"';
 select distinct person, quant from Survey where person='lake' or person='roe';
 
-select '----------------------------------------';
+select '========================================';
 select 'Calculating New Values';
 
 select '----------------------------------------';
@@ -163,7 +163,7 @@ select '----------------------------------------';
 select 'formatting names';
 select personal || ' ' || family from Person;
 
-select '----------------------------------------';
+select '========================================';
 select 'Ordering Results';
 
 select '----------------------------------------';
@@ -194,8 +194,12 @@ select '----------------------------------------';
 select 'random sorting';
 select ident from Person order by random();
 
-select '----------------------------------------';
+select '========================================';
 select 'Missing Data';
+
+select '----------------------------------------';
+select 'all Visited data';
+select * from Visited;
 
 select '----------------------------------------';
 select 'visits before 1930';
@@ -210,6 +214,10 @@ select 'visits with unknown dates (wrong)';
 select * from Visited where dated=NULL;
 
 select '----------------------------------------';
+select '!= does not work either';
+select * from Visited where dated!=NULL;
+
+select '----------------------------------------';
 select 'visits with unknown dates (right)';
 select * from Visited where dated is NULL;
 
@@ -218,6 +226,76 @@ select 'visits with known dates';
 select * from Visited where dated is not NULL;
 
 select '----------------------------------------';
+select 'salinity not measured by Lake';
+select * from Survey where quant='sal' and person!='lake';
+
+select '----------------------------------------';
+select 'salinity not known to be measured by Lake';
+select * from Survey where quant='sal' and (person!='lake' or person is null);
+
+select '========================================';
+select 'Aggregation';
+
+select '----------------------------------------';
+select 'all dates';
+select dated from Visited;
+
+select '----------------------------------------';
+select 'date range';
+select min(dated) from Visited;
+select max(dated) from Visited;
+select min(dated), max(dated) from Visited;
+
+select '----------------------------------------';
+select 'averaging';
+select avg(reading) from Survey where quant='sal';
+
+select 'averaging sensible values';
+select avg(reading) from Survey
+where quant='sal'
+  and reading<10.0;
+
+select 'counting';
+select count(reading) from Survey
+where quant='sal'
+  and reading<10.0;
+
+select 'can count anything';
+select count(*) from Survey
+where quant='sal'
+  and reading<10.0;
+
+select 'unaggregated with aggregated takes arbitrary';
+select person, count(*) from Survey
+where quant='sal'
+  and reading<10.0;
+
+select '----------------------------------------';
+select   'grouping Visited by site only keeps arbitrary';
+select   * from Visited
+group by site;
+
+select '----------------------------------------';
+select 'get date ranges for sites';
+select   site, min(dated), max(dated) from Visited
+group by site;
+
+select '----------------------------------------';
+select 'radiation readings by person';
+select   person, count(reading), round(avg(reading), 2)
+from     Survey
+where    Survey.quant='rad'
+group by Survey.person;
+
+select '----------------------------------------';
+select 'radiation readings by site';
+select   Visited.site, count(Survey.reading), round(avg(Survey.reading), 2)
+from     Visited join Survey
+where    Visited.ident=Survey.taken
+  and    Survey.quant='rad'
+group by Visited.site;
+
+select '========================================';
 select 'Combining Data';
 
 select '----------------------------------------';
@@ -251,7 +329,7 @@ where  Survey.taken=Visited.ident
   and  Survey.quant='rad'
   and  Visited.dated>='1930-00-00';
 
-select '----------------------------------------';
+select '========================================';
 select 'Self-Join';
 
 select '----------------------------------------';
@@ -277,67 +355,6 @@ select 'and finally eliminate mirrored duplicates';
 select distinct X.person, Y.person
 from   Survey X join Survey Y
 where  X.person>Y.person;
-
-select '----------------------------------------';
-select 'Aggregation';
-
-select '----------------------------------------';
-select 'date range';
-select min(dated) from Visited;
-select max(dated) from Visited;
-select min(dated), max(dated) from Visited;
-
-select '----------------------------------------';
-select 'averaging';
-select avg(reading) from Survey where quant='sal';
-
-select 'averaging sensible values';
-select avg(reading) from Survey
-where quant='sal'
-  and reading<10.0;
-
-select 'counting';
-select count(reading) from Survey
-where quant='sal'
-  and reading<10.0;
-
-select 'can count anything';
-select count(*) from Survey
-where quant='sal'
-  and reading<10.0;
-
-select 'unaggregated with aggregated takes arbitrary';
-select person, count(*) from Survey
-where quant='sal'
-  and reading<10.0;
-
-select '----------------------------------------';
-select 'Grouping';
-
-select '----------------------------------------';
-select   'grouping Visited by site only keeps arbitrary';
-select   * from Visited
-group by site;
-
-select '----------------------------------------';
-select 'get date ranges for sites';
-select   site, min(dated), max(dated) from Visited
-group by site;
-
-select '----------------------------------------';
-select 'radiation readings by person';
-select   person, count(reading), round(avg(reading), 2)
-from     Survey
-where    Survey.quant='rad'
-group by Survey.person;
-
-select '----------------------------------------';
-select 'radiation readings by site';
-select   Visited.site, count(Survey.reading), round(avg(Survey.reading), 2)
-from     Visited join Survey
-where    Visited.ident=Survey.taken
-  and    Survey.quant='rad'
-group by Visited.site;
 
 select '----------------------------------------';
 select 'Sub-Queries';

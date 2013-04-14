@@ -23,7 +23,8 @@
   Gina Geographer discovered their expedition journals
   in a storage locker at Miskatonic University.
   She has scanned and OCR'd the data they contain,
-  and wants to store that information in a way that will make search and analysis easy.
+  and wants to store that information
+  in a way that will make search and analysis easy.
 </p>
 
 <p>
@@ -1382,35 +1383,283 @@ select * from Survey where quant='rad' order by taken;
 
 </section>
 
-    <section id="s:aggregate">
+<section id="s:null">
+  <h2>Missing Data</h2>
 
-      <h2>Aggregation</h2>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Explain what databases use the special value <code>NULL</code> to represent.</li>
+      <li>Explain why databases should <em>not</em> uses their own special values (like 9999 or "N/A") to represent missing or unknown data.</li>
+      <li>Explain what atomic and aggregate calculations involving <code>NULL</code> produce, and why.</li>
+      <li>Write queries that include or exclude records containing <code>NULL</code>.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:aggregate">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Write queries that combine values from many records to create a single aggregate value.</li>
-          <li>Write queries that put records into groups based on their values.</li>
-          <li>Write queries that combine values group by group.</li>
-          <li>Explain what is displayed for <em>unaggregated</em> fields when some fields are aggregated.</li>
-          <li>Explain how to order aggregated results.</li>
-          <li>Explain when grouping and aggregating occur during query processing.</li>
-        </ul>
-      </div>
+  <p>
+    Real-world data is never complete&mdash;there are always holes.
+    Databases represent these holes using special value called <code>null</code>.
+    <code>null</code> is not zero, <code>False</code>, or the empty string;
+    it is a one-of-a-kind value that means "nothing here".
+    Dealing with <code>null</code> requires a few special tricks
+    and some careful thinking.
+  </p>
 
-      <p>
-        Now suppose we want to know how many our grad students have spent on all projects combined.
-        We know how to fetch the hours:
-      </p>
+  <p>
+    To start,
+    let's have a look at the <code>Visited</code> table.
+    There are eight records,
+    but #752 doesn't have a date&mdash;or rather,
+    its date is null:
+  </p>
 
-<pre src="src/db/select_hours.sql">
-SELECT Hours FROM Experiment;
-</pre>
+  <table class="db">
+    <tr>
+      <td colspan="3">
+<pre>select * from Visited;</pre>
+      </td>
+    </tr>
+    <tr><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
+    <tr><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
+    <tr><td>734</td><td>DR-3</td><td>1939-01-07</td></tr>
+    <tr><td>735</td><td>DR-3</td><td>1930-01-12</td></tr>
+    <tr><td>751</td><td>DR-3</td><td>1930-02-26</td></tr>
+    <tr><td>752</td><td>DR-3</td><td></td></tr>
+    <tr><td>837</td><td>MS-4</td><td>1932-01-14</td></tr>
+    <tr><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
+  </table>
 
-      <p class="continue">
-        but how can we add them together?
-        The solution is to use the <code>SUM</code> function:
-      </p>
+  <div class="box">
+    <h3>Displaying Nulls</h3>
+
+    <p>
+      Different databases display nulls differently.
+      Unfortunately,
+      SQLite's default is to print nothing at all,
+      which makes nulls easy to overlook
+      (particularly if they're in the middle of a long row).
+    </p>
+  </div>
+
+  <p>
+    Null doesn't behave like other values.
+    If we select the records that come before 1930:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="3">
+<pre>select * from Visited where dated<'1930-00-00';</pre>
+      </td>
+    </tr>
+    <tr><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
+    <tr><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
+  </table>
+
+  <p class="continue">
+    we get two results,
+    and if we select the ones that come during or after 1930:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="3">
+<pre>select * from Visited where dated>='1930-00-00';</pre>
+      </td>
+    </tr>
+    <tr><td>734</td><td>DR-3</td><td>1939-01-07</td></tr>
+    <tr><td>735</td><td>DR-3</td><td>1930-01-12</td></tr>
+    <tr><td>751</td><td>DR-3</td><td>1930-02-26</td></tr>
+    <tr><td>837</td><td>MS-4</td><td>1932-01-14</td></tr>
+    <tr><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
+  </table>
+
+  <p class="continue">
+    we get five,
+    but record #752 isn't in either set of results.
+    The reason is that
+    <code>null&lt;'1930-00-00'</code>
+    is neither true nor false:
+    null means, "We don't know,"
+    and if we don't know the value on the left side of a comparison,
+    we don't know whether the comparison is true or false.
+    Since databases represent "don't know" as null,
+    the value of <code>null&lt;'1930-00-00'</code>
+    is actually <code>null</code>.
+    <code>null&gt;='1930-00-00'</code> is also null
+    because we can't answer to that question either.
+    And since the only records kept by a <code>where</code>
+    are those for which the test is true,
+    record #752 isn't included in either set of results.
+  </p>
+
+  <p>
+    Comparisons aren't the only operations that behave this way with nulls.
+    <code>1+null</code> is <code>null</code>,
+    <code>5*null</code> is <code>null</code>,
+    <code>log(null)</code> is <code>null</code>,
+    and so on.
+    In particular,
+    comparing things to null with = and != produces null:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="1">
+<pre>select * from Visited where dated=NULL;</pre>
+      </td>
+    </tr>
+  </table>
+
+  <table class="db">
+    <tr>
+      <td colspan="1">
+<pre>select * from Visited where dated!=NULL;</pre>
+      </td>
+    </tr>
+  </table>
+
+  <p>
+    To check whether a value is <code>null</code> or not,
+    we must use a special test <code>is&nbsp;null</code>:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="3">
+<pre>select * from Visited where dated is NULL;</pre>
+      </td>
+    </tr>
+    <tr><td>752</td><td>DR-3</td><td>None</td></tr>
+  </table>
+
+  <p class="continue">
+    or its inverse <code>is&nbsp;not&nbsp;null</code>:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="3">
+<pre>select * from Visited where dated is not NULL;</pre>
+      </td>
+    </tr>
+    <tr><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
+    <tr><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
+    <tr><td>734</td><td>DR-3</td><td>1939-01-07</td></tr>
+    <tr><td>735</td><td>DR-3</td><td>1930-01-12</td></tr>
+    <tr><td>751</td><td>DR-3</td><td>1930-02-26</td></tr>
+    <tr><td>837</td><td>MS-4</td><td>1932-01-14</td></tr>
+    <tr><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
+  </table>
+
+  <p>
+    Null values cause headaches wherever they appear.
+    For example,
+    suppose we want to find the all of salinity measurements
+    that weren't taken by Dyer.
+    It's natural to write the query like this:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="4">
+<pre>select * from Survey where quant='sal' and person!='lake';</pre>
+      </td>
+    </tr>
+    <tr><td>619</td><td>dyer</td><td>sal</td><td>0.13</td></tr>
+    <tr><td>622</td><td>dyer</td><td>sal</td><td>0.09</td></tr>
+    <tr><td>752</td><td>roe</td><td>sal</td><td>41.6</td></tr>
+    <tr><td>837</td><td>roe</td><td>sal</td><td>22.5</td></tr>
+  </table>
+
+  <p class="continue">
+    but this query filters omits the records
+    where we don't know who took the measurement.
+    Once again,
+    the reason is that when <code>person</code> is <code>null</code>,
+    the <code>!=</code> comparison produces <code>null</code>,
+    so the record isn't kept in our results.
+    If we want to keep these records
+    we need to add an explicit check:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="4">
+<pre>select * from Survey where quant='sal' and (person!='lake' <span class="highlight">or person is null</span>);</pre>
+      </td>
+    </tr>
+    <tr><td>619</td><td>dyer</td><td>sal</td><td>0.13</td></tr>
+    <tr><td>622</td><td>dyer</td><td>sal</td><td>0.09</td></tr>
+    <tr><td>735</td><td>None</td><td>sal</td><td>0.06</td></tr>
+    <tr><td>752</td><td>roe</td><td>sal</td><td>41.6</td></tr>
+    <tr><td>837</td><td>roe</td><td>sal</td><td>22.5</td></tr>
+  </table>
+
+  <p class="continue">
+    We still have to decide whether this is the right thing to do or not.
+    If we want to be absolutely sure that
+    we aren't including any measurements by Lake in our results,
+    we need to exclude all the records for which we don't know who did the work.
+  </p>
+
+  <div class="keypoints" id="k:null">
+    <h3>Summary</h3>
+    <ul>
+      <li>Use <code>null</code> in place of missing information.</li>
+      <li>Almost every operation involving <code>null</code> produces <code>null</code> as a result.</li>
+      <li>Test for nulls using <code>is&nbsp;null</code> and <code>is&nbsp;not&nbsp;null</code>.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <p class="fixme">add challenges</p>
+  </div>
+
+</section>
+
+<section id="s:aggregate">
+  <h2>Aggregation</h2>
+
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Write queries that combine values from many records to create a single aggregate value.</li>
+      <li>Write queries that put records into groups based on their values.</li>
+      <li>Write queries that combine values group by group.</li>
+      <li>Explain what is displayed for <em>unaggregated</em> fields when some fields are aggregated.</li>
+      <li>Explain how to order aggregated results.</li>
+      <li>Explain when grouping and aggregating occur during query processing.</li>
+    </ul>
+  </div>
+
+  <p>
+    Gina's next step in analyzing her data is
+    to calculate ranges and averages.
+    She knows how to select all of the dates from the <code>Visited</code> table:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="1">
+<pre>select dated from Visited;</pre>
+      </td>
+    </tr>
+    <tr><td>1927-02-08</td></tr>
+    <tr><td>1927-02-10</td></tr>
+    <tr><td>1939-01-07</td></tr>
+    <tr><td>1930-01-12</td></tr>
+    <tr><td>1930-02-26</td></tr>
+    <tr><td>&nbsp;</td></tr>
+    <tr><td>1932-01-14</td></tr>
+    <tr><td>1932-03-22</td></tr>
+  </table>
+
+  <p class="continue">
+    but how can she add them together?
+    The solution is to use the <code>SUM</code> function:
+  </p>
 
 <pre src="src/db/agg_sum_hours.sql">
 SELECT SUM(Hours) FROM Experiments;
@@ -1729,6 +1978,46 @@ ORDER BY SUM(Hours) ASC;
         <img src="img/db/pipeline_aggregate.png" alt="Four-Stage Query Processing Pipeline" />
       </figure>
 
+      <p>
+        <code>null</code> also needs careful handling when we are aggregating.
+        Most aggregation functions skip <code>null</code> values in their calculations.
+        For example, the query:
+      </p>
+
+<pre src="src/db/select_sum_hours_null.sql">
+SELECT SUM(Hours) FROM Experiments;
+</pre>
+
+      <table class="outlined">
+        <tr><td>33.5</td></tr>
+      </table>
+
+      <p class="continue">
+        adds up everyone's hours,
+        skipping the <code>null</code>s.
+        This might seem like a sensible default behavior,
+        but consider what happens when we calculate an average with:
+      </p>
+
+<pre src="src/db/select_avg_hours_null.sql">
+SELECT AVG(Hours) FROM Experiments;
+</pre>
+
+      <table class="outlined">
+        <tr><td>6.7</td></tr>
+      </table>
+<!-- AB: I didn't understand this next paragraph. -->
+      <p class="continue">
+        Once again,
+        <code>null</code> values have not been included,
+        so this average is the sum of the five actual values we have,
+        divided by five,
+        rather than the sum divided by the number of experiments&mdash;i.e.,
+        it does <em>not</em> treat the <code>null</code> values as contributing zero to the total.
+        Again,
+        it's up to us to decide whether this is the right behavior or not.
+      </p>
+
       <div class="keypoints" id="k:aggregate">
         <h3>Summary</h3>
         <ul>
@@ -1736,6 +2025,7 @@ ORDER BY SUM(Hours) ASC;
           <li>Use the <code>COUNT</code> function to count the number of results.</li>
           <li>If some fields are aggregated, and others are not, the database manager displays an arbitrary result for the unaggregated field.</li>
           <li>Use <code>GROUP BY</code> to group values before aggregation.</li>
+      <li>Most aggregation functions skip nulls when combining values.</li>
         </ul>
       </div>
 
@@ -2627,246 +2917,6 @@ ORDER BY        a.PersonID ASC;
 
     </section>
 
-    <section id="s:null">
-
-      <h2>Missing Data</h2>
-
-      <div class="understand" id="u:null">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Explain what databases use the special value <code>NULL</code> to represent.</li>
-          <li>Explain why databases should <em>not</em> uses their own special values (like 9999 or "N/A") to represent missing or unknown data.</li>
-          <li>Explain what atomic and aggregate calculations involving <code>NULL</code> produce, and why.</li>
-          <li>Write queries that include or exclude records containing <code>NULL</code>.</li>
-        </ul>
-      </div>
-
-      <p>
-        In the real world data is not always complete&mdash;there are always holes.
-        A database uses a special value for these holes: <code>NULL</code>.
-        <code>NULL</code> is not zero, <code>False</code>, or the empty string:
-        it is a one-of-a-kind value that means "nothing here".
-        Dealing with <code>NULL</code> requires a few special tricks,
-        and sometimes some careful thinking.
-      </p>
-
-      <p>
-        As an example,
-        here is our <code>Experiments</code> table with a few times replaced by <code>NULL</code>:
-      </p>
-
-      <table class="outlined">
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>NULL</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>mlom</td><td>Time Travel</td><td>NULL</td></tr>
-        <tr><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>ipav</td><td>Time Travel</td><td>NULL</td></tr>
-      </table>
-
-      <p class="continue">
-        These <code>NULL</code>s might represent values that were missing,
-        that haven't been entered yet,
-        or that someone erased them because they looked suspicious.
-        We can't tell just by looking at the data,
-        but we <em>do</em> have to take these missing values into account when writing queries.
-      </p>
-
-      <div class="box">
-
-        <h3>Displaying NULL</h3>
-
-        <p>
-          Different databases display NULL values differently.
-          For example,
-          SQLite's default is to print a blank,
-          so that the data above is actually shown as:
-        </p>
-
-<pre>
-|skol|Antigravity|6.5|
-|skol|Teleportation||
-|skol|Teleportation|5.0|
-|mlom|Antigravity|4.0|
-|mlom|Time Travel||
-|dmen|Antigravity|9.0|
-|ipav|Teleportation|9.0|
-|ipav|Time Travel||
-</pre>
-
-        <p>
-          This format makes it easy to overlook NULLs,
-          particularly if they're in the middle of a long row.
-        </p>
-
-      </div>
-
-      <p>
-        Let's start by finding out which experiments are missing <code>Hours</code> data.
-        The natural thing to try is:
-      </p>
-
-<pre src="src/db/select_null_equal_error.sql">
-SELECT * FROM Experiments WHERE Hours = NULL;
-</pre>
-
-      <p class="continue">
-        but it produces no results.
-        The reason is that <code>NULL</code> cannot be compared to anything else.
-        It cannot be added to anything, either;
-        in fact,
-        anything combined with NULL,
-        using any operator,
-        is NULL.
-        This means that our <code>WHERE</code> is always false,
-        so no records are selected.
-      </p>
-
-      <p>
-        Notice that the opposite test also fails:
-        if we select rows where <code>Hours</code> is <em>not</em> equal to <code>NULL</code>,
-        we still don't get any rows
-        because once again the comparison always fails:
-      </p>
-
-<pre src="src/db/select_null_not_equal_error.sql">
-SELECT * FROM Experiments WHERE Hours != NULL;
-</pre>
-
-      <p>
-        To check whether a value is <code>NULL</code> or not,
-        we must use the special <code>IS&nbsp;NULL</code> operator:
-      </p>
-
-<pre src="src/db/select_null.sql">
-SELECT * FROM Experiments WHERE Hours IS NULL;
-</pre>
-
-      <table class="outlined">
-        <tr><td>skol</td><td>Teleportation</td><td>NULL</td></tr>
-        <tr><td>mlom</td><td>Time Travel</td><td>NULL</td></tr>
-        <tr><td>ipav</td><td>Time Travel</td><td>NULL</td></tr>
-      </table>
-
-      <p>
-        To find all of the rows that do <em>not</em> have a <code>NULL</code>,
-        we use <code>IS&nbsp;NOT&nbsp;NULL</code>:
-      </p>
-
-<pre src="src/db/select_not_null.sql">
-SELECT * FROM Experiments WHERE Hours IS NOT NULL;
-</pre>
-
-      <table class="outlined">
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
-      </table>
-
-      <p>
-        <code>NULL</code> causes headaches wherever it appears.
-        For example,
-        suppose we want to find the all of the experiments
-        that didn't take exactly nine hours to do.
-        It is natural to write:
-      </p>
-
-<pre src="src/db/select_not_nine_hours.sql">
-SELECT * FROM Experiments WHERE Hours != 9.0;
-</pre>
-
-      <table class="outlined">
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-      </table>
-
-    <p class="continue">
-      but this query filters out all the records that have <code>NULL</code> hours
-      as well as those that took something other than one hour.
-      Once again,
-      the reason is that when <code>Hours</code> is <code>NULL</code>,
-      the <code>!=</code> comparison fails.
-      If we want to keep the rows that have <code>NULL</code> <code>Hours</code>,
-      we need to add an explicit check using <code>IS</code>:
-    </p>
-
-<pre src="src/db/select_not_nine_hours_keep_null.sql">
-SELECT * FROM Experiments WHERE (Hours != 9.0) OR (Hours IS NULL);
-</pre>
-
-      <table class="outlined">
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>&nbsp;</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>mlom</td><td>Time Travel</td><td>&nbsp;</td></tr>
-        <tr><td>ipav</td><td>Time Travel</td><td>&nbsp;</td></tr>
-      </table>
-
-      <p class="continue">
-        This query really does exclude only those records marked as taking one hour.
-        It's up to use to decide if this is the right thing to do or not
-        based on how we're going to use the query's results,
-        but this technique gives us the choice.
-      </p>
-
-      <p>
-        <code>NULL</code> also needs careful handling when we are aggregating.
-        Most aggregation functions skip <code>NULL</code> values in their calculations.
-        For example, the query:
-      </p>
-
-<pre src="src/db/select_sum_hours_null.sql">
-SELECT SUM(Hours) FROM Experiments;
-</pre>
-
-      <table class="outlined">
-        <tr><td>33.5</td></tr>
-      </table>
-
-      <p class="continue">
-        adds up everyone's hours,
-        skipping the <code>NULL</code>s.
-        This might seem like a sensible default behavior,
-        but consider what happens when we calculate an average with:
-      </p>
-
-<pre src="src/db/select_avg_hours_null.sql">
-SELECT AVG(Hours) FROM Experiments;
-</pre>
-
-      <table class="outlined">
-        <tr><td>6.7</td></tr>
-      </table>
-<!-- AB: I didn't understand this next paragraph. -->
-      <p class="continue">
-        Once again,
-        <code>NULL</code> values have not been included,
-        so this average is the sum of the five actual values we have,
-        divided by five,
-        rather than the sum divided by the number of experiments&mdash;i.e.,
-        it does <em>not</em> treat the <code>NULL</code> values as contributing zero to the total.
-        Again,
-        it's up to us to decide whether this is the right behavior or not.
-      </p>
-
-      <div class="keypoints" id="k:null">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use <code>NULL</code> in place of missing information.</li>
-          <li>Almost every operation involving <code>NULL</code> produces <code>NULL</code> as a result.</li>
-          <li>Test for nulls using <code>IS NULL</code> and <code>IS NOT NULL</code>.</li>
-          <li>Most aggregation functions skip nulls when combining values.</li>
-        </ul>
-      </div>
-
-    </section>
-
     <section id="s:nested">
 
       <h2>Nested Queries</h2>
@@ -2881,7 +2931,7 @@ SELECT AVG(Hours) FROM Experiments;
       </div>
 
       <p>
-        Let's switch back to the <code>Experiments</code> table that doesn't contain <code>NULL</code>s.
+        Let's switch back to the <code>Experiments</code> table that doesn't contain <code>null</code>s.
         How do we find scientists who have <em>not</em> been working on time travel?
         Our first guess might be:
       </p>
@@ -3062,7 +3112,7 @@ GROUP BY PersonID;
         <ul>
           <li>Write queries that create database tables with fields of common types.</li>
           <li>Write queries that specify the primary and foreign key relationships of tables.</li>
-          <li>Write queries that specify whether field values must be unique and/or are allowed to be <code>NULL</code>.</li>
+          <li>Write queries that specify whether field values must be unique and/or are allowed to be <code>null</code>.</li>
           <li>Write queries that erase database tables.</li>
           <li>Write queries that add records to database tables.</li>
           <li>Write queries that delete specific records from tables.</li>
