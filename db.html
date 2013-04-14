@@ -1650,8 +1650,6 @@ select * from Visited where dated in ('1927-02-08', null);
       <li>Write queries that put records into groups based on their values.</li>
       <li>Write queries that combine values group by group.</li>
       <li>Explain what is displayed for <em>unaggregated</em> fields when some fields are aggregated.</li>
-      <li>Explain how to order aggregated results.</li>
-      <li>Explain when grouping and aggregating occur during query processing.</li>
     </ul>
   </div>
 
@@ -1789,7 +1787,7 @@ select * from Visited where dated in ('1927-02-08', null);
 <pre>select person, max(reading), sum(reading) from Survey where quant='missing';</pre>
       </td>
     </tr>
-    <tr><td>None</td><td>None</td><td>None</td></tr>
+    <tr><td></td><td></td><td></td></tr>
   </table>
 
   <p>
@@ -1886,634 +1884,237 @@ William Dyer, Frank Pabodie, Anderson Lake, Valentina Roerich, James Danforth
 <section id="s:grouping">
   <h2>Grouping</h2>
 
-      <p>
-        Aggregation is very useful,
-        but there are a few traps for the unwary.
-        For example,
-        what if we want the total number of hours each scientist has worked so far?
-        We can find out how much time a <em>particular</em> scientist has spent in the lab like this:
-      </p>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Group results to be aggregated separately.</li>
+      <li>Explain when grouping occurs in the processing pipeline.</li>
+    </ul>
+  </div>
 
-<pre src="src/db/agg_hours_mendeleev.sql">
-SELECT SUM(Hours) FROM Experiments WHERE Scientist = "Dmitri Mendeleev";
-</pre>
+  <p>
+    Aggregating all records at once doesn't always make sense.
+    For example,
+    suppose Gina suspects that there is a systematic bias in her data,
+    and that some scientists' radiation readings are higher than others.
+    We know that this doesn't work:
+  </p>
 
-      <table class="outlined">
-        <tr><td>9</td></tr>
-      </table>
+  <table class="db">
+    <tr>
+      <td colspan="3">
+<pre>select person, count(reading), round(avg(reading), 2)
+from  Survey
+where quant='rad';</pre>
+      </td>
+    </tr>
+    <tr><td>roe</td><td>8</td><td>6.56</td></tr>
+  </table>
 
-      <p class="continue">
-        but we would have to write a separate query for each scientist,
-        and remember to add a new query each time someone joined the lab.
-        What we want is a query that gives us one row per scientist
-        with the scientist's name and the total of his or her hours.
-        Our first attempt look like this:
-      </p>
+  <p class="continue">
+    because the database manager selects a single arbitrary scientist's name
+    rather than aggregating separately for each scientist.
+    Since there are only five scientists,
+    she could write five queries of the form:
+  </p>
 
-<pre src="src/db/agg_per_scientist_wrong.sql">
-SELECT Scientist, SUM(Hours) FROM Experiments;
-</pre>
+  <table class="db">
+    <tr>
+      <td colspan="3">
+<pre>select person, count(reading), round(avg(reading), 2)
+from  Survey
+where quant='rad'
+and   person='dyer';</pre>
+      </td>
+    </tr>
+    <tr><td>dyer</td><td>2</td><td>8.81</td></tr>
+  </table>
 
-      <table class="outlined">
-        <tr><td>Ivan Pavlov</td><td>35.5</td></tr>
-      </table>
+  <p class="continue">
+    but this would be tedious,
+    and if she ever had a data set with fifty or five hundred scientists,
+    the chances of her getting all of those queries right is small.
+  </p>
 
-      <p class="continue">
-        Why does this query return only one row, rather than one per scientist?
-        And why does that row have Ivan Pavlov's name,
-        but the total hours for <em>all</em> the scientists?
-      </p>
+  <p>
+    What we need to do is
+    tell the database manager to aggregate the hours for each scientist separately
+    using a <code>group by</code> clause:
+  </p>
 
-      <p>
-        The answer lies in the fact that when we used <code>SUM</code>,
-        the database combined the rows in the table by summing the <code>Hours</code> column,
-        but since we didn't specify a aggregation function for <code>Scientist</code>,
-        the database picked an arbitrary value from that column and returned it
-        (<a href="#f:bad_aggregation">Figure XXX</a>).
-        In general,
-        if your query selects fields directly from a table and aggregates at the same time,
-        the values for unaggregated fields can be any value from the records being aggregated.
-      </p>
+  <table class="db">
+    <tr>
+      <td colspan="3">
+<pre>select   person, count(reading), round(avg(reading), 2)
+from     Survey
+where    quant='rad'
+group by person;</pre>
+      </td>
+    </tr>
+    <tr><td>dyer</td><td>2</td><td>8.81</td></tr>
+    <tr><td>lake</td><td>2</td><td>1.82</td></tr>
+    <tr><td>pb</td><td>3</td><td>6.66</td></tr>
+    <tr><td>roe</td><td>1</td><td>11.25</td></tr>
+  </table>
 
-      <figure id="f:bad_aggregation">
-        <img src="img/db/bad_aggregation.png" alt="Incorrect Aggregation" />
-      </figure>
+  <p>
+    <code>group by</code> does exactly what its name implies:
+    groups all the records with the same value for the specified field together
+    so that aggregation can process each batch separately.
+    Since all the records in each batch have the same value for <code>person</code>,
+    it no longer matters that the database manager
+    is picking an arbitrary one to display
+    alongside the aggregated <code>reading</code> values
+    (<a href="#f:grouped_aggregation">Figure 6</a>).
+  </p>
 
-      <p>
-        If we really do want each scientist's hours,
-        we need to tell the database to aggregate the hours for each scientist separately
-        using a <code>GROUP BY</code> clause:
-      </p>
+  <figure id="f:grouped_aggregation">
+    <img src="db/grouped_aggregation.png" alt="Grouped Aggregation" />
+    <figcaption>Figure 6: Grouped Aggregation</figcaption>
+  </figure>
 
-<pre src="src/db/group_by_scientist.sql">
-SELECT   Scientist, Hours
-FROM     Experiments
-GROUP BY Scientist;
-</pre>
+  <p>
+    Just as we can sort by multiple criteria at once,
+    we can also group by multiple criteria.
+    To get the average reading by scientist and quantity measured,
+    for example,
+    we just add another field to the <code>group by</code> clause:
+  </p>
 
-      <table class="outlined">
-        <tr><td>Dmitri Mendeleev</td><td>9.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>-7.0</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>-2.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>5.0</td></tr>
-      </table>
+  <table class="db">
+    <tr>
+      <td colspan="4">
+<pre>select   person, quant, count(reading), round(avg(reading), 2)
+from     Survey
+group by person, quant;</pre>
+      </td>
+    </tr>
+    <tr><td></td><td>sal</td><td>1</td><td>0.06</td></tr>
+    <tr><td></td><td>temp</td><td>1</td><td>-26.0</td></tr>
+    <tr><td>dyer</td><td>rad</td><td>2</td><td>8.81</td></tr>
+    <tr><td>dyer</td><td>sal</td><td>2</td><td>0.11</td></tr>
+    <tr><td>lake</td><td>rad</td><td>2</td><td>1.82</td></tr>
+    <tr><td>lake</td><td>sal</td><td>4</td><td>0.11</td></tr>
+    <tr><td>lake</td><td>temp</td><td>1</td><td>-16.0</td></tr>
+    <tr><td>pb</td><td>rad</td><td>3</td><td>6.66</td></tr>
+    <tr><td>pb</td><td>temp</td><td>2</td><td>-20.0</td></tr>
+    <tr><td>roe</td><td>rad</td><td>1</td><td>11.25</td></tr>
+    <tr><td>roe</td><td>sal</td><td>2</td><td>32.05</td></tr>
+  </table>
 
-      <p class="continue">
-        Here,
-        the database has grouped all the records with the same value for <code>Scientist</code> together,
-        then selected one row from each group to display
-        (<a href="#f:correct_aggregation">Figure XXX</a>).
-        Since all the rows in each group have the same scientist's name,
-        we get that name;
-        the value for <code>Hours</code> is just one of the values for that scientist,
-        chosen randomly for the same reason that the scientist's name was chosen randomly
-        when we used <code>SUM(Hours)</code> a couple of queries ago.
-      </p>
+  <p class="continue">
+    Note that we have added <code>person</code> to the list of fields displayed,
+    since the results wouldn't make much sense otherwise.
+  </p>
 
-      <figure id="f:correct_aggregation">
-        <img src="img/db/correct_aggregation.png" alt="Correct Aggregation" />
-      </figure>
+  <p>
+    Let's go one step further and remove all the entries
+    where we don't know who took the measurement:
+  </p>
 
-      <p>
-        But look what happens when we put the call to <code>SUM</code> back in our query:
-      </p>
+  <table class="db">
+    <tr>
+      <td colspan="4">
+<pre>select   person, quant, count(reading), round(avg(reading), 2)
+from     Survey
+where    person is not null
+group by person, quant
+order by person, quant;</pre>
+      </td>
+    </tr>
+    <tr><td>dyer</td><td>rad</td><td>2</td><td>8.81</td></tr>
+    <tr><td>dyer</td><td>sal</td><td>2</td><td>0.11</td></tr>
+    <tr><td>lake</td><td>rad</td><td>2</td><td>1.82</td></tr>
+    <tr><td>lake</td><td>sal</td><td>4</td><td>0.11</td></tr>
+    <tr><td>lake</td><td>temp</td><td>1</td><td>-16.0</td></tr>
+    <tr><td>pb</td><td>rad</td><td>3</td><td>6.66</td></tr>
+    <tr><td>pb</td><td>temp</td><td>2</td><td>-20.0</td></tr>
+    <tr><td>roe</td><td>rad</td><td>1</td><td>11.25</td></tr>
+    <tr><td>roe</td><td>sal</td><td>2</td><td>32.05</td></tr>
+  </table>
 
-<pre src="src/db/agg_sum_by_scientist.sql">
-SELECT   Scientist, SUM(Hours)
-FROM     Experiments
-GROUP BY Scientist;
-</pre>
+  <p class="continue">
+    Looking more closely,
+    this query:
+  </p>
 
-      <table class="outlined">
-        <tr><td>Dmitri Mendeleev</td><td>9.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>2.0</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>2.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>22.5</td></tr>
-      </table>
+  <ol>
 
-      <p class="continue">
-        This is the total number of hours for each scientist,
-        which is what we wanted.
-        And just as we can sort by multiple criteria at once,
-        we can also group by multiple criteria.
-        To get the number of hours each scientist has spent on each project,
-        for example,
-        we would group by both columns:
-      </p>
+    <li>
+      selected records from the <code>Survey</code> table
+      where the <code>person</code> field was not null;
+    </li>
 
-<pre src="src/db/agg_sum_by_scientist_project.sql">
-SELECT   Scientist, Project, SUM(Hours)
-FROM     Experiments
-GROUP BY Scientist, Project;
-</pre>
+    <li>
+      grouped those records into subsets
+      so that the <code>person</code> and <code>quant</code> values in each subset
+      were the same;
+    </li>
 
-      <table class="outlined">
-        <tr><td>Dmitri Mendeleev</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>Ivan Pavlov</td><td>Time Travel</td><td>-7.0</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>Teleportation</td><td>16.0</td></tr>
-      </table>
+    <li>
+      ordered those subsets first by <code>person</code>,
+      and then within each sub-group by <code>quant</code>;
+      and
+    </li>
 
-      <p class="continue">
-        Note that we have added <code>Project</code> to the list of columns we display,
-        since the results wouldn't make much sense otherwise.
-      </p>
+    <li>
+      counted the number of records in each subset,
+      calculated the average <code>reading</code> in each,
+      and chose a <code>person</code> and <code>quant</code> value from each
+      (it doesn't matter which ones,
+      since they're all equal).
+    </li>
 
-      <p>
-        The other aggregation functions work in the same way.
-        For example,
-        we can calculate the number of records for each scientist:
-      </p>
+  </ol>
 
-<pre src="src/db/agg_count_scientist.sql">
-SELECT   Scientist, COUNT(*)
-FROM     Experiments
-GROUP BY Scientist;
-</pre>
+  <p class="continue">
+    Our query processing pipeline now looks like
+    <a href="#f:pipeline_grouping">Figure 7</a>.
+  </p>
 
-      <table class="outlined">
-        <tr><td>Dmitri Mendeleev</td><td>1</td></tr>
-        <tr><td>Ivan Pavlov</td><td>2</td></tr>
-        <tr><td>Mikhail Lomonosov</td><td>2</td></tr>
-        <tr><td>Sofia Kovalevskaya</td><td>3</td></tr>
-      </table>
+  <figure id="f:pipeline_grouping">
+    <img src="db/pipeline_grouping.png" alt="Query Processing Pipeline With Grouping" />
+    <figcaption>Figure 7: Query Processing Pipeline With Grouping</figcaption>
+  </figure>
 
-      <p>
-        We can also sort and aggregate based on grouped and aggregated values.
-        For example,
-        if we want the total time spent on each project sorted by project name, we would use:
-      </p>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Use <code>group by</code> to group values for separate aggregation.</li>
+    </ul>
+  </div>
 
-<pre src="src/db/agg_hours_project_ordered.sql">
-SELECT   Project, SUM(Hours) FROM Experiments
-GROUP BY Project
-ORDER BY Project ASC;
-</pre>
+  <div class="challenges">
+    <h3>Challenges</h3>
 
-      <table class="outlined">
-        <tr><td>Antigravity</td><td>19.5</td></tr>
-        <tr><td>Teleportation</td><td>25.0</td></tr>
-        <tr><td>Time Travel</td><td>-9.0</td></tr>
-      </table>
+    <ol>
 
-      <p>
-        The <code>ORDER BY</code> clause always goes after the <code>GROUP BY</code> clause
-        because we are ordering the results of aggregation.
-        Putting it another way,
-        ordering the results before doing the <code>GROUP BY</code>
-        wouldn't make any difference to the final answer,
-        so that's not what SQL does.
-      </p>
+      <li>
+        Write a single query that finds the earliest and latest date
+        that each site was visited.
+      </li>
 
-      <p>
-        What if we want to sort the results by the total number of hours spent?
-        Instead of using a plain field to sort on,
-        like <code>Project</code>,
-        we can use an aggregation function as our sorting criterion:
-      </p>
-
-<pre src="src/db/agg_hours_order_agg.sql">
-SELECT   Project, SUM(Hours) FROM Experiments
-GROUP BY Project
-ORDER BY SUM(Hours) ASC;
-</pre>
-
-      <table class="outlined">
-        <tr><td>Time Travel</td><td>-9.0</td></tr>
-        <tr><td>Antigravity</td><td>19.5</td></tr>
-        <tr><td>Teleportation</td><td>25.0</td></tr>
-      </table>
-
-      <p class="continue">
-        This query doesn't sort the results based on a field from the table,
-        but by the results of aggregating values from that table.
-      </p>
-
-      <p>
-        Let's keep going and remove the negative hours for the Time Travel project
-        before adding things up
-        (since negative times confuse the payroll department).
-        We can do this by adding a <code>WHERE</code> clause to our query
-        to filter out values we don't want <em>before</em> they are grouped and aggregated:
-        </p>
-
-<pre src="src/db/agg_hours_positive.sql">
-SELECT   Project, SUM(Hours) FROM Experiments
-WHERE    Hours >= 0
-GROUP BY Project
-ORDER BY SUM(Hours) ASC;
-</pre>
-
-      <table class="outlined">
-        <tr><td>Antigravity</td><td>19.5</td></tr>
-        <tr><td>Teleportation</td><td>25.0</td></tr>
-      </table>
-
-      <p class="continue">
-        Notice that there isn't a row in the result at all for the Time Travel project:
-        all of the hours recorded for it were negative,
-        so none of those records got past the <code>WHERE</code>
-        to be summed.
-        Looking more closely, this query:
-      </p>
-
-      <ol>
-
-        <li>
-          selected rows from the table where the <code>Hours</code> are non-negative;
-        </li>
-
-        <li>
-          grouped those rows into sets that have the same values for <code>Project</code>;
-        </li>
-
-        <li>
-          replaced each group with a single row whose values are
-          the sum of the hours in the group,
-          and the project name of the group; and
-        </li>
-
-        <li>
-          ordered those rows according to the total hours.
-        </li>
-
-      </ol>
-
-      <p class="continue">
-        Aggregation is therefore a fourth stage in our query processing pipeline
-        (<a href="#f:pipeline_aggregate">Figure XXX</a>).
-      </p>
-
-      <figure id="f:pipeline_aggregate">
-        <img src="img/db/pipeline_aggregate.png" alt="Four-Stage Query Processing Pipeline" />
-      </figure>
-
-      <p>
-        <code>null</code> also needs careful handling when we are aggregating.
-        Most aggregation functions skip <code>null</code> values in their calculations.
-        For example, the query:
-      </p>
-
-<pre src="src/db/select_sum_hours_null.sql">
-SELECT SUM(Hours) FROM Experiments;
-</pre>
-
-      <table class="outlined">
-        <tr><td>33.5</td></tr>
-      </table>
-
-      <p class="continue">
-        adds up everyone's hours,
-        skipping the <code>null</code>s.
-        This might seem like a sensible default behavior,
-        but consider what happens when we calculate an average with:
-      </p>
-
-<pre src="src/db/select_avg_hours_null.sql">
-SELECT AVG(Hours) FROM Experiments;
-</pre>
-
-      <table class="outlined">
-        <tr><td>6.7</td></tr>
-      </table>
-<!-- AB: I didn't understand this next paragraph. -->
-      <p class="continue">
-        Once again,
-        <code>null</code> values have not been included,
-        so this average is the sum of the five actual values we have,
-        divided by five,
-        rather than the sum divided by the number of experiments&mdash;i.e.,
-        it does <em>not</em> treat the <code>null</code> values as contributing zero to the total.
-        Again,
-        it's up to us to decide whether this is the right behavior or not.
-      </p>
-
-      <div class="keypoints" id="k:aggregate">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use <code>GROUP BY</code> to group values before aggregation.</li>
-        </ul>
-      </div>
-
-    </section>
-
-    <section id="s:design">
-
-      <h2>Database Design</h2>
-
-      <div class="understand" id="u:design">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Explain what an atomic value is.</li>
-          <li>Be able to tell whether a value is atomic or not.</li>
-          <li>Explain why fields in database tables should store atomic values.</li>
-          <li>Explain why databases should not store redundant information.</li>
-          <li>Be able to tell whether information is redundant or not.</li>
-          <li>Be able to reorganize database tables to eliminate redundancy.</li>
-        </ul>
-      </div>
-
-      <p>
-        Let's go back to sorting for a moment,
-        and see if we can produce a list of scientists
-        ordered by family name.
-        We want our output to look like this:
-      </p>
-
-      <table class="outlined">
-        <tr><td>Kovalevskaya, Sofia</td></tr>
-        <tr><td>Lomonosov, Mikhail</td></tr>
-        <tr><td>Mendeleev, Dmitri</td></tr>
-        <tr><td>Pavlov, Ivan</td></tr>
-      </table>
-
-      <p>
-        This is easy to do in a programming language like Python:
-        we just split the names on the space character,
-        then join the two parts using a comma and a space.
-      </p>
-
+      <li>
+        Show the records produced by each stage of
+        <a href="#f:pipeline_grouping">Figure 7</a>
+        for the following query:
 <pre>
-result = []
-for name in list_of_names:
-    personal_name, family_name = name.split(' ')
-    new_name = family_name + ', ' + personal_name
-    result.append(new_name)
-result.sort()
+select   min(reading), max(reading) from Survey
+where    taken in (734, 735)
+and      quant='temp'
+group by taken, quant;
 </pre>
+      </li>
 
-      <p>
-        We can do something like this in some dialects of SQL, but not all,
-        and even when we can, it's harder to read.
-        For example, if we're using Microsoft SQL Server, the query we need is:
-      </p>
+      <li>
+        How can the query in the previous challenge be simplified
+        without changing its result?
+      </li>
 
-<pre>
-SELECT SUBSTRING(Scientist, 1, CHARINDEX(Scientist, " ")-1)
-       || ", "
-       || SUBSTRING(Scientist, CHARINDEX(Scientist, " ")+1, LEN(Scientist))
-       FROM Experiments;
-</pre>
+    </ol>
+  </div>
 
-      <p class="continue">
-        Here,
-        <code>CHARINDEX</code> and <code>SUBSTRING</code> are built-in functions
-        that find the locations of characters and take substrings respectively,
-        and <code>||</code> concatenates strings.
-        This won't work as written with other databases,
-        though,
-        since their equivalents of <code>CHARINDEX</code> have different names
-        (or, in the case of SQLite, may not exist at all).
-        And even when it does work, it's still not a complete solution,
-        since it doesn't sort the names.
-      </p>
-
-      <p>
-        We could get further by using <a href="#s:nested">nested queries</a>,
-        which we will discuss later in this chapter,
-        but the right solution is to reformulate the problem.
-        What we're trying to do is difficult because
-        we have violated one of the fundamental rules of database design.
-        The values in the <code>Scientist</code> field have several parts that we care about;
-        in technical terms,
-        they are not <a href="glossary.html#atomic-value">atomic values</a>.
-        In a well-designed database,
-        every value <em>is</em> atomic,
-        so that it can be accessed directly.
-      </p>
-
-      <p>
-        Here's what our table looks like when we split names into their component parts:
-      </p>
-
-      <table class="outlined" src="db/create_single_table_experiments.sql">
-        <tr><td colspan="4" align="center"><strong>Experiments</strong></td></tr>
-        <tr>
-          <td><strong>PersonalName</strong></td>
-          <td><strong>FamilyName</strong></td>
-          <td><strong>Project</strong></td>
-          <td><strong>Hours</strong></td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>Antigravity</td>
-          <td>6.5</td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>Teleportation</td>
-          <td>11.0</td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>Teleportation</td>
-          <td>5.0</td>
-        </tr>
-        <tr>
-          <td>Mikhail</td>
-          <td>Lomonosov</td>
-          <td>Antigravity</td>
-          <td>4.0</td>
-        </tr>
-        <tr>
-          <td>Mikhail</td>
-          <td>Lomonosov</td>
-          <td>Time Travel</td>
-          <td>-2.0</td>
-        </tr>
-        <tr>
-          <td>Dmitri</td>
-          <td>Mendeleev</td>
-          <td>Antigravity</td>
-          <td>9.0</td>
-        </tr>
-        <tr>
-          <td>Ivan</td>
-          <td>Pavlov</td>
-          <td>Teleportation</td>
-          <td>9.0</td>
-        </tr>
-        <tr>
-          <td>Ivan</td>
-          <td>Pavlov</td>
-          <td>Time Travel</td>
-          <td>-7.0</td>
-        </tr>
-      </table>
-
-      <p class="continue">
-        It looks like a small change, but it has major implications.
-        First, it makes the SQL simpler,
-        since we no longer have to do substring operations to get values:
-      </p>
-
-<pre make="select-distinct-names">
-SELECT DISTINCT FamilyName || ", " || PersonalName FROM Experiments;
-</pre>
-
-      <p class="continue">
-        Second,
-        this SQL will be much more efficient,
-        since repeatedly finding substrings takes more time than simply matching values directly.
-      </p>
-
-      <div class="box">
-        <h3>Why Personal and Family Names?</h3>
-
-        <p>
-          <code>PersonalName</code> and <code>FamilyName</code> may seem like odd labels for database fields:
-          <code>FirstName</code> and <code>LastName</code> would be shorter.
-          However, the latter pair of labels assume a cultural convention that isn't true for many people.
-          In China, Japan, and other East Asian countries, for example,
-          the family name is usually written first.
-          This may sound like a small thing,
-          but it's a good habit to get into:
-          when we're designing a database,
-          we should always think about the meaning of data,
-          rather than how it is presented.
-        </p>
-
-      </div>
-
-      <p>
-        Our redesigned table still violates an important rule of database design.
-        To see how,
-        let's look at what happens if we want to store people's email addresses:
-      </p>
-
-      <table class="outlined" src="db/create_single_table_experiments.sql">
-        <tr><td colspan="5" align="center"><strong>Experiments</strong></td></tr>
-        <tr>
-          <td><strong>PersonalName</strong></td>
-          <td><strong>FamilyName</strong></td>
-          <td><strong>Email</strong></td>
-          <td><strong>Project</strong></td>
-          <td><strong>Hours</strong></td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>skol@euphoric.edu</td>
-          <td>Antigravity</td>
-          <td>6.5</td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>skol@euphoric.edu</td>
-          <td>Teleportation</td>
-          <td>11.0</td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>skol@euphoric.edu</td>
-          <td>Teleportation</td>
-          <td>5.0</td>
-        </tr>
-        <tr>
-          <td>Mikhail</td>
-          <td>Lomonosov</td>
-          <td>mikki@freesci.org</td>
-          <td>Antigravity</td>
-          <td>4.0</td>
-        </tr>
-        <tr>
-          <td>Mikhail</td>
-          <td>Lomonosov</td>
-          <td>mikki@freesci.org</td>
-          <td>Time Travel</td>
-          <td>-2.0</td>
-        </tr>
-        <tr>
-          <td>Dmitri</td>
-          <td>Mendeleev</td>
-          <td>mendeleev@euphoric.edu</td>
-          <td>Antigravity</td>
-          <td>9.0</td>
-        </tr>
-        <tr>
-          <td>Ivan</td>
-          <td>Pavlov</td>
-          <td>pablum@euphoric.edu</td>
-          <td>Teleportation</td>
-          <td>9.0</td>
-        </tr>
-        <tr>
-          <td>Ivan</td>
-          <td>Pavlov</td>
-          <td>pablum@euphoric.edu</td>
-          <td>Time Travel</td>
-          <td>-7.0</td>
-        </tr>
-      </table>
-
-      <p>
-        There's a lot of redundancy in this table:
-        every time "Sofia" appears as a personal name,
-        the family name is always "Kovalevskaya",
-        and the email address is always "skol@euphoric.edu".
-        If we use this design,
-        we will have to eliminate duplicates almost every time we run a query,
-        and if Sofia changes her email address,
-        we will have to update several rows of the database.
-      </p>
-
-      <p>
-        The right way to store this data is
-        to separate information about scientists
-        from information about experiments,
-        so that no fact is ever duplicated.
-        We can do this by splitting our table in two:
-      </p>
-
-      <table class="outlined">
-        <tr><td colspan="3" align="center"><strong>Experiments</strong></td></tr>
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
-      </table>
-
-      <table class="outlined">
-        <tr><td colspan="4" align="center"><strong>Scientists</strong></td></tr>
-        <tr><td>skol</td><td>Kovalevskaya</td><td>Sofia</td><td>skol@euphoric.edu</td></tr>
-        <tr><td>mlom</td><td>Lomonosov</td><td>Mikhail</td><td>mikki@freesci.org</td></tr>
-        <tr><td>dmen</td><td>Mendeleev</td><td>Dmitri</td><td>mendeleev@euphoric.edu</td></tr>
-        <tr><td>ipav</td><td>Pavlov</td><td>Ivan</td><td>pablum@euphoric.edu</td></tr>
-      </table>
-
-      <p>
-        Facts about our scientists now appear exactly once,
-        as do the entries for experiments.
-        The only exception is the two entries for Sofia Kovalevskaya's hours on the Teleportation project,
-        which was in the original data.
-        At this point,
-        we should either insist that
-        all the hours each scientist has spent on a particular project appear in a single database entry,
-        or document the reasons for having multiple entries
-        (e.g., because each entry is the hours worked in a single week or month).
-      </p>
-
-      <div class="keypoints" id="k:design">
-        <h3>Summary</h3>
-        <ul>
-          <li idea="modelview">Each field in a database table should store a single atomic value.</li>
-          <li idea="modelview">No fact in a database should ever be duplicated.</li>
-        </ul>
-      </div>
-
-    </section>
+</section>
 
     <section id="s:join">
 
@@ -3081,6 +2682,321 @@ ORDER BY        a.PersonID ASC;
         <h3>Summary</h3>
         <ul>
           <li>Use a self join to combine a table with itself.</li>
+        </ul>
+      </div>
+
+    </section>
+
+    <section id="s:design">
+
+      <h2>Database Design</h2>
+
+      <div class="understand" id="u:design">
+        <h3>Learning Objectives:</h3>
+        <ul>
+          <li>Explain what an atomic value is.</li>
+          <li>Be able to tell whether a value is atomic or not.</li>
+          <li>Explain why fields in database tables should store atomic values.</li>
+          <li>Explain why databases should not store redundant information.</li>
+          <li>Be able to tell whether information is redundant or not.</li>
+          <li>Be able to reorganize database tables to eliminate redundancy.</li>
+        </ul>
+      </div>
+
+      <p>
+        Let's go back to sorting for a moment,
+        and see if we can produce a list of scientists
+        ordered by family name.
+        We want our output to look like this:
+      </p>
+
+      <table class="outlined">
+        <tr><td>Kovalevskaya, Sofia</td></tr>
+        <tr><td>Lomonosov, Mikhail</td></tr>
+        <tr><td>Mendeleev, Dmitri</td></tr>
+        <tr><td>Pavlov, Ivan</td></tr>
+      </table>
+
+      <p>
+        This is easy to do in a programming language like Python:
+        we just split the names on the space character,
+        then join the two parts using a comma and a space.
+      </p>
+
+<pre>
+result = []
+for name in list_of_names:
+    personal_name, family_name = name.split(' ')
+    new_name = family_name + ', ' + personal_name
+    result.append(new_name)
+result.sort()
+</pre>
+
+      <p>
+        We can do something like this in some dialects of SQL, but not all,
+        and even when we can, it's harder to read.
+        For example, if we're using Microsoft SQL Server, the query we need is:
+      </p>
+
+<pre>
+SELECT SUBSTRING(Scientist, 1, CHARINDEX(Scientist, " ")-1)
+       || ", "
+       || SUBSTRING(Scientist, CHARINDEX(Scientist, " ")+1, LEN(Scientist))
+       FROM Experiments;
+</pre>
+
+      <p class="continue">
+        Here,
+        <code>CHARINDEX</code> and <code>SUBSTRING</code> are built-in functions
+        that find the locations of characters and take substrings respectively,
+        and <code>||</code> concatenates strings.
+        This won't work as written with other databases,
+        though,
+        since their equivalents of <code>CHARINDEX</code> have different names
+        (or, in the case of SQLite, may not exist at all).
+        And even when it does work, it's still not a complete solution,
+        since it doesn't sort the names.
+      </p>
+
+      <p>
+        We could get further by using <a href="#s:nested">nested queries</a>,
+        which we will discuss later in this chapter,
+        but the right solution is to reformulate the problem.
+        What we're trying to do is difficult because
+        we have violated one of the fundamental rules of database design.
+        The values in the <code>Scientist</code> field have several parts that we care about;
+        in technical terms,
+        they are not <a href="glossary.html#atomic-value">atomic values</a>.
+        In a well-designed database,
+        every value <em>is</em> atomic,
+        so that it can be accessed directly.
+      </p>
+
+      <p>
+        Here's what our table looks like when we split names into their component parts:
+      </p>
+
+      <table class="outlined" src="db/create_single_table_experiments.sql">
+        <tr><td colspan="4" align="center"><strong>Experiments</strong></td></tr>
+        <tr>
+          <td><strong>PersonalName</strong></td>
+          <td><strong>FamilyName</strong></td>
+          <td><strong>Project</strong></td>
+          <td><strong>Hours</strong></td>
+        </tr>
+        <tr>
+          <td>Sofia</td>
+          <td>Kovalevskaya</td>
+          <td>Antigravity</td>
+          <td>6.5</td>
+        </tr>
+        <tr>
+          <td>Sofia</td>
+          <td>Kovalevskaya</td>
+          <td>Teleportation</td>
+          <td>11.0</td>
+        </tr>
+        <tr>
+          <td>Sofia</td>
+          <td>Kovalevskaya</td>
+          <td>Teleportation</td>
+          <td>5.0</td>
+        </tr>
+        <tr>
+          <td>Mikhail</td>
+          <td>Lomonosov</td>
+          <td>Antigravity</td>
+          <td>4.0</td>
+        </tr>
+        <tr>
+          <td>Mikhail</td>
+          <td>Lomonosov</td>
+          <td>Time Travel</td>
+          <td>-2.0</td>
+        </tr>
+        <tr>
+          <td>Dmitri</td>
+          <td>Mendeleev</td>
+          <td>Antigravity</td>
+          <td>9.0</td>
+        </tr>
+        <tr>
+          <td>Ivan</td>
+          <td>Pavlov</td>
+          <td>Teleportation</td>
+          <td>9.0</td>
+        </tr>
+        <tr>
+          <td>Ivan</td>
+          <td>Pavlov</td>
+          <td>Time Travel</td>
+          <td>-7.0</td>
+        </tr>
+      </table>
+
+      <p class="continue">
+        It looks like a small change, but it has major implications.
+        First, it makes the SQL simpler,
+        since we no longer have to do substring operations to get values:
+      </p>
+
+<pre make="select-distinct-names">
+SELECT DISTINCT FamilyName || ", " || PersonalName FROM Experiments;
+</pre>
+
+      <p class="continue">
+        Second,
+        this SQL will be much more efficient,
+        since repeatedly finding substrings takes more time than simply matching values directly.
+      </p>
+
+      <div class="box">
+        <h3>Why Personal and Family Names?</h3>
+
+        <p>
+          <code>PersonalName</code> and <code>FamilyName</code> may seem like odd labels for database fields:
+          <code>FirstName</code> and <code>LastName</code> would be shorter.
+          However, the latter pair of labels assume a cultural convention that isn't true for many people.
+          In China, Japan, and other East Asian countries, for example,
+          the family name is usually written first.
+          This may sound like a small thing,
+          but it's a good habit to get into:
+          when we're designing a database,
+          we should always think about the meaning of data,
+          rather than how it is presented.
+        </p>
+
+      </div>
+
+      <p>
+        Our redesigned table still violates an important rule of database design.
+        To see how,
+        let's look at what happens if we want to store people's email addresses:
+      </p>
+
+      <table class="outlined" src="db/create_single_table_experiments.sql">
+        <tr><td colspan="5" align="center"><strong>Experiments</strong></td></tr>
+        <tr>
+          <td><strong>PersonalName</strong></td>
+          <td><strong>FamilyName</strong></td>
+          <td><strong>Email</strong></td>
+          <td><strong>Project</strong></td>
+          <td><strong>Hours</strong></td>
+        </tr>
+        <tr>
+          <td>Sofia</td>
+          <td>Kovalevskaya</td>
+          <td>skol@euphoric.edu</td>
+          <td>Antigravity</td>
+          <td>6.5</td>
+        </tr>
+        <tr>
+          <td>Sofia</td>
+          <td>Kovalevskaya</td>
+          <td>skol@euphoric.edu</td>
+          <td>Teleportation</td>
+          <td>11.0</td>
+        </tr>
+        <tr>
+          <td>Sofia</td>
+          <td>Kovalevskaya</td>
+          <td>skol@euphoric.edu</td>
+          <td>Teleportation</td>
+          <td>5.0</td>
+        </tr>
+        <tr>
+          <td>Mikhail</td>
+          <td>Lomonosov</td>
+          <td>mikki@freesci.org</td>
+          <td>Antigravity</td>
+          <td>4.0</td>
+        </tr>
+        <tr>
+          <td>Mikhail</td>
+          <td>Lomonosov</td>
+          <td>mikki@freesci.org</td>
+          <td>Time Travel</td>
+          <td>-2.0</td>
+        </tr>
+        <tr>
+          <td>Dmitri</td>
+          <td>Mendeleev</td>
+          <td>mendeleev@euphoric.edu</td>
+          <td>Antigravity</td>
+          <td>9.0</td>
+        </tr>
+        <tr>
+          <td>Ivan</td>
+          <td>Pavlov</td>
+          <td>pablum@euphoric.edu</td>
+          <td>Teleportation</td>
+          <td>9.0</td>
+        </tr>
+        <tr>
+          <td>Ivan</td>
+          <td>Pavlov</td>
+          <td>pablum@euphoric.edu</td>
+          <td>Time Travel</td>
+          <td>-7.0</td>
+        </tr>
+      </table>
+
+      <p>
+        There's a lot of redundancy in this table:
+        every time "Sofia" appears as a personal name,
+        the family name is always "Kovalevskaya",
+        and the email address is always "skol@euphoric.edu".
+        If we use this design,
+        we will have to eliminate duplicates almost every time we run a query,
+        and if Sofia changes her email address,
+        we will have to update several rows of the database.
+      </p>
+
+      <p>
+        The right way to store this data is
+        to separate information about scientists
+        from information about experiments,
+        so that no fact is ever duplicated.
+        We can do this by splitting our table in two:
+      </p>
+
+      <table class="outlined">
+        <tr><td colspan="3" align="center"><strong>Experiments</strong></td></tr>
+        <tr><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
+        <tr><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
+        <tr><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
+        <tr><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
+        <tr><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
+        <tr><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
+        <tr><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
+        <tr><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
+      </table>
+
+      <table class="outlined">
+        <tr><td colspan="4" align="center"><strong>Scientists</strong></td></tr>
+        <tr><td>skol</td><td>Kovalevskaya</td><td>Sofia</td><td>skol@euphoric.edu</td></tr>
+        <tr><td>mlom</td><td>Lomonosov</td><td>Mikhail</td><td>mikki@freesci.org</td></tr>
+        <tr><td>dmen</td><td>Mendeleev</td><td>Dmitri</td><td>mendeleev@euphoric.edu</td></tr>
+        <tr><td>ipav</td><td>Pavlov</td><td>Ivan</td><td>pablum@euphoric.edu</td></tr>
+      </table>
+
+      <p>
+        Facts about our scientists now appear exactly once,
+        as do the entries for experiments.
+        The only exception is the two entries for Sofia Kovalevskaya's hours on the Teleportation project,
+        which was in the original data.
+        At this point,
+        we should either insist that
+        all the hours each scientist has spent on a particular project appear in a single database entry,
+        or document the reasons for having multiple entries
+        (e.g., because each entry is the hours worked in a single week or month).
+      </p>
+
+      <div class="keypoints" id="k:design">
+        <h3>Summary</h3>
+        <ul>
+          <li idea="modelview">Each field in a database table should store a single atomic value.</li>
+          <li idea="modelview">No fact in a database should ever be duplicated.</li>
         </ul>
       </div>
 

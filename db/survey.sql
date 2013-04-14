@@ -278,9 +278,6 @@ select '----------------------------------------';
 select 'what happens when an input is null?'
 select min(dated) from Visited where dated is not null;
 
-select '========================================';
-select 'Grouping';
-
 select '----------------------------------------';
 select 'grouping Visited by site only keeps arbitrary';
 select * from Visited group by site;
@@ -290,20 +287,49 @@ select 'get date ranges for sites';
 select   site, min(dated), max(dated) from Visited
 group by site;
 
+select '========================================';
+select 'Grouping';
+
+select '----------------------------------------';
+select 'radiation reading for a particular person';
+select person, count(reading), round(avg(reading), 2)
+from  Survey
+where quant='rad'
+and   person='dyer';
+
+select '----------------------------------------';
+select 'radiation reading for an arbitrary person';
+select person, count(reading), round(avg(reading), 2)
+from  Survey
+where quant='rad';
+
 select '----------------------------------------';
 select 'radiation readings by person';
 select   person, count(reading), round(avg(reading), 2)
 from     Survey
-where    Survey.quant='rad'
-group by Survey.person;
+where    quant='rad'
+group by person;
 
 select '----------------------------------------';
-select 'radiation readings by site';
-select   Visited.site, count(Survey.reading), round(avg(Survey.reading), 2)
-from     Visited join Survey
-where    Visited.ident=Survey.taken
-  and    Survey.quant='rad'
-group by Visited.site;
+select 'average by scientist and quantity';
+select   person, quant, count(reading), round(avg(reading), 2)
+from     Survey
+group by person, quant;
+
+select '----------------------------------------';
+select 'grouping and ordering';
+select   person, quant, count(reading), round(avg(reading), 2)
+from     Survey
+group by person, quant
+order by person, quant;
+
+select '----------------------------------------';
+select 'grouping and ordering without null';
+select   person, quant, count(reading), round(avg(reading), 2)
+from     Survey
+where    person is not null
+group by person, quant
+order by person, quant;
 
 select '========================================';
 select 'Combining Data';
