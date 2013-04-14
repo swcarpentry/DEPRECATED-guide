@@ -39,7 +39,7 @@ insert into Visited values(622, 'DR-1',  '1927-02-10');
 insert into Visited values(734, 'DR-3',  '1939-01-07');
 insert into Visited values(735, 'DR-3',  '1930-01-12');
 insert into Visited values(751, 'DR-3',  '1930-02-26');
-insert into Visited values(752, 'DR-3',  NULL);
+insert into Visited values(752, 'DR-3',  null);
 insert into Visited values(837, 'MSK-4', '1932-01-14');
 insert into Visited values(844, 'DR-1',  '1932-03-22');
 
@@ -48,7 +48,7 @@ insert into Visited values(844, 'DR-1',  '1932-03-22');
 -- Note that Roerich's salinity measurements are an order of magnitude
 -- too large (use this to talk about data cleanup).  Note also that
 -- there are two cases where we don't know who took the measurement,
--- and that in most cases we don't have an entry (NULL or not) for the
+-- and that in most cases we don't have an entry (null or not) for the
 -- temperature.
 create table Survey(
 	taken   integer,
@@ -65,8 +65,8 @@ insert into Survey values(734, 'pb',   'rad',    8.41);
 insert into Survey values(734, 'lake', 'sal',    0.05);
 insert into Survey values(734, 'pb',   'temp', -21.50);
 insert into Survey values(735, 'pb',   'rad',    7.22);
-insert into Survey values(735, NULL,   'sal',    0.06);
-insert into Survey values(735, NULL,   'temp', -26.00);
+insert into Survey values(735, null,   'sal',    0.06);
+insert into Survey values(735, null,   'temp', -26.00);
 insert into Survey values(751, 'pb',   'rad',    4.35);
 insert into Survey values(751, 'pb',   'temp', -18.50);
 insert into Survey values(751, 'lake', 'sal',    0.10);
@@ -250,30 +250,40 @@ select '----------------------------------------';
 select 'averaging';
 select avg(reading) from Survey where quant='sal';
 
-select 'averaging sensible values';
-select avg(reading) from Survey
-where quant='sal'
-  and reading<10.0;
-
+select '----------------------------------------';
 select 'counting';
-select count(reading) from Survey
-where quant='sal'
-  and reading<10.0;
-
-select 'can count anything';
-select count(*) from Survey
-where quant='sal'
-  and reading<10.0;
-
-select 'unaggregated with aggregated takes arbitrary';
-select person, count(*) from Survey
-where quant='sal'
-  and reading<10.0;
+select count(reading) from Survey where quant='sal';
 
 select '----------------------------------------';
-select   'grouping Visited by site only keeps arbitrary';
-select   * from Visited
-group by site;
+select 'sum';
+select sum(reading) from Survey where quant='sal';
+
+select '----------------------------------------';
+select 'averaging sensible values';
+select min(reading), max(reading) from Survey where quant='sal' and reading<=1.0;
+
+select '----------------------------------------';
+select 'unaggregated with aggregated takes arbitrary';
+select person, count(*) from Survey where quant='sal' and reading<=1.0;
+
+select '----------------------------------------';
+select 'what happens when there is no input?'
+select person, max(reading), sum(reading) from Survey where quant='missing';
+
+select '----------------------------------------';
+select 'what happens when an input is null?'
+select min(dated) from Visited;
+
+select '----------------------------------------';
+select 'what happens when an input is null?'
+select min(dated) from Visited where dated is not null;
+
+select '========================================';
+select 'Grouping';
+
+select '----------------------------------------';
+select 'grouping Visited by site only keeps arbitrary';
+select * from Visited group by site;
 
 select '----------------------------------------';
 select 'get date ranges for sites';

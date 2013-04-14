@@ -1214,8 +1214,8 @@ select * from Site where (lat &gt; -30) or (lat &lt; 30);
     <tr><td>734</td><td>pb</td></tr>
     <tr><td>734</td><td>lake</td></tr>
     <tr><td>735</td><td>pb</td></tr>
-    <tr><td>735</td><td>None</td></tr>
-    <tr><td>735</td><td>None</td></tr>
+    <tr><td>735</td><td></td></tr>
+    <tr><td>735</td><td></td></tr>
     <tr><td>751</td><td>pb</td></tr>
     <tr><td>751</td><td>pb</td></tr>
     <tr><td>751</td><td>lake</td></tr>
@@ -1244,7 +1244,7 @@ select * from Site where (lat &gt; -30) or (lat &lt; 30);
     <tr><td>734</td><td>pb</td></tr>
     <tr><td>734</td><td>lake</td></tr>
     <tr><td>735</td><td>pb</td></tr>
-    <tr><td>735</td><td>None</td></tr>
+    <tr><td>735</td><td></td></tr>
     <tr><td>751</td><td>pb</td></tr>
     <tr><td>751</td><td>lake</td></tr>
     <tr><td>752</td><td>roe</td></tr>
@@ -1315,9 +1315,6 @@ select * from Site where (lat &gt; -30) or (lat &lt; 30);
     <tr><td>dyer</td></tr>
     <tr><td>lake</td></tr>
     <tr><td>roe</td></tr>
-  </table>
-
-  <table class="db">
     <tr>
       <td colspan="1">
 <pre>select ident from Person order by random();</pre>
@@ -1449,7 +1446,7 @@ select * from Survey where quant='rad' order by taken;
   <table class="db">
     <tr>
       <td colspan="3">
-<pre>select * from Visited where dated<'1930-00-00';</pre>
+<pre>select * from Visited where dated&lt;'1930-00-00';</pre>
       </td>
     </tr>
     <tr><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
@@ -1464,7 +1461,7 @@ select * from Survey where quant='rad' order by taken;
   <table class="db">
     <tr>
       <td colspan="3">
-<pre>select * from Visited where dated>='1930-00-00';</pre>
+<pre>select * from Visited where dated&gt;='1930-00-00';</pre>
       </td>
     </tr>
     <tr><td>734</td><td>DR-3</td><td>1939-01-07</td></tr>
@@ -1509,9 +1506,6 @@ select * from Survey where quant='rad' order by taken;
 <pre>select * from Visited where dated=NULL;</pre>
       </td>
     </tr>
-  </table>
-
-  <table class="db">
     <tr>
       <td colspan="1">
 <pre>select * from Visited where dated!=NULL;</pre>
@@ -1530,7 +1524,7 @@ select * from Survey where quant='rad' order by taken;
 <pre>select * from Visited where dated is NULL;</pre>
       </td>
     </tr>
-    <tr><td>752</td><td>DR-3</td><td>None</td></tr>
+    <tr><td>752</td><td>DR-3</td><td></td></tr>
   </table>
 
   <p class="continue">
@@ -1591,7 +1585,7 @@ select * from Survey where quant='rad' order by taken;
     </tr>
     <tr><td>619</td><td>dyer</td><td>sal</td><td>0.13</td></tr>
     <tr><td>622</td><td>dyer</td><td>sal</td><td>0.09</td></tr>
-    <tr><td>735</td><td>None</td><td>sal</td><td>0.06</td></tr>
+    <tr><td>735</td><td></td><td>sal</td><td>0.06</td></tr>
     <tr><td>752</td><td>roe</td><td>sal</td><td>41.6</td></tr>
     <tr><td>837</td><td>roe</td><td>sal</td><td>22.5</td></tr>
   </table>
@@ -1614,7 +1608,34 @@ select * from Survey where quant='rad' order by taken;
 
   <div class="challenges">
     <h3>Challenges</h3>
-    <p class="fixme">add challenges</p>
+
+    <li>
+      Write a query that sorts the records in <code>Visited</code> by date,
+      omitting entries for which the date is not known
+      (i.e., is null).
+    </li>
+
+    <li>
+      What do you expect the query:
+<pre>
+select * from Visited where dated in ('1927-02-08', null);
+</pre>
+      to produce?
+      What does it actually produce?
+    </li>
+
+    <li>
+      Some database designers prefer to use
+      a <a href="glossary.html#sentinel-value">sentinel value</a>
+      to mark missing data rather than <code>null</code>.
+      For example,
+      they will use the date "0000-00-00" to mark a missing date,
+      or -1.0 to mark a missing salinity or radiation reading
+      (since actual readings cannot be negative).
+      What does this simplify?
+      What burdens or risks does it introduce?
+    </li>
+
   </div>
 
 </section>
@@ -1635,8 +1656,7 @@ select * from Survey where quant='rad' order by taken;
   </div>
 
   <p>
-    Gina's next step in analyzing her data is
-    to calculate ranges and averages.
+    Gina now wants to calculate ranges and averages for her data.
     She knows how to select all of the dates from the <code>Visited</code> table:
   </p>
 
@@ -1657,61 +1677,214 @@ select * from Survey where quant='rad' order by taken;
   </table>
 
   <p class="continue">
-    but how can she add them together?
-    The solution is to use the <code>SUM</code> function:
+    but to combine them,
+    she must use an <a href="glossary.html#aggregation-function">aggregation function</a>
+    such as <code>min</code> or <code>max</code>.
+    Each of these functions takes a set of records as input,
+    and produces a single record as output:
   </p>
 
-<pre src="src/db/agg_sum_hours.sql">
-SELECT SUM(Hours) FROM Experiments;
+  <table class="db">
+    <tr>
+      <td colspan="1">
+<pre>select min(dated) from Visited;</pre>
+      </td>
+    </tr>
+    <tr><td>1927-02-08</td></tr>
+    <tr>
+      <td colspan="1">
+<pre>select max(dated) from Visited;</pre>
+      </td>
+    </tr>
+    <tr><td>1939-01-07</td></tr>
+  </table>
+
+  <p>
+    <code>min</code> and <code>max</code> are just two of
+    the aggregation functions built into SQL.
+    Three others are <code>avg</code>,
+    <code>count</code>,
+    and <code>sum</code>:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="1">
+<pre>select avg(reading) from Survey where quant='sal';</pre>
+      </td>
+    </tr>
+    <tr><td>7.20333333333</td></tr>
+    <tr>
+      <td colspan="1">
+<pre>select count(reading) from Survey where quant='sal';</pre>
+      </td>
+    </tr>
+    <tr><td>9</td></tr>
+    <tr>
+      <td colspan="1">
+<pre>select sum(reading) from Survey where quant='sal';</pre>
+      </td>
+    </tr>
+    <tr><td>64.83</td></tr>
+  </table>
+
+  <p>
+    We used <code>count(reading)</code> here,
+    but we could just as easily have counted <code>quant</code>
+    or any other field in the table,
+    or even used <code>count(*)</code>,
+    since the function doesn't care about the values themselves,
+    just how many values there are.
+  </p>
+
+  <p>
+    SQL lets us do several aggregations at once.
+    We can,
+    for example,
+    find the range of sensible salinity measurements:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="2">
+<pre>select min(reading), max(reading) from Survey where quant='sal' and reading&lt;=1.0;</pre>
+      </td>
+    </tr>
+    <tr><td>0.05</td><td>0.21</td></tr>
+  </table>
+
+  <p>
+    We can also combine aggregated results with raw results,
+    although the output might surprise you:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="2">
+<pre>select person, count(*) from Survey where quant='sal' and reading&lt;=1.0;</pre>
+      </td>
+    </tr>
+    <tr><td>lake</td><td>7</td></tr>
+  </table>
+
+  <p>
+    Why does Lake's name appear rather than Roerich's or Dyer's?
+    The answer is that when it has to aggregate a field,
+    but isn't told how to,
+    the database manager chooses an actual value from the input set.
+    It might use the first one processed,
+    the last one,
+    or something else entirely.
+  </p>
+
+  <p>
+    Another important fact is that when there are no values to aggregate,
+    aggregation's result is "don't know"
+    rather than zero or some other arbitrary value:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="3">
+<pre>select person, max(reading), sum(reading) from Survey where quant='missing';</pre>
+      </td>
+    </tr>
+    <tr><td>None</td><td>None</td><td>None</td></tr>
+  </table>
+
+  <p>
+    One final important feature of aggregation functions is that
+    they are inconsistent with the rest of SQL in a very useful way.
+    If we add two values,
+    and one of them is null,
+    the result is null.
+    By extension,
+    if we use <code>sum</code> to add all the values in a set,
+    and any of those values are null,
+    the result should also be null.
+    It's much more useful,
+    though,
+    for aggregation functions to ignore null values
+    and only combine those that are non-null.
+    This behavior lets us write our queries as:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="1">
+<pre>select min(dated) from Visited;</pre>
+      </td>
+    </tr>
+    <tr><td>1927-02-08</td></tr>
+  </table>
+
+  <p class="continue">
+    instead of always having to filter explicitly:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="1">
+<pre>select min(dated) from Visited <span class="highlight">where dated is not null</span>;</pre>
+      </td>
+    </tr>
+    <tr><td>1927-02-08</td></tr>
+  </table>
+
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Use aggregation functions like <code>sum</code> and <code>max</code> to combine query results.</li>
+      <li>Use <code>count</code> function to count the number of results.</li>
+      <li>If some fields are aggregated and others are not, the database manager chooses an arbitrary result for the unaggregated field.</li>
+      <li>Most aggregation functions skip nulls when combining values.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+
+    <li>
+      How many temperature readings did Frank Pabodie record,
+      and what was their average value?
+    </li>
+
+    <li>
+      The average of a set of values is the sum of the values
+      divided by the number of values.
+      Does this mean that the <code>avg</code> function returns 2.0 or 3.0
+      when given the values 1.0, <code>null</code>, and 5.0?
+    </li>
+
+    <li>
+      Gina wants to calculate the difference between
+      each individual radiation reading
+      and the average of all the radiation readings.
+      She writes the query:
+<pre>
+select reading-avg(reading) from Survey where quant='rad';
 </pre>
+      What does this actually produce, and why?
+    </li>
 
-      <p class="continue">
-        The output is a table containing a single row and column:
-      </p>
-
-      <table class="outlined">
-        <tr><td>35.5</td></tr>
-      </table>
-
-      <p>
-        <code>SUM</code> is just one of the
-        <a href="glossary.html#aggregate">aggregation</a> functions built into SQL.
-        In their simplest form,
-        aggregation functions reduce all the rows returned by a query
-        to a single row.
-        <code>MAX</code>, <code>MIN</code>, and <code>AVG</code> are also aggregation functions,
-        and do what their names suggest:
-      </p>
-
-<pre src="src/db/agg_functions_hours.sql">
-SELECT SUM(Hours), MAX(Hours), MIN(Hours), AVG(Hours) FROM Experiments;
+    <li>
+      The function <code>group_concat(field, separator)</code>
+      concatenates all the values in a field
+      using the specified separator character
+      (or ',' if the separator isn't specified).
+      Use this to produce a one-line list of scientists' names,
+      such as:
+<pre>
+William Dyer, Frank Pabodie, Anderson Lake, Valentina Roerich, James Danforth
 </pre>
+      Can you find a way to order the list by surname?
+    </li>
 
-      <table class="outlined">
-        <tr><td>35.5</td><td>11.0</td><td>-7.0</td><td>4.4375</td></tr>
-      </table>
+  </div>
 
-      <p>
-        Another handy aggregation function is <code>COUNT</code>,
-        which counts how many records there are in a set:
-      </p>
+</section>
 
-<pre src="src/db/agg_count_hours.sql">
-SELECT COUNT(Hours) FROM Experiments;
-</pre>
-
-      <table class="outlined">
-        <tr><td>8</td></tr>
-      </table>
-
-      <p class="continue">
-         We used <code>COUNT(Hours)</code> here,
-         but we could just as easily have counted <code>Project</code>
-         or any other field in the table,
-         or even used <code>COUNT(*)</code>,
-         since the function doesn't care about the values themselves,
-         just how many values there are.
-      </p>
+<section id="s:grouping">
+  <h2>Grouping</h2>
 
       <p>
         Aggregation is very useful,
@@ -2021,11 +2194,7 @@ SELECT AVG(Hours) FROM Experiments;
       <div class="keypoints" id="k:aggregate">
         <h3>Summary</h3>
         <ul>
-          <li>Use aggregation functions like <code>SUM</code> <code>MAX</code> to combine many query results into a single value.</li>
-          <li>Use the <code>COUNT</code> function to count the number of results.</li>
-          <li>If some fields are aggregated, and others are not, the database manager displays an arbitrary result for the unaggregated field.</li>
           <li>Use <code>GROUP BY</code> to group values before aggregation.</li>
-      <li>Most aggregation functions skip nulls when combining values.</li>
         </ul>
       </div>
 
