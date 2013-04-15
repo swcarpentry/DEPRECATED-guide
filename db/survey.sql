@@ -10,7 +10,7 @@ insert into Person values('dyer',     'William',   'Dyer');
 insert into Person values('pb',       'Frank',     'Pabodie');
 insert into Person values('lake',     'Anderson',  'Lake');
 insert into Person values('roe',      'Valentina', 'Roerich');
-insert into Person values('danforth', 'James',     'Danforth');
+insert into Person values('danforth', 'Frank',     'Danforth');
 
 -- The `Site` table is equally simple.  Use it to explain the
 -- difference between databases and spreadsheets: in a spreadsheet,
@@ -340,21 +340,21 @@ select * from Site join Visited;
 
 select '----------------------------------------';
 select 'filter where sites match';
-select * from Site join Visited where Site.name=Visited.site;
+select * from Site join Visited on Site.name=Visited.site;
 
 select '----------------------------------------';
 select 'get latitude, longitude, and date';
 select Site.lat, Site.long, Visited.dated
 from   Site join Visited
-where  Site.name=Visited.site;
+on     Site.name=Visited.site;
 
 select '----------------------------------------';
-select 'get all radiation readings from DR-1';
-select Visited.dated, Survey.reading
-from   Survey join Visited
-where  Survey.taken=Visited.ident
-  and  Visited.site='DR-1'
-  and Survey.quant='rad';
+select 'get latitude, longitude, date, quantity, and reading';
+select Site.lat, Site.long, Visited.dated, Survey.quant, Survey.reading
+from   Site join Visited join Survey
+on     Site.name=Visited.site
+and    Visited.ident=Survey.taken
+and    Visited.dated is not null;
 
 select '----------------------------------------';
 select 'get all radiation readings since 1930';
@@ -365,55 +365,6 @@ where  Survey.taken=Visited.ident
   and  Survey.quant='rad'
   and  Visited.dated>='1930-00-00';
 
-select '========================================';
-select 'Self-Join';
-
 select '----------------------------------------';
-select 'who has worked together?';
-select 'start by joining "Survey" with itself';
-select count(*)
-from   Survey X join Survey Y;
-
-select '----------------------------------------';
-select 'now keep rows where the two "person" values are different';
-select count(*)
-from   Survey X join Survey Y
-where  X.person!=Y.person;
-
-select '----------------------------------------';
-select 'now keep distinct values';
-select distinct X.person, Y.person
-from   Survey X join Survey Y
-where  X.person!=Y.person;
-
-select '----------------------------------------';
-select 'and finally eliminate mirrored duplicates';
-select distinct X.person, Y.person
-from   Survey X join Survey Y
-where  X.person>Y.person;
-
-select '----------------------------------------';
-select 'Sub-Queries';
-
-select '----------------------------------------';
-select 'what measurements do we have with temperatures?';
-select * from Survey
- where taken in
-       (select taken from Survey where quant='temp');
-
-select '----------------------------------------';
-select 'who took no measurements (incorrect: not filtering null)?';
-select *
-from   Person
-where  Person.ident not in
-       (select distinct(person)
-        from Survey);
-
-select '----------------------------------------';
-select 'who took no measurements (correct: not filtering null)?';
-select *
-from   Person
-where  Person.ident not in
-       (select distinct person
-        from Survey
-        where person is not NULL);
+select 'get row IDs from Person table';
+select rowid, * from Person;

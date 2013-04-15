@@ -143,7 +143,7 @@
             <tr><td>pb</td><td>Frank</td><td>Pabodie</td></tr>
             <tr><td>lake</td><td>Anderson</td><td>Lake</td></tr>
             <tr><td>roe</td><td>Valentina</td><td>Roerich</td></tr>
-            <tr><td>danforth</td><td>James</td><td>Danforth</td></tr>
+            <tr><td>danforth</td><td>Frank</td><td>Danforth</td></tr>
           </table>
         </td>
         <td valign="top" rowspan="3">
@@ -221,7 +221,7 @@ sqlite&gt; <span class="in">select family, personal from Person;</span>
   <tr><td>Pabodie</td><td>Frank</td></tr>
   <tr><td>Lake</td><td>Anderson</td></tr>
   <tr><td>Roerich</td><td>Valentina</td></tr>
-  <tr><td>Danforth</td><td>James</td></tr>
+  <tr><td>Danforth</td><td>Frank</td></tr>
 </table>
 
   <p>
@@ -243,7 +243,7 @@ sqlite&gt; <span class="in">select family, personal</span>
 <tr><td>Pabodie</td><td>Frank</td></tr>
 <tr><td>Lake</td><td>Anderson</td></tr>
 <tr><td>Roerich</td><td>Valentina</td></tr>
-<tr><td>Danforth</td><td>James</td></tr>
+<tr><td>Danforth</td><td>Frank</td></tr>
 </table>
 
   <p class="continue">
@@ -288,7 +288,7 @@ sqlite&gt; <span class="in">select family, personal</span>
 Pabodie|Frank
 Lake|Anderson
 Roerich|Valentina
-Danforth|James</span>
+Danforth|Frank</span>
 
     <p class="continue">
       If we are using a graphical interface,
@@ -332,7 +332,7 @@ Danforth|James</span>
     <tr><td>Frank</td><td>Pabodie</td></tr>
     <tr><td>Anderson</td><td>Lake</td></tr>
     <tr><td>Valentina</td><td>Roerich</td></tr>
-    <tr><td>James</td><td>Danforth</td></tr>
+    <tr><td>Frank</td><td>Danforth</td></tr>
   </table>
 
   <p class="continue">
@@ -371,7 +371,7 @@ Danforth|James</span>
     <tr><td>pb</td><td>Frank</td><td>Pabodie</td></tr>
     <tr><td>lake</td><td>Anderson</td><td>Lake</td></tr>
     <tr><td>roe</td><td>Valentina</td><td>Roerich</td></tr>
-    <tr><td>danforth</td><td>James</td><td>Danforth</td></tr>
+    <tr><td>danforth</td><td>Frank</td><td>Danforth</td></tr>
   </table>
 
   <div class="keypoints">
@@ -542,7 +542,7 @@ $ <span class="in">sqlite3 survey.db 'select * from Person;'</span>
 pb|Frank|Pabodie
 lake|Anderson|Lake
 roe|Valentina|Roerich
-danforth|James|Danforth</span>
+danforth|Frank|Danforth</span>
 </pre>
         Fill in the missing commands in the pipeline below
         so that the output contains no redundant values.
@@ -645,7 +645,7 @@ $ <span class="in">sqlite3 survey.db 'select person, quant from Survey;' | <em>c
     but they help make the query easier to read.)
   </p>
 
-  <div class="box">
+  <div class="box" id="a:dates">
     <h3>Working With Dates</h3>
 
     <p>
@@ -966,7 +966,7 @@ select * from Site where (lat &gt; -30) or (lat &lt; 30);
     <tr><td>Frank Pabodie</td></tr>
     <tr><td>Anderson Lake</td></tr>
     <tr><td>Valentina Roerich</td></tr>
-    <tr><td>James Danforth</td></tr>
+    <tr><td>Frank Danforth</td></tr>
   </table>
 
   <div class="box">
@@ -1872,7 +1872,7 @@ select reading-avg(reading) from Survey where quant='rad';
       Use this to produce a one-line list of scientists' names,
       such as:
 <pre>
-William Dyer, Frank Pabodie, Anderson Lake, Valentina Roerich, James Danforth
+William Dyer, Frank Pabodie, Anderson Lake, Valentina Roerich, Frank Danforth
 </pre>
       Can you find a way to order the list by surname?
     </li>
@@ -2116,1554 +2116,801 @@ group by taken, quant;
 
 </section>
 
-    <section id="s:join">
+<section id="s:join">
+  <h2>Combining Data</h2>
 
-      <h2>Combining Data</h2>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Explain what primary keys and foreign keys are.</li>
+      <li>Write queries that combine information from two or more tables by matching keys.</li>
+      <li>Write queries using aliases for table names.</li>
+      <li>Explain why the <code>tablename.fieldname</code> notation is needed when tables are joined.</li>
+      <li>Explain the logical sequence of operations that occurs when two or more tables are joined.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:join">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Explain what primary keys and foreign keys are.</li>
-          <li>Write queries that combine information from two or more tables by matching keys.</li>
-          <li>Write queries using aliases for table names.</li>
-          <li>Explain why the <code>tablename.fieldname</code> notation is needed when tables are joined.</li>
-          <li>Explain the logical sequence of operations that occurs when two or more tables are joined.</li>
-        </ul>
-      </div>
+  <p>
+    In order to submit her data to a web site
+    that aggregates historical meteorological data,
+    Gina needs to format it as:
+  </p>
 
-      <p>
-        If we divide our data between several tables,
-        we must have some way to bring it back together again.
-        The key to doing this is
-        the fact that both tables have a <code>PersonID</code> field,
-        and that the values in these columns are shared.
-      </p>
+  <table>
+    <tr>
+      <td>latitude</td>
+      <td>longitude</td>
+      <td>date</td>
+      <td>quantity</td>
+      <td>reading</td>
+    </tr>
+  </table>
 
-      <p>
-        Suppose we want to combine all the data
-        from the <code>Experiments</code> and <code>Scientists</code> tables.
-        The SQL command to join the two tables is <code>JOIN</code>:
-      </p>
+  <p>
+    However,
+    her latitudes and longitudes are in the <code>Site</code> table,
+    while the dates of measurements are in the <code>Visited</code> table
+    and the readings themselves are in the <code>Survey</code> table.
+    She needs to combine these tables somehow.
+  </p>
 
-<pre src="src/db/join_scientists_experiments.sql">
-SELECT * FROM Scientists JOIN Experiments;
+  <p>
+    The SQL command to do this is <code>join</code>.
+    To see how it works,
+    let's start by joining the <code>Site</code> and <code>Visited</code> tables:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="6">
+<pre>select * from Site join Visited;</pre>
+      </td>
+    </tr>
+    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
+    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
+    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>734</td><td>DR-3</td><td>1939-01-07</td></tr>
+    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>735</td><td>DR-3</td><td>1930-01-12</td></tr>
+    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>751</td><td>DR-3</td><td>1930-02-26</td></tr>
+    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>752</td><td>DR-3</td><td></td></tr>
+    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>837</td><td>MS-4</td><td>1932-01-14</td></tr>
+    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
+    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
+    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
+    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>734</td><td>DR-3</td><td>1939-01-07</td></tr>
+    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>735</td><td>DR-3</td><td>1930-01-12</td></tr>
+    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>751</td><td>DR-3</td><td>1930-02-26</td></tr>
+    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>752</td><td>DR-3</td><td></td></tr>
+    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>837</td><td>MS-4</td><td>1932-01-14</td></tr>
+    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
+    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
+    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
+    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>734</td><td>DR-3</td><td>1939-01-07</td></tr>
+    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>735</td><td>DR-3</td><td>1930-01-12</td></tr>
+    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>751</td><td>DR-3</td><td>1930-02-26</td></tr>
+    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>752</td><td>DR-3</td><td></td></tr>
+    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>837</td><td>MS-4</td><td>1932-01-14</td></tr>
+    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
+  </table>
+
+  <p>
+    <code>join</code> creates
+    the <a href="glossary.html#cross-product">cross product</a>
+    of two tables,
+    i.e.,
+    it joins each record of one with each record of the other
+    to give all possible combinations.
+    Since there are three records in <code>Site</code>
+    and eight in <code>Visited</code>,
+    the join's output has 24 records.
+    And since each table has three fields,
+    the output has six fields.
+  </p>
+
+  <p>
+    What the join <em>hasn't</em> done is
+    figure out if the records being joined have anything to do with each other.
+    It has no way of knowing whether they do or not until we tell it how.
+    To do that,
+    we add a clause specifying that
+    we're only interested in combinations that have the same site name:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="6">
+<pre>select * from Site join Visited <span class="highlight">on Site.name=Visited.site</span>;</pre>
+      </td>
+    </tr>
+    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
+    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
+    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
+    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>734</td><td>DR-3</td><td>1939-01-07</td></tr>
+    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>735</td><td>DR-3</td><td>1930-01-12</td></tr>
+    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>751</td><td>DR-3</td><td>1930-02-26</td></tr>
+    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>752</td><td>DR-3</td><td></td></tr>
+    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>837</td><td>MS-4</td><td>1932-01-14</td></tr>
+  </table>
+
+  <p>
+    <code>on</code> does the same job as <code>where</code>:
+    it only keeps records that pass some test.
+    (The difference between the two is that <code>on</code> filters records
+    as they're being created,
+    while <code>where</code> waits until the join is done
+    and then does the filtering.)
+    Once we add this to our query,
+    the database manager throws away records
+    that combined information about two different sites,
+    leaving us with just the ones we want.
+  </p>
+
+  <p>
+    Notice that we used <code>table.field</code> to specify field names
+    in the output of the join.
+    We do this because tables can have fields with the same name,
+    and we need to be specific which ones we're talking about.
+    For example,
+    if we joined the <code>person</code> and <code>visited</code> tables,
+    the result would inherit a field called <code>ident</code>
+    from each of the original tables.
+  </p>
+
+  <p>
+    We can now use the same dotted notation
+    to select the three columns we actually want
+    out of our join:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="3">
+<pre>select <span class="highlight">Site.lat, Site.long, Visited.dated</span>
+from   Site join Visited
+on     Site.name=Visited.site;</pre>
+      </td>
+    </tr>
+    <tr><td>-49.85</td><td>-128.57</td><td>1927-02-08</td></tr>
+    <tr><td>-49.85</td><td>-128.57</td><td>1927-02-10</td></tr>
+    <tr><td>-49.85</td><td>-128.57</td><td>1932-03-22</td></tr>
+    <tr><td>-47.15</td><td>-126.72</td><td></td></tr>
+    <tr><td>-47.15</td><td>-126.72</td><td>1930-01-12</td></tr>
+    <tr><td>-47.15</td><td>-126.72</td><td>1930-02-26</td></tr>
+    <tr><td>-47.15</td><td>-126.72</td><td>1939-01-07</td></tr>
+    <tr><td>-48.87</td><td>-123.4</td><td>1932-01-14</td></tr>
+  </table>
+
+  <p>
+    If joining two tables is good,
+    joining many tables must be better.
+    In fact,
+    we can join any number of tables
+    simply by adding more <code>join</code> clauses to our query,
+    and more <code>on</code> tests to filter out combinations of records
+    that don't make sense:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="5">
+<pre>select Site.lat, Site.long, Visited.dated, <span class="highlight">Survey.quant, Survey.reading</span>
+from   Site join Visited join Survey
+on     Site.name=Visited.site
+<span class="highlight">and    Visited.ident=Survey.taken
+and    Visited.dated is not null</span>;</pre>
+      </td>
+    </tr>
+    <tr><td>-49.85</td><td>-128.57</td><td>1927-02-08</td><td>rad</td><td>9.82</td></tr>
+    <tr><td>-49.85</td><td>-128.57</td><td>1927-02-08</td><td>sal</td><td>0.13</td></tr>
+    <tr><td>-49.85</td><td>-128.57</td><td>1927-02-10</td><td>rad</td><td>7.8</td></tr>
+    <tr><td>-49.85</td><td>-128.57</td><td>1927-02-10</td><td>sal</td><td>0.09</td></tr>
+    <tr><td>-47.15</td><td>-126.72</td><td>1939-01-07</td><td>rad</td><td>8.41</td></tr>
+    <tr><td>-47.15</td><td>-126.72</td><td>1939-01-07</td><td>sal</td><td>0.05</td></tr>
+    <tr><td>-47.15</td><td>-126.72</td><td>1939-01-07</td><td>temp</td><td>-21.5</td></tr>
+    <tr><td>-47.15</td><td>-126.72</td><td>1930-01-12</td><td>rad</td><td>7.22</td></tr>
+    <tr><td>-47.15</td><td>-126.72</td><td>1930-01-12</td><td>sal</td><td>0.06</td></tr>
+    <tr><td>-47.15</td><td>-126.72</td><td>1930-01-12</td><td>temp</td><td>-26.0</td></tr>
+    <tr><td>-47.15</td><td>-126.72</td><td>1930-02-26</td><td>rad</td><td>4.35</td></tr>
+    <tr><td>-47.15</td><td>-126.72</td><td>1930-02-26</td><td>sal</td><td>0.1</td></tr>
+    <tr><td>-47.15</td><td>-126.72</td><td>1930-02-26</td><td>temp</td><td>-18.5</td></tr>
+    <tr><td>-48.87</td><td>-123.4</td><td>1932-01-14</td><td>rad</td><td>1.46</td></tr>
+    <tr><td>-48.87</td><td>-123.4</td><td>1932-01-14</td><td>sal</td><td>0.21</td></tr>
+    <tr><td>-48.87</td><td>-123.4</td><td>1932-01-14</td><td>sal</td><td>22.5</td></tr>
+    <tr><td>-49.85</td><td>-128.57</td><td>1932-03-22</td><td>rad</td><td>11.25</td></tr>
+  </table>
+
+  <p id="a:keys">
+    We can tell which records from <code>Site</code>, <code>Visited</code>, and <code>Survey</code>
+    correspond with each other
+    because those tables contain
+    <a href="glossary.html#primary-key">primary keys</a>
+    and <a href="glossary.html#foreign-key">foreign keys</a>.
+    A primary key is a value,
+    or combination of values,
+    that uniquely identifies each record in a table.
+    A foreign key is a value (or combination of values) from one table
+    that identifies a unique record in another table.
+    Another way of saying this is that
+    a foreign key is the primary key of one table
+    that appears in some other table.
+    In our database,
+    <code>Person.ident</code> is the primary key in the <code>Person</code> table,
+    while <code>Survey.person</code> is a foreign key
+    relating the <code>Survey</code> table's entries
+    to entries in <code>Person</code>.
+  </p>
+
+  <p>
+    Most database designers believe that
+    every table should have a well-defined primary key.
+    They also believe that this key should be separate from the data itself,
+    so that if we ever need to change the data,
+    we only need to make one change in one place.
+    One easy way to do this is
+    to create an arbitrary, unique ID for each record
+    as we add it to the database.
+    This is actually very common:
+    those IDs have names like "student numbers" and "patient numbers",
+    and they almost always turn out to have originally been
+    a unique record identifier in some database system or other.
+    As the query below demonstrates,
+    SQLite automatically numbers records as they're added to tables,
+    and we can use those record numbers in queries:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="4">
+<pre>select rowid, * from Person;</pre>
+      </td>
+    </tr>
+    <tr><td>1</td><td>dyer</td><td>William</td><td>Dyer</td></tr>
+    <tr><td>2</td><td>pb</td><td>Frank</td><td>Pabodie</td></tr>
+    <tr><td>3</td><td>lake</td><td>Anderson</td><td>Lake</td></tr>
+    <tr><td>4</td><td>roe</td><td>Valentina</td><td>Roerich</td></tr>
+    <tr><td>5</td><td>danforth</td><td>Frank</td><td>Danforth</td></tr>
+  </table>
+
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Use <code>join</code> to create all possible combinations of records from two or more tables.</li>
+      <li>Use <code>join <em>tables</em> on <em>test</em></code> to keep only those combinations that pass some test.</li>
+      <li>Use <code><em>table</em>.<em>field</em></code> to specify a particular field of a particular table.</li>
+      <li>Every record in a table should be uniquely identified by the value of its primary key.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <ol>
+
+      <li>
+        Write a query that lists all radiation readings from the DR-1 site.
+      </li>
+
+      <li>
+        Write a query that lists all sites visited by people named "Frank".
+      </li>
+
+      <li>
+        Describe in your own words what the following query produces:
+<pre>
+select Site.name from Site join Visited
+on Site.lat&lt;-49.0 and Site.name=Visited.site and Visited.dated&gt;='1932-00-00';
 </pre>
+      </li>
 
-      <p class="continue">
-        which means,
-        "Combine the rows of the <code>Scientists</code> table
-        with the rows of the <code>Experiments</code> table
-        and return all of the columns in the result."
-        The result isn't quite what we want:
-      </p>
+      <li>
+        Why does the <code>Person</code> table have an <code>ident</code> field?
+        Why do we not just use scientists' names in the <code>Survey</code> table?
+      </li>
 
-      <table class="outlined">
-        <tr><td>skol</td><td>Kovalevskaya</td><td>Sofia</td><td>skol@euphoric.edu</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>skol</td><td>Kovalevskaya</td><td>Sofia</td><td>skol@euphoric.edu</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>skol</td><td>Kovalevskaya</td><td>Sofia</td><td>skol@euphoric.edu</td><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>skol</td><td>Kovalevskaya</td><td>Sofia</td><td>skol@euphoric.edu</td><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>skol</td><td>Kovalevskaya</td><td>Sofia</td><td>skol@euphoric.edu</td><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>skol</td><td>Kovalevskaya</td><td>Sofia</td><td>skol@euphoric.edu</td><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>skol</td><td>Kovalevskaya</td><td>Sofia</td><td>skol@euphoric.edu</td><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>skol</td><td>Kovalevskaya</td><td>Sofia</td><td>skol@euphoric.edu</td><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
-        <tr><td>mlom</td><td>Lomonosov</td><td>Mikhail</td><td>mikki@freesci.org</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>mlom</td><td>Lomonosov</td><td>Mikhail</td><td>mikki@freesci.org</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>mlom</td><td>Lomonosov</td><td>Mikhail</td><td>mikki@freesci.org</td><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>mlom</td><td>Lomonosov</td><td>Mikhail</td><td>mikki@freesci.org</td><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>mlom</td><td>Lomonosov</td><td>Mikhail</td><td>mikki@freesci.org</td><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>mlom</td><td>Lomonosov</td><td>Mikhail</td><td>mikki@freesci.org</td><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>mlom</td><td>Lomonosov</td><td>Mikhail</td><td>mikki@freesci.org</td><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>mlom</td><td>Lomonosov</td><td>Mikhail</td><td>mikki@freesci.org</td><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
-        <tr><td>dmen</td><td>Mendeleev</td><td>Dmitri</td><td>mendeleev@euphoric.edu</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>dmen</td><td>Mendeleev</td><td>Dmitri</td><td>mendeleev@euphoric.edu</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>dmen</td><td>Mendeleev</td><td>Dmitri</td><td>mendeleev@euphoric.edu</td><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>dmen</td><td>Mendeleev</td><td>Dmitri</td><td>mendeleev@euphoric.edu</td><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>dmen</td><td>Mendeleev</td><td>Dmitri</td><td>mendeleev@euphoric.edu</td><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>dmen</td><td>Mendeleev</td><td>Dmitri</td><td>mendeleev@euphoric.edu</td><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>dmen</td><td>Mendeleev</td><td>Dmitri</td><td>mendeleev@euphoric.edu</td><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>dmen</td><td>Mendeleev</td><td>Dmitri</td><td>mendeleev@euphoric.edu</td><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
-        <tr><td>ipav</td><td>Pavlov</td><td>Ivan</td><td>pablum@euphoric.edu</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>ipav</td><td>Pavlov</td><td>Ivan</td><td>pablum@euphoric.edu</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>ipav</td><td>Pavlov</td><td>Ivan</td><td>pablum@euphoric.edu</td><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>ipav</td><td>Pavlov</td><td>Ivan</td><td>pablum@euphoric.edu</td><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>ipav</td><td>Pavlov</td><td>Ivan</td><td>pablum@euphoric.edu</td><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>ipav</td><td>Pavlov</td><td>Ivan</td><td>pablum@euphoric.edu</td><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>ipav</td><td>Pavlov</td><td>Ivan</td><td>pablum@euphoric.edu</td><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>ipav</td><td>Pavlov</td><td>Ivan</td><td>pablum@euphoric.edu</td><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
-      </table>
+    </ol>
 
-      <p>
-        When a database does a join,
-        it combines every row of one table with every row of the other:
-        in mathematical terms,
-        it creates the <a href="glossary.html#cross-product">cross product</a> of the sets of rows.
-        It doesn't try to figure out if those rows have anything to do with each other
-        because it has no way of knowing whether they do or not&mdash;we have to tell it.
-      </p>
+  </div>
 
-      <p>
-        What we want is combinations of rows from the <code>Scientists</code> and <code>Experiments</code> tables
-        that refer to the same person,
-        i.e.,
-        that have the same <code>PersonID</code> values.
-        To express this in SQL we need to add an <code>ON</code> clause to our query:
-      </p>
+</section>
 
-<pre make="join-scientists-experiments-on">
-SELECT *
-FROM   Scientists JOIN Experiments
-ON     Scientists.PersonID = Experiments.PersonID;
-</pre>
+<section id="s:create">
+  <h2>Creating and Modifying Tables</h2>
 
-      <table class="outlined">
-        <tr><td>skol</td><td>Kovalevskaya</td><td>Sofia</td><td>skol@euphoric.edu</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>skol</td><td>Kovalevskaya</td><td>Sofia</td><td>skol@euphoric.edu</td><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>skol</td><td>Kovalevskaya</td><td>Sofia</td><td>skol@euphoric.edu</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>mlom</td><td>Lomonosov</td><td>Mikhail</td><td>mikki@freesci.org</td><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>mlom</td><td>Lomonosov</td><td>Mikhail</td><td>mikki@freesci.org</td><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>dmen</td><td>Mendeleev</td><td>Dmitri</td><td>mendeleev@euphoric.edu</td><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>ipav</td><td>Pavlov</td><td>Ivan</td><td>pablum@euphoric.edu</td><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>ipav</td><td>Pavlov</td><td>Ivan</td><td>pablum@euphoric.edu</td><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
-      </table>
+  <div class="understand">
+    <h3>Understand:</h3>
+    <ul>
+      <li>Write queries that create database tables with fields of common types.</li>
+      <li>Write queries that specify the primary and foreign key relationships of tables.</li>
+      <li>Write queries that specify whether field values must be unique and/or are allowed to be <code>null</code>.</li>
+      <li>Write queries that erase database tables.</li>
+      <li>Write queries that add records to database tables.</li>
+      <li>Write queries that delete specific records from tables.</li>
+      <li>Explain what referential integrity is, and how a database can become inconsistent as data is changed.</li>
+    </ul>
+  </div>
 
-      <p>
-        <code>ON</code> is like <code>WHERE</code>:
-        it filters things according to some test condition.
-        More specifically,
-        it filters rows as they are being joined
-        and only keeps the ones that pass some test.
-      </p>
+  <p>
+    So far we have only looked at how to get information out of a database,
+    both because that is more frequent than adding information,
+    and because most other operations only make sense
+    once queries are understood.
+    If we want to create and modify data,
+    we need to know two other pairs of commands.
+  </p>
 
-      <p>
-        Note how in the query above we used <code>TableName.FieldName</code> to remove any ambiguity
-        on what is being compared to what.
-        We could do this just as well <em>after</em> joining rows
-        using a <code>WHERE</code> clause as a filter:
-      </p>
-
-<pre src="src/db/join_scientists_experiments_where.sql">
-SELECT *
-FROM   Scientists JOIN Experiments
-WHERE  Scientists.PersonID = Experiments.PersonID;
-</pre>
-
-      <p class="continue">
-        but using <code>ON</code> makes it clear that the relationship is being used in the join.
-        It may also be more efficient,
-        since the database won't construct rows during the join
-        just to throw them away during the <code>WHERE</code>.
-        However,
-        a good database manager will do that particular optimization automatically.
-      </p>
-
-      <p>
-        We can use the <code>TableName.FieldName</code> notation
-        to specify the columns we want returned by our query.
-        For example,
-        the query below returns the email addresses of the scientists
-        who have worked on particular projects:
-      </p>
-
-<pre src="src/db/join_email_project.sql">
-SELECT DISTINCT Experiments.Project, Scientists.Email
-FROM            Scientists JOIN Experiments
-ON              Scientists.PersonID = Experiments.PersonID;
-</pre>
-
-      <table class="outlined">
-        <tr><td>Antigravity</td><td>mendeleev@euphoric.edu</td></tr>
-        <tr><td>Antigravity</td><td>mikki@freesci.org</td></tr>
-        <tr><td>Antigravity</td><td>skol@euphoric.edu</td></tr>
-        <tr><td>Teleportation</td><td>pablum@euphoric.edu</td></tr>
-        <tr><td>Teleportation</td><td>skol@euphoric.edu</td></tr>
-        <tr><td>Time Travel</td><td>mikki@freesci.org</td></tr>
-        <tr><td>Time Travel</td><td>pablum@euphoric.edu</td></tr>
-      </table>
-
-      <p>
-        We can sometimes make long queries more readable
-        by creating <a href="glossary.html#alias">aliases</a>
-        for the tables we are joining:
-      </p>
-
-<pre src="src/db/join_using_alias.sql">
-SELECT DISTINCT e.Project, s.Email
-FROM            Experiments e JOIN Scientists s
-ON              e.PersonID = s.PersonID;
-</pre>
-
-      <p class="continue">
-        Here,
-        we're temporarily using the names <code>e</code> and <code>s</code>
-        for the <code>Experiments</code> and <code>Scientists</code> tables.
-        This produces the same set of results as before.
-        However,
-        since the database may display rows in any order it likes,
-        the output from this query and the previous one may not be textually identical.
-        If we sort them,
-        though,
-        they are guaranteed to match:
-      </p>
-
-<pre src="src/db/join_and_order.sql">
-SELECT DISTINCT e.Project, s.Email
-FROM            Experiments e JOIN Scientists s
-ON              e.PersonID = s.PersonID
-ORDER BY        e.Project, s.Email;
-</pre>
-
-      <p>
-        If joining two tables is good,
-        joining multiple tables must be better.
-        In fact,
-        we can join any number of tables simply by adding more <code>JOIN</code> clauses.
-        To see how this works,
-        let's add two more tables to our database called <code>Papers</code>
-        that keeps track of who co-authored the papers our group has produced so far:
-      </p>
-
-      <table class="outlined">
-        <tr><td colspan="2" align="center"><strong>Authors</strong></td></tr>
-        <tr>
-          <td>skol</td>
-          <td>antigrav-lit-survey</td>
-        </tr>
-        <tr>
-          <td>skol</td>
-          <td>teleport-quantum</td>
-        </tr>
-        <tr>
-          <td>mlom</td>
-          <td>antigrav-lit-survey</td>
-        </tr>
-        <tr>
-          <td>ipav</td>
-          <td>teleport-quantum</td>
-        </tr>
-      </table>
-      <table class="outlined">
-        <tr><td colspan="3" align="center"><strong>Papers</strong></td></tr>
-        <tr>
-          <td><strong>CiteKey</strong></td>
-          <td><strong>Title</strong></td>
-          <td><strong>Journal</strong></td>
-        </tr>
-        <tr>
-          <td>antigrav-lit-survey</td>
-          <td>Antigravity: A Survey</td>
-          <td>J. Improb. Physics</td>
-        </tr>
-        <tr>
-          <td>teleport-quantum</td>
-          <td>Quantum Teleportation and Why Not</td>
-          <td>Quantum Rev. Let.</td>
-        </tr>
-      </table>
-
-      <p>
-        Why two tables?
-        Because putting all the information into one would break
-        the rules we described in the previous section&mdash;for example,
-        the paper's title and journal would appear together in multiple records.
-        What we have done instead is give each paper a unique citation key
-        (which we would use in BibTeX or some kind of reference manager),
-        and then combine it once,
-        and once only,
-        with each author,
-        and with the paper's details.
-      </p>
-
-      <p>
-        Let's construct a query to get the full name of the experimenter
-        and the title of every paper he or she has co-authored.
-        We'll start by writing down the fields we want:
-      </p>
+  <p>
+    The first pair are <code>create&nbsp;table</code> and <code>drop&nbsp;table</code>.
+    While they are written as two words,
+    they are actually single commands.
+    The first one creates a new table;
+    its arguments are the names and types of the table's columns.
+    For example,
+    the following statements create the four tables in our survey database:
+  </p>
 
 <pre>
-SELECT Scientists.PersonalName, Scientists.FamilyName, Papers.Title
-&hellip;
+create table Person(ident text, personal text, family text);
+create table Site(name text, lat real, long real);
+create table Visited(ident integer, site text, dated text);
+create table Survey(taken integer, person text, quant real, reading real);
 </pre>
 
-      <p class="continue">
-        These fields are coming from the <code>Scientists</code> and <code>Papers</code> tables,
-        so we have to combine those tables with <code>JOIN</code>.
-        But how?
-        None of the values in <code>Scientists</code> appear in <code>Papers</code>,
-        or vice versa.
-        How can we match records up?
-      </p>
-
-      <p>
-        The solution is to add the <code>Authors</code> table to our query.
-        <code>Scientists.PersonID</code> is supposed to match <code>Authors.PersonID</code>,
-        and <code>Authors.CiteKey</code> matches <code>Papers.CiteKey</code>,
-        so that extra stage lets us combine people and papers.
-        Our query now looks like this:
-      </p>
-
-<pre src="src/db/join_three.sql">
-SELECT Scientists.PersonalName, Scientists.FamilyName, Papers.Title
-FROM   Scientists JOIN Authors JOIN Papers
-ON     (Scientists.PersonID = Authors.PersonID) AND (Authors.CiteKey = Papers.CiteKey);
-</pre>
-
-      <table class="outlined">
-        <tr><td>Sofia</td><td>Kovalevskaya</td><td>Antigravity: A Survey</td></tr>
-        <tr><td>Sofia</td><td>Kovalevskaya</td><td>Quantum Teleportation and Why Not</td></tr>
-        <tr><td>Mikhail</td><td>Lomonosov</td><td>Antigravity: A Survey</td></tr>
-        <tr><td>Ivan</td><td>Pavlov</td><td>Quantum Teleportation and Why Not</td></tr>
-      </table>
-
-      <p id="a:keys">
-        The technical terms for the concepts we have been using in this section are
-        <a href="glossary.html#primary-key">primary key</a>
-        and <a href="glossary.html#foreign-key">foreign key</a>.
-        A primary key is a value, or combination of values,
-        that uniquely identifies each row in a table.
-        For example,
-        the primary key for the <code>Scientists</code> table is <code>PersonID</code>:
-        if two records ever have the same value for this,
-        something has probably gone wrong.
-      </p>
-
-      <p>
-        A foreign key is a value (or combination of values) from one table
-        that identifies a unique record in another table.
-        Another way of saying this is that
-        a foreign key is the primary key of one table
-        that appears in some other table.
-        In our database,
-        <code>Experiments.PersonID</code> is a foreign key into the <code>Scientists</code> table.
-      </p>
-
-      <p>
-        What is the primary key for the <code>Experiments</code> table?
-        If there was only one entry pairing <code>skol</code> with <code>Teleportation</code>,
-        then that pair would be the primary key.
-        As it is,
-        we can't even be sure that using all three fields will be unique,
-        since there could,
-        for example,
-        be two entries saying that <code>dmen</code> spent 6.5 hours working on antigravity.
-      </p>
-
-      <p>
-        Most database designers believe that every table should have a well-defined primary key.
-        (If nothing else,
-        this allows us to print or delete specific records.)
-        If the entries in <code>Experiments</code> are monthly totals,
-        we should include the month in the table
-        (and the year as well,
-        so that we don't wind up with multiple entries for each month
-        after a few years running the lab).
-      </p>
-
-      <p>
-        Alternatively,
-        we could create an arbitrary, unique ID for each record
-        as we add it to the database.
-        This is actually very common:
-        those IDs have names like "student numbers" and "patient numbers",
-        and they almost always turn out to have originally been
-        a unique record identifier in some database system or other.
-        As the query below demonstrates,
-        SQLite automatically numbers records as they're added to tables,
-        and we can use those record numbers in queries:
-      </p>
-
-<pre src="src/db/select_rowid.sql">
-SELECT ROWID, * FROM Experiments;
-</pre>
-
-      <table class="outlined">
-        <tr><td>1</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>2</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>3</td><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>4</td><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>5</td><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>6</td><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>7</td><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>8</td><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
-      </table>
-
-      <div class="keypoints" id="k:join">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use <code>JOIN</code> to create all possible combinations of records from two or more tables.</li>
-          <li>Use <code>JOIN <em>tables</em> ON <em>test</em></code> to keep only those combinations that pass some test.</li>
-          <li>Use <code><em>table</em>.<em>field</em></code> to specify a particular field of a particular table.</li>
-          <li>Use aliases to make queries more readable.</li>
-          <li idea="modelview">Every record in a table should be uniquely identified by the value of its primary key.</li>
-        </ul>
-      </div>
-
-    </section>
-
-    <section id="s:selfjoin">
-
-      <h2>Self Join</h2>
-
-      <div class="understand" id="u:selfjoin">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Explain what a self-join is and give examples of when self-joins are useful.</li>
-        </ul>
-      </div>
-
-      <p>
-        One special case of joining tables comes up so often that it has its own name:
-        <a href="glossary.html#self-join">self join</a>.
-        As the name suggests,
-        this means joining a table with itself.
-        To see why this is useful,
-        let's try to find out how many scientists have worked on two or more projects.
-        Our first guess looks like this:
-      </p>
-
-<pre src="src/db/self_join_incorrect.sql">
-SELECT PersonID, COUNT(*) FROM Experiments GROUP BY PersonID WHERE COUNT(*) > 1;
-</pre>
-
-      <p class="continue">
-        but that's not legal SQL&mdash;we can't use
-        an aggregated value in our <code>WHERE</code> clause,
-        because <code>WHERE</code> is applied row-by-row before aggregation happens.
-      </p>
-
-      <p>
-        Instead, let's join the <code>Experiments</code> table to itself.
-        We will give each copy of the table an alias,
-        so that we can tell which values came from which copy:
-      </p>
-
-<pre src="src/db/self_join_all.sql">
-SELECT * FROM Experiments a JOIN Experiments b;
-</pre>
-
-      <p>
-        The result has 64 rows, a few of which are shown below:
-      </p>
-
-      <table class="outlined">
-        <tr>
-          <td><strong>a.PersonID</strong></td>
-          <td><strong>a.Project</strong></td>
-          <td><strong>a.Hours</strong></td>
-          <td><strong>b.PersonID</strong></td>
-          <td><strong>b.Project</strong></td>
-          <td><strong>b.Hours</strong></td>
-        </tr>
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>11.0</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>11.0</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td align="center">&hellip;</td><td align="center">&hellip;</td><td align="center">&hellip;</td><td align="center">&hellip;</td><td align="center">&hellip;</td><td align="center">&hellip;</td></tr>
-        <tr><td>mlom</td><td>Antigravity</td><td>4.0</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>mlom</td><td>Antigravity</td><td>4.0</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td align="center">&hellip;</td><td align="center">&hellip;</td><td align="center">&hellip;</td><td align="center">&hellip;</td><td align="center">&hellip;</td><td align="center">&hellip;</td></tr>
-      </table>
-
-      <p>
-        Now let's add a <code>WHERE</code> clause to filter out rows
-        that have different <code>PersonID</code> values,
-        i.e.,
-        where we have joined information about one person with information about another:
-      </p>
-
-<pre src="src/db/self_join_personid.sql">
-SELECT * FROM Experiments a JOIN Experiments b WHERE a.PersonID = b.PersonID;
-</pre>
-
-      <table class="outlined">
-        <tr>
-          <td><strong>a.PersonID</strong></td>
-          <td><strong>a.Project</strong></td>
-          <td><strong>a.Hours</strong></td>
-          <td><strong>b.PersonID</strong></td>
-          <td><strong>b.Project</strong></td>
-          <td><strong>b.Hours</strong></td>
-        </tr>
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>11.0</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>11.0</td><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>11.0</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>5.0</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>5.0</td><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>5.0</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>mlom</td><td>Antigravity</td><td>4.0</td><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>mlom</td><td>Antigravity</td><td>4.0</td><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>mlom</td><td>Time Travel</td><td>-2.0</td><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>mlom</td><td>Time Travel</td><td>-2.0</td><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>dmen</td><td>Antigravity</td><td>9.0</td><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>ipav</td><td>Teleportation</td><td>9.0</td><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>ipav</td><td>Teleportation</td><td>9.0</td><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
-        <tr><td>ipav</td><td>Time Travel</td><td>-7.0</td><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>ipav</td><td>Time Travel</td><td>-7.0</td><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
-      </table>
-
-      <p>
-        Now let's add another clause to our <code>WHERE</code>
-        to get rid of records where the two project names are the same:
-      </p>
-
-<pre src="src/db/self_join_project.sql">
-SELECT * FROM Experiments a JOIN Experiments b
-WHERE (a.PersonID = b.PersonID) AND (a.Project != b.Project);
-</pre>
-
-      <table class="outlined">
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>11.0</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>5.0</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>mlom</td><td>Antigravity</td><td>4.0</td><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>mlom</td><td>Time Travel</td><td>-2.0</td><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>ipav</td><td>Teleportation</td><td>9.0</td><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
-        <tr><td>ipav</td><td>Time Travel</td><td>-7.0</td><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
-      </table>
-
-      <p>
-        This may not seem like progress,
-        but we have almost answered our original question.
-        Each of these records represents the fact that some person has worked on two different projects.
-        Putting it another way,
-        if someone has only ever worked on one project (or hasn't worked on any projects at all),
-        their ID will not appear in any record in this set.
-        To get the list of names of people who have worked on two or more projects,
-        therefore,
-        all we have to do is display either <code>a.PersonID</code> or <code>b.PersonID</code>
-        (and eliminate duplicates using <code>DISTINCT</code>).
-        We will split our final query across several lines to make it easier to read,
-        and use an <code>ORDER BY</code> to ensure that our results are sorted:
-      </p>
-
-<pre src="src/db/self_join_final.sql">
-SELECT DISTINCT a.PersonID
-FROM            Experiments a JOIN Experiments b
-WHERE           (a.PersonID = b.PersonID) AND (a.Project != b.Project)
-ORDER BY        a.PersonID ASC;
-</pre>
-
-      <table class="outlined">
-        <tr>
-          <td>ipav</td>
-        </tr>
-        <tr>
-          <td>mlom</td>
-        </tr>
-        <tr>
-          <td>skol</td>
-        </tr>
-      </table>
-
-      <p>
-        If you hang around programmers long enough,
-        you will eventually hear someone call this trick "intuitive".
-        They are using that word the way certain mathematicians use "obvious":
-        it means,
-        "You only have to read the proof a couple of times to get it."
-        There actually is a rich mathematical theory underneath SQL,
-        and if you immerse yourself in that theory,
-        tricks like joining a table to itself do eventually seem obvious.
-        For the rest of us, though,
-        it's enough to learn this pattern
-        and recognize when it should be used.
-      </p>
-
-      <div class="keypoints" id="k:selfjoin">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use a self join to combine a table with itself.</li>
-        </ul>
-      </div>
-
-    </section>
-
-    <section id="s:design">
-
-      <h2>Database Design</h2>
-
-      <div class="understand" id="u:design">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Explain what an atomic value is.</li>
-          <li>Be able to tell whether a value is atomic or not.</li>
-          <li>Explain why fields in database tables should store atomic values.</li>
-          <li>Explain why databases should not store redundant information.</li>
-          <li>Be able to tell whether information is redundant or not.</li>
-          <li>Be able to reorganize database tables to eliminate redundancy.</li>
-        </ul>
-      </div>
-
-      <p>
-        Let's go back to sorting for a moment,
-        and see if we can produce a list of scientists
-        ordered by family name.
-        We want our output to look like this:
-      </p>
-
-      <table class="outlined">
-        <tr><td>Kovalevskaya, Sofia</td></tr>
-        <tr><td>Lomonosov, Mikhail</td></tr>
-        <tr><td>Mendeleev, Dmitri</td></tr>
-        <tr><td>Pavlov, Ivan</td></tr>
-      </table>
-
-      <p>
-        This is easy to do in a programming language like Python:
-        we just split the names on the space character,
-        then join the two parts using a comma and a space.
-      </p>
+  <p>
+    We can get rid of one of our tables using:
+  </p>
 
 <pre>
-result = []
-for name in list_of_names:
-    personal_name, family_name = name.split(' ')
-    new_name = family_name + ', ' + personal_name
-    result.append(new_name)
-result.sort()
+drop table Survey;
 </pre>
 
-      <p>
-        We can do something like this in some dialects of SQL, but not all,
-        and even when we can, it's harder to read.
-        For example, if we're using Microsoft SQL Server, the query we need is:
-      </p>
+  <p class="continue">
+    Be very careful when doing this:
+    most databases have some support for undoing changes,
+    but it's better not to have to rely on it.
+  </p>
+
+  <p>
+    Different database systems support different data types for table columns,
+    but most provide the following:
+  </p>
+
+  <table>
+    <tr>
+      <td>
+        <code>integer</code>
+      </td>
+      <td>
+        A signed integer.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>real</code>
+      </td>
+      <td>
+        A floating point value.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>text</code>
+      </td>
+      <td>
+        A string.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>blob</code>
+      </td>
+      <td>
+        Any "binary large object"
+        such as an image or audio file.
+      </td>
+    </tr>
+  </table>
+
+  <p>
+    most databases also support Booleans and date/time values;
+    SQLite uses the integers 0 and 1 for the former,
+    and represents the latter as discussed <a href="#a:dates">earlier</a>.
+    An increasing number of databases also support geographic data types,
+    such as latitude and longitude.
+    Keeping track of what particular systems do or do not offer,
+    and what names they give different data types,
+    is an unending portability headache.
+  </p>
+
+  <p>
+    When we create a table,
+    we can specify several kinds of constraints on its columns.
+    For example,
+    a better definition for the <code>Survey</code> table would be:
+  </p>
 
 <pre>
-SELECT SUBSTRING(Scientist, 1, CHARINDEX(Scientist, " ")-1)
-       || ", "
-       || SUBSTRING(Scientist, CHARINDEX(Scientist, " ")+1, LEN(Scientist))
-       FROM Experiments;
-</pre>
-
-      <p class="continue">
-        Here,
-        <code>CHARINDEX</code> and <code>SUBSTRING</code> are built-in functions
-        that find the locations of characters and take substrings respectively,
-        and <code>||</code> concatenates strings.
-        This won't work as written with other databases,
-        though,
-        since their equivalents of <code>CHARINDEX</code> have different names
-        (or, in the case of SQLite, may not exist at all).
-        And even when it does work, it's still not a complete solution,
-        since it doesn't sort the names.
-      </p>
-
-      <p>
-        We could get further by using <a href="#s:nested">nested queries</a>,
-        which we will discuss later in this chapter,
-        but the right solution is to reformulate the problem.
-        What we're trying to do is difficult because
-        we have violated one of the fundamental rules of database design.
-        The values in the <code>Scientist</code> field have several parts that we care about;
-        in technical terms,
-        they are not <a href="glossary.html#atomic-value">atomic values</a>.
-        In a well-designed database,
-        every value <em>is</em> atomic,
-        so that it can be accessed directly.
-      </p>
-
-      <p>
-        Here's what our table looks like when we split names into their component parts:
-      </p>
-
-      <table class="outlined" src="db/create_single_table_experiments.sql">
-        <tr><td colspan="4" align="center"><strong>Experiments</strong></td></tr>
-        <tr>
-          <td><strong>PersonalName</strong></td>
-          <td><strong>FamilyName</strong></td>
-          <td><strong>Project</strong></td>
-          <td><strong>Hours</strong></td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>Antigravity</td>
-          <td>6.5</td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>Teleportation</td>
-          <td>11.0</td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>Teleportation</td>
-          <td>5.0</td>
-        </tr>
-        <tr>
-          <td>Mikhail</td>
-          <td>Lomonosov</td>
-          <td>Antigravity</td>
-          <td>4.0</td>
-        </tr>
-        <tr>
-          <td>Mikhail</td>
-          <td>Lomonosov</td>
-          <td>Time Travel</td>
-          <td>-2.0</td>
-        </tr>
-        <tr>
-          <td>Dmitri</td>
-          <td>Mendeleev</td>
-          <td>Antigravity</td>
-          <td>9.0</td>
-        </tr>
-        <tr>
-          <td>Ivan</td>
-          <td>Pavlov</td>
-          <td>Teleportation</td>
-          <td>9.0</td>
-        </tr>
-        <tr>
-          <td>Ivan</td>
-          <td>Pavlov</td>
-          <td>Time Travel</td>
-          <td>-7.0</td>
-        </tr>
-      </table>
-
-      <p class="continue">
-        It looks like a small change, but it has major implications.
-        First, it makes the SQL simpler,
-        since we no longer have to do substring operations to get values:
-      </p>
-
-<pre make="select-distinct-names">
-SELECT DISTINCT FamilyName || ", " || PersonalName FROM Experiments;
-</pre>
-
-      <p class="continue">
-        Second,
-        this SQL will be much more efficient,
-        since repeatedly finding substrings takes more time than simply matching values directly.
-      </p>
-
-      <div class="box">
-        <h3>Why Personal and Family Names?</h3>
-
-        <p>
-          <code>PersonalName</code> and <code>FamilyName</code> may seem like odd labels for database fields:
-          <code>FirstName</code> and <code>LastName</code> would be shorter.
-          However, the latter pair of labels assume a cultural convention that isn't true for many people.
-          In China, Japan, and other East Asian countries, for example,
-          the family name is usually written first.
-          This may sound like a small thing,
-          but it's a good habit to get into:
-          when we're designing a database,
-          we should always think about the meaning of data,
-          rather than how it is presented.
-        </p>
-
-      </div>
-
-      <p>
-        Our redesigned table still violates an important rule of database design.
-        To see how,
-        let's look at what happens if we want to store people's email addresses:
-      </p>
-
-      <table class="outlined" src="db/create_single_table_experiments.sql">
-        <tr><td colspan="5" align="center"><strong>Experiments</strong></td></tr>
-        <tr>
-          <td><strong>PersonalName</strong></td>
-          <td><strong>FamilyName</strong></td>
-          <td><strong>Email</strong></td>
-          <td><strong>Project</strong></td>
-          <td><strong>Hours</strong></td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>skol@euphoric.edu</td>
-          <td>Antigravity</td>
-          <td>6.5</td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>skol@euphoric.edu</td>
-          <td>Teleportation</td>
-          <td>11.0</td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>skol@euphoric.edu</td>
-          <td>Teleportation</td>
-          <td>5.0</td>
-        </tr>
-        <tr>
-          <td>Mikhail</td>
-          <td>Lomonosov</td>
-          <td>mikki@freesci.org</td>
-          <td>Antigravity</td>
-          <td>4.0</td>
-        </tr>
-        <tr>
-          <td>Mikhail</td>
-          <td>Lomonosov</td>
-          <td>mikki@freesci.org</td>
-          <td>Time Travel</td>
-          <td>-2.0</td>
-        </tr>
-        <tr>
-          <td>Dmitri</td>
-          <td>Mendeleev</td>
-          <td>mendeleev@euphoric.edu</td>
-          <td>Antigravity</td>
-          <td>9.0</td>
-        </tr>
-        <tr>
-          <td>Ivan</td>
-          <td>Pavlov</td>
-          <td>pablum@euphoric.edu</td>
-          <td>Teleportation</td>
-          <td>9.0</td>
-        </tr>
-        <tr>
-          <td>Ivan</td>
-          <td>Pavlov</td>
-          <td>pablum@euphoric.edu</td>
-          <td>Time Travel</td>
-          <td>-7.0</td>
-        </tr>
-      </table>
-
-      <p>
-        There's a lot of redundancy in this table:
-        every time "Sofia" appears as a personal name,
-        the family name is always "Kovalevskaya",
-        and the email address is always "skol@euphoric.edu".
-        If we use this design,
-        we will have to eliminate duplicates almost every time we run a query,
-        and if Sofia changes her email address,
-        we will have to update several rows of the database.
-      </p>
-
-      <p>
-        The right way to store this data is
-        to separate information about scientists
-        from information about experiments,
-        so that no fact is ever duplicated.
-        We can do this by splitting our table in two:
-      </p>
-
-      <table class="outlined">
-        <tr><td colspan="3" align="center"><strong>Experiments</strong></td></tr>
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
-      </table>
-
-      <table class="outlined">
-        <tr><td colspan="4" align="center"><strong>Scientists</strong></td></tr>
-        <tr><td>skol</td><td>Kovalevskaya</td><td>Sofia</td><td>skol@euphoric.edu</td></tr>
-        <tr><td>mlom</td><td>Lomonosov</td><td>Mikhail</td><td>mikki@freesci.org</td></tr>
-        <tr><td>dmen</td><td>Mendeleev</td><td>Dmitri</td><td>mendeleev@euphoric.edu</td></tr>
-        <tr><td>ipav</td><td>Pavlov</td><td>Ivan</td><td>pablum@euphoric.edu</td></tr>
-      </table>
-
-      <p>
-        Facts about our scientists now appear exactly once,
-        as do the entries for experiments.
-        The only exception is the two entries for Sofia Kovalevskaya's hours on the Teleportation project,
-        which was in the original data.
-        At this point,
-        we should either insist that
-        all the hours each scientist has spent on a particular project appear in a single database entry,
-        or document the reasons for having multiple entries
-        (e.g., because each entry is the hours worked in a single week or month).
-      </p>
-
-      <div class="keypoints" id="k:design">
-        <h3>Summary</h3>
-        <ul>
-          <li idea="modelview">Each field in a database table should store a single atomic value.</li>
-          <li idea="modelview">No fact in a database should ever be duplicated.</li>
-        </ul>
-      </div>
-
-    </section>
-
-    <section id="s:nested">
-
-      <h2>Nested Queries</h2>
-
-      <div class="understand" id="u:nested">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Write queries whose results are used as input by other queries.</li>
-          <li>Explain why the "obvious" way to calculate negative results is usually wrong.</li>
-          <li>Write queries that calculate negative results correctly.</li>
-        </ul>
-      </div>
-
-      <p>
-        Let's switch back to the <code>Experiments</code> table that doesn't contain <code>null</code>s.
-        How do we find scientists who have <em>not</em> been working on time travel?
-        Our first guess might be:
-      </p>
-
-<pre src="src/db/select_not_time_travel_flawed.sql">
-SELECT DISTINCT PersonID FROM Experiments WHERE Project != "Time Travel";
-</pre>
-
-      <p>
-        Unfortunately, this doesn't give us what we want.
-        <code>ivan</code> and <code>skol</code> have both worked both on Time Travel,
-        but show up in the results:
-      </p>
-
-      <table class="outlined">
-        <tr><td>dmen</td></tr>
-        <tr><td>ipav</td></tr>
-        <tr><td>mlom</td></tr>
-        <tr><td>skol</td></tr>
-      </table>
-
-      <p>
-        Let's think this through.
-        There are scientists who have worked on Time Travel,
-        scientists who have only worked on other projects,
-        and scientists who have done both.
-        Our query returns all of the scientists who have worked on projects other than Time Travel,
-        but that includes ones who have worked on Time Travel <em>and</em> other projects
-        (<a href="#f:venn_time_travel">Figure XXX</a>).
-      </p>
-
-      <figure id="f:venn_time_travel">
-        <img src="img/db/venn_time_travel.png" alt="Scientists and Time Travel" />
-      </figure>
-
-      <p>
-        The trick to answering this question&mdash;and it <em>is</em> a trick&mdash;is
-        to subtract those scientists who <em>have</em> worked on Time Travel
-        (i.e., the ones we <em>don't</em> want)
-        from the set of all scientists.
-        To do this,
-        we will need to use a <a href="glossary.html#nested-query">nested query</a>
-        (also called a <a href="glossary.html#subquery">subquery</a>).
-      </p>
-
-      <p>
-        Let's work up to it in stages.
-        Finding all of the scientists is easy:
-      </p>
-
-<pre>
-SELECT DISTINCT PersonID FROM Experiments;
-</pre>
-
-      <p class="continue">
-        If we knew in advance which scientists we didn't want,
-        we could use <code>NOT IN</code> to subtract a fixed set,
-        like this:
-      </p>
-
-<pre>
-SELECT DISTINCT PersonID FROM Experiment WHERE PersonID NOT IN ('ivan', 'skol');
-</pre>
-
-      <p class="continue">
-        We don't actually know which scientists who have worked on Time Travel,
-        but we can generate it with this query:
-      </p>
-
-<pre src="src/db/time_travel_subquery.sql">
-SELECT DISTINCT PersonID FROM Experiment WHERE Project = "Time Travel";
-</pre>
-
-      <p>
-        What we want to do is somehow use the result of the second query in the first.
-        SQL allows us to do exactly this,
-        i.e.,
-        to nest one query inside another so that we can use the results of the nested query
-        in the filter conditions of the main query.
-        Here's what it looks like:
-      </p>
-
-<pre src="src/db/select_nested_subtract.sql">
-SELECT DISTINCT PersonID FROM Experiments WHERE PersonID NOT IN
-       (SELECT DISTINCT PersonID FROM Experiments WHERE Project = "Time Travel");
-</pre>
-
-      <table class="outlined">
-        <tr><td>dmen</td></tr>
-        <tr><td>skol</td></tr>
-      </table>
-
-      <p>
-        We can read this query as saying,
-        "Fetch all of the scientists who have done experiments,
-        except for the ones that appear in the list of scientists who have worked on Time Travel".
-        It isn't intuitive,
-        but the pattern is easy to learn,
-        and very useful.
-      </p>
-
-      <p>
-        Nested queries can also be used as if they were tables in their own right.
-        For example,
-        suppose we want to know how many different projects each scientist has worked on.
-        We can begin by finding the distinct list of projects for scientist like this:
-      </p>
-
-<pre>
-SELECT DISTINCT PersonID, Project FROM Experiments;
-</pre>
-
-      <p>
-        Now we want to count how many results there are for each scientist.
-        Since counting is an aggregation,
-        we need to use the results of this query as input for another query that does the aggregation.
-        We can do this by wrapping the first query in parentheses
-        and putting it in the <code>FROM</code> clause of the second query:
-      </p>
-
-<pre>
-&hellip;
-FROM (SELECT DISTINCT PersonID, Project FROM Experiments);
-</pre>
-
-      <p class="continue">
-        The next step is to write the outer query.
-        We want the scientist, and count of their projects:
-      </p>
-
-<pre>
-SELECT PersonID, COUNT(*)
-FROM   (SELECT DISTINCT PersonID, Project FROM Experiments);
-</pre>
-
-      <p class="continue">
-        and since we want the count for each scientists,
-        we have to add a <code>GROUP&nbsp;BY</code> for the outer query.
-        The whole thing is therefore:
-      </p>
-
-<pre src="src/db/nested_query_group_by.sql">
-SELECT   PersonID, COUNT(*)
-FROM     (SELECT DISTINCT PersonID, Project FROM Experiments)
-GROUP BY PersonID;
-</pre>
-
-      <table class="outlined">
-        <tr><td>dmen</td><td>1</td></tr>
-        <tr><td>ipav</td><td>2</td></tr>
-        <tr><td>mlom</td><td>2</td></tr>
-        <tr><td>skol</td><td>2</td></tr>
-      </table>
-
-      <p>
-        Nesting queries like this is really useful
-        if the data we want isn't present in exactly the right form in the database.
-        We can use one query to get the data in the form we need it in,
-        and then wrap another query around it to get the answer we originally wanted.
-      </p>
-
-      <div class="keypoints" id="k:nested">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use nested queries to create temporary sets of results for further querying.</li>
-          <li>Use nested queries to subtract unwanted results from all results to leave desired results.</li>
-        </ul>
-      </div>
-
-    </section>
-
-    <section id="s:create">
-
-      <h2>Creating and Modifying Tables</h2>
-
-      <div class="understand" id="u:create">
-        <h3>Understand:</h3>
-        <ul>
-          <li>Write queries that create database tables with fields of common types.</li>
-          <li>Write queries that specify the primary and foreign key relationships of tables.</li>
-          <li>Write queries that specify whether field values must be unique and/or are allowed to be <code>null</code>.</li>
-          <li>Write queries that erase database tables.</li>
-          <li>Write queries that add records to database tables.</li>
-          <li>Write queries that delete specific records from tables.</li>
-          <li>Explain why it's important to be careful when deleting records from tables.</li>
-          <li>Explain what referential integrity is, and how a database can become inconsistent as data is changed.</li>
-        </ul>
-      </div>
-
-      <p>
-        We have only looked at how to get information out of a database so far,
-        both because that is more frequent than adding information,
-        and because most other operations only make sense
-        once queries are understood.
-        If we want to create and modify data,
-        we need to know two other pairs of commands.
-      </p>
-
-      <p>
-        The first pair are <code>CREATE&nbsp;TABLE</code> and <code>DROP&nbsp;TABLE</code>.
-        While they are written as two words,
-        they are actually single commands.
-        The first one creates a new table;
-        its arguments are the names and types of the table's columns.
-        For example,
-        the following statements create the four tables in our experiments database:
-      </p>
-
-<pre src="src/db/create_tables.sql">
-CREATE TABLE Experiments(PersonID TEXT, Project TEXT, Hours REAL);
-CREATE TABLE Scientists(PersonID TEXT, FamilyName TEXT, PersonalName TEXT, Email TEXT);
-CREATE TABLE Authors(PersonID TEXT, CiteKey TEXT);
-CREATE TABLE Papers(CiteKey TEXT, Title TEXT, Journal TEXT);
-</pre>
-
-      <p class="continue">
-        and we can get rid of one of our tables using:
-      </p>
-
-<pre src="src/db/drop_tables.sql">
-DROP TABLE Experiments;
-</pre>
-
-      <p class="continue">
-        Be very careful when doing this:
-        most databases have some support for undoing changes,
-        but it's better not to have to rely on it.
-      </p>
-
-      <p>
-        Different database systems support different data types for table columns,
-        but most provide the following:
-      </p>
-
-      <table>
-        <tr>
-          <td>
-            <code>INTEGER</code>
-          </td>
-          <td>
-            A signed integer.
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <code>REAL</code>
-          </td>
-          <td>
-            A floating point value.
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <code>TEXT</code>
-          </td>
-          <td>
-            A string.
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <code>BLOB</code>
-          </td>
-          <td>
-            Any "binary large object"
-            such as an image or audio file.
-          </td>
-        </tr>
-      </table>
-
-      <p>
-        Most databases also support Booleans and date/time values;
-        SQLite uses the integers 0 and 1 for the former,
-        and represents the latter either as numbers
-        or as strings in the format YYYY-MM-DD&nbsp;HH:MM:SS.SSS.
-        An increasing number of databases also support geographic data types,
-        such as latitude and longitude.
-        Keeping track of what particular systems do or do not offer,
-        and what names they give different data types,
-        is yet another portability headache.
-      </p>
-
-      <p>
-        What may be more interesting is the fact that
-        we can specify properties and constraints for columns when creating a table.
-        For example,
-        a better definition for the <code>Scientists</code> table would be:
-      </p>
-
-<pre src="src/db/create_constraints.sql">
-CREATE TABLE Scientists(
-    PersonID     TEXT PRIMARY KEY,        -- uniquely identifies entries
-    FamilyName   TEXT NOT NULL,           -- must have value
-    PersonalName TEXT NOT NULL,           -- ditto
-    Email        TEXT UNIQUE              -- no duplicates
+create table Survey(
+        taken   integer not null, <span class="comment">-- where reading taken</span>
+        person  text,             <span class="comment">-- may not know who took it</span>
+        quant   real not null,    <span class="comment">-- the quantity measured</span>
+        reading real not null,    <span class="comment">-- the actual reading</span>
+        primary key(taken, quant),
+        foreign key(taken) references Visited(ident),
+        foreign key(person) references Person(ident)
 );
 </pre>
 
-      <p class="continue">
-        Constraints are declared after the type name;
-        once again,
-        exactly which ones are available,
-        and what they're called,
-        depends on which database manager we are using.
-        (And note that we are finally commenting our SQL using <code>--</code>,
-        which we should have been doing all along.)
-      </p>
+  <p class="continue">
+    Once again,
+    exactly what constraints are avialable
+    and what they're called
+    depends on which database manager we are using.
+  </p>
 
-      <p>
-        Once tables have been created,
-        we can add and remove records using our other pair of commands,
-        <code>INSERT</code> and <code>DELETE</code>.
-        The simplest form of <code>INSERT</code> statement lists values in order:
-      </p>
-
-<pre src="src/db/simple_insert.sql">
-INSERT INTO Scientists VALUES("skol", "Kovalevskaya", "Sofia", "skol@euphoric.edu");
-INSERT INTO Scientists VALUES("mlom", "Lomonosov", "Mikhail", "mikki@freesci.org");
-INSERT INTO Scientists VALUES("dmen", "Mendeleev", "Dmitri", "mendeleev@euphoric.edu");
-INSERT INTO Scientists VALUES("ipav", "Pavlov", "Ivan", "pablum@euphoric.edu");
-</pre>
-
-      <p>
-        We can also insert values into one table directly from another:
-      </p>
-
-<pre src="src/db/insert_from_query.sql">
-CREATE TABLE JustEmail(PersonID TEXT, Email TEXT);
-INSERT INTO JustEmail SELECT PersonId, Email FROM Scientists;
-</pre>
-
-      <p>
-        Deleting records can be a bit trickier,
-        because we have to ensure that the database remains internally consistent.
-        If all we care about is a single table,
-        we can use the <code>DELETE</code> command with a <code>WHERE</code> clause
-        that matches the records we want to discard.
-        For example,
-        if Dmitri Mendeleev leaves our lab,
-        we can remove him from the <code>Scientists</code> table like this:
-      </p>
-
-<pre src="src/db/simple_delete.sql">
-DELETE FROM Scientists WHERE PersonID = "dmen";
-</pre>
-
-      <p>
-        But now we have a problem&mdash;a potentially catastrophic one.
-        Our <code>Experiments</code> table still contains a record
-        recording the fact that Dmitri spent nine hours working on the Antigravity project:
-      </p>
+  <p>
+    Once tables have been created,
+    we can add and remove records using our other pair of commands,
+    <code>insert</code> and <code>delete</code>.
+    The simplest form of <code>insert</code> statement lists values in order:
+  </p>
 
 <pre>
-SELECT * FROM Experiments WHERE PersonID = "dmen";
+insert into Site values('DR-1', -49.85, -128.57);
+insert into Site values('DR-3', -47.15, -126.72);
+insert into Site values('MSK-4', -48.87, -123.40);
 </pre>
 
-      <table class="outlined">
-        <tr><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
-      </table>
-
-      <p>
-        That's never supposed to happen:
-        <code>Experiments.PersonID</code> is a foreign key into the <code>Scientists</code> table,
-        and all our queries assume there will be a row in the latter
-        matching every value in the former.
-      </p>
-
-      <p>
-        This problem is called <a href="glossary.html#referential-integrity">referential integrity</a>:
-        we need to ensure that all references between tables can always be resolved correctly.
-        One solution, if our database supports it,
-        is to use a <a href="glossary.html#cascading-delete">cascading delete</a>,
-        so that when a record in one table is deleted,
-        the database automatically deletes other records that refer to it.
-        However,
-        this technique is outside the scope of this chapter.
-      </p>
-
-      <div class="keypoints" id="k:create">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use <code>CREATE TABlE <em>name</em>(...)</code> to create a table.</li>
-          <li>Use <code>DROP TABLE <em>name</em></code> to erase a table.</li>
-          <li>Specify field names and types when creating tables.</li>
-          <li>Specify <code>PRIMARY KEY</code>, <code>NOT NULL</code>, and other constraints when creating tables.</li>
-          <li>Use <code>INSERT INTO <em>table</em> VALUES(...)</code> to add records to a table.</li>
-          <li>Use <code>DELETE FROM <em>table</em> WHERE <em>test</em></code> to erase records from a table.</li>
-          <li>Maintain referential integrity when creating or deleting information.</li>
-        </ul>
-      </div>
-
-    </section>
-
-    <section id="s:transactions">
-
-      <h2>Transactions</h2>
-
-      <div class="understand" id="u:transactions">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Explain what a race condition is.</li>
-          <li>Explain why database operations sometimes have to be grouped together to ensure correct behavior.</li>
-          <li>Write queries that group operations together in transactions.</li>
-          <li>Explain what it means to commit a transaction.</li>
-        </ul>
-      </div>
-
-      <p>
-        Let's look at another problem.
-        Suppose we have another table that shows which pieces of equipment
-        have been borrowed by which scientists:
-      </p>
-
-      <table class="outlined">
-        <tr><td colspan="2" align="center"><strong>Equipment</strong></td></tr>
-        <tr><td><strong>PersonID</strong></td><td><strong>EquipmentID</strong></td></tr>
-        <tr><td>skol</td><td>CX-211 oscilloscope</td></tr>
-        <tr><td>skol</td><td>Greenworth balance</td></tr>
-        <tr><td>mlom</td><td>Cavorite damping plates</td></tr>
-      </table>
-
-      <p class="continue">
-        (We should actually give each piece of equipment a unique ID,
-        and use that ID here instead of the full name,
-        just as we created a separate table for scientists earlier in this chapter,
-        but we will bend the rules for now.)
-        If Sofia Kovalevskaya gives the oscilloscope to Ivan Pavlov,
-        we need to execute two statements to update this table:
-      </p>
+  <p>
+    We can also insert values into one table directly from another:
+  </p>
 
 <pre>
-DELETE FROM Equipment WHERE PersonID = "skol" and EquipmentID = "CX-211 oscilloscope";
-INSERT INTO Equipment VALUES("ipav", "CX-211 oscilloscope");
+create table JustLatLong(lat text, long TEXT);
+insert into JustLatLong select lat, long from site;
 </pre>
 
-      <p>
-        This is all fine&mdash;unless our program or our database happen to crash
-        between the first statement and the second.
-        If that happens,
-        the <code>Equipment</code> table won't have a record for the oscilloscope at all.
-        Such a crash may seem unlikely,
-        but remember:
-        if a computer can do two billion operations per second,
-        that means there are two billion opportunities every second for something to go wrong.
-        And if our operations take a long time to complete&mdash;as they will
-        when we are working with large datasets,
-        or when the database is being heavily used&mdash;the odds of failure increase.
-      </p>
+  <p>
+    Deleting records can be a bit trickier,
+    because we have to ensure that the database remains internally consistent.
+    If all we care about is a single table,
+    we can use the <code>DELETE</code> command with a <code>WHERE</code> clause
+    that matches the records we want to discard.
+    For example,
+    once we realize that Frank Danforth didn't take any measurements,
+    we can remove him from the <code>Person</code> table like this:
+  </p>
 
-      <p>
-        What we really want is a way to ensure that every operation is <a href="glossary.html#acid">ACID</a>:
-        <a href="glossary.html#atomic-operation">atomic</a> (i.e. indivisible),
-        consistent, isolated, and durable.
-        The precise meanings of these terms doesn't matter;
-        what does is the notion that
-        every logical operation on the database should either run to completion
-        as if nothing else was going on at the same time,
-        or fail without having any effect at all.
-      </p>
-
-      <p>
-        The tool we use to ensure that this happens is called
-        a <a href="glossary.html#transaction">transaction</a>.
-        Here's how we should actually write the statements
-        to move the oscilloscope from one person to another:
-      </p>
-
-<pre src="src/db/simple_transaction.sql">
-BEGIN TRANSACTION;
-DELETE FROM Equipment WHERE PersonID = "skol" and EquipmentID = "CX-211 oscilloscope";
-INSERT INTO Equipment VALUES("ipav", "CX-211 oscilloscope");
-END TRANSACTION;
+<pre>
+delete from Person where ident = "danforth";
 </pre>
 
-      <p class="continue">
-        When we do this,
-        the database manager treats everything in the transaction as one large statement.
-        If anything goes wrong inside,
-        then none of the changes made in the transaction will actually be written to the database&mdash;it
-        will be as if the transaction had never happened.
-        Changes are only stored permanently
-        when we <a href="glossary.html#commit">commit</a> them at the end of the transaction.
-      </p>
+  <p>
+    But what if we removed Anderson Lake instead?
+    Our <code>Survey</code> table would still contain seven records
+    of measurements he'd taken:
+  </p>
 
-      <div class="box">
+  <table class="db">
+    <tr>
+      <td colspan="1">
+<pre>select count(*) from Survey where person='lake';</pre>
+      </td>
+    </tr>
+    <tr><td>7</td></tr>
+  </table>
 
-        <h3>Transactions and Commits</h3>
+  <p>
+    That's never supposed to happen:
+    <code>Survey.person</code> is a foreign key into the <code>Person</code> table,
+    and all our queries assume there will be a row in the latter
+    matching every value in the former.
+  </p>
 
-        <p>
-          We first used the term "transaction" in
-          <a href="svn.html#b:basics:transaction">our discussion of version control</a>.
-          That's not a coincidence:
-          behind the scenes,
-          tools like Subversion are using many of the same algorithms as database managers
-          to ensure that either everything happens consistently
-          or nothing happens at all.
-          We <a href="svn.html#a:commit">use the term "commit"</a> for the same reason:
-          just as our changes to local files aren't written back to the version control repository
-          until we commit them,
-          our (apparent) changes to a database aren't written to disk
-          until we say so.
-        </p>
+  <p>
+    This problem is called <a href="glossary.html#referential-integrity">referential integrity</a>:
+    we need to ensure that all references between tables can always be resolved correctly.
+    One way to do this is to delete all the records
+    that use <code>'lake'</code> as a foreign key
+    before deleting the record that uses it as a primary key.
+    If our database manager supports it,
+    we can automate this
+    using <a href="glossary.html#cascading-delete">cascading delete</a>.
+    However,
+    this technique is outside the scope of this chapter.
+  </p>
 
-      </div>
+  <div class="keypoints" id="k:create">
+    <h3>Summary</h3>
+    <ul>
+      <li>Use <code>create table <em>name</em>(...)</code> to create a table.</li>
+      <li>Use <code>drop table <em>name</em></code> to erase a table.</li>
+      <li>Specify field names and types when creating tables.</li>
+      <li>Specify <code>primary key</code>, <code>NOT NULL</code>, and other constraints when creating tables.</li>
+      <li>Use <code>INSERT INTO <em>table</em> VALUES(...)</code> to add records to a table.</li>
+      <li>Use <code>DELETE FROM <em>table</em> WHERE <em>test</em></code> to erase records from a table.</li>
+      <li>Maintain referential integrity when creating or deleting information.</li>
+    </ul>
+  </div>
 
-      <p>
-        Transactions serve another purpose as well.
-        Suppose we have decided that the <code>Experiments</code> table will store
-        the total number of hours that each scientist has worked on each project.
-        At one point in time,
-        there are two records for Mikhail Lomonosov:
-      </p>
+</section>
 
-      <table class="outlined">
-        <tr><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
-      </table>
+<section id="s:transactions">
+  <h2>Transactions</h2>
 
-      <p>
-        Late one Friday afternoon,
-        Mikhail remembers that he forgot to add three hours to his time on the Antigravity project.
-        He uses these two statements:
-      </p>
+  <div class="understand" id="u:transactions">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Explain what a race condition is.</li>
+      <li>Explain why database operations sometimes have to be placed ina transaction to ensure correct behavior.</li>
+      <li>Explain what it means to commit a transaction.</li>
+    </ul>
+  </div>
 
-<pre src="src/db/update_mlom_hours.sql">
-UPDATE Experiments
-  SET Hours = 3.0 + (SELECT Hours FROM Experiments WHERE PersonID = "mlom" and Project = "Antigravity")
-WHERE PersonID = "mlom" and Project = "Antigravity";
+  <p>
+    Suppose we have another table in our database that shows
+    which pieces of equipment have been borrowed by which scientists:
+  </p>
+
+  <table class="db">
+    <tr>
+      <td colspan="2">
+<pre>select * from Equipment;</pre>
+      </td>
+    </tr>
+    <tr><td>dyer</td><td>CX-211 oscilloscope</td></tr>
+    <tr><td>pb</td><td>Greenworth balance</td></tr>
+    <tr><td>lake</td><td>Cavorite damping plates</td></tr>
+  </table>
+  
+  <p class="continue">
+    (We should actually give each piece of equipment a unique ID,
+    and use that ID here instead of the full name,
+    just as we created a separate table for scientists earlier in this chapter,
+    but we will bend the rules for now.)
+    If William Dyer gives the oscilloscope to Valentina Roerich,
+    we need to execute two statements to update this table:
+  </p>
+
+<pre>
+delete from Equipment where person="dyer" and thing="CX-211 oscilloscope";
+insert into Equipment values("roe", "CX-211 oscilloscope");
 </pre>
 
-      <p class="continue">
-        The inner select gets the old value for Mikhail's hours;
-        the outer <code>UPDATE</code> adds 3.0 to that
-        and writes the result back to the database.
-      </p>
+  <p>
+    This is all fine&mdash;unless our program happens to crash
+    between the first statement and the second.
+    If that happens,
+    the <code>Equipment</code> table won't have a record for the oscilloscope at all.
+    Such a crash may seem unlikely,
+    but remember:
+    if a computer can do two billion operations per second,
+    that means there are two billion opportunities every second for something to go wrong.
+    And if our operations take a long time to complete&mdash;as they will
+    when we are working with large datasets,
+    or when the database is being heavily used&mdash;the odds of failure increase.
+  </p>
 
-      <p>
-        At the same moment as Mikhail runs his command,
-        though,
-        Dmitri Mendeleev decides to add six hours to Mikhail's time on the project
-        in recognition of the work he did putting a poster together for a conference.
-        His command looks exactly the same as the one above,
-        except he adds 6.0 instead of 3.0.
-      </p>
+  <p>
+    What we really want is a way to ensure that every operation is <a href="glossary.html#acid">ACID</a>:
+    <a href="glossary.html#atomic-operation">atomic</a> (i.e. indivisible),
+    consistent, isolated, and durable.
+    The precise meanings of these terms doesn't matter;
+    what does is the notion that
+    every logical operation on the database should either run to completion
+    as if nothing else was going on at the same time,
+    or fail without having any effect at all.
+  </p>
 
-      <p>
-        After both operations have completed,
-        the database should show that Mikhail has spent 13 hours working on antigravity
-        (the 4.0 we started with, plus the 3.0 that he added, plus 6.0 more that Dmitry added).
-        However,
-        there is a small chance that it won't.
-        To see why,
-        let's break the two queries into their respective read and write steps
-        and place them side by side:
-      </p>
+  <p>
+    The tool we use to ensure that this happens is called
+    a <a href="glossary.html#transaction">transaction</a>.
+    Here's how we should actually write the statements
+    to move the oscilloscope from one person to another:
+  </p>
 
-      <table border="1">
-        <tr>
-          <td><code>X = read Experiments("mlom", "Antigravity")</code></td>
-          <td><code>Y = read Experiments("mlom", "Antigravity")</code></td>
-        </tr>
-        <tr>
-          <td><code>write Experiments("mlom", "Antigravity", X+3.0)</code></td>
-          <td><code>write Experiments("mlom", "Antigravity", Y+6.0)</code></td>
-        </tr>
-      </table>
+<pre>
+<span class="highlight">begin transaction;</span>
+delete from Equipment where person="dyer" and thing="CX-211 oscilloscope";
+insert into Equipment values("roe", "CX-211 oscilloscope");
+<span class="highlight">end transaction;</span>
+</pre>
 
-      <p>
-        The database can only actually do one thing at once,
-        so it must put these four operations into some sequential order.
-        That order has to respect the original order within each column,
-        but the database can interleave the two columns any way it wants.
-        If it orders them like this:
-      </p>
+  <p>
+    The database manager treats everything in the transaction as one large statement.
+    If anything goes wrong inside,
+    then none of the changes made in the transaction will actually be written to the database&mdash;it
+    will be as if the transaction had never happened.
+    Changes are only stored permanently
+    when we <a href="glossary.html#commit">commit</a> them at the end of the transaction.
+  </p>
 
-      <table border="1">
-        <tr>
-          <td><code>X = read Experiments("mlom", "Antigravity")</code></td>
-        </tr>
-        <tr>
-          <td><code>write Experiments("mlom", "Antigravity", X+3.0)</code></td>
-        </tr>
-        <tr>
-          <td><code>Y = read Experiments("mlom", "Antigravity")</code></td>
-        </tr>
-        <tr>
-          <td><code>write Experiments("mlom", "Antigravity", Y+6.0)</code></td>
-        </tr>
-      </table>
+  <div class="box">
+    <h3>Transactions and Commits</h3>
 
-      <p class="continue">
-        then all is well:
-        the final value in the database is 13.0.
-        But what if it interleaves the operations like this:
-      </p>
+    <p>
+      We first used the term "transaction" in
+      <a href="svn.html#b:basics:transaction">our discussion of version control</a>.
+      That's not a coincidence:
+      behind the scenes,
+      tools like Subversion are using many of the same algorithms as database managers
+      to ensure that either everything happens consistently
+      or nothing happens at all.
+      We <a href="svn.html#a:commit">use the term "commit"</a> for the same reason:
+      just as our changes to local files aren't written back to the version control repository
+      until we commit them,
+      our (apparent) changes to a database aren't written to disk
+      until we say so.
+    </p>
 
-      <table border="1">
-        <tr>
-          <td><code>X = read Experiments("mlom", "Antigravity")</code></td>
-        </tr>
-        <tr>
-          <td><code>Y = read Experiments("mlom", "Antigravity")</code></td>
-        </tr>
-        <tr>
-          <td><code>write Experiments("mlom", "Antigravity", X+3.0)</code></td>
-        </tr>
-        <tr>
-          <td><code>write Experiments("mlom", "Antigravity", Y+6.0)</code></td>
-        </tr>
-      </table>
+  </div>
 
-      <p>
-        This ordering puts the initial value, 4.0, into both <code>X</code> and <code>Y</code>.
-        It then writes 7.0 back to the database (the third statement),
-        and then writes 10.0,
-        since <code>Y</code> holds 4.0 and we're adding 6.0 to it.
-      </p>
+  <p>
+    Transactions serve another purpose as well.
+    Suppose there is another table in the database called <code>Exposure</code>
+    that records the number of days each scientist was exposed to
+    higher-than-normal levels of radiation:
+  </p>
 
-      <p>
-        This is called a <a href="glossary.html#race-condition">race condition</a>,
-        since the final result depends on a race between the two operations.
-        Race conditions are part of what makes parallel programming such a nightmare:
-        they are difficult to spot in advance
-        (since they are caused by the interactions between components,
-        rather than by anything in any one of those components),
-        and can be almost impossible to debug
-        (since they usually occur intermittently and infrequently).
-      </p>
+  <table class="db">
+    <tr>
+      <td colspan="2">
+<pre>select * from Exposure;</pre>
+      </td>
+    </tr>
+    <tr><td>pb</td><td>4</td></tr>
+    <tr><td>dyer</td><td>1</td></tr>
+    <tr><td>lake</td><td>5</td></tr>
+  </table>
 
-      <p>
-        Transactions come to our rescue once again.
-        If both users put their statements in transactions,
-        the database will act as if it executed all of one and then all of the other.
-        Whether or not it actually does this is up to whoever wrote the database program itself:
-        modern databases use very sophisticated algorithms to determine
-        which operations actually have to be run sequentially,
-        and which can safely be run in parallel to improve performance.
-      </p>
+  <p class="continue">
+    After going through the journal entries for 1932,
+    Gina wants to add two days to Lake's count:
+  </p>
 
-      <div class="keypoints" id="k:transactions">
-        <h3>Summary</h3>
-        <ul>
-          <li>Place operations in a transaction to ensure that they appear to be atomic, consistent, isolated, and durable.</li>
-        </ul>
-      </div>
+<pre>
+update Exposure set days = days + 2 where person='lake';
+</pre>
 
-    </section>
+  <p class="continue">
+    However,
+    her labmate has been doing through the journal entries for 1933
+    to help Gina meet a paper deadline.
+    At the same moment as Gina runs her command,
+    her labmate runs this
+    to add one more day to Lake's exposure:
+  </p>
+
+<pre>
+update Exposure set days = days + 1 where person='lake';
+</pre>
+
+  <p>
+    After both operations have completed,
+    the database should show that Lake was exposed for eight days
+    (the original five, plus two from Gina, plus one from her labmate).
+    However,
+    there is a small chance that it won't.
+    To see why,
+    let's break the two queries into their respective read and write steps
+    and place them side by side:
+  </p>
+
+  <table border="1">
+    <tr>
+      <td><code>X = read Exposure('lake', __)</code></td>
+      <td><code>Y = read Exposure('lake', __)</code></td>
+    </tr>
+    <tr>
+      <td><code>write Exposure('lake', X+2)</code></td>
+      <td><code>write Exposure('lake', Y+1)</code></td>
+    </tr>
+  </table>
+
+  <p>
+    The database can only actually do one thing at once,
+    so it must put these four operations into some sequential order.
+    That order has to respect the original order within each column,
+    but the database can interleave the two columns any way it wants.
+    If it orders them like this:
+  </p>
+
+  <table border="1">
+    <tr>
+      <td><code>X = read Exposure('lake', __)</code></td>
+      <td><code>X</code> is 5</td>
+    </tr>
+    <tr>
+      <td><code>write Exposure('lake', X+2)</code></td>
+      <td>database contains 7</td>
+    </tr>
+    <tr>
+      <td><code>Y = read Exposure('lake', __)</code></td>
+      <td><code>Y</code> is 7</td>
+    </tr>
+    <tr>
+      <td><code>write Exposure('lake', Y+1)</code></td>
+      <td>database contains 8</td>
+    </tr>
+  </table>
+
+  <p class="continue">
+    then all is well.
+    But what if it interleaves the operations like this:
+  </p>
+
+  <table border="1">
+    <tr>
+      <td><code>X = read Exposure('lake', __)</code></td>
+      <td><code>X</code> is 5</td>
+    </tr>
+    <tr>
+      <td><code>Y = read Exposure('lake', __)</code></td>
+      <td><code>Y</code> is 5</td>
+    </tr>
+    <tr>
+      <td><code>write Exposure('lake', X+2)</code></td>
+      <td>database contains 7</td>
+    </tr>
+    <tr>
+      <td><code>write Exposure('lake', Y+1)</code></td>
+      <td>database contains 6</td>
+    </tr>
+  </table>
+
+  <p class="continue">
+    This ordering puts the initial value, 5, into both <code>X</code> and <code>Y</code>.
+    It then writes 7 back to the database (the third statement),
+    and then overwrites that with 6,
+    since <code>Y</code> holds 5.
+  </p>
+
+  <p>
+    This is called a <a href="glossary.html#race-condition">race condition</a>,
+    since the final result depends on a race between the two operations.
+    Race conditions are part of what makes programming large systems with many components a nightmare:
+    they are difficult to spot in advance
+    (since they are caused by the interactions between components,
+    rather than by anything in any one of those components),
+    and can be almost impossible to debug
+    (since they usually occur intermittently and infrequently).
+  </p>
+
+  <p>
+    Transactions come to our rescue once again.
+    If Gina and her labmate put their statements in transactions,
+    the database will act as if it executed all of one and then all of the other.
+    Whether or not it <em>actually</em> does this is up to whoever wrote the database manager:
+    modern databases use very sophisticated algorithms to determine
+    which operations actually have to be run sequentially,
+    and which can safely be run in parallel to improve performance.
+    The key thing is that
+    every transaction will appear to have had the entire database to itself.
+  </p>
+
+  <div class="keypoints" id="k:transactions">
+    <h3>Summary</h3>
+    <ul>
+      <li>Place operations in a transaction to ensure that they appear to be atomic, consistent, isolated, and durable.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <ol>
+
+      <li>
+        A friend of yours manages a database of aerial photographs.
+        New records are added all the time,
+        but existing records are never modified or updated.
+        Your friend claims that because of this,
+        he doesn't need to put his queries in transactions.
+        Is he right or wrong, and why?
+      </li>
+
+    </ol>
+  </div>
+
+</section>
 
     <section id="s:programming">
 

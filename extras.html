@@ -688,5 +688,320 @@ print ET.tostring(root)
       </div>
 
     </section>
+    <section id="s:design">
+
+      <h2>Database Design</h2>
+
+      <div class="understand" id="u:design">
+        <h3>Learning Objectives:</h3>
+        <ul>
+          <li>Explain what an atomic value is.</li>
+          <li>Be able to tell whether a value is atomic or not.</li>
+          <li>Explain why fields in database tables should store atomic values.</li>
+          <li>Explain why databases should not store redundant information.</li>
+          <li>Be able to tell whether information is redundant or not.</li>
+          <li>Be able to reorganize database tables to eliminate redundancy.</li>
+        </ul>
+      </div>
+
+      <p>
+        Let's go back to sorting for a moment,
+        and see if we can produce a list of scientists
+        ordered by family name.
+        We want our output to look like this:
+      </p>
+
+      <table class="outlined">
+        <tr><td>Kovalevskaya, Sofia</td></tr>
+        <tr><td>Lomonosov, Mikhail</td></tr>
+        <tr><td>Mendeleev, Dmitri</td></tr>
+        <tr><td>Pavlov, Ivan</td></tr>
+      </table>
+
+      <p>
+        This is easy to do in a programming language like Python:
+        we just split the names on the space character,
+        then join the two parts using a comma and a space.
+      </p>
+
+<pre>
+result = []
+for name in list_of_names:
+    personal_name, family_name = name.split(' ')
+    new_name = family_name + ', ' + personal_name
+    result.append(new_name)
+result.sort()
+</pre>
+
+      <p>
+        We can do something like this in some dialects of SQL, but not all,
+        and even when we can, it's harder to read.
+        For example, if we're using Microsoft SQL Server, the query we need is:
+      </p>
+
+<pre>
+SELECT SUBSTRING(Scientist, 1, CHARINDEX(Scientist, " ")-1)
+       || ", "
+       || SUBSTRING(Scientist, CHARINDEX(Scientist, " ")+1, LEN(Scientist))
+       FROM Experiments;
+</pre>
+
+      <p class="continue">
+        Here,
+        <code>CHARINDEX</code> and <code>SUBSTRING</code> are built-in functions
+        that find the locations of characters and take substrings respectively,
+        and <code>||</code> concatenates strings.
+        This won't work as written with other databases,
+        though,
+        since their equivalents of <code>CHARINDEX</code> have different names
+        (or, in the case of SQLite, may not exist at all).
+        And even when it does work, it's still not a complete solution,
+        since it doesn't sort the names.
+      </p>
+
+      <p>
+        We could get further by using <a href="#s:nested">nested queries</a>,
+        which we will discuss later in this chapter,
+        but the right solution is to reformulate the problem.
+        What we're trying to do is difficult because
+        we have violated one of the fundamental rules of database design.
+        The values in the <code>Scientist</code> field have several parts that we care about;
+        in technical terms,
+        they are not <a href="glossary.html#atomic-value">atomic values</a>.
+        In a well-designed database,
+        every value <em>is</em> atomic,
+        so that it can be accessed directly.
+      </p>
+
+      <p>
+        Here's what our table looks like when we split names into their component parts:
+      </p>
+
+      <table class="outlined" src="db/create_single_table_experiments.sql">
+        <tr><td colspan="4" align="center"><strong>Experiments</strong></td></tr>
+        <tr>
+          <td><strong>PersonalName</strong></td>
+          <td><strong>FamilyName</strong></td>
+          <td><strong>Project</strong></td>
+          <td><strong>Hours</strong></td>
+        </tr>
+        <tr>
+          <td>Sofia</td>
+          <td>Kovalevskaya</td>
+          <td>Antigravity</td>
+          <td>6.5</td>
+        </tr>
+        <tr>
+          <td>Sofia</td>
+          <td>Kovalevskaya</td>
+          <td>Teleportation</td>
+          <td>11.0</td>
+        </tr>
+        <tr>
+          <td>Sofia</td>
+          <td>Kovalevskaya</td>
+          <td>Teleportation</td>
+          <td>5.0</td>
+        </tr>
+        <tr>
+          <td>Mikhail</td>
+          <td>Lomonosov</td>
+          <td>Antigravity</td>
+          <td>4.0</td>
+        </tr>
+        <tr>
+          <td>Mikhail</td>
+          <td>Lomonosov</td>
+          <td>Time Travel</td>
+          <td>-2.0</td>
+        </tr>
+        <tr>
+          <td>Dmitri</td>
+          <td>Mendeleev</td>
+          <td>Antigravity</td>
+          <td>9.0</td>
+        </tr>
+        <tr>
+          <td>Ivan</td>
+          <td>Pavlov</td>
+          <td>Teleportation</td>
+          <td>9.0</td>
+        </tr>
+        <tr>
+          <td>Ivan</td>
+          <td>Pavlov</td>
+          <td>Time Travel</td>
+          <td>-7.0</td>
+        </tr>
+      </table>
+
+      <p class="continue">
+        It looks like a small change, but it has major implications.
+        First, it makes the SQL simpler,
+        since we no longer have to do substring operations to get values:
+      </p>
+
+<pre make="select-distinct-names">
+SELECT DISTINCT FamilyName || ", " || PersonalName FROM Experiments;
+</pre>
+
+      <p class="continue">
+        Second,
+        this SQL will be much more efficient,
+        since repeatedly finding substrings takes more time than simply matching values directly.
+      </p>
+
+      <div class="box">
+        <h3>Why Personal and Family Names?</h3>
+
+        <p>
+          <code>PersonalName</code> and <code>FamilyName</code> may seem like odd labels for database fields:
+          <code>FirstName</code> and <code>LastName</code> would be shorter.
+          However, the latter pair of labels assume a cultural convention that isn't true for many people.
+          In China, Japan, and other East Asian countries, for example,
+          the family name is usually written first.
+          This may sound like a small thing,
+          but it's a good habit to get into:
+          when we're designing a database,
+          we should always think about the meaning of data,
+          rather than how it is presented.
+        </p>
+
+      </div>
+
+      <p>
+        Our redesigned table still violates an important rule of database design.
+        To see how,
+        let's look at what happens if we want to store people's email addresses:
+      </p>
+
+      <table class="outlined" src="db/create_single_table_experiments.sql">
+        <tr><td colspan="5" align="center"><strong>Experiments</strong></td></tr>
+        <tr>
+          <td><strong>PersonalName</strong></td>
+          <td><strong>FamilyName</strong></td>
+          <td><strong>Email</strong></td>
+          <td><strong>Project</strong></td>
+          <td><strong>Hours</strong></td>
+        </tr>
+        <tr>
+          <td>Sofia</td>
+          <td>Kovalevskaya</td>
+          <td>skol@euphoric.edu</td>
+          <td>Antigravity</td>
+          <td>6.5</td>
+        </tr>
+        <tr>
+          <td>Sofia</td>
+          <td>Kovalevskaya</td>
+          <td>skol@euphoric.edu</td>
+          <td>Teleportation</td>
+          <td>11.0</td>
+        </tr>
+        <tr>
+          <td>Sofia</td>
+          <td>Kovalevskaya</td>
+          <td>skol@euphoric.edu</td>
+          <td>Teleportation</td>
+          <td>5.0</td>
+        </tr>
+        <tr>
+          <td>Mikhail</td>
+          <td>Lomonosov</td>
+          <td>mikki@freesci.org</td>
+          <td>Antigravity</td>
+          <td>4.0</td>
+        </tr>
+        <tr>
+          <td>Mikhail</td>
+          <td>Lomonosov</td>
+          <td>mikki@freesci.org</td>
+          <td>Time Travel</td>
+          <td>-2.0</td>
+        </tr>
+        <tr>
+          <td>Dmitri</td>
+          <td>Mendeleev</td>
+          <td>mendeleev@euphoric.edu</td>
+          <td>Antigravity</td>
+          <td>9.0</td>
+        </tr>
+        <tr>
+          <td>Ivan</td>
+          <td>Pavlov</td>
+          <td>pablum@euphoric.edu</td>
+          <td>Teleportation</td>
+          <td>9.0</td>
+        </tr>
+        <tr>
+          <td>Ivan</td>
+          <td>Pavlov</td>
+          <td>pablum@euphoric.edu</td>
+          <td>Time Travel</td>
+          <td>-7.0</td>
+        </tr>
+      </table>
+
+      <p>
+        There's a lot of redundancy in this table:
+        every time "Sofia" appears as a personal name,
+        the family name is always "Kovalevskaya",
+        and the email address is always "skol@euphoric.edu".
+        If we use this design,
+        we will have to eliminate duplicates almost every time we run a query,
+        and if Sofia changes her email address,
+        we will have to update several rows of the database.
+      </p>
+
+      <p>
+        The right way to store this data is
+        to separate information about scientists
+        from information about experiments,
+        so that no fact is ever duplicated.
+        We can do this by splitting our table in two:
+      </p>
+
+      <table class="outlined">
+        <tr><td colspan="3" align="center"><strong>Experiments</strong></td></tr>
+        <tr><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
+        <tr><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
+        <tr><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
+        <tr><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
+        <tr><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
+        <tr><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
+        <tr><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
+        <tr><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
+      </table>
+
+      <table class="outlined">
+        <tr><td colspan="4" align="center"><strong>Scientists</strong></td></tr>
+        <tr><td>skol</td><td>Kovalevskaya</td><td>Sofia</td><td>skol@euphoric.edu</td></tr>
+        <tr><td>mlom</td><td>Lomonosov</td><td>Mikhail</td><td>mikki@freesci.org</td></tr>
+        <tr><td>dmen</td><td>Mendeleev</td><td>Dmitri</td><td>mendeleev@euphoric.edu</td></tr>
+        <tr><td>ipav</td><td>Pavlov</td><td>Ivan</td><td>pablum@euphoric.edu</td></tr>
+      </table>
+
+      <p>
+        Facts about our scientists now appear exactly once,
+        as do the entries for experiments.
+        The only exception is the two entries for Sofia Kovalevskaya's hours on the Teleportation project,
+        which was in the original data.
+        At this point,
+        we should either insist that
+        all the hours each scientist has spent on a particular project appear in a single database entry,
+        or document the reasons for having multiple entries
+        (e.g., because each entry is the hours worked in a single week or month).
+      </p>
+
+      <div class="keypoints" id="k:design">
+        <h3>Summary</h3>
+        <ul>
+          <li idea="modelview">Each field in a database table should store a single atomic value.</li>
+          <li idea="modelview">No fact in a database should ever be duplicated.</li>
+        </ul>
+      </div>
+
+    </section>
+
 
 {% endblock content %}
