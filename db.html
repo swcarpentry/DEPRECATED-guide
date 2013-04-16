@@ -6,16 +6,26 @@
 
 {% block content %}
 <ol class="toc">
-  <li class="fixme">fill in ToC</li>
+  <li><a href="#s:select">Selecting</a></li>
+  <li><a href="#s:distinct">Removing Duplicates</a></li>
+  <li><a href="#s:filter">Filtering</a></li>
+  <li><a href="#s:calc">Calculating New Values</a></li>
+  <li><a href="#s:sort">Ordering Results</a></li>
+  <li><a href="#s:null">Missing Data</a></li>
+  <li><a href="#s:aggregate">Aggregation</a></li>
+  <li><a href="#s:grouping">Grouping</a></li>
+  <li><a href="#s:join">Combining Data</a></li>
+  <li><a href="#s:create">Creating and Modifying Tables</a></li>
+  <li><a href="#s:transactions">Transactions</a></li>
+  <li><a href="#s:programming">Programming With Databases</a></li>
+  <li><a href="#s:summary">Summing Up</a></li>
 </ol>
-
-<!-- GVW: can't use a database with any DB manager -->
 
 <p>
   In the late 1920s and early 1930s,
   William Dyer,
   Frank Pabodie,
-  and Valentina Roerich each led expeditions to the
+  and Valentina Roerich led expeditions to the
   <a href="http://en.wikipedia.org/wiki/Pole_of_inaccessibility">Pole of Inaccessibility</a>
   in the South Pacific,
   and then onward to Antarctica.
@@ -57,9 +67,112 @@
 <div class="guide">
   <h2>For Instructors</h2>
 
-  <p class="fixme">
-    Write the instructors' introduction.
+  <p>
+    Relational databases are not as widely used in science as in business,
+    but they are still a common way to store large data sets with complex structure.
+    Even when the data itself isn't in a database,
+    the metadata could be:
+    for example,
+    meteorological data might be stored in files on disk,
+    but data about when and where observations were made,
+    data ranges,
+    and so on could be in a database
+    to make it easier for scientists to find what they want to.
   </p>
+
+  <p>
+    The first few sections
+    (up to <a href="#s:sort">Ordering Results</a>)
+    usually go very quickly.
+    The pace usually slows down a bit when null values and aggregation are discussed,
+    mostly because learners have a lot of details to keep straight by this point.
+    Things <em>really</em> slow down during the discussion of joins,
+    but this is the key idea in the whole lesson:
+    important ideas like primary keys and referential integrity only make sense
+    once learners have seen how they're used in joins.
+    It's worth going over things a couple of times if necessary
+    (with lots of examples).
+  </p>
+
+  <p>
+    The final three sections are independent of each other,
+    and can be dropped if time is short.
+    Of the three,
+    people seem to care most about how to add data
+    (which only takes a few minutes to demonstrate),
+    and how to use databases from inside "real" programs.
+    The material on transactions is more abstract than the rest,
+    and should be omitted if <a href="web.html">web programming</a>
+    isn't being taught.
+  </p>
+
+  <div class="prereq">
+    <h3>Prerequisites</h3>
+    <p>
+      Everything up to the <a href="#s:programming">final section</a>
+      only requires some understanding of Boolean operators,
+      data types,
+      and pipelines,
+      and what's needed can actually be introduced on the fly.
+      That <a href="#s:programming">final section</a>,
+      which shows how to use databases from within programs,
+      depends on most of the <a href="python.html">basic Python material</a>.
+    </p>
+  </div>
+
+  <div class="notes">
+    <h3>Teaching Notes</h3>
+    <ul>
+      <li>
+        It isn't necessary to cover <a href="setdict.html">sets and dictionaries</a>
+        before this material,
+        but if that has been discussed,
+        it's helpful to point out that a relational table is a generalized dictionary.
+      </li>
+      <li>
+        Simple calculations are actually easier to do in a spreadsheet,
+        the advantages of using a database become clear
+        as soon as filtering and joins are needed.
+        Instructors may therefore want to show a spreadsheet
+        with the information from the four database tables
+        consolidated into a single sheet,
+        and demonstrate what's needed in both systems to answer questions like,
+        "What was the average radiation reading in 1931?"
+      </li>
+      <li>
+        Some learners may have heard that NoSQL databases
+        (i.e., ones that don't use the relational model)
+        are the next big thing,
+        and ask why we're not teaching those.
+        The answers are:
+        <ol>
+          <li>
+            Relational databases are far more widely used than NoSQL databases.
+          </li>
+          <li>
+            We have far more experience with relational databases
+            than with any other kind,
+            so we have a better idea of what to teach
+            and how to teach it.
+          </li>
+          <li>
+            NoSQL databases are as different from each other
+            as they are from relational databases.
+            Until a leader emerges,
+            it isn't clear <em>which</em> NoSQL database we should teach.
+          </li>
+        </ol>
+      </li>
+      <li>
+        This discussion is a useful companion to that of vectorization
+        in the lesson on <a href="numpy.html">numerical computing</a>:
+        in both cases,
+        the key point is to describe <em>what</em> to do,
+        and let the computer figure out <em>how</em> to do it.
+      </li>
+    </ul>
+  </div>
+
 </div>
 
 <section id="s:select">
@@ -94,6 +207,20 @@
     returning the results in a tabular form
     that we can then use as a starting point for further queries.
   </p>
+
+  <div class="box">
+    <h3>Under the Hood</h3>
+
+    <p>
+      Every database manager&mdash;Oracle,
+      IBM DB2, PostgreSQL, MySQL, Microsoft Access, and SQLite&mdash;stores
+      data in a different way,
+      so a database created with one cannot be used directly by another.
+      However,
+      every database manager can import and export data in a variety of formats,
+      so it <em>is</em> possible to move information from one to another.
+    </p>
+  </div>
 
   <p>
     Queries are written in a language called <a href="glossary.html#sql">SQL</a>,
@@ -293,7 +420,7 @@ Danforth|Frank</span>
     <p class="continue">
       If we are using a graphical interface,
       such as the <a href="https://addons.mozilla.org/en-US/firefox/addon/sqlite-manager/">SQLite Manager</a> plugin for Firefox
-      or the <a href="fixme">database extension</a> for the IPython Notebook,
+      or the <a href="https://github.com/catherinedevlin/ipython-sql">database extension</a> for the IPython Notebook,
       our output will be displayed graphically
       (<a href="#f:firefox_output">Figure 2</a>
       and <a href="#f:notebook_output">Figure 3</a>).
@@ -2406,6 +2533,12 @@ on Site.lat&lt;-49.0 and Site.name=Visited.site and Visited.dated&gt;='1932-00-0
         Why do we not just use scientists' names in the <code>Survey</code> table?
       </li>
 
+      <li>
+        Why does the table <code>Site</code> exist?
+        Why didn't Gina just record latitudes and longitudes
+        directly in the <code>Visited</code> and <code>Survey</code> tables?
+      </li>
+
     </ol>
 
   </div>
@@ -2618,17 +2751,78 @@ delete from Person where ident = "danforth";
     this technique is outside the scope of this chapter.
   </p>
 
-  <div class="keypoints" id="k:create">
+  <div class="box" id="a:hybrid">
+    <h3>Other Ways to Do It</h3>
+
+    <p>
+      Many applications use a hybrid storage model
+      instead of putting everything into a database:
+      the actual data (such as astronomical images) is stored in files,
+      while the database stores the files' names,
+      their modification dates,
+      the region of the sky they cover,
+      their spectral characteristics,
+      and so on.
+      This is also how most music player software is built:
+      the database inside the application keeps track of the MP3 files,
+      but the files themselves live on disk.
+    </p>
+  </div>
+
+  <div class="keypoints">
     <h3>Summary</h3>
     <ul>
       <li>Use <code>create table <em>name</em>(...)</code> to create a table.</li>
       <li>Use <code>drop table <em>name</em></code> to erase a table.</li>
       <li>Specify field names and types when creating tables.</li>
-      <li>Specify <code>primary key</code>, <code>NOT NULL</code>, and other constraints when creating tables.</li>
-      <li>Use <code>INSERT INTO <em>table</em> VALUES(...)</code> to add records to a table.</li>
-      <li>Use <code>DELETE FROM <em>table</em> WHERE <em>test</em></code> to erase records from a table.</li>
+      <li>Specify <code>primary key</code>, <code>foreign key</code>, <code>not null</code>, and other constraints when creating tables.</li>
+      <li>Use <code>insert into <em>table</em> values(...)</code> to add records to a table.</li>
+      <li>Use <code>delete from <em>table</em> where <em>test</em></code> to erase records from a table.</li>
       <li>Maintain referential integrity when creating or deleting information.</li>
     </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <ol>
+
+      <li>
+        Write an SQL statement to replace all uses of <code>null</code>
+        in <code>Survey.person</code>
+        with the string <code>'unknown'</code>.
+      </li>
+
+      <li>
+        One of Gina's colleagues has sent her a <a href="glossary.html#csv">CSV</a> file
+        containing temperature readings by Robert Olmstead,
+        which is formatted like this:
+<pre>
+Taken,Temp
+619,-21.5
+622,-15.5
+</pre>
+        Write a small Python program that reads this file in
+        and prints out the SQL <code>insert</code> statements needed
+        to add these records to the survey database.
+        Note: you will need to add an entry for Olmstead
+        to the <code>Person</code> table.
+        If you are testing your program repeatedly,
+        you may want to investigate SQL's <code>insert or replace</code> command.
+      </li>
+
+      <li>
+        SQLite has several administrative commands that aren't part of the SQL standard.
+        One of them is <code>.dump</code>,
+        which prints the SQL commands needed to re-create the database.
+        Another is <code>.load</code>,
+        which reads a file created by <code>.dump</code> and restores the database.
+        A colleague of yours thinks that storing dump files (which are text) in version control
+        is a good way to track and manage changes to the database.
+        What are the pros and cons of this approach?
+      </li>
+
+    </ol>
   </div>
 
 </section>
@@ -2636,7 +2830,7 @@ delete from Person where ident = "danforth";
 <section id="s:transactions">
   <h2>Transactions</h2>
 
-  <div class="understand" id="u:transactions">
+  <div class="understand">
     <h3>Learning Objectives:</h3>
     <ul>
       <li>Explain what a race condition is.</li>
@@ -2912,282 +3106,268 @@ update Exposure set days = days + 1 where person='lake';
 
 </section>
 
-    <section id="s:programming">
+<section id="s:programming">
+  <h2>Programming With Databases</h2>
 
-      <h2>Programming With Databases</h2>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Write a Python program that queries a database and processes the results.</li>
+      <li>Explain what an SQL injection attack is.</li>
+      <li>Write a program that safely interpolates values into queries.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:programming">
-        <h3>Understand:</h3>
-        <ul>
-          <li>Write a Python program that connects to a database, issues a query, and processes the results.</li>
-          <li>Explain what an SQL injection attack is.</li>
-          <li>Write a program that safely interpolates values into queries.</li>
-        </ul>
-      </div>
+  <p>
+    To end this chapter,
+    let's have a look at how to access a database from
+    a general-purpose programming language like Python.
+    Other languages use almost exactly the same model:
+    library and function names may differ,
+    but the concepts are the same.
+  </p>
 
-      <p>
-        To end this chapter,
-        let's have a look at how to access a database from
-        a general-purpose programming language like Python.
-        Other languages use almost exactly the same model:
-        library and function names may differ,
-        but the concepts are the same.
-      </p>
-
-      <p>
-        Here's a short Python program that selects scientists' IDs and email addresses
-        from an SQLite database stored in a file called <code>lab.db</code>:
-      </p>
-
-<pre>
-import sqlite3                                                  # 0
-                                                                # 1
-connection = sqlite3.connect("lab.db")                          # 2
-cursor = connection.cursor()                                    # 3
-cursor.execute("SELECT PersonID, Email FROM Scientists;")       # 4
-results = cursor.fetchall();                                    # 5
-for r in results:                                               # 6
-    print r                                                     # 7
-cursor.close();                                                 # 8
-connection.close();                                             # 9
-<span class="out">(u'skol', u'skol@euphoric.edu')
-(u'mlom', u'mikki@freesci.org')
-(u'dmen', u'mendeleev@euphoric.edu')
-(u'ipav', u'pablum@euphoric.edu')</span>
-</pre>
-
-      <p>
-        The program starts by importing the <code>sqlite3</code> library.
-        If we were connecting to MySQL, DB2, or some other database,
-        we would import a different library,
-        but all of them provide the same functions,
-        so that the rest of our program does not have to change
-        (at least, not much)
-        if we switch from one database to another.
-      </p>
-
-      <p>
-        Line 2 establishes a connection to the database.
-        Since we're using SQLite,
-        all we need to specify is the name of the database file.
-        Other systems may require us to provide a username and password as well.
-        Line 3 then uses this connection to create a <a href="glossary.html#cursor">cursor</a>.
-        Just like the cursor in an editor,
-        its role is to keep track of where we are in the database.
-      </p>
-
-      <p>
-        On line 4, we use that cursor to ask the database to execute a query for us.
-        The query is written in SQL,
-        and passed to <code>cursor.execute</code> as a string.
-        It's our job to make sure that SQL is properly formatted;
-        if it isn't,
-        or if something goes wrong when it is being executed,
-        the database will report an error.
-      </p>
-
-      <p>
-        The database returns the results of the query to us
-        in response to the <code>cursor.fetchall</code> call on line 5.
-        This result is a list with one entry for each record in the result set;
-        if we loop over that list (line 6) and print those list entries (line 7),
-        we can see that each one is a tuple
-        with one element for each field we asked for.
-      </p>
-
-      <p>
-        Finally, lines 8 and 9 close our cursor and our connection,
-        since the database can only keep a limited number of these open at one time.
-        Since establishing a connection takes time,
-        though,
-        we shouldn't open a connection,
-        do one operation,
-        then close the connection,
-        only to reopen it a few microseconds later to do another operation.
-        Instead,
-        it's normal to create one connection that stays open for the lifetime of the program.
-      </p>
-
-      <div class="box">
-        <h3>What Are The u's For?</h3>
-
-        <p>
-          You may have noticed that
-          each of the strings in our output has a lower-case 'u' in front of it.
-          That is Python's way of telling us that the string is stored in
-          <a href="glossary.html#unicode">Unicode</a>,
-          which is used to handle characters beyond the A-Z and 0-9 used in most English words.
-        </p>
-
-      </div>
-
-      <p>
-        Let's have another look at the query on line 4.
-        In real life,
-        queries will often depend on values from a program's user.
-        For example,
-        our program might read a list of user IDs and project names
-        and display the hours those people have spent on those projects.
-        It is tempting to write that program like this:
-      </p>
+  <p>
+    Here's a short Python program that selects latitudes and longitudes
+    from an SQLite database stored in a file called <code>survey.db</code>:
+  </p>
 
 <pre>
-import sys, sqlite3
-
-statement = '''SELECT PersonID, Project, Hours
-FROM Experiments
-WHERE PersonID = "%s" and Project = "%s";
-'''
-
-connection = sqlite3.connect("lab.db")
+import sqlite3
+connection = sqlite3.connect("survey.db")
 cursor = connection.cursor()
-for line in sys.stdin:
-    person, project = line.split(' ', 1)
-    s = statement % (person, project)
-    cursor.execute(s)
-    results = cursor.fetchall();
-    for r in results:
-        print r
+cursor.execute("select site.lat, site.long from site;")
+results = cursor.fetchall()
+for r in results:
+    print r
 cursor.close()
 connection.close()
 </pre>
 
-      <p>
-        The variable <code>statement</code> holds the statement we want to execute,
-        with <code>%s</code> format strings where we want to insert
-        the hours, the person's ID, and the name of the project.
-        Each time we read a line from standard input,
-        we split it into two pieces at the first space,
-        then create a new string based on <code>statement</code> that includes them.
-        For example,
-        if we read in the line:
-      </p>
+  <p>
+    The program starts by importing the <code>sqlite3</code> library.
+    If we were connecting to MySQL, DB2, or some other database,
+    we would import a different library,
+    but all of them provide the same functions,
+    so that the rest of our program does not have to change
+    (at least, not much)
+    if we switch from one database to another.
+  </p>
+
+  <p>
+    Line 2 establishes a connection to the database.
+    Since we're using SQLite,
+    all we need to specify is the name of the database file.
+    Other systems may require us to provide a username and password as well.
+    Line 3 then uses this connection to create
+    a <a href="glossary.html#cursor">cursor</a>;
+    just like the cursor in an editor,
+    its role is to keep track of where we are in the database.
+  </p>
+
+  <p>
+    On line 4, we use that cursor to ask the database to execute a query for us.
+    The query is written in SQL,
+    and passed to <code>cursor.execute</code> as a string.
+    It's our job to make sure that SQL is properly formatted;
+    if it isn't,
+    or if something goes wrong when it is being executed,
+    the database will report an error.
+  </p>
+
+  <p>
+    The database returns the results of the query to us
+    in response to the <code>cursor.fetchall</code> call on line 5.
+    This result is a list with one entry for each record in the result set;
+    if we loop over that list (line 6) and print those list entries (line 7),
+    we can see that each one is a tuple
+    with one element for each field we asked for.
+  </p>
+
+  <p>
+    Finally, lines 8 and 9 close our cursor and our connection,
+    since the database can only keep a limited number of these open at one time.
+    Since establishing a connection takes time,
+    though,
+    we shouldn't open a connection,
+    do one operation,
+    then close the connection,
+    only to reopen it a few microseconds later to do another operation.
+    Instead,
+    it's normal to create one connection that stays open for the lifetime of the program.
+  </p>
+
+  <div class="box">
+    <h3>What Are The u's For?</h3>
+
+    <p>
+      You may have noticed that
+      each of the strings in our output has a lower-case 'u' in front of it.
+      That is Python's way of telling us that the string is stored in
+      <a href="glossary.html#unicode">Unicode</a>.
+    </p>
+
+  </div>
+
+  <p>
+    Queries in real applications will often depend on values provided by users.
+    For example,
+    a program might take a user ID as a command-line parameter
+    and display the user's full name:
+  </p>
 
 <pre>
-mlom Antigravity
-</pre>
+import sys
+import sqlite3
 
-      <p class="continue">
-        we use these two values to fill in our query, which becomes:
-      </p>
+query = "select personal, family from Person where ident='%s';"
+user_id = sys.argv[1]
 
-<pre>
-SELECT PersonID, Project, Hours
-FROM Experiments
-WHERE PersonID = "mlom" and Project = "Antigravity";
-</pre>
-
-      <p>
-        But what happens if someone gives the program this input?
-      </p>
-
-<pre>
-mlom Antigravity&quot;; DROP TABLE Scientists;
-</pre>
-
-      <p class="continue">
-        It looks like there's garbage after the name of the project,
-        but it is very carefully chosen garbage.
-        Everything from the word "Antigravity" to the end of the line
-        will be inserted into our query,
-        making it:
-      </p>
-
-<pre>
-SELECT PersonID, Project, Hours
-FROM Experiments
-WHERE PersonID = "mlom" and Project = "Antigravity"; DROP TABLE  Scientists;
-</pre>
-
-      <p class="continue">
-        The double quote and semicolon at the end of the input
-        end the <code>SELECT</code> statement;
-        the rest of the input then puts a <code>DROP TABLE</code> statement in our query.
-        If we run this,
-        it will erase one of the tables in our database.
-      </p>
-
-      <p>
-        This technique is called <a href="glossary.html#sql-injection">SQL injection</a>,
-        and it has been used to attack thousands of programs over the years.
-        In particular,
-        many web sites that take data from users insert values directly into queries
-        without checking them carefully first.
-      </p>
-
-      <p>
-        Since a villain might try to smuggle commands into our queries in many different ways,
-        the safest way to deal with this threat is
-        to replace characters like quotes with their escaped equivalents,
-        so that we can safely put whatever the user gives us inside a string.
-        We can do this by using a <a href="glossary.html#prepared-statement">prepared statement</a>
-        instead of formatting our statements as strings.
-        Here's what our example program looks like if we do this:
-      </p>
-
-<pre>
-import sys, sqlite3
-
-statement = '''
-SELECT PersonID, Project, Hours
-FROM Experiments
-WHERE PersonID = ? and Project = ?;
-'''
-
-connection = sqlite3.connect("lab.db")
+connection = sqlite3.connect("survey.db")
 cursor = connection.cursor()
-for line in sys.stdin:
-    person, project = line.strip().split(' ', 1)
-    cursor.execute(statement, (person, project))
-    results = cursor.fetchall();
-    for r in results:
-        print r
+
+cursor.execute(query % user_id)
+results = cursor.fetchall()
+print results[0][0], results[0][1]
+
 cursor.close()
 connection.close()
 </pre>
 
-      <p>
-        The key changes are in the query template string <code>statement</code>,
-        and the <code>execute</code> call inside the loop.
-        Instead of formatting the query ourselves,
-        we put question marks in the query template where we want to insert values.
-        When we call <code>execute</code>,
-        we provide a tuple as a second argument
-        that contains exactly as many values as there are question marks in the template.
-        The library matches values to question marks in order,
-        and translates any special characters in the values
-        into their escaped equivalents
-        so that they are safe to use.
-      </p>
+  <p>
+    The variable <code>query</code> holds the statement we want to execute
+    with a <code>%s</code> format string where we want to insert
+    the ID of the person we're looking up.
+    It seems simple enough,
+    but what happens if someone gives the program this input?
+  </p>
 
-      <div class="keypoints" id="k:programming">
-        <h3>Summary</h3>
-        <ul>
-          <li>Most applications that use databases embed SQL in a general-purpose programming language.</li>
-          <li>Database libraries use connections and cursors to manage interactions.</li>
-          <li>Programs can fetch all results at once, or a few results at a time.</li>
-          <li>If queries are constructed dynamically using input from users, malicious users may be able to inject their own commands into the queries.</li>
-          <li>Dynamically-constructed queries can use SQL's native formatting to safeguard against such attacks.</li>
-        </ul>
-      </div>
+<pre>
+dyer&quot;; drop table Survey; select &quot;
+</pre>
 
-    </section>
+  <p class="continue">
+    It looks like there's garbage after the name of the project,
+    but it is very carefully chosen garbage.
+    If we insert this string into our query,
+    the result is:
+  </p>
 
-    <section id="s:summary">
+<pre>
+select personal, family from Person where ident='dyer'; drop table Survey; select '';
+</pre>
 
-      <h2>Summing Up</h2>
+  <p class="continue">
+    Whoops:
+    if we execute this,
+    it will erase one of the tables in our database.
+  </p>
 
-      <p>
-        A database is the right tool for managing complex and structured data.
-        Thousands of programmer-years have gone into their design and implementation
-        so that they can handle very large datasets&mdash;terabytes or more&mdash;quickly and reliably.
-        Queries allow for great flexibility in how you are able to analyze your data,
-        which makes databases a good choice when you are exploring data.
-        On the other hand,
-        there are lots of things databases <em>can't</em> do,
-        or can't do well:
-        that's why we have general-purpose programming languages like Python.
-      </p>
+  <p>
+    This technique is called <a href="glossary.html#sql-injection">SQL injection</a>,
+    and it has been used to attack thousands of programs over the years.
+    In particular,
+    many web sites that take data from users insert values directly into queries
+    without checking them carefully first.
+  </p>
 
-    </section>
+  <p>
+    Since a villain might try to smuggle commands into our queries in many different ways,
+    the safest way to deal with this threat is
+    to replace characters like quotes with their escaped equivalents,
+    so that we can safely put whatever the user gives us inside a string.
+    We can do this by using a <a href="glossary.html#prepared-statement">prepared statement</a>
+    instead of formatting our statements as strings.
+    Here's what our example program looks like if we do this:
+  </p>
+
+<pre>
+import sys
+import sqlite3
+
+query = <span class="highlight">"select personal, family from Person where ident=?;"</span>
+user_id = sys.argv[1]
+
+connection = sqlite3.connect("survey.db")
+cursor = connection.cursor()
+
+<span class="highlight">cursor.execute(query, [user_id])</span>
+results = cursor.fetchall()
+print results[0][0], results[0][1]
+
+cursor.close()
+connection.close()
+</pre>
+
+  <p>
+    The key changes are in the query string and the <code>execute</code> call.
+    Instead of formatting the query ourselves,
+    we put question marks in the query template where we want to insert values.
+    When we call <code>execute</code>,
+    we provide a list
+    that contains as many values as there are question marks in the query.
+    The library matches values to question marks in order,
+    and translates any special characters in the values
+    into their escaped equivalents
+    so that they are safe to use.
+  </p>
+
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Most applications that use databases embed SQL in a general-purpose programming language.</li>
+      <li>Database libraries use connections and cursors to manage interactions.</li>
+      <li>Programs can fetch all results at once, or a few results at a time.</li>
+      <li>If queries are constructed dynamically using input from users, malicious users may be able to inject their own commands into the queries.</li>
+      <li>Dynamically-constructed queries can use SQL's native formatting to safeguard against such attacks.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <ol>
+      <li>
+        Write a Python program that creates a new database
+        in a file called <code>original.db</code>
+        containing a single table called <code>Pressure</code>,
+        with a single field called <code>reading</code>,
+        and inserts 100,000 random numbers between 10.0 and 25.0.
+        How long does it take this program to run?
+        How long does it take to run a program
+        that simply writes those random numbers to a file?
+      </li>
+
+      <li>
+        Write a Python program that creates a new database
+        called <code>backup.db</code>
+        with the same structure as <code>original.db</code>
+        and copies all the values greater than 20.0
+        from <code>original.db</code> to <code>backup.db</code>.
+        Which is faster:
+        filtering values in the query,
+        or reading everything into memory and filtering in Python?
+      </li>
+    </ol>
+  </div>
+
+</section>
+
+<section id="s:summary">
+  <h2>Summing Up</h2>
+
+  <p>
+    There are many things databases can't do,
+    or can't do well
+    (which is why we have general-purpose programming languages like Python).
+    However,
+    they are still the best tool available
+    for managing many kinds of complex, structured data.
+    Thousands of programmer-years have gone into their design and implementation
+    so that they can handle very large datasets&mdash;terabytes or more&mdash;quickly and reliably.
+    Queries allow for great flexibility in how you are able to analyze your data,
+    which makes databases a good choice when you are exploring data.
+  </p>
+
+</section>
 {% endblock content %}
