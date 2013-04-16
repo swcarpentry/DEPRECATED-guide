@@ -6,63 +6,64 @@
 
 {% block content %}
 
-    <section id="s:permissions">
-      <h2>File Permissions</h2>
-      <p class="fixme">write about file permissions</p>
-    </section>
+<section id="s:shell">
+  <h2>The Bash Shell</h2>
 
-    <section id="s:reading">
+  <section id="s:shell:permissions">
+    <h3>File Permissions</h3>
+    <p class="fixme">write about file permissions</p>
+  </section>
 
-      <h2>Reading Documents</h2>
+</section>
 
-      <div class="understand" id="u:reading">
-        <h3>Understand:</h3>
-        <ul>
-          <li>How the Document Object Model represents HTML and XML.</li>
-        </ul>
-      </div>
+<section id="s:web">
+  <h2>Web Programming in Python</h2>
+  
+  <section id="s:web:reading">
+    <h3>Reading Documents</h3>
 
-      <p>
-        People usually write their home pages by hand,
-        but most pages that display lists of experimental results,
-        or second-hand lab equipment for sale,
-        are created by programs.
-        For historical reasons,
-        Python's standard library includes several libraries that process XML (including HTML);
-        we'll use the simplest one,
-        called <code>ElementTree</code>,
-        but you will often run into programs that use others.
-      </p>
+    <p>
+      People usually write their home pages by hand,
+      but most pages that display lists of experimental results,
+      or second-hand lab equipment for sale,
+      are created by programs.
+      For historical reasons,
+      Python's standard library includes several libraries that process XML (including HTML);
+      we'll use the simplest one,
+      called <code>ElementTree</code>,
+      but you will often run into programs that use others.
+    </p>
 
-      <p>
-        Most of these libraries represent the nested structure of XML using something called
-        the <a href="glossary.html#document-object-model">Document Object Model</a> (DOM).
-        This stores the document as a <a href="glossary.html#tree">tree</a>
-        with one node for each element or block of text.
-        The root element of the document,
-        such as the all-enclosing <code>html</code> in a web page,
-        is the root node of the tree.
-        Every other element or block of text is a child of it,
-        or a child of a child,
-        and so on.
-        For example,
-        the tree representing our web page about dimorphism
-        looks like <a href="#f:dimorphism_tree">Figure XXX</a>.
-      </p>
+    <p>
+      Most of these libraries represent the nested structure of XML using something called
+      the <a href="glossary.html#document-object-model">Document Object Model</a> (DOM).
+      This stores the document as a <a href="glossary.html#tree">tree</a>
+      with one node for each element or block of text.
+      The root element of the document,
+      such as the all-enclosing <code>html</code> in a web page,
+      is the root node of the tree.
+      Every other element or block of text is a child of it,
+      or a child of a child,
+      and so on.
+      For example,
+      the tree representing our web page about dimorphism
+      looks like <a href="#f:dimorphism_tree">Figure XXX</a>.
+    </p>
 
-      <figure id="f:dimorphism_tree">
-        <img src="img/web/dimorphism_tree.png" alt="Tree Representation of Dimorphism Page" />
-      </figure>
+    <figure id="f:dimorphism_tree">
+      <img src="img/web/dimorphism_tree.png" alt="Tree Representation of Dimorphism Page" />
+      <figcaption>Tree Representation of Dimorphism Page</figcaption>
+    </figure>
 
-      <p>
-        There are basically two ways to create a tree like this:
-        parse a string (or file) containing XML,
-        or build the nodes one by one and put them together manually.
-        The former is more common,
-        since the usual way to store and exchange XML or HTML is as text,
-        so we will explore that first.
-        Let's begin by turning text into HTML and then back into text:
-      </p>
+    <p>
+      There are basically two ways to create a tree like this:
+      parse a string (or file) containing XML,
+      or build the nodes one by one and put them together manually.
+      The former is more common,
+      since the usual way to store and exchange XML or HTML is as text,
+      so we will explore that first.
+      Let's begin by turning text into HTML and then back into text:
+    </p>
 
 <pre src="src/web/parse_simple_page.py">
 import xml.etree.ElementTree as ET
@@ -83,28 +84,28 @@ text = ET.tostring(doc, 'utf-8')
 print text
 </pre>
 
-      <p class="continue">
-        We start by importing the <code>xml.etree.ElementTree</code> library
-        and giving it the alias <code>ET</code>
-        (which is a lot easier to type and read).
-        The multi-line string assigned to the variable <code>page</code>
-        is the "document" we will parse;
-        most real programs will read data from a file instead.
-      </p>
+    <p class="continue">
+      We start by importing the <code>xml.etree.ElementTree</code> library
+      and giving it the alias <code>ET</code>
+      (which is a lot easier to type and read).
+      The multi-line string assigned to the variable <code>page</code>
+      is the "document" we will parse;
+      most real programs will read data from a file instead.
+    </p>
 
-      <p>
-        Parsing itself takes just a single call to <code>ET.fromstring</code>;
-        it returns the root node of the DOM tree corresponding to that document.
-        We then convert that tree back to text by calling <code>ET.tostring</code>.
-        The <code>'utf-8'</code> argument specifies how we want characters represented;
-        you should always use this option unless you know enough to know
-        that you want something else.
-        <span class="fixme">need a better explanation than this</span>
-      </p>
+    <p>
+      Parsing itself takes just a single call to <code>ET.fromstring</code>;
+      it returns the root node of the DOM tree corresponding to that document.
+      We then convert that tree back to text by calling <code>ET.tostring</code>.
+      The <code>'utf-8'</code> argument specifies how we want characters represented;
+      you should always use this option unless you know enough to know
+      that you want something else.
+      <span class="fixme">need a better explanation than this</span>
+    </p>
 
-      <p>
-        The program's output is:
-      </p>
+    <p>
+      The program's output is:
+    </p>
 
 <pre><span class="out">&lt;html&gt;
   &lt;body&gt;
@@ -118,18 +119,18 @@ print text
 &lt;/html&gt;</span>
 </pre>
 
-      <p class="continue">
-        which is exactly what we started with.
-      </p>
+    <p class="continue">
+      which is exactly what we started with.
+    </p>
 
-      <p class="fixme">point out how much simpler this is than parsing...</p>
+    <p class="fixme">point out how much simpler this is than parsing...</p>
 
-      <p>
-        In the example above,
-        our output was exactly the same as our input,
-        but that won't always be the case.
-        Here's another simple program that converts text to a node tree and back:
-      </p>
+    <p>
+      In the example above,
+      our output was exactly the same as our input,
+      but that won't always be the case.
+      Here's another simple program that converts text to a node tree and back:
+    </p>
 
 <pre src="src/web/round_trip.py">
 import xml.etree.ElementTree as ET
@@ -144,72 +145,57 @@ print ET.tostring(doc, 'utf-8')
 <span class="out">&lt;root&gt;&lt;node back="2" front="1"&gt;content&lt;/node&gt;&lt;/root&gt;</span>
 </pre>
 
-      <p class="continue">
-        <code>node</code>'s attributes are all on one line in the output,
-        and in a different order than they were in the input.
-        The reason for the first difference is that XML ignores whitespace inside elements:
-        the parser simply throws away
-        the extra spaces and newlines inside the definition of <code>&lt;node&hellip;&gt;</code>.
-        The reason for the second is that attributes are treated as a dictionary,
-        and dictionary keys are unordered.
-        As far as the rules of XML are concerned,
-        the input and output are the same thing.
-        Unfortunately,
-        as far as string comparison and tools like <code>diff</code> are concerned,
-        they are not.
-      </p>
+    <p class="continue">
+      <code>node</code>'s attributes are all on one line in the output,
+      and in a different order than they were in the input.
+      The reason for the first difference is that XML ignores whitespace inside elements:
+      the parser simply throws away
+      the extra spaces and newlines inside the definition of <code>&lt;node&hellip;&gt;</code>.
+      The reason for the second is that attributes are treated as a dictionary,
+      and dictionary keys are unordered.
+      As far as the rules of XML are concerned,
+      the input and output are the same thing.
+      Unfortunately,
+      as far as string comparison and tools like <code>diff</code> are concerned,
+      they are not.
+    </p>
 
-      <p>
-        Since almost all XML or HTML documents are stored in files,
-        the ElementTree library provides a convenience function
-        that parses files directly.
-        If <code>dimorphism.html</code> contains our definition of sexual dimorphism,
-        then:
-      </p>
+    <p>
+      Since almost all XML or HTML documents are stored in files,
+      the ElementTree library provides a convenience function
+      that parses files directly.
+      If <code>dimorphism.html</code> contains our definition of sexual dimorphism,
+      then:
+    </p>
 
 <pre>
 import xml.etree.ElementTree as ET
 doc = ET.parse('dimorphism.html')
 </pre>
 
-      <p class="continue">
-        reads the text in that file,
-        converts it to a DOM tree,
-        and returns the tree's root node.
-      </p>
+    <p class="continue">
+      reads the text in that file,
+      converts it to a DOM tree,
+      and returns the tree's root node.
+    </p>
 
-      <div class="keypoints" id="k:reading">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use <code>xml.etree.ElementTree</code> to parse HTML and XML.</li>
-        </ul>
-      </div>
+  </section>
 
-    </section>
+  <section id="s:web:search">
+    <h3>Finding Nodes</h3>
 
-    <section id="s:search">
-
-      <h2>Finding Nodes</h2>
-
-      <div class="understand" id="u:search">
-        <h3>Understand:</h3>
-        <ul>
-          <li>How to find DOM elements using XPath.</li>
-        </ul>
-      </div>
-
-      <p>
-        Most databases are read more often than they're written,
-        so most of <a href="db.html">our discussion of SQL</a>
-        focuses on finding things.
-        Most web pages are read more than once too,
-        so libraries like ElementTree provide tools for locating nodes of interest.
-        The most important of these is the <code>findall</code> method,
-        which searches all the children of a node
-        to find ones that match a pattern.
-        For example,
-        if some molecular formulas are stored like this:
-      </p>
+    <p>
+      Most databases are read more often than they're written,
+      so most of <a href="db.html">our discussion of SQL</a>
+      focuses on finding things.
+      Most web pages are read more than once too,
+      so libraries like ElementTree provide tools for locating nodes of interest.
+      The most important of these is the <code>findall</code> method,
+      which searches all the children of a node
+      to find ones that match a pattern.
+      For example,
+      if some molecular formulas are stored like this:
+    </p>
 
 <pre src="src/web/molecular_formulas.xml">
 &lt;formulas&gt;
@@ -229,9 +215,9 @@ doc = ET.parse('dimorphism.html')
 &lt;/formulas&gt;
 </pre>
 
-      <p class="continue">
-        then this program will count how many formulas there are:
-      </p>
+    <p class="continue">
+      then this program will count how many formulas there are:
+    </p>
 
 <pre src="src/web/count_formulas.py">
 import sys
@@ -244,115 +230,115 @@ print len(formulas)
 <span class="out">3</span>
 </pre>
 
-      <p>
-        The key to this programs is <code>root.findall("./formula")</code>.
-        The pattern <code>"./formula"</code> means,
-        "Starting with this node ('.'),
-        examine its children ('/')
-        for elements with the tag 'formula."
-        The result of the <code>findall</code> call is a list of nodes that match.
-      </p>
+    <p>
+      The key to this programs is <code>root.findall("./formula")</code>.
+      The pattern <code>"./formula"</code> means,
+      "Starting with this node ('.'),
+      examine its children ('/')
+      for elements with the tag 'formula."
+      The result of the <code>findall</code> call is a list of nodes that match.
+    </p>
 
-      <p>
-        The mini-language used for patterns is called
-        <a href="glossary.html#xpath">XPath</a>.
-        Some parts,
-        like '.' and '/',
-        are deliberately reminiscent of the way paths are described in
-        <a href="shell.html#s:filedir">the Unix filesystem</a>.
-        Other parts are more complicated,
-        but it's possible to do a lot without using them.
-        Some common XPath expressions are:
-      </p>
+    <p>
+      The mini-language used for patterns is called
+      <a href="glossary.html#xpath">XPath</a>.
+      Some parts,
+      like '.' and '/',
+      are deliberately reminiscent of the way paths are described in
+      <a href="shell.html#s:filedir">the Unix filesystem</a>.
+      Other parts are more complicated,
+      but it's possible to do a lot without using them.
+      Some common XPath expressions are:
+    </p>
 
-      <table>
-        <tr>
-          <td>
-            <code>tag</code>
-          </td>
-          <td>
-            All immediate children with the given tag.
-            <code>formula</code> selects all child <code>formula</code> elements,
-            and <code>formula/atom</code> selects all <code>atom</code> elements
-            that are children of <code>formula</code> children.
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <code>*</code>
-          </td>
-          <td>
-            All child elements.
-            <code>*/atom</code> selects all grandchild <code>atom</code> elements,
-            regardless of what the intervening parent is.
-          </td>
-        </tr>
-        <tr>
-          <td>//</td>
-          <td>
-            All subelements on all levels beneath the current element.
-            <code>.//atom</code> selects all <code>atoms</code> elements in the entire tree.
-          </td>
-        </tr>
-        <tr>
-          <td><code>.</code></td>
-          <td>
-            The current node.
-            It is mostly used at the beginning of a path to indicate that it is a relative path.
-          </td>
-        </tr>
-        <tr>
-          <td><code>..</code></td>
-          <td>The parent of the current node.</td>
-        </tr>
-        <tr>
-          <td><code>[@attrib]</code></td>
-          <td>
-            All elements with the given attribute (regardless of that attribute's value).
-            <code>.//atom[@name]</code> selects all atoms in the tree
-            that have a <code>name</code> attribute,
-            but not any <code>atom</code> elements that are missing that attribute.
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <code>[@attrib="value"]</code>
-          </td>
-          <td>
-            All elements for which the given attribute has the given value.
-            <code>.//atom[@symbol="C"]</code> finds all carbon atoms.
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <code>[tag]</code>
-          </td>
-          <td>
-            All elements that have a child element with the given tag.
-            <code>atom[comment]</code> finds all <code>atom</code> nodes
-            that have an immediate child of type <code>comment</code>.
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <code>[position]</code>
-          </td>
-          <td>
-            All elements that located in the given position relative to their parent.
-            The position can be either an integer (1 is the first position),
-            the expression <code>last()</code> for the last position,
-            or a position relative to <code>last()</code>,
-            such as <code>last()-1</code>.
-          </td>
-        </tr>
-      </table>
+    <table>
+      <tr>
+        <td>
+          <code>tag</code>
+        </td>
+        <td>
+          All immediate children with the given tag.
+          <code>formula</code> selects all child <code>formula</code> elements,
+          and <code>formula/atom</code> selects all <code>atom</code> elements
+          that are children of <code>formula</code> children.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <code>*</code>
+        </td>
+        <td>
+          All child elements.
+          <code>*/atom</code> selects all grandchild <code>atom</code> elements,
+          regardless of what the intervening parent is.
+        </td>
+      </tr>
+      <tr>
+        <td>//</td>
+        <td>
+          All subelements on all levels beneath the current element.
+          <code>.//atom</code> selects all <code>atoms</code> elements in the entire tree.
+        </td>
+      </tr>
+      <tr>
+        <td><code>.</code></td>
+        <td>
+          The current node.
+          It is mostly used at the beginning of a path to indicate that it is a relative path.
+        </td>
+      </tr>
+      <tr>
+        <td><code>..</code></td>
+        <td>The parent of the current node.</td>
+      </tr>
+      <tr>
+        <td><code>[@attrib]</code></td>
+        <td>
+          All elements with the given attribute (regardless of that attribute's value).
+          <code>.//atom[@name]</code> selects all atoms in the tree
+          that have a <code>name</code> attribute,
+          but not any <code>atom</code> elements that are missing that attribute.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <code>[@attrib="value"]</code>
+        </td>
+        <td>
+          All elements for which the given attribute has the given value.
+          <code>.//atom[@symbol="C"]</code> finds all carbon atoms.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <code>[tag]</code>
+        </td>
+        <td>
+          All elements that have a child element with the given tag.
+          <code>atom[comment]</code> finds all <code>atom</code> nodes
+          that have an immediate child of type <code>comment</code>.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <code>[position]</code>
+        </td>
+        <td>
+          All elements that located in the given position relative to their parent.
+          The position can be either an integer (1 is the first position),
+          the expression <code>last()</code> for the last position,
+          or a position relative to <code>last()</code>,
+          such as <code>last()-1</code>.
+        </td>
+      </tr>
+    </table>
 
-      <p>
-        Let's use these expressions to check that a data file is properly formatted
-        by looking for all the <code>atom</code> nodes
-        that are <em>not</em> immediate children of <code>formula</code> nodes.
-        Our data file is:
-      </p>
+    <p>
+      Let's use these expressions to check that a data file is properly formatted
+      by looking for all the <code>atom</code> nodes
+      that are <em>not</em> immediate children of <code>formula</code> nodes.
+      Our data file is:
+    </p>
 
 <pre src="src/web/bad_formulas.xml">
 &lt;formulas&gt;
@@ -369,9 +355,9 @@ print len(formulas)
 &lt;/formulas&gt;
 </pre>
 
-      <p class="continue">
-        and our program is:
-      </p>
+    <p class="continue">
+      and our program is:
+    </p>
 
 <pre src="src/web/validate_doc.py">
 import xml.etree.ElementTree as ET
@@ -389,68 +375,53 @@ for atom in wrongly_placed:
 </span>
 </pre>
 
-      <p class="continue">
-        After converting the XML document to a tree,
-        this program uses <code>doc.findall</code> to get all of the <code>atom</code> nodes,
-        and then uses it again to find all the <code>atom</code> nodes
-        that are immediate children of <code>formula</code> nodes.
-        Subtracting the second set from the first
-        gives the nodes that are <em>not</em> immediate children of <code>formula</code> nodes,
-        i.e.,
-        that are in the wrong place.
-      </p>
+    <p class="continue">
+      After converting the XML document to a tree,
+      this program uses <code>doc.findall</code> to get all of the <code>atom</code> nodes,
+      and then uses it again to find all the <code>atom</code> nodes
+      that are immediate children of <code>formula</code> nodes.
+      Subtracting the second set from the first
+      gives the nodes that are <em>not</em> immediate children of <code>formula</code> nodes,
+      i.e.,
+      that are in the wrong place.
+    </p>
 
-      <p>
-        A couple of things are worth pointing out about this program.
-        First,
-        the ElementTree library doesn't record where in the document nodes are from,
-        so we can't pinpoint the line or character position of the offending nodes.
-        Second,
-        the double-spacing on the output comes from the fact that
-        our original document contained lots of whitespace
-        to make it easier for human beings to read,
-        and ElementTree kept this whitespace
-        (storing it as the <code>tail</code> value for various nodes).
-        This kind of extra whitespace is always an annoyance when we're programming,
-        so it's tempting to leave it out.
-        However,
-        doing so makes it harder for human beings to read the raw XML
-        using line-oriented editors.
-        Most modern browsers will display the XML as a tree
-        (<a href="#f:xml_in_browser">Figure XXX</a>)
-        but native XML-oriented editing tools are still clumsy.
-      </p>
+    <p>
+      A couple of things are worth pointing out about this program.
+      First,
+      the ElementTree library doesn't record where in the document nodes are from,
+      so we can't pinpoint the line or character position of the offending nodes.
+      Second,
+      the double-spacing on the output comes from the fact that
+      our original document contained lots of whitespace
+      to make it easier for human beings to read,
+      and ElementTree kept this whitespace
+      (storing it as the <code>tail</code> value for various nodes).
+      This kind of extra whitespace is always an annoyance when we're programming,
+      so it's tempting to leave it out.
+      However,
+      doing so makes it harder for human beings to read the raw XML
+      using line-oriented editors.
+      Most modern browsers will display the XML as a tree
+      (<a href="#f:xml_in_browser">Figure XXX</a>)
+      but native XML-oriented editing tools are still clumsy.
+    </p>
 
-      <figure id="f:xml_in_browser">
-        <img src="img/web/xml_in_browser.png" alt="XML in the Browser" />
-      </figure>
+    <figure id="f:xml_in_browser">
+      <img src="img/web/xml_in_browser.png" alt="XML in the Browser" />
+      <figcaption>XML in the Browser</figcaption>
+    </figure>
 
-      <div class="keypoints" id="k:search">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use XPath expressions to identify nodes in a document.</li>
-          <li>Use a node's <code>findall</code> method to find children matching an XPath expression.</li>
-        </ul>
-      </div>
+  </section>
 
-    </section>
+  <section id="s:web:creating">
+    <h3>Creating Documents</h3>
 
-    <section id="s:creating">
-
-      <h2>Creating Documents</h2>
-
-      <div class="understand" id="u:creating">
-        <h3>Understand:</h3>
-        <ul>
-          <li>How to create DOM in memory and turn it into a document.</li>
-        </ul>
-      </div>
-
-      <p>
-        So much for reading XML: how do we create it?
-        Let's start by writing a program that re-creates our dimorphism page
-        one element at time:
-      </p>
+    <p>
+      So much for reading XML: how do we create it?
+      Let's start by writing a program that re-creates our dimorphism page
+      one element at time:
+    </p>
 
 <pre src="src/web/build_simple_page.py">
 import xml.etree.ElementTree as ET
@@ -476,134 +447,132 @@ ET.SubElement(body, 'p').text = long_text
 print ET.tostring(root)
 </pre>
 
-      <p>
-        There is much less to this program than first appears.
-        It starts by creating an object of type <code>Element</code>,
-        which is the class the ElementTree library uses to represent nodes.
-        The argument to <code>Element</code>'s constructor,
-        <code>html</code>,
-        specifies the element's type.
-      </p>
+    <p>
+      There is much less to this program than first appears.
+      It starts by creating an object of type <code>Element</code>,
+      which is the class the ElementTree library uses to represent nodes.
+      The argument to <code>Element</code>'s constructor,
+      <code>html</code>,
+      specifies the element's type.
+    </p>
 
-      <p>
-        The next two lines create another node of type <code>body</code>
-        and then append that to the root node.
-        At this point, our tree looks like
-        <a href="#f:partial_tree">Figure XXX</a>:
-      </p>
+    <p>
+      The next two lines create another node of type <code>body</code>
+      and then append that to the root node.
+      At this point, our tree looks like
+      <a href="#f:partial_tree">Figure XXX</a>:
+    </p>
 
-      <figure id="f:partial_tree">
-        <img src="img/web/partial_tree.png" alt="Partially-Constructed Tree" />
-      </figure>
+    <figure id="f:partial_tree">
+      <img src="img/web/partial_tree.png" alt="Partially-Constructed Tree" />
+      <figcaption>Partially-Constructed Tree</figcaption>
+    </figure>
 
-      <p>
-        The rest of the program does little more than create and append nodes.
-        Because creating a node and appending it to another one is so common,
-        ElementTree provides a convenience function called <code>SubElement</code>
-        which combines the two steps.
-        The two lines:
-      </p>
+    <p>
+      The rest of the program does little more than create and append nodes.
+      Because creating a node and appending it to another one is so common,
+      ElementTree provides a convenience function called <code>SubElement</code>
+      which combines the two steps.
+      The two lines:
+    </p>
 
 <pre>
 title = ET.SubElement(body, 'h1')
 title.text = 'Dimorphism'
 </pre>
 
-      <p class="continue">
-        create a new node of type <code>h1</code>,
-        append it to the <code>body</code> node,
-        and then set the text content of the title node to be the string <code>'Dimorphism'</code>.
-      </p>
+    <p class="continue">
+      create a new node of type <code>h1</code>,
+      append it to the <code>body</code> node,
+      and then set the text content of the title node to be the string <code>'Dimorphism'</code>.
+    </p>
 
-      <p>
-        The next step is the most complicated.
-        We need to create a paragraph node
-        whose <code>class</code> attribute has the value <code>definition</code>,
-        and which contains three things:
-      </p>
+    <p>
+      The next step is the most complicated.
+      We need to create a paragraph node
+      whose <code>class</code> attribute has the value <code>definition</code>,
+      and which contains three things:
+    </p>
 
-      <ol>
+    <ol>
+      <li>
+        the text <code>'Occurring or existing in two different&nbsp;'</code>
+        (with a space at the end);
+      </li>
+      <li>
+        a <code>u</code> element containing the text <code>'forms'</code>;
+        and
+      </li>
+      <li>
+        another piece of text containing the period '.' that ends the sentence.
+      </li>
+    </ol>
 
-        <li>
-          the text <code>'Occurring or existing in two different&nbsp;'</code>
-          (with a space at the end);
-        </li>
-
-        <li>
-          a <code>u</code> element containing the text <code>'forms'</code>;
-          and
-        </li>
-
-        <li>
-          another piece of text containing the period '.' that ends the sentence.
-        </li>
-
-      </ol>
-
-      <p>
-        Creating the paragraph node and appending it to our body node is easy:
-        we just call <code>SubElement</code>.
-        Setting an attribute is also easy:
-        every node has a dictionary called <code>attrib</code>
-        whose keys are attribute names
-        and whose values are those attributes' values.
-        The single line:
-      </p>
+    <p>
+      Creating the paragraph node and appending it to our body node is easy:
+      we just call <code>SubElement</code>.
+      Setting an attribute is also easy:
+      every node has a dictionary called <code>attrib</code>
+      whose keys are attribute names
+      and whose values are those attributes' values.
+      The single line:
+    </p>
 
 <pre>
 p1.attrib['class'] = 'definition'
 </pre>
 
-      <p class="continue">
-        therefore creates the attribute we want.
-      </p>
+    <p class="continue">
+      therefore creates the attribute we want.
+    </p>
 
-      <p>
-        Now for the paragraph's content.
-        Again, the first part is easy:
-        we just set <code>p1.text</code>.
-        And underlining the word "forms" is easy too:
-        we create a node of type <code>u</code> and append it to the paragraph.
-        But where should the closing period be stored?
-      </p>
+    <p>
+      Now for the paragraph's content.
+      Again, the first part is easy:
+      we just set <code>p1.text</code>.
+      And underlining the word "forms" is easy too:
+      we create a node of type <code>u</code> and append it to the paragraph.
+      But where should the closing period be stored?
+    </p>
 
-      <p>
-        Along with <code>text</code>,
-        ElementTree nodes have another text field called <code>tail</code>,
-        which stores the text <em>after</em> the node
-        but before the start of anything else.
-        Since the period is in the paragraph,
-        the right place to store it is therefore <code>u.tail</code>
-        (since putting it in <code>p1.tail</code> would imply that
-        it came after the end of the first paragraph,
-        but before the start of the next paragraph).
-      </p>
+    <p>
+      Along with <code>text</code>,
+      ElementTree nodes have another text field called <code>tail</code>,
+      which stores the text <em>after</em> the node
+      but before the start of anything else.
+      Since the period is in the paragraph,
+      the right place to store it is therefore <code>u.tail</code>
+      (since putting it in <code>p1.tail</code> would imply that
+      it came after the end of the first paragraph,
+      but before the start of the next paragraph).
+    </p>
 
-      <p>
-        Finally,
-        we create the second paragraph that elaborates dimorphism's definition
-        by combining node creation and text setting in a single line:
-      </p>
+    <p>
+      Finally,
+      we create the second paragraph that elaborates dimorphism's definition
+      by combining node creation and text setting in a single line:
+    </p>
 
 <pre>
 ET.SubElement(body, 'p').text = long_text
 </pre>
 
-      <p class="continue">
-        This works because <code>SubElement</code> returns the node it just created,
-        so we can immediately set its <code>text</code> value.
-      </p>
+    <p class="continue">
+      This works because <code>SubElement</code> returns the node it just created,
+      so we can immediately set its <code>text</code> value.
+    </p>
 
-      <figure id="f:final_tree">
-        <img src="img/web/final_tree.png" alt="Final Tree" />
-      </figure>
+    <figure id="f:final_tree">
+      <img src="img/web/final_tree.png" alt="Final Tree" />
+      <figcaption>Final Tree</figcaption>
+    </figure>
 
-      <p>
-        In memory,
-        our document is now something like <a href="#f:final_tree">Figure XXX</a>.
-        If we convert it to text,
-        we get:
-      </p>
+    <p>
+      In memory,
+      our document is now something like <a href="#f:final_tree">Figure XXX</a>.
+      If we convert it to text,
+      we get:
+    </p>
 
 <pre>
 <span class="out">&lt;html&gt;&lt;body&gt;&lt;h1&gt;Dimorphism&lt;/h1&gt;&lt;p class="definition"&gt;Occurring or existing in two&crarr;
@@ -611,24 +580,24 @@ different &lt;u&gt;forms&lt;/u&gt;.&lt;/p&gt;&lt;p&gt;The most notable form is s
 in which males and females have noticeably different appearances.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</span>
 </pre>
 
-      <p class="continue">
-        (As before, we use &crarr; to break a line that's too long to fit on the screen.)
-        This has all the content we created,
-        but <em>only</em> that content.
-        We didn't create text nodes containing carriage returns and blanks,
-        so <code>tostring</code> didn't insert them.
-        Most machine-generated XML isn't nicely indented
-        because computers don't care,
-        but XML intended for human beings to read usually is.
-      </p>
+    <p class="continue">
+      (As before, we use &crarr; to break a line that's too long to fit on the screen.)
+      This has all the content we created,
+      but <em>only</em> that content.
+      We didn't create text nodes containing carriage returns and blanks,
+      so <code>tostring</code> didn't insert them.
+      Most machine-generated XML isn't nicely indented
+      because computers don't care,
+      but XML intended for human beings to read usually is.
+    </p>
 
-      <p>
-        in practice,
-        of course,
-        programs usually wrap all these steps up in functions.
-        For example,
-        this function converts a Python list into an HTML ordered list:
-      </p>
+    <p>
+      in practice,
+      of course,
+      programs usually wrap all these steps up in functions.
+      For example,
+      this function converts a Python list into an HTML ordered list:
+    </p>
 
 <pre src="src/web/list_to_ol.py">
 import xml.etree.ElementTree as ET
@@ -646,25 +615,25 @@ print ET.tostring(root)
 <span class="out">&lt;ol&gt;&lt;li&gt;1&lt;/li&gt;&lt;li&gt;two&lt;/li&gt;&lt;li&gt;3.4&lt;/li&gt;&lt;/ol&gt;</span>
 </pre>
 
-        <p>
-          The line:
-        </p>
+    <p>
+      The line:
+    </p>
 
 <pre>
         ET.SubElement(result, 'li').text = str(v)
 </pre>
 
-        <p class="continue">
-          does two things at once.
-          First,
-          it creates a new <code>li</code> (list element) node and returns it.
-          Second,
-          it sets the <code>text</code> of that node to be
-          the string representation of the next list value.
-          What it <em>doesn't</em> do is store a reference to that node in a separate variable.
-          We could do this,
-          as in:
-        </p>
+    <p class="continue">
+      does two things at once.
+      First,
+      it creates a new <code>li</code> (list element) node and returns it.
+      Second,
+      it sets the <code>text</code> of that node to be
+      the string representation of the next list value.
+      What it <em>doesn't</em> do is store a reference to that node in a separate variable.
+      We could do this,
+      as in:
+    </p>
 
 <pre>
     for v in values:
@@ -672,57 +641,40 @@ print ET.tostring(root)
         node.text = str(v)
 </pre>
 
-        <p class="continue">
-          It's a matter of taste which is less unreadable,
-          but since we're about to see a different approach that most people find better anyway,
-          the question is moot.
-        </p>
+    <p class="continue">
+      It's a matter of taste which is less unreadable,
+      but since we're about to see a different approach that most people find better anyway,
+      the question is moot.
+    </p>
 
-      <div class="keypoints" id="k:creating">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use the same library to create elements in memory rather than concatenating and printing strings.</li>
-          <li>An element's <code>text</code> property stores the text it contains.</li>
-          <li>An element's <code>tail</code> property stores the text that comes immediately after it.</li>
-        </ul>
-      </div>
+  </section>
+</section>
 
-    </section>
-    <section id="s:design">
+<section id="s:db">
+  <h2>Databases</h2>
 
-      <h2>Database Design</h2>
+  <section id="s:db:design">
+    <h3>Database Design</h3>
 
-      <div class="understand" id="u:design">
-        <h3>Learning Objectives:</h3>
-        <ul>
-          <li>Explain what an atomic value is.</li>
-          <li>Be able to tell whether a value is atomic or not.</li>
-          <li>Explain why fields in database tables should store atomic values.</li>
-          <li>Explain why databases should not store redundant information.</li>
-          <li>Be able to tell whether information is redundant or not.</li>
-          <li>Be able to reorganize database tables to eliminate redundancy.</li>
-        </ul>
-      </div>
+    <p>
+      Let's go back to sorting for a moment,
+      and see if we can produce a list of scientists
+      ordered by family name.
+      We want our output to look like this:
+    </p>
 
-      <p>
-        Let's go back to sorting for a moment,
-        and see if we can produce a list of scientists
-        ordered by family name.
-        We want our output to look like this:
-      </p>
+    <table class="outlined">
+      <tr><td>Kovalevskaya, Sofia</td></tr>
+      <tr><td>Lomonosov, Mikhail</td></tr>
+      <tr><td>Mendeleev, Dmitri</td></tr>
+      <tr><td>Pavlov, Ivan</td></tr>
+    </table>
 
-      <table class="outlined">
-        <tr><td>Kovalevskaya, Sofia</td></tr>
-        <tr><td>Lomonosov, Mikhail</td></tr>
-        <tr><td>Mendeleev, Dmitri</td></tr>
-        <tr><td>Pavlov, Ivan</td></tr>
-      </table>
-
-      <p>
-        This is easy to do in a programming language like Python:
-        we just split the names on the space character,
-        then join the two parts using a comma and a space.
-      </p>
+    <p>
+      This is easy to do in a programming language like Python:
+      we just split the names on the space character,
+      then join the two parts using a comma and a space.
+    </p>
 
 <pre>
 result = []
@@ -733,11 +685,11 @@ for name in list_of_names:
 result.sort()
 </pre>
 
-      <p>
-        We can do something like this in some dialects of SQL, but not all,
-        and even when we can, it's harder to read.
-        For example, if we're using Microsoft SQL Server, the query we need is:
-      </p>
+    <p>
+      We can do something like this in some dialects of SQL, but not all,
+      and even when we can, it's harder to read.
+      For example, if we're using Microsoft SQL Server, the query we need is:
+    </p>
 
 <pre>
 SELECT SUBSTRING(Scientist, 1, CHARINDEX(Scientist, " ")-1)
@@ -746,262 +698,574 @@ SELECT SUBSTRING(Scientist, 1, CHARINDEX(Scientist, " ")-1)
        FROM Experiments;
 </pre>
 
-      <p class="continue">
-        Here,
-        <code>CHARINDEX</code> and <code>SUBSTRING</code> are built-in functions
-        that find the locations of characters and take substrings respectively,
-        and <code>||</code> concatenates strings.
-        This won't work as written with other databases,
-        though,
-        since their equivalents of <code>CHARINDEX</code> have different names
-        (or, in the case of SQLite, may not exist at all).
-        And even when it does work, it's still not a complete solution,
-        since it doesn't sort the names.
-      </p>
+    <p class="continue">
+      Here,
+      <code>CHARINDEX</code> and <code>SUBSTRING</code> are built-in functions
+      that find the locations of characters and take substrings respectively,
+      and <code>||</code> concatenates strings.
+      This won't work as written with other databases,
+      though,
+      since their equivalents of <code>CHARINDEX</code> have different names
+      (or, in the case of SQLite, may not exist at all).
+      And even when it does work, it's still not a complete solution,
+      since it doesn't sort the names.
+    </p>
 
-      <p>
-        We could get further by using <a href="#s:nested">nested queries</a>,
-        which we will discuss later in this chapter,
-        but the right solution is to reformulate the problem.
-        What we're trying to do is difficult because
-        we have violated one of the fundamental rules of database design.
-        The values in the <code>Scientist</code> field have several parts that we care about;
-        in technical terms,
-        they are not <a href="glossary.html#atomic-value">atomic values</a>.
-        In a well-designed database,
-        every value <em>is</em> atomic,
-        so that it can be accessed directly.
-      </p>
+    <p>
+      We could get further by using <a href="#s:nested">nested queries</a>,
+      which we will discuss later in this chapter,
+      but the right solution is to reformulate the problem.
+      What we're trying to do is difficult because
+      we have violated one of the fundamental rules of database design.
+      The values in the <code>Scientist</code> field have several parts that we care about;
+      in technical terms,
+      they are not <a href="glossary.html#atomic-value">atomic values</a>.
+      In a well-designed database,
+      every value <em>is</em> atomic,
+      so that it can be accessed directly.
+    </p>
 
-      <p>
-        Here's what our table looks like when we split names into their component parts:
-      </p>
+    <p>
+      Here's what our table looks like when we split names into their component parts:
+    </p>
 
-      <table class="outlined" src="db/create_single_table_experiments.sql">
-        <tr><td colspan="4" align="center"><strong>Experiments</strong></td></tr>
-        <tr>
-          <td><strong>PersonalName</strong></td>
-          <td><strong>FamilyName</strong></td>
-          <td><strong>Project</strong></td>
-          <td><strong>Hours</strong></td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>Antigravity</td>
-          <td>6.5</td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>Teleportation</td>
-          <td>11.0</td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>Teleportation</td>
-          <td>5.0</td>
-        </tr>
-        <tr>
-          <td>Mikhail</td>
-          <td>Lomonosov</td>
-          <td>Antigravity</td>
-          <td>4.0</td>
-        </tr>
-        <tr>
-          <td>Mikhail</td>
-          <td>Lomonosov</td>
-          <td>Time Travel</td>
-          <td>-2.0</td>
-        </tr>
-        <tr>
-          <td>Dmitri</td>
-          <td>Mendeleev</td>
-          <td>Antigravity</td>
-          <td>9.0</td>
-        </tr>
-        <tr>
-          <td>Ivan</td>
-          <td>Pavlov</td>
-          <td>Teleportation</td>
-          <td>9.0</td>
-        </tr>
-        <tr>
-          <td>Ivan</td>
-          <td>Pavlov</td>
-          <td>Time Travel</td>
-          <td>-7.0</td>
-        </tr>
-      </table>
+    <table class="outlined" src="db/create_single_table_experiments.sql">
+      <tr><td colspan="4" align="center"><strong>Experiments</strong></td></tr>
+      <tr>
+        <td><strong>PersonalName</strong></td>
+        <td><strong>FamilyName</strong></td>
+        <td><strong>Project</strong></td>
+        <td><strong>Hours</strong></td>
+      </tr>
+      <tr>
+        <td>Sofia</td>
+        <td>Kovalevskaya</td>
+        <td>Antigravity</td>
+        <td>6.5</td>
+      </tr>
+      <tr>
+        <td>Sofia</td>
+        <td>Kovalevskaya</td>
+        <td>Teleportation</td>
+        <td>11.0</td>
+      </tr>
+      <tr>
+        <td>Sofia</td>
+        <td>Kovalevskaya</td>
+        <td>Teleportation</td>
+        <td>5.0</td>
+      </tr>
+      <tr>
+        <td>Mikhail</td>
+        <td>Lomonosov</td>
+        <td>Antigravity</td>
+        <td>4.0</td>
+      </tr>
+      <tr>
+        <td>Mikhail</td>
+        <td>Lomonosov</td>
+        <td>Time Travel</td>
+        <td>-2.0</td>
+      </tr>
+      <tr>
+        <td>Dmitri</td>
+        <td>Mendeleev</td>
+        <td>Antigravity</td>
+        <td>9.0</td>
+      </tr>
+      <tr>
+        <td>Ivan</td>
+        <td>Pavlov</td>
+        <td>Teleportation</td>
+        <td>9.0</td>
+      </tr>
+      <tr>
+        <td>Ivan</td>
+        <td>Pavlov</td>
+        <td>Time Travel</td>
+        <td>-7.0</td>
+      </tr>
+    </table>
 
-      <p class="continue">
-        It looks like a small change, but it has major implications.
-        First, it makes the SQL simpler,
-        since we no longer have to do substring operations to get values:
-      </p>
+    <p class="continue">
+      It looks like a small change, but it has major implications.
+      First, it makes the SQL simpler,
+      since we no longer have to do substring operations to get values:
+    </p>
 
 <pre make="select-distinct-names">
 SELECT DISTINCT FamilyName || ", " || PersonalName FROM Experiments;
 </pre>
 
-      <p class="continue">
-        Second,
-        this SQL will be much more efficient,
-        since repeatedly finding substrings takes more time than simply matching values directly.
-      </p>
+    <p class="continue">
+      Second,
+      this SQL will be much more efficient,
+      since repeatedly finding substrings takes more time than simply matching values directly.
+    </p>
 
-      <div class="box">
-        <h3>Why Personal and Family Names?</h3>
+    <p>
+      Our redesigned table still violates an important rule of database design.
+      To see how,
+      let's look at what happens if we want to store people's email addresses:
+    </p>
 
-        <p>
-          <code>PersonalName</code> and <code>FamilyName</code> may seem like odd labels for database fields:
-          <code>FirstName</code> and <code>LastName</code> would be shorter.
-          However, the latter pair of labels assume a cultural convention that isn't true for many people.
-          In China, Japan, and other East Asian countries, for example,
-          the family name is usually written first.
-          This may sound like a small thing,
-          but it's a good habit to get into:
-          when we're designing a database,
-          we should always think about the meaning of data,
-          rather than how it is presented.
-        </p>
+    <table class="outlined" src="db/create_single_table_experiments.sql">
+      <tr><td colspan="5" align="center"><strong>Experiments</strong></td></tr>
+      <tr>
+        <td><strong>PersonalName</strong></td>
+        <td><strong>FamilyName</strong></td>
+        <td><strong>Email</strong></td>
+        <td><strong>Project</strong></td>
+        <td><strong>Hours</strong></td>
+      </tr>
+      <tr>
+        <td>Sofia</td>
+        <td>Kovalevskaya</td>
+        <td>skol@euphoric.edu</td>
+        <td>Antigravity</td>
+        <td>6.5</td>
+      </tr>
+      <tr>
+        <td>Sofia</td>
+        <td>Kovalevskaya</td>
+        <td>skol@euphoric.edu</td>
+        <td>Teleportation</td>
+        <td>11.0</td>
+      </tr>
+      <tr>
+        <td>Sofia</td>
+        <td>Kovalevskaya</td>
+        <td>skol@euphoric.edu</td>
+        <td>Teleportation</td>
+        <td>5.0</td>
+      </tr>
+      <tr>
+        <td>Mikhail</td>
+        <td>Lomonosov</td>
+        <td>mikki@freesci.org</td>
+        <td>Antigravity</td>
+        <td>4.0</td>
+      </tr>
+      <tr>
+        <td>Mikhail</td>
+        <td>Lomonosov</td>
+        <td>mikki@freesci.org</td>
+        <td>Time Travel</td>
+        <td>-2.0</td>
+      </tr>
+      <tr>
+        <td>Dmitri</td>
+        <td>Mendeleev</td>
+        <td>mendeleev@euphoric.edu</td>
+        <td>Antigravity</td>
+        <td>9.0</td>
+      </tr>
+      <tr>
+        <td>Ivan</td>
+        <td>Pavlov</td>
+        <td>pablum@euphoric.edu</td>
+        <td>Teleportation</td>
+        <td>9.0</td>
+      </tr>
+      <tr>
+        <td>Ivan</td>
+        <td>Pavlov</td>
+        <td>pablum@euphoric.edu</td>
+        <td>Time Travel</td>
+        <td>-7.0</td>
+      </tr>
+    </table>
 
-      </div>
+    <p>
+      There's a lot of redundancy in this table:
+      every time "Sofia" appears as a personal name,
+      the family name is always "Kovalevskaya",
+      and the email address is always "skol@euphoric.edu".
+      If we use this design,
+      we will have to eliminate duplicates almost every time we run a query,
+      and if Sofia changes her email address,
+      we will have to update several rows of the database.
+    </p>
 
-      <p>
-        Our redesigned table still violates an important rule of database design.
-        To see how,
-        let's look at what happens if we want to store people's email addresses:
-      </p>
+    <p>
+      The right way to store this data is
+      to separate information about scientists
+      from information about experiments,
+      so that no fact is ever duplicated.
+      We can do this by splitting our table in two:
+    </p>
 
-      <table class="outlined" src="db/create_single_table_experiments.sql">
-        <tr><td colspan="5" align="center"><strong>Experiments</strong></td></tr>
-        <tr>
-          <td><strong>PersonalName</strong></td>
-          <td><strong>FamilyName</strong></td>
-          <td><strong>Email</strong></td>
-          <td><strong>Project</strong></td>
-          <td><strong>Hours</strong></td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>skol@euphoric.edu</td>
-          <td>Antigravity</td>
-          <td>6.5</td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>skol@euphoric.edu</td>
-          <td>Teleportation</td>
-          <td>11.0</td>
-        </tr>
-        <tr>
-          <td>Sofia</td>
-          <td>Kovalevskaya</td>
-          <td>skol@euphoric.edu</td>
-          <td>Teleportation</td>
-          <td>5.0</td>
-        </tr>
-        <tr>
-          <td>Mikhail</td>
-          <td>Lomonosov</td>
-          <td>mikki@freesci.org</td>
-          <td>Antigravity</td>
-          <td>4.0</td>
-        </tr>
-        <tr>
-          <td>Mikhail</td>
-          <td>Lomonosov</td>
-          <td>mikki@freesci.org</td>
-          <td>Time Travel</td>
-          <td>-2.0</td>
-        </tr>
-        <tr>
-          <td>Dmitri</td>
-          <td>Mendeleev</td>
-          <td>mendeleev@euphoric.edu</td>
-          <td>Antigravity</td>
-          <td>9.0</td>
-        </tr>
-        <tr>
-          <td>Ivan</td>
-          <td>Pavlov</td>
-          <td>pablum@euphoric.edu</td>
-          <td>Teleportation</td>
-          <td>9.0</td>
-        </tr>
-        <tr>
-          <td>Ivan</td>
-          <td>Pavlov</td>
-          <td>pablum@euphoric.edu</td>
-          <td>Time Travel</td>
-          <td>-7.0</td>
-        </tr>
-      </table>
+    <table class="outlined">
+      <tr><td colspan="3" align="center"><strong>Experiments</strong></td></tr>
+      <tr><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
+      <tr><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
+      <tr><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
+      <tr><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
+      <tr><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
+      <tr><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
+      <tr><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
+      <tr><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
+    </table>
 
-      <p>
-        There's a lot of redundancy in this table:
-        every time "Sofia" appears as a personal name,
-        the family name is always "Kovalevskaya",
-        and the email address is always "skol@euphoric.edu".
-        If we use this design,
-        we will have to eliminate duplicates almost every time we run a query,
-        and if Sofia changes her email address,
-        we will have to update several rows of the database.
-      </p>
+    <table class="outlined">
+      <tr><td colspan="4" align="center"><strong>Scientists</strong></td></tr>
+      <tr><td>skol</td><td>Kovalevskaya</td><td>Sofia</td><td>skol@euphoric.edu</td></tr>
+      <tr><td>mlom</td><td>Lomonosov</td><td>Mikhail</td><td>mikki@freesci.org</td></tr>
+      <tr><td>dmen</td><td>Mendeleev</td><td>Dmitri</td><td>mendeleev@euphoric.edu</td></tr>
+      <tr><td>ipav</td><td>Pavlov</td><td>Ivan</td><td>pablum@euphoric.edu</td></tr>
+    </table>
 
-      <p>
-        The right way to store this data is
-        to separate information about scientists
-        from information about experiments,
-        so that no fact is ever duplicated.
-        We can do this by splitting our table in two:
-      </p>
+    <p>
+      Facts about our scientists now appear exactly once,
+      as do the entries for experiments.
+      The only exception is the two entries for Sofia Kovalevskaya's hours on the Teleportation project,
+      which was in the original data.
+      At this point,
+      we should either insist that
+      all the hours each scientist has spent on a particular project appear in a single database entry,
+      or document the reasons for having multiple entries
+      (e.g., because each entry is the hours worked in a single week or month).
+    </p>
+  </section>
 
-      <table class="outlined">
-        <tr><td colspan="3" align="center"><strong>Experiments</strong></td></tr>
-        <tr><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
-        <tr><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
-        <tr><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
-        <tr><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
-        <tr><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
-        <tr><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
-        <tr><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
-      </table>
+  <section id="s:db:selfjoin">
+    <h3>Self Join</h3>
 
-      <table class="outlined">
-        <tr><td colspan="4" align="center"><strong>Scientists</strong></td></tr>
-        <tr><td>skol</td><td>Kovalevskaya</td><td>Sofia</td><td>skol@euphoric.edu</td></tr>
-        <tr><td>mlom</td><td>Lomonosov</td><td>Mikhail</td><td>mikki@freesci.org</td></tr>
-        <tr><td>dmen</td><td>Mendeleev</td><td>Dmitri</td><td>mendeleev@euphoric.edu</td></tr>
-        <tr><td>ipav</td><td>Pavlov</td><td>Ivan</td><td>pablum@euphoric.edu</td></tr>
-      </table>
+    <p>
+      One special case of joining tables comes up so often that it has its own name:
+      <a href="glossary.html#self-join">self join</a>.
+      As the name suggests,
+      this means joining a table with itself.
+      To see why this is useful,
+      let's try to find out how many scientists have worked on two or more projects.
+      Our first guess looks like this:
+    </p>
 
-      <p>
-        Facts about our scientists now appear exactly once,
-        as do the entries for experiments.
-        The only exception is the two entries for Sofia Kovalevskaya's hours on the Teleportation project,
-        which was in the original data.
-        At this point,
-        we should either insist that
-        all the hours each scientist has spent on a particular project appear in a single database entry,
-        or document the reasons for having multiple entries
-        (e.g., because each entry is the hours worked in a single week or month).
-      </p>
+<pre src="src/db/self_join_incorrect.sql">
+SELECT PersonID, COUNT(*) FROM Experiments GROUP BY PersonID WHERE COUNT(*) > 1;
+</pre>
 
-      <div class="keypoints" id="k:design">
-        <h3>Summary</h3>
-        <ul>
-          <li idea="modelview">Each field in a database table should store a single atomic value.</li>
-          <li idea="modelview">No fact in a database should ever be duplicated.</li>
-        </ul>
-      </div>
+    <p class="continue">
+      but that's not legal SQL&mdash;we can't use
+      an aggregated value in our <code>WHERE</code> clause,
+      because <code>WHERE</code> is applied row-by-row before aggregation happens.
+    </p>
 
-    </section>
+    <p>
+      Instead, let's join the <code>Experiments</code> table to itself.
+      We will give each copy of the table an alias,
+      so that we can tell which values came from which copy:
+    </p>
 
+<pre src="src/db/self_join_all.sql">
+SELECT * FROM Experiments a JOIN Experiments b;
+</pre>
 
+    <p>
+      The result has 64 rows, a few of which are shown below:
+    </p>
+
+    <table class="outlined">
+      <tr>
+        <td><strong>a.PersonID</strong></td>
+        <td><strong>a.Project</strong></td>
+        <td><strong>a.Hours</strong></td>
+        <td><strong>b.PersonID</strong></td>
+        <td><strong>b.Project</strong></td>
+        <td><strong>b.Hours</strong></td>
+      </tr>
+      <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
+      <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
+      <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
+      <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
+      <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
+      <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
+      <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
+      <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
+      <tr><td>skol</td><td>Teleportation</td><td>11.0</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
+      <tr><td>skol</td><td>Teleportation</td><td>11.0</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
+      <tr><td align="center">&hellip;</td><td align="center">&hellip;</td><td align="center">&hellip;</td><td align="center">&hellip;</td><td align="center">&hellip;</td><td align="center">&hellip;</td></tr>
+      <tr><td>mlom</td><td>Antigravity</td><td>4.0</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
+      <tr><td>mlom</td><td>Antigravity</td><td>4.0</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
+      <tr><td align="center">&hellip;</td><td align="center">&hellip;</td><td align="center">&hellip;</td><td align="center">&hellip;</td><td align="center">&hellip;</td><td align="center">&hellip;</td></tr>
+    </table>
+
+    <p>
+      Now let's add a <code>WHERE</code> clause to filter out rows
+      that have different <code>PersonID</code> values,
+      i.e.,
+      where we have joined information about one person with information about another:
+    </p>
+
+<pre src="src/db/self_join_personid.sql">
+SELECT * FROM Experiments a JOIN Experiments b WHERE a.PersonID = b.PersonID;
+</pre>
+
+    <table class="outlined">
+      <tr>
+        <td><strong>a.PersonID</strong></td>
+        <td><strong>a.Project</strong></td>
+        <td><strong>a.Hours</strong></td>
+        <td><strong>b.PersonID</strong></td>
+        <td><strong>b.Project</strong></td>
+        <td><strong>b.Hours</strong></td>
+      </tr>
+      <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
+      <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
+      <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
+      <tr><td>skol</td><td>Teleportation</td><td>11.0</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
+      <tr><td>skol</td><td>Teleportation</td><td>11.0</td><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
+      <tr><td>skol</td><td>Teleportation</td><td>11.0</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
+      <tr><td>skol</td><td>Teleportation</td><td>5.0</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
+      <tr><td>skol</td><td>Teleportation</td><td>5.0</td><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
+      <tr><td>skol</td><td>Teleportation</td><td>5.0</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
+      <tr><td>mlom</td><td>Antigravity</td><td>4.0</td><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
+      <tr><td>mlom</td><td>Antigravity</td><td>4.0</td><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
+      <tr><td>mlom</td><td>Time Travel</td><td>-2.0</td><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
+      <tr><td>mlom</td><td>Time Travel</td><td>-2.0</td><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
+      <tr><td>dmen</td><td>Antigravity</td><td>9.0</td><td>dmen</td><td>Antigravity</td><td>9.0</td></tr>
+      <tr><td>ipav</td><td>Teleportation</td><td>9.0</td><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
+      <tr><td>ipav</td><td>Teleportation</td><td>9.0</td><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
+      <tr><td>ipav</td><td>Time Travel</td><td>-7.0</td><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
+      <tr><td>ipav</td><td>Time Travel</td><td>-7.0</td><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
+    </table>
+
+    <p>
+      Now let's add another clause to our <code>WHERE</code>
+      to get rid of records where the two project names are the same:
+    </p>
+
+<pre src="src/db/self_join_project.sql">
+SELECT * FROM Experiments a JOIN Experiments b
+WHERE (a.PersonID = b.PersonID) AND (a.Project != b.Project);
+</pre>
+
+    <table class="outlined">
+      <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>skol</td><td>Teleportation</td><td>5.0</td></tr>
+      <tr><td>skol</td><td>Antigravity</td><td>6.5</td><td>skol</td><td>Teleportation</td><td>11.0</td></tr>
+      <tr><td>skol</td><td>Teleportation</td><td>11.0</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
+      <tr><td>skol</td><td>Teleportation</td><td>5.0</td><td>skol</td><td>Antigravity</td><td>6.5</td></tr>
+      <tr><td>mlom</td><td>Antigravity</td><td>4.0</td><td>mlom</td><td>Time Travel</td><td>-2.0</td></tr>
+      <tr><td>mlom</td><td>Time Travel</td><td>-2.0</td><td>mlom</td><td>Antigravity</td><td>4.0</td></tr>
+      <tr><td>ipav</td><td>Teleportation</td><td>9.0</td><td>ipav</td><td>Time Travel</td><td>-7.0</td></tr>
+      <tr><td>ipav</td><td>Time Travel</td><td>-7.0</td><td>ipav</td><td>Teleportation</td><td>9.0</td></tr>
+    </table>
+
+    <p>
+      This may not seem like progress,
+      but we have almost answered our original question.
+      Each of these records represents the fact that some person has worked on two different projects.
+      Putting it another way,
+      if someone has only ever worked on one project (or hasn't worked on any projects at all),
+      their ID will not appear in any record in this set.
+      To get the list of names of people who have worked on two or more projects,
+      therefore,
+      all we have to do is display either <code>a.PersonID</code> or <code>b.PersonID</code>
+      (and eliminate duplicates using <code>DISTINCT</code>).
+      We will split our final query across several lines to make it easier to read,
+      and use an <code>ORDER BY</code> to ensure that our results are sorted:
+    </p>
+
+<pre src="src/db/self_join_final.sql">
+SELECT DISTINCT a.PersonID
+FROM            Experiments a JOIN Experiments b
+WHERE           (a.PersonID = b.PersonID) AND (a.Project != b.Project)
+ORDER BY        a.PersonID ASC;
+</pre>
+
+    <table class="outlined">
+      <tr>
+        <td>ipav</td>
+      </tr>
+      <tr>
+        <td>mlom</td>
+      </tr>
+      <tr>
+        <td>skol</td>
+      </tr>
+    </table>
+
+    <p>
+      If you hang around programmers long enough,
+      you will eventually hear someone call this trick "intuitive".
+      They are using that word the way certain mathematicians use "obvious":
+      it means,
+      "You only have to read the proof a couple of times to get it."
+      There actually is a rich mathematical theory underneath SQL,
+      and if you immerse yourself in that theory,
+      tricks like joining a table to itself do eventually seem obvious.
+      For the rest of us, though,
+      it's enough to learn this pattern
+      and recognize when it should be used.
+    </p>
+  </section>
+
+  <section id="s:db:nested">
+    <h3>Nested Queries</h3>
+
+    <p>
+      Let's switch back to the <code>Experiments</code> table that doesn't contain <code>NULL</code>s.
+      How do we find scientists who have <em>not</em> been working on time travel?
+      Our first guess might be:
+    </p>
+
+<pre src="src/db/select_not_time_travel_flawed.sql">
+SELECT DISTINCT PersonID FROM Experiments WHERE Project != "Time Travel";
+</pre>
+
+    <p>
+      Unfortunately, this doesn't give us what we want.
+      <code>ivan</code> and <code>skol</code> have both worked both on Time Travel,
+      but show up in the results:
+    </p>
+
+    <table class="outlined">
+      <tr><td>dmen</td></tr>
+      <tr><td>ipav</td></tr>
+      <tr><td>mlom</td></tr>
+      <tr><td>skol</td></tr>
+    </table>
+
+    <p>
+      Let's think this through.
+      There are scientists who have worked on Time Travel,
+      scientists who have only worked on other projects,
+      and scientists who have done both.
+      Our query returns all of the scientists who have worked on projects other than Time Travel,
+      but that includes ones who have worked on Time Travel <em>and</em> other projects
+      (<a href="#f:venn_time_travel">Figure XXX</a>).
+    </p>
+
+    <figure id="f:venn_time_travel">
+      <img src="img/db/venn_time_travel.png" alt="Scientists and Time Travel" />
+      <figcaption>Scientists and Time Travel</figcaption>
+    </figure>
+
+    <p>
+      The trick to answering this question&mdash;and it <em>is</em> a trick&mdash;is
+      to subtract those scientists who <em>have</em> worked on Time Travel
+      (i.e., the ones we <em>don't</em> want)
+      from the set of all scientists.
+      To do this,
+      we will need to use a <a href="glossary.html#nested-query">nested query</a>
+      (also called a <a href="glossary.html#subquery">subquery</a>).
+    </p>
+
+    <p>
+      Let's work up to it in stages.
+      Finding all of the scientists is easy:
+    </p>
+
+<pre>
+SELECT DISTINCT PersonID FROM Experiments;
+</pre>
+
+    <p class="continue">
+      If we knew in advance which scientists we didn't want,
+      we could use <code>NOT IN</code> to subtract a fixed set,
+      like this:
+    </p>
+
+<pre>
+SELECT DISTINCT PersonID FROM Experiment WHERE PersonID NOT IN ('ivan', 'skol');
+</pre>
+
+    <p class="continue">
+      We don't actually know which scientists who have worked on Time Travel,
+      but we can generate it with this query:
+    </p>
+
+<pre src="src/db/time_travel_subquery.sql">
+SELECT DISTINCT PersonID FROM Experiment WHERE Project = "Time Travel";
+</pre>
+
+    <p>
+      What we want to do is somehow use the result of the second query in the first.
+      SQL allows us to do exactly this,
+      i.e.,
+      to nest one query inside another so that we can use the results of the nested query
+      in the filter conditions of the main query.
+      Here's what it looks like:
+    </p>
+
+<pre src="src/db/select_nested_subtract.sql">
+SELECT DISTINCT PersonID FROM Experiments WHERE PersonID NOT IN
+       (SELECT DISTINCT PersonID FROM Experiments WHERE Project = "Time Travel");
+</pre>
+
+<table class="outlined">
+  <tr><td>dmen</td></tr>
+  <tr><td>skol</td></tr>
+</table>
+
+    <p>
+      We can read this query as saying,
+      "Fetch all of the scientists who have done experiments,
+      except for the ones that appear in the list of scientists who have worked on Time Travel".
+      It isn't intuitive,
+      but the pattern is easy to learn,
+      and very useful.
+    </p>
+
+    <p>
+      Nested queries can also be used as if they were tables in their own right.
+      For example,
+      suppose we want to know how many different projects each scientist has worked on.
+      We can begin by finding the distinct list of projects for scientist like this:
+    </p>
+
+<pre>
+SELECT DISTINCT PersonID, Project FROM Experiments;
+</pre>
+
+    <p>
+      Now we want to count how many results there are for each scientist.
+      Since counting is an aggregation,
+      we need to use the results of this query as input for another query that does the aggregation.
+      We can do this by wrapping the first query in parentheses
+      and putting it in the <code>FROM</code> clause of the second query:
+    </p>
+
+<pre>
+&hellip;
+FROM (SELECT DISTINCT PersonID, Project FROM Experiments);
+</pre>
+
+    <p class="continue">
+      The next step is to write the outer query.
+      We want the scientist, and count of their projects:
+    </p>
+
+<pre>
+SELECT PersonID, COUNT(*)
+FROM   (SELECT DISTINCT PersonID, Project FROM Experiments);
+</pre>
+
+    <p class="continue">
+      and since we want the count for each scientists,
+      we have to add a <code>GROUP&nbsp;BY</code> for the outer query.
+      The whole thing is therefore:
+    </p>
+
+<pre src="src/db/nested_query_group_by.sql">
+SELECT   PersonID, COUNT(*)
+FROM     (SELECT DISTINCT PersonID, Project FROM Experiments)
+GROUP BY PersonID;
+</pre>
+
+    <table class="outlined">
+      <tr><td>dmen</td><td>1</td></tr>
+      <tr><td>ipav</td><td>2</td></tr>
+      <tr><td>mlom</td><td>2</td></tr>
+      <tr><td>skol</td><td>2</td></tr>
+    </table>
+
+    <p>
+      Nesting queries like this is really useful
+      if the data we want isn't present in exactly the right form in the database.
+      We can use one query to get the data in the form we need it in,
+      and then wrap another query around it to get the answer we originally wanted.
+    </p>
+  </section>
+</section>
 {% endblock content %}
