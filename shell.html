@@ -134,29 +134,23 @@
   </p>
 
   <p>
-    The three biggest problems we have when teaching the shell are:
+    All of this material can be covered in <span class="duration">three hours</span>
+    as long as learners using Windows do not run into roadblocks such as:
   </p>
 
-  <ol>
+  <ul>
     <li>
-      Many people arrive knowing everything we're going to teach and more.
-      We can keep them engaged by having them help people beside them,
-      and by reiterating the philosophical parts of the presentation
-      (e.g., "save history and edit to create a shell script").
+      not being able to figure out where their home directory is
+      (particularly if they're using Cygwin);
     </li>
     <li>
-      We have to leave out many important things because of time constraints,
-      including file permissions, job control, and SSH.
-      If learners already understand the basic material,
-      this can be covered instead using the online lessons as guidelines.
+      not being able to run a plain text editor;
+      and
     </li>
     <li>
-      Installing Bash and a reasonable set of Unix commands on Windows
-      always involves some fiddling and frustration.
-      Please see the latest set of installation guidelines for advice,
-      and try it out yourself <em>before</em> teaching a class.
+      the shell refusing to run scripts that include DOS line endings.
     </li>
-  </ol>
+  </ul>
 
   <div class="prereq">
     <h3>Prerequisites</h3>
@@ -242,6 +236,24 @@
         and then retroactively decide which are worth encapsulating
         for future re-use.
       </li>
+      <li>
+        Many people arrive knowing everything we're going to teach and more.
+        We can keep them engaged by having them help people beside them,
+        and by reiterating the philosophical parts of the presentation
+        (e.g., "save history and edit to create a shell script").
+      </li>
+      <li>
+        We have to leave out many important things because of time constraints,
+        including file permissions, job control, and SSH.
+        If learners already understand the basic material,
+        this can be covered instead using the online lessons as guidelines.
+      </li>
+      <li>
+        Installing Bash and a reasonable set of Unix commands on Windows
+        always involves some fiddling and frustration.
+        Please see the latest set of installation guidelines for advice,
+        and try it out yourself <em>before</em> teaching a class.
+      </li>
     </ul>
   </div>
 
@@ -256,6 +268,9 @@
       <li>Draw a diagram to show how the shell relates to the keyboard, the screen, the operating system, and users' programs.</li>
       <li>Explain when and why command-line interfaces should be used instead of graphical interfaces.</li>
     </ul>
+    <p>
+      <span class="duration">10 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -421,6 +436,10 @@
       <li>Identify the actual command, flags, and filenames in a command-line call.</li>
       <li>Demonstrate the use of tab completion, and explain its advantages.</li>
     </ul>
+    <p>
+      <span class="duration">15 minutes</span>
+      (longer if people have trouble getting an editor to work).
+    </p>
   </div>
 
   <p>
@@ -1076,6 +1095,9 @@ $ <span class="in">ls my\ thesis\ files</span>
       <li>Display the contents of a directory using the command line.</li>
       <li>Delete specified files and/or directories.</li>
     </ul>
+    <p>
+      <span class="duration">10 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -1605,6 +1627,9 @@ $ <span class="in">cp intro.txt methods.txt survey.txt</span>
       <li>Explain what usually happens if a program or pipeline isn't given any input to process.</li>
       <li>Explain Unix's "small pieces, loosely joined" philosophy.</li>
     </ul>
+    <p>
+      <span class="duration">20-30 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -2288,6 +2313,9 @@ bear</span>
       <li>Demonstrate how to see what commands have recently been executed.</li>
       <li>Re-run recently executed commands without retyping them.</li>
     </ul>
+    <p>
+      <span class="duration">15-20 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -2907,6 +2935,9 @@ done
       <li>Write a shell script that operates on a set of files defined by the user on the command line.</li>
       <li>Create pipelines that include user-written shell scripts.</li>
     </ul>
+    <p>
+      <span class="duration">15 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -3444,6 +3475,9 @@ echo $*.dat
       <li>Use the output of one command as the command-line parameters to another command.</li>
       <li>Explain what is meant by "text" and "binary" files, and why many common tools don't handle the latter well.</li>
     </ul>
+    <p>
+      <span class="duration">15 minutes</span>.
+    </p>
   </div>
 
   <figure id="f:google_vs_grep">

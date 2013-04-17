@@ -104,6 +104,9 @@
     The material on transactions is more abstract than the rest,
     and should be omitted if <a href="web.html">web programming</a>
     isn't being taught.
+    Overall,
+    this material takes <span class="duration">three hours</span> to present
+    assuming that a short exercise is done with each topic.
   </p>
 
   <div class="prereq">
@@ -185,6 +188,10 @@
       <li>Explain the difference between a field and a record.</li>
       <li>Select specific fields from specific tables, and display them in a specific order.</li>
     </ul>
+    <p>
+      <span class="duration">15 minutes</span>
+      (not including time required to download database file and connect to it)
+    </p>
   </div>
 
   <p>
@@ -546,6 +553,9 @@ select Personal, Family from PERSON;
     <ul>
       <li>Write queries that only display distinct results once.</li>
     </ul>
+    <p>
+      <span class="duration">5 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -696,6 +706,9 @@ $ <span class="in">sqlite3 survey.db 'select person, quant from Survey;' | <em>c
       <li>Build up complex filtering criteria incrementally.</li>
       <li>Explain the logical order in which filtering by field value and displaying fields takes place.</li>
     </ul>
+    <p>
+      <span class="duration">5-10 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -1027,6 +1040,9 @@ select * from Site where (lat &gt; -30) or (lat &lt; 30);
     <ul>
       <li>Write queries that do arithmetic using the values in individual records.</li>
     </ul>
+    <p>
+      <span class="duration">5 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -1262,6 +1278,9 @@ select * from Site where (lat &gt; -30) or (lat &lt; 30);
       <li>Write queries that order results according to calculated values.</li>
       <li>Explain why it is possible to sort records using the values of fields that are not displayed.</li>
     </ul>
+    <p>
+      <span class="duration">5 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -1518,6 +1537,11 @@ select * from Survey where quant='rad' order by taken;
       <li>Explain what atomic and aggregate calculations involving <code>NULL</code> produce, and why.</li>
       <li>Write queries that include or exclude records containing <code>NULL</code>.</li>
     </ul>
+    <p>
+      <span class="duration">10-20 minutes</span>
+      (depending on whether or not the instructor includes an anecdote about
+      what happens when you <em>don't</em> take missing data into account).
+    </p>
   </div>
 
   <p>
@@ -1724,7 +1748,64 @@ select * from Survey where quant='rad' order by taken;
     we need to exclude all the records for which we don't know who did the work.
   </p>
 
-  <div class="keypoints" id="k:null">
+  <div class="box">
+    <h3>What Happens When You Forget</h3>
+
+    <p>
+      Several years ago,
+      I was helping a group who were looking at
+      the spread of drug-resistant tuberculosis (DRTB)
+      in industrialized countries.
+      In particular,
+      they wanted to know if it was spreading faster among less affluent people.
+    </p>
+
+    <p>
+      We tackled the problem by combining two data sets.
+      The first gave us skin and blood test results for DRTB
+      along with patients' postal codes
+      (the only identifying information we were allowed---we didn't even have gender).
+      The second was Canadian census data that gave us
+      median income per postal code.
+      Since a PC is about 300-800 people,
+      we felt justified in joining the first with the second
+      to estimate incomes for people with positive and negative test results.
+    </p>
+
+    <p>
+      To our surprise,
+      we didn't find a correlation between income and infection.
+      We were just about to publish when someone spotted the mistake I'd made.
+    </p>
+
+    <p>
+      Question: Who <em>doesn't</em> have a postal code?
+    </p>
+
+    <p>
+      Answer: Homeless people.
+    </p>
+
+    <p>
+      When I did the join,
+      I was throwing away homeless people,
+      which introduced a statistically significant error in my results.
+      But I couldn't just set the income of anyone without a postal code to zero,
+      because our sample included another set of people without postal codes:
+      16-21 year olds whose addresses were suppressed
+      because they had tested positive for sexually-transmitted diseases.
+    </p>
+
+    <p>
+      At this point the problem is no longer a database issue,
+      but rather a question of statistics.
+      The takeaway is,
+      checking your queries when you're programming is as important as
+      checking your samples when you're doing chemistry.
+    </p>
+  </div>
+
+  <div class="keypoints">
     <h3>Summary</h3>
     <ul>
       <li>Use <code>null</code> in place of missing information.</li>
@@ -1778,6 +1859,9 @@ select * from Visited where dated in ('1927-02-08', null);
       <li>Write queries that combine values group by group.</li>
       <li>Explain what is displayed for <em>unaggregated</em> fields when some fields are aggregated.</li>
     </ul>
+    <p>
+      <span class="duration">10 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -2017,6 +2101,9 @@ William Dyer, Frank Pabodie, Anderson Lake, Valentina Roerich, Frank Danforth
       <li>Group results to be aggregated separately.</li>
       <li>Explain when grouping occurs in the processing pipeline.</li>
     </ul>
+    <p>
+      <span class="duration">5 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -2255,6 +2342,10 @@ group by taken, quant;
       <li>Explain why the <code>tablename.fieldname</code> notation is needed when tables are joined.</li>
       <li>Explain the logical sequence of operations that occurs when two or more tables are joined.</li>
     </ul>
+    <p>
+      <span class="duration">20 minutes</span>
+      (and expect to have to walk through an example step-by-step).
+    </p>
   </div>
 
   <p>
@@ -2559,6 +2650,9 @@ on Site.lat&lt;-49.0 and Site.name=Visited.site and Visited.dated&gt;='1932-00-0
       <li>Write queries that delete specific records from tables.</li>
       <li>Explain what referential integrity is, and how a database can become inconsistent as data is changed.</li>
     </ul>
+    <p>
+      <span class="duration">10 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -2837,6 +2931,9 @@ Taken,Temp
       <li>Explain why database operations sometimes have to be placed ina transaction to ensure correct behavior.</li>
       <li>Explain what it means to commit a transaction.</li>
     </ul>
+    <p>
+      <span class="duration">10 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -3116,6 +3213,9 @@ update Exposure set days = days + 1 where person='lake';
       <li>Explain what an SQL injection attack is.</li>
       <li>Write a program that safely interpolates values into queries.</li>
     </ul>
+    <p>
+      <span class="duration">20 minutes</span>.
+    </p>
   </div>
 
   <p>
