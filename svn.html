@@ -103,14 +103,15 @@
   <div class="understand">
     <h3>Learning Objectives:</h3>
     <ul>
-      <li>Where version control stores information.</li>
-      <li>How to check out a working copy of a repository.</li>
-      <li>How to view the history of changes to a project.</li>
-      <li>Why working copies of different projects should not overlap.</li>
-      <li>How to add files to a project.</li>
-      <li>How to submit changes made locally to a project's master copy.</li>
-      <li>How to update a working copy to get changes made to the master.</li>
-      <li>How to check the status of a working copy.</li>
+      <li>Draw a diagram showing the places version control stores information.</li>
+      <li>Check out a working copy of a repository.</li>
+      <li>View the history of changes to a project.</li>
+      <li>Explain why working copies of different projects should not overlap.</li>
+      <li>Add files to a project.</li>
+      <li>Commit changes made to a working copy to a repository.</li>
+      <li>Update a working copy to get changes from the repository.</li>
+      <li>Compare the current state of a working copy to the last update from the repository, and to the current state of the repository.</li>
+      <li>Explain what "version 123 of <code>xyz.txt</code>" actually means.</li>
     </ul>
   </div>
 
@@ -682,6 +683,56 @@ $ <span class="in">svn diff -r HEAD</span>
 
   </div>
 
+  <div class="box">
+    <h3>Diffing Other Files</h3>
+
+    <p>
+      <code>svn diff</code> mimics the behavior of
+      the Unix <code>diff</code> command,
+      which can be used to compare any two files.
+      Given these two files:
+    </p>
+
+    <table>
+      <tr>
+        <th><code>left.txt</code></th>
+        <th><code>right.txt</code></th>
+      </tr>
+      <tr>
+        <td valign="top">
+<pre>hydrogen
+lithium
+sodium
+magnesium
+rubidium</pre>
+        </td>
+        <td valign="top">
+<pre>hydrogen
+lithium
+beryllium
+sodium
+potassium
+strontium</pre>
+        </td>
+      </tr>
+    </table>
+
+    <p class="continue">
+      <code>diff</code>'s output is:
+    </p>
+<pre>
+$ <span class="in">diff left.txt right.txt</span>
+<span class="out">2a3
+&gt; beryllium
+4,5c5,6
+&lt; magnesium
+&lt; rubidium
+---
+&gt; potassium
+&gt; strontium</span>
+</pre>
+  </div>
+
   <p>
     This is a very common workflow,
     and is the basic heartbeat of most developers' days.
@@ -756,15 +807,47 @@ $ <span class="in">svn diff -r HEAD</span>
 
   <div class="challenges">
     <h3>Challenges</h3>
+
     <ol>
 
       <li>
+        Using the repository URL, user ID, and password provided by the instructor,
+        perform the following actions:
+        <ol>
+          <li>
+            Check out a working copy of the repository.
+          </li>
+          <li>
+            Create a text file called <em>your_id</em>.txt
+            (using your user ID instead of <em>your_id</em>)
+            and write a three-line biography of yourself in it.
+          </li>
+          <li>
+            Add this file to your working copy.
+          </li>
+          <li>
+            Commit your changes to the repository.
+          </li>
+          <li>
+            Update your working copy to get other people's biographies.
+          </li>
+          <li>
+            Examine the change log to see
+            the order in which people added their biographies
+            to the repository.
+          </li>
+        </ol>
       </li>
 
       <li>
+        What does the command <code>svn diff -r 14</code> do?
+        What does it do if there have only been 10 changes to the repository?
       </li>
 
       <li>
+        By default,
+        Unix <code>diff</code> and <code>svn diff</code> compare files line by line.
+        Why doesn't this work for MP3 audio files?
       </li>
 
     </ol>
@@ -1715,28 +1798,27 @@ done
 
     </section>
 
-    <section id="s:summary">
+<section id="s:summary">
+  <h2>Summing Up</h2>
 
-      <h2>Summing Up</h2>
+  <p>
+    Correlation does not imply causality,
+    but there is a very strong correlation between
+    using version control
+    and doing good computational science.
+    There's an equally strong correlation
+    between <em>not</em> using it and either wasting effort or getting things wrong.
+    Today (the middle of 2013),
+    I will not review a paper if the software used in it
+    is not under version control.
+    The work it reports might be interesting,
+    but without the kind of record-keeping that version control provides,
+    there's no way to know exactly what its authors did.
+    Just as importantly,
+    if someone doesn't know enough about computing to use version control,
+    the odds are good that they don't know enough
+    to do the programming right either.
+  </p>
 
-      <p>
-        Correlation does not imply causality,
-        but there is a very strong correlation between
-        using version control
-        and doing good computational science.
-        There's an equally strong correlation
-        between <em>not</em> using it and wasting effort,
-        so today (the middle of 2012),
-        I will not review a paper if the software used in it
-        is not under version control.
-        Its authors' work might be interesting,
-        but without the kind of record-keeping that version control provides,
-        there's no way to know exactly what they did and when.
-        Just as importantly,
-        if someone doesn't know enough about computing to use version control,
-        the odds are good that they don't know enough
-        to do the programming right either.
-      </p>
-
-    </section>
+</section>
 {% endblock content %}
