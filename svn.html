@@ -5,240 +5,260 @@
 {% endblock file_metadata %}
 
 {% block content %}
-    <ol class="toc">
-      <li><a href="#s:basics">Basic Use</a></li>
-      <li><a href="#s:merge">Merging Conflicts</a></li>
-      <li><a href="#s:rollback">Recovering Old Versions</a></li>
-      <li><a href="#s:setup">Setting up a Repository</a></li>
-      <li><a href="#s:provenance">Provenance</a></li>
-      <li><a href="#s:summary">Summing Up</a></li>
-    </ol>
+  <ol class="toc">
+    <li><a href="#s:basics">Basic Use</a></li>
+    <li><a href="#s:merge">Merging Conflicts</a></li>
+    <li><a href="#s:rollback">Recovering Old Versions</a></li>
+    <li><a href="#s:setup">Setting up a Repository</a></li>
+    <li><a href="#s:provenance">Provenance</a></li>
+    <li><a href="#s:summary">Summing Up</a></li>
+  </ol>
+
+<p>
+  Wolfman and Dracula have been hired by Universal Missions
+  (a space services spinoff from Euphoric State University)
+  to figure out where the company should send its next planetary lander.
+  They want to be able to work on the plans at the same time,
+  but they have run into problems doing this in the past.
+  If they take turns,
+  each one will spend a lot of time waiting for the other to finish.
+  On the other hand,
+  if they work on their own copies and email changes back and forth
+  they know that things will be lost, overwritten, or duplicated.
+</p>
+
+<p>
+  The right solution is to use a
+  <a href="glossary.html#version-control-system">version control system</a>
+  to manage their work.
+  Version control is better than mailing files back and forth because:
+</p>
+
+<ol>
+
+  <li>
+    It's hard (but not impossible) to accidentally overlook or overwrite someone's changes,
+    because the version control system highlights them automatically.
+  </li>
+
+  <li>
+    It keeps a record of who made what changes when,
+    so that if people have questions later on,
+    they know who to ask
+    (or blame).
+  </li>
+
+  <li>
+    Nothing that is committed to version control is ever lost.
+    This means it can be used like the "undo" feature in an editor,
+    and since all old versions of files are saved
+    it's always possible to go back in time to see exactly who wrote what on a particular day,
+    or what version of a program was used to generate a particular set of results.
+  </li>
+
+</ol>
+
+<div class="box">
+  <h3>Nothing's Perfekt</h3>
+
+  <p>
+    Version control systems do have one important shortcoming.
+    While it is easy for them to find, display, and merge differences in text files,
+    images, MP3s, PDFs, or Microsoft Word or Excel files aren't stored as text&mdash;they
+    use specialized binary data formats.
+    Most version control systems don't know how to deal with these formats,
+    so all they can say is, "These files differ."
+    Reconciling those differences will probably require use of an auxiliary tool,
+    such as an audio editor
+    or Microsoft Word's "Compare and Merge" utility.
+  </p>
+</div>
+
+<p>
+  The rest of this chapter will explore how to use
+  a popular open source version control system called Subversion.
+</p>
+
+<div class="guide">
+  <h2>For Instructors</h2>
+
+  <p class="fixme">explain</p>
+
+  <div class="prereq">
+    <h3>Prerequisites</h3>
+    <p class="fixme">prereq</p>
+  </div>
+
+  <div class="notes">
+    <h3>Teaching Notes</h3>
+    <ul>
+    </ul>
+  </div>
+
+</div>
+
+<section id="s:basics">
+  <h2>Basic Use</h2>
+
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Where version control stores information.</li>
+      <li>How to check out a working copy of a repository.</li>
+      <li>How to view the history of changes to a project.</li>
+      <li>Why working copies of different projects should not overlap.</li>
+      <li>How to add files to a project.</li>
+      <li>How to submit changes made locally to a project's master copy.</li>
+      <li>How to update a working copy to get changes made to the master.</li>
+      <li>How to check the status of a working copy.</li>
+    </ul>
+  </div>
+
+  <p>
+    A version control system keeps the master copy of a file
+    in a <a href="glossary.html#repository">repository</a>
+    located on a <a href="glossary.html#server">server</a>&mdash;a computer
+    that is never used directly by people,
+    but only by their programs
+    (<a href="#f:repository">Figure 1</a>).
+    No-one ever edits the master copy directly.
+    Instead,
+    Wolfman and Dracula each have a <a href="glossary.html#working-copy">working copy</a>
+    on their own machines.
+    They can each edit their working copies whenever and however they want.
+  </p>
+
+  <figure id="f:repository">
+    <img src="svn/repository.png" alt="Repositories and Working Copies" />
+    <figcaption>Figure 1: Repositories and Working Copies</figcaption>
+  </figure>
+
+  <p id="a:commit">
+    When Wolfman is ready to share his changes with Dracula,
+    he <a href="glossary.html#commit">commits</a> his work to the repository
+    (<a href="#f:workflow">Figure 2</a>).
+    Dracula can then <a href="glossary.html#update">update</a> his working copy
+    to get those changes when he's ready for them.
+    And of course,
+    when Dracula finishes working on something,
+    he can commit and so that Wolfman can update.
+  </p>
+
+  <figure id="f:workflow">
+    <img src="svn/workflow.png" alt="Sharing Files Through Version Control" />
+    <figcaption>Figure 2: Sharing Files Through Version Control</figcaption>
+  </figure>
+
+  <p>
+    If this is all there was to version control,
+    it would be no better than FTP or Dropbox.
+    But what if Dracula and Wolfman change their working copies at the same time?
+    If Wolfman commits first,
+    his changes are simply copied to the repository
+    (<a href="#f:merge_first_commit">Figure 3</a>):
+  </p>
+
+  <figure id="f:merge_first_commit">
+    <img src="svn/merge_first_commit.png" alt="Wolfman Commits First" />
+    <figcaption>Figure 3: Wolfman Commits First</figcaption>
+  </figure>
+
+  <p class="continue">
+    If Dracula now tries to commit something that would overwrite Wolfman's changes
+    the version control system detects the <a href="glossary.html#conflict">conflict</a>,
+    halts the commit,
+    and tells Dracula that there's a problem
+    (<a href="#f:merge_second_commit">Figure 4</a>):
+  </p>
+
+  <figure id="f:merge_second_commit">
+    <img src="svn/merge_second_commit.png" alt="Dracula Has a Conflict" />
+    <figcaption>Figure 4: Dracula Has a Conflict</figcaption>
+  </figure>
+
+  <p class="continue">
+    Dracula must <a href="glossary.html#resolve">resolve</a> that conflict
+    before the version control system will allow him to commit his work.
+    He can accept what Wolfman did,
+    replace it with what he has done,
+    or write something new that combines the two&mdash;that's up to him
+    (<a href="#f:merge_resolve">Figure 5</a>).
+    Once he has cleaned things up, he can go ahead and try committing again.
+    If all of the conflicts have been resolved,
+    the version control will accept it this time.
+  </p>
+
+  <figure id="f:merge_resolve">
+    <img src="svn/merge_resolve.png" alt="Resolving the Conflict" />
+    <figcaption>Figure 5: Resolving the Conflict</figcaption>
+  </figure>
+
+  <div class="box">
+    <h3>Forgiveness vs. Permission</h3>
 
     <p>
-      Suppose that Wolfman and Dracula have been hired by Universal Monsters Inc.
-      to figure out where the company should put its next secret lair.
-      They want to be able to work on the plans at the same time,
-      but they have run into problems doing this in the past.
-      If they take turns,
-      each one will spend a lot of time waiting for the other to finish.
-      On the other hand,
-      if they work on their own copies and email changes back and forth
-      they know that things will be lost, overwritten, or duplicated.
+      Old-fashioned version control systems prevented conflicts from happening
+      by <a href="glossary.html#lock">locking</a> the master copy
+      whenever someone was working on it.
+      This <a href="glossary.html#pessimistic-concurrency">pessimistic</a> strategy
+      guaranteed that a second person (or monster)
+      could never make changes to the same file at the same time,
+      but it also meant that people had to take turns editing files.
     </p>
 
     <p>
-      The right solution is to use a <a href="glossary.html#version-control-system">version control system</a>
-      to manage their work.
-      Version control is better than mailing files back and forth because:
+      Most of today's version control systems use
+      an <a href="glossary.html#optimistic-concurrency">optimistic</a> strategy instead:
+      people are always allowed to edit their working copies,
+      and if a conflict occurs,
+      the version control system helps them sort it out after the fact.
     </p>
+  </div>
 
-    <ol>
+  <p>
+    To see how this actually works,
+    let's assume that the Mummy
+    (Dracula and Wolfman's boss)
+    has already put some notes in a version control repository
+    whose URL is <code>https://universal.software-carpentry.org/monsters</code>.
+    Every repository has an address like this that uniquely identifies the location of the master copy.
+  </p>
 
-      <li>
-        It's hard (but not impossible) to accidentally overlook or overwrite someone's changes,
-        because the version control system highlights them automatically.
-      </li>
-
-      <li>
-        There are no arguments about whose copy is the most up to date.
-      </li>
-
-      <li>
-        Nothing that is committed to version control is ever lost.
-        This means it can be used like the "undo" feature in an editor,
-        and since all old versions of files are saved
-        it's always possible to go back in time to see exactly who wrote what on a particular day,
-        or what version of a program was used to generate a particular set of results.
-      </li>
-
-    </ol>
+  <div class="box">
+    <h3>There's More Than One Way To Do It</h3>
 
     <p>
-      Version control systems do have one important shortcoming.
-      While it is easy for them to find, display, and merge differences in text files,
-      images, MP3s, PDFs, or Microsoft Word or Excel files aren't stored as text&mdash;they
-      use specialized binary data formats.
-      Most version control systems don't know how to deal with these formats,
-      so all they can say is, "These files differ."
-      The rest is up to you.
+      We will drive Subversion from the command line in our examples,
+      but if you prefer using a GUI,
+      there are many for you to choose from.
+      Please see the <a href="ref.html#s:svn:gui">reference</a> for links.
     </p>
+  </div>
 
-    <p>
-      Even with this limitation,
-      version control is one of the most important concepts in this book.
-      The rest of this chapter will explore how to use Subversion,
-      a popular open source version control system.
-    </p>
+  <p>
+    It's Monday morning,
+    and Dracula has just joined the project.
+    In order to get a working copy on his computer,
+    Dracula has to <a href="glossary.html#check-out">check out</a> a copy of the repository.
+    He only has to do this once per project:
+    once he has a working copy,
+    he can update it over and over again to get other people's work.
+  </p>
 
-    <section id="s:basics">
-
-      <h2>Basic Use</h2>
-
-      <div class="understand" id="u:basics">
-        <h3>Understand:</h3>
-        <ul>
-          <li>Where version control stores information.</li>
-          <li>How to check out a working copy of a repository.</li>
-          <li>How to view the history of changes to a project.</li>
-          <li>Why working copies of different projects should not overlap.</li>
-          <li>How to add files to a project.</li>
-          <li>How to submit changes made locally to a project's master copy.</li>
-          <li>How to update a working copy to get changes made to the master.</li>
-          <li>How to check the status of a working copy.</li>
-        </ul>
-      </div>
-
-      <p>
-        A version control system keeps the master copy of a file
-        in a <a href="glossary.html#repository">repository</a>
-        located on a <a href="glossary.html#server">server</a>&mdash;a computer
-        that is never used directly by people,
-        but only by their programs
-        (<a href="#f:repository">Figure XXX</a>).
-        No-one ever edits the master copy directly.
-        Instead,
-        Wolfman and Dracula each have a <a href="glossary.html#working-copy">working copy</a>
-        on their own computer.
-        This lets them make whatever changes they want whenever they want.
-      </p>
-
-      <figure id="f:repository">
-        <img src="svn/repository.png" alt="A Version Control Repository" />
-      </figure>
-
-      <p id="a:commit">
-        As soon Wolfman is ready to share his changes,
-        he <a href="glossary.html#commit">commits</a> his work to the repository
-        (<a href="#f:workflow">Figure XXX</a>).
-        Dracula can then <a href="glossary.html#update">update</a> his working copy to get those changes.
-        And of course,
-        when Dracula finishes working on something,
-        he can commit and then Wolfman can update.
-      </p>
-
-      <figure id="f:workflow">
-        <img src="svn/workflow.png" alt="Version Control Workflow" />
-      </figure>
-
-      <p>
-        But what if Dracula and Wolfman make changes to the same part of their working copies?
-        Old-fashioned version control systems prevented this from happening
-        by <a href="glossary.html#lock">locking</a> the master copy
-        whenever someone was working on it.
-        This <a href="glossary.html#pessimistic-concurrency">pessimistic</a> strategy
-        guaranteed that a second person (or monster)
-        could never make changes to the same file at the same time,
-        but it also meant that people had to take turns.
-      </p>
-
-      <p>
-        Most of today's version control systems use
-        an <a href="glossary.html#optimistic-concurrency">optimistic</a> strategy instead.
-        Nothing is ever locked&mdash;everyone is always allowed to edit their working copy.
-        This means that people can make changes to the same part of the paper,
-        but that's actually fairly uncommon in a well-run project,
-        and when it <em>does</em> happen,
-        the version control system helps people reconcile their changes.
-      </p>
-
-      <p>
-        For example,
-        if Wolfman and Dracula are making changes at the same time,
-        and Wolfman commits first,
-        his changes are simply copied to the repository
-        (<a href="#f:merge_first_commit">Figure XXX</a>):
-      </p>
-
-      <figure id="f:merge_first_commit">
-        <img src="svn/merge_first_commit.png" alt="Wolfman Commits First" />
-      </figure>
-
-      <p class="continue">
-        If Dracula now tries to commit something that would overwrite Wolfman's changes
-        the version control system stops him
-        and points out the <a href="glossary.html#conflict">conflict</a>
-        (<a href="#f:merge_second_commit">Figure XXX</a>):
-      </p>
-
-      <figure id="f:merge_second_commit">
-        <img src="svn/merge_second_commit.png" alt="Dracula Has a Conflict" />
-      </figure>
-
-      <p class="continue">
-        Dracula must <a href="glossary.html#resolve">resolve</a> that conflict
-        before the version control system will allow him to commit his work.
-        He can accept what Wolfman did,
-        replace it with what he has done,
-        or write something new that combines the two&mdash;that's up to him.
-        Once he has fixed things, he can go ahead and commit.
-      </p>
-
-      <p>
-        Let's start by looking at the basic workflow we use
-        when working with a version control system.
-        To keep things simple,
-        we'll assume that the Mummy has already put some notes in a version control repository
-        on the <code>universal.software-carpentry.org</code> server.
-        The full URL for this repository is <code>https://universal.software-carpentry.org/monsters</code>.
-        Every repository has an address like this that uniquely identifies the location of the master copy.
-      </p>
-
-      <p>
-        It's Monday night.
-        In order to get a working copy on his computer,
-        Dracula has to <a href="glossary.html#check-out">check out</a> a copy of the repository.
-        He only has to do this once per project:
-        once he has a working copy,
-        he can update it over and over again to get other people's work:
-      </p>
-
-      <div class="box">
-        <h3>There's More Than One Way To Do It</h3>
-
-        <p>
-          We will drive Subversion from the command line in our examples,
-          but if you prefer using a GUI,
-          there are many for you to choose from:
-        </p>
-
-        <ul>
-
-          <li>
-            <a href="http://tortoisesvn.net/">TortoiseSVN</a>
-            is integrated into the Windows desktop,
-            so there's no separate GUI as such.
-          </li>
-
-          <li>
-            <a href="http://rapidsvn.tigris.org/">RapidSVN</a> is free,
-            and runs on many platforms,
-            but some users report difficulties installing it.
-          </li>
-
-          <li>
-            Syntevo's <a href="http://www.syntevo.com/smartsvn/index.html">SmartSVN</a> isn't free,
-            but it costs less than most textbooks,
-            and is more stable (and has a friendlier interface) than RapidSVN.
-          </li>
-
-        </ul>
-
-      </div>
-
-      <p>
-        While in his home directory,
-        Dracula types the command:
-      </p>
+  <p>
+    While in his home directory,
+    Dracula types the command:
+  </p>
 
 <pre>
 $ <span class="in">svn checkout https://universal.software-carpentry.org/monsters</span>
 </pre>
 
-      <p class="continue">
-        This creates a new directory called <code>monsters</code>
-        and fills it with a copy of the repository's contents
-        (<a href="#f:example_repo">Figure XXX</a>).
-      </p>
+  <p class="continue">
+    This creates a new directory called <code>monsters</code>
+    and fills it with a copy of the repository's contents
+    (<a href="#f:example_repo">Figure 6</a>).
+  </p>
 
 <pre>
 <span class="out">A    monsters/jupiter
@@ -252,14 +272,15 @@ A    monsters/earth/carlsbad.txt
 Checked out revision 6.</span>
 </pre>
 
-      <figure id="f:example_repo">
-        <img src="svn/example_repo.png" alt="Example Repository" />
-      </figure>
+  <figure id="f:example_repo">
+    <img src="svn/example_repo.png" alt="Example Repository" />
+    <figcaption>Figure 6: Example Repository</figcaption>
+  </figure>
 
-      <p class="continue">
-        Dracula can then go into this directory
-        and use regular shell commands to view the files:
-      </p>
+  <p class="continue">
+    Dracula can then go into this directory
+    and use regular shell commands to view the files:
+  </p>
 
 <pre>
 $ <span class="in">cd monsters</span>
@@ -275,18 +296,17 @@ mars:
 cydonia.txt  mons-olympus.txt</span>
 </pre>
 
-      <div class="box">
+    <div class="box">
+      <h3>Don't Let the Working Copies Overlap</h3>
 
-        <h3>Don't Let the Working Copies Overlap</h3>
-
-        <p>
-          It's very important that the working copies of different project do not overlap;
-          in particular,
-          we should never try to check out one project inside a working copy of another project.
-          The reason is that Subversion stories information about
-          the current state of a working copy
-          in special sub-directories called <code>.svn</code>:
-        </p>
+      <p>
+        It's very important that the working copies of different project do not overlap;
+        in particular,
+        we should never try to check out one project inside a working copy of another project.
+        The reason is that Subversion stories information about
+        the current state of a working copy
+        in special sub-directories called <code>.svn</code>:
+      </p>
 
 <pre>
 $ <span class="in">pwd</span>
@@ -297,101 +317,105 @@ $ <span class="in">ls -F .svn</span>
 <span class="out">entries    prop-base/    props/    text-base/    tmp/</span>
 </pre>
 
-        <p class="continue">
-          If two working copies overlap,
-          the files in the <code>.svn</code> directories for one repository
-          will be clobbered by the other repository's <code>.svn</code> files,
-          and Subversion will become hopelessly confused.
-        </p>
-
-      </div>
-
-      <p>
-        Dracula can find out more about the history of the project
-        using Subversion's <code>log</code> command:
+      <p class="continue">
+        If two working copies overlap,
+        the files in the <code>.svn</code> directories for one repository
+        will be clobbered by the other repository's <code>.svn</code> files,
+        and Subversion will become hopelessly confused.
       </p>
+    </div>
+
+  <p>
+    Dracula can find out more about the history of the project
+    using Subversion's <code>log</code> command:
+  </p>
 
 <pre>
 $ <span class="in">svn log</span>
 <span class="out">------------------------------------------------------------------------
 r6 | mummy | 2010-07-26 09:21:10 -0400 (Mon, 26 Jul 2010) | 1 line
 
-Damn the budget---the Jovian moons would be a _perfect_ place for a lair.
+Damn the budget---the Jovian moons would be a _perfect_ place to explore.
 ------------------------------------------------------------------------
 r5 | mummy | 2010-07-26 09:19:39 -0400 (Mon, 26 Jul 2010) | 1 line
 
-The budget might not even stretch to a deep-sea lair... :-(
+The budget might not even stretch to the Arctic :-(
 ------------------------------------------------------------------------
 r4 | mummy | 2010-07-26 09:17:46 -0400 (Mon, 26 Jul 2010) | 1 line
 
-Budget cuts may force us to reconsider Earth as a base.
+Budget cuts may force us to do another dry run in the Arctic.
 ------------------------------------------------------------------------
 r3 | mummy | 2010-07-26 09:14:14 -0400 (Mon, 26 Jul 2010) | 1 line
 
-Converting to wiki-formatted text.
+Converting document to wiki-formatted text.
 ------------------------------------------------------------------------
 r2 | mummy | 2010-07-26 09:11:55 -0400 (Mon, 26 Jul 2010) | 1 line
 
-Hide near the face in Cydonia, perhaps?
+Or put it down near the Face of Cydonia?
 ------------------------------------------------------------------------
 r1 | mummy | 2010-07-26 09:08:23 -0400 (Mon, 26 Jul 2010) | 1 line
 
-Thoughts on Mons Olympus (probably too obvious)
+Send the probe to Mons Olympus?
 ------------------------------------------------------------------------</span>
 </pre>
 
-      <p class="continue">
-        Subversion displays a summary of all the changes made to the project so far.
-        This list includes the
-        <a href="glossary.html#revision-number">revision number</a>,
-        the name of the person who made the change,
-        the date the change was made,
-        and whatever comment the user provided when the change was submitted.
-        As we can see,
-        the <code>monsters</code> project is currently at revision 6,
-        and all changes so far have been made by the Mummy.
-      </p>
+  <p class="continue">
+    Subversion displays a summary of all the changes made to the project so far.
+    This list includes the
+    <a href="glossary.html#revision-number">revision number</a>,
+    the name of the person who made the change,
+    the date the change was made,
+    and whatever comment the user provided when the change was submitted.
+    As we can see,
+    the <code>monsters</code> project is currently at revision 6,
+    and all changes so far have been made by the Mummy.
+  </p>
 
-      <p>
-        Notice how detailed the comments on the updates are.
-        Good comments are as important in version control as they are in coding.
-        Without them, it can be very difficult to figure out who did what, when, and why.
-        We can use comments like "Changed things" and "Fixed it" if we want,
-        or even no comments at all,
-        but we'll only be making more work for our future selves.
-      </p>
+  <p>
+    Notice how detailed the comments on the updates are.
+    Good comments are as important in version control as they are in coding.
+    Without them, it can be very difficult to figure out who did what, when, and why.
+    We can use comments like "Changed things" and "Fixed it" if we want,
+    or even no comments at all,
+    but we'll only be making more work for our future selves.
+  </p>
 
-      <p>
-        Another thing to notice is that the revision number applies to the whole repository,
-        not to a particular file.
-        When we talk about "version 61" we mean
-        "the state of all files and directories at that point."
-        Older version control systems like CVS gave each file a new version number when it was updated,
-        which meant that version 38 of one file could correspond in time to version 17 of another
-        (<a href="#f:version_numbering">Figure XXX</a>).
-        Experience shows that
-        global version numbers that apply to everything in the repository
-        are easier to manage than
-        per-file version numbers,
-        so that's what Subversion uses.
-      </p>
+  <div class="box">
+    <h3>Numbering Versions</h3>
 
-      <figure id="f:version_numbering">
-        <img src="svn/version_numbering.png" alt="Version Numbering in CVS and Subversion" />
-      </figure>
+    <p>
+      Another thing to notice is that the revision number applies to the whole repository,
+      not to a particular file.
+      When we talk about "version 61" we mean
+      "the state of all files and directories at that point."
+      Older version control systems like CVS gave each file a new version number when it was updated,
+      which meant that version 38 of one file could correspond in time to version 17 of another
+      (<a href="#f:version_numbering">Figure 7</a>).
+      Experience shows that
+      global version numbers that apply to everything in the repository
+      are easier to manage than
+      per-file version numbers,
+      so that's what Subversion uses.
+    </p>
 
-      <p>
-        A couple of cubicles away,
-        Wolfman also runs <code>svn checkout</code>
-        to get a working copy of the repository.
-        He also gets version 6,
-        so the files on his machine are the same as the files on Dracula's.
-        While he is looking through the files,
-        Dracula decides to add some information to the repository about Jupiter's moons.
-        Using his favorite editor,
-        he creates a file in the <code>jupiter</code> directory called <code>moons.txt</code>,
-        and fills it with information about Io, Europa, Ganymede, and Callisto:
-      </p>
+    <figure id="f:version_numbering">
+      <img src="svn/version_numbering.png" alt="Version Numbering Schemes" />
+      <figcaption>Figure 7: Version Numbering Schemes</figcaption>
+    </figure>
+  </div>
+
+  <p>
+    A couple of cubicles away,
+    Wolfman also runs <code>svn checkout</code>
+    to get a working copy of the repository.
+    He also gets version 6,
+    so the files on his machine are the same as the files on Dracula's.
+    While he is looking through the files,
+    Dracula decides to add some information to the repository about Jupiter's moons.
+    Using his favorite editor,
+    he creates a file in the <code>jupiter</code> directory called <code>moons.txt</code>,
+    and fills it with information about Io, Europa, Ganymede, and Callisto:
+  </p>
 
 <pre src="svn/moons_initial.txt">
 Name            Orbital Radius  Orbital Period  Mass            Radius
@@ -401,37 +425,37 @@ Ganymede        1070.4          7.154553        1481.9          2631.2
 Calisto         1882.7          16.689018       1075.9          2410.3
 </pre>
 
-      <p>
-        After double-checking his data,
-        he wants to commit the file to the repository so that everyone else on the project can see it.
-        The first step is to add the file to his working copy using <code>svn add</code>:
-      </p>
+  <p>
+    After double-checking his data,
+    he wants to commit the file to the repository so that everyone else on the project can see it.
+    The first step is to add the file to his working copy using <code>svn add</code>:
+  </p>
 
 <pre>
 $ <span class="in">svn add jupiter/moons.txt</span>
 <span class="out">A         jupiter/moons.txt</span>
 </pre>
 
-      <p>
-        Adding a file is not the same as creating it&mdash;he has already done that.
-        Instead,
-        the <code>svn add</code> command tells Subversion to add the file to
-        the list of things it's supposed to manage.
-        It's quite common,
-        particularly in programming projects,
-        to have backup files or intermediate files in a directory
-        that aren't worth storing in the repository.
-        This is why version control requires us to explicitly tell it which files are to be managed.
-      </p>
+  <p>
+    Adding a file is not the same as creating it&mdash;he has already done that.
+    Instead,
+    the <code>svn add</code> command tells Subversion to add the file to
+    the list of things it's supposed to manage.
+    It's quite common,
+    particularly in programming projects,
+    to have backup files or intermediate files in a directory
+    that aren't worth storing in the repository.
+    This is why version control requires us to explicitly tell it which files are to be managed.
+  </p>
 
-      <p>
-        Once he has told Subversion to add the file,
-        Dracula can go ahead and commit his changes to the repository.
-        He uses the <code>-m</code> flag to provide a one-line message explaining what he's doing;
-        if he didn't,
-        Subversion would open his default editor
-        so that he could type in something longer.
-      </p>
+  <p>
+    Once he has told Subversion to add the file,
+    Dracula can go ahead and commit his changes to the repository.
+    He uses the <code>-m</code> flag to provide a one-line message explaining what he's doing;
+    if he didn't,
+    Subversion would open his default editor
+    so that he could type in something longer.
+  </p>
 
 <pre>
 $ <span class="in">svn commit -m "Some basic facts about the Galilean moons of Jupiter." jupiter/moons.txt</span>
@@ -440,40 +464,38 @@ Transmitting file data .
 Committed revision 7.</span>
 </pre>
 
-      <p class="continue">
-        When Dracula runs this command,
-        Subversion establishes a connection to the server,
-        copies over his changes,
-        and updates the revision number from 6 to 7
-        (<a href="#f:updated_repo">Figure XXX</a>).
-        Again,
-        this version number applies to the <em>whole</em> repository,
-        not just to files that have changed.
-      </p>
+  <p>
+    When Dracula runs the <code>svn commit</code> command,
+    Subversion establishes a connection to the server,
+    copies over his changes,
+    and updates the revision number from 6 to 7
+    (<a href="#f:updated_repo">Figure 8</a>).
+  </p>
 
-      <figure id="f:updated_repo">
-        <img src="svn/updated_repo.png" alt="Updated Repository" />
-      </figure>
+  <figure id="f:updated_repo">
+    <img src="svn/updated_repo.png" alt="Updated Repository" />
+    <figcaption>Figure 8: Updated Repository</figcaption>
+  </figure>
 
-      <p id="a:define-head">
-        Back in his cubicle,
-        Wolfman uses <code>svn update</code> to update his working copy.
-        It tells him that a new file has been added
-        and brings his working copy up to date with version 7 of the repository,
-        because this is now the most recent revision
-        (also called the <a href="glossary.html#head">head</a>).
-        <code>svn update</code> updates an existing working copy,
-        rather than checking out a new one.
-        While <code>svn checkout</code> is usually only run once per project per machine,
-        <code>svn update</code> may be run many times a day.
-      </p>
+  <p id="a:define-head">
+    Back in his cubicle,
+    Wolfman uses <code>svn update</code> to update his working copy.
+    It tells him that a new file has been added
+    and brings his working copy up to date with version 7 of the repository,
+    because this is now the most recent revision
+    (also called the <a href="glossary.html#head">head</a>).
+    <code>svn update</code> updates an existing working copy,
+    rather than checking out a new one.
+    While <code>svn checkout</code> is usually only run once per project per machine,
+    <code>svn update</code> may be run many times a day.
+  </p>
 
-      <p>
-        Looking in the new file <code>jupiter/moons.txt</code>,
-        Wolfman notices that Dracula has misspelled "Callisto"
-        (it is supposed to have two L's.)
-        Wolfman edits that line of the file:
-      </p>
+  <p>
+    Looking in the new file <code>jupiter/moons.txt</code>,
+    Wolfman notices that Dracula has misspelled "Callisto"
+    (it is supposed to have two L's.)
+    Wolfman edits that line of the file:
+  </p>
 
 <pre src="svn/moons_spelling.txt">
 Name            Orbital Radius  Orbital Period  Mass            Radius
@@ -483,10 +505,11 @@ Ganymede        1070.4          7.154553        1481.9          2631.2
 <span class="highlight">Callisto        1882.7          16.689018       1075.9          2410.3</span>
 </pre>
 
-      <p class="continue">
-        He also adds a line about Amalthea,
-        which he thinks might be a good site for a secret lair despite its small size:
-      </p>
+  <p class="continue">
+    He also adds a line about Amalthea,
+    which he thinks might be an interesting place to send a probe
+    despite its small size:
+  </p>
 
 <pre src="svn/moons_amalthea.txt">
 Name            Orbital Radius  Orbital Period  Mass            Radius
@@ -497,20 +520,21 @@ Ganymede        1070.4          7.154553        1481.9          2631.2
 Callisto        1882.7          16.689018       1075.9          2410.3
 </pre>
 
-      <p class="continue">
-        uses the <code>svn status</code> command to check that he hasn't accidentally changed anything else:
-      </p>
+  <p>
+    Next,
+    he uses the <code>svn status</code> command to check that he hasn't accidentally changed anything else:
+  </p>
 
 <pre>
 $ <span class="in">svn status</span>
 <span class="out">M       jupiter/moons.txt</span>
 </pre>
 
-      <p class="continue">
-        and then runs <code>svn commit</code>.
-        Since has hasn't used the <code>-m</code> flag to provide a message on the command line,
-        Subversion launches his default editor and shows him:
-      </p>
+  <p class="continue">
+    and then runs <code>svn commit</code>.
+    Since has hasn't used the <code>-m</code> flag to provide a message on the command line,
+    Subversion launches his default editor and shows him:
+  </p>
 
 <pre>
 
@@ -519,9 +543,9 @@ $ <span class="in">svn status</span>
 M    jupiter/moons.txt
 </pre>
 
-      <p>
-        He changes this to be
-      </p>
+  <p>
+    He changes this to be
+  </p>
 
 <pre>
 1. Fixed typo in moon's name: 'Calisto' -> 'Callisto'.
@@ -531,10 +555,10 @@ M    jupiter/moons.txt
 M    jupiter/moons.txt
 </pre>
 
-      <p class="continue">
-        When he saves this temporary file and exits the editor,
-        Subversion commits his changes:
-      </p>
+  <p class="continue">
+    When he saves this temporary file and exits the editor,
+    Subversion commits his changes:
+  </p>
 
 <pre>
 <span class="out">Sending        jupiter/moons.txt
@@ -542,57 +566,65 @@ Transmitting file data .
 Committed revision 8.</span>
 </pre>
 
-      <p class="continue">
-        Note that since Wolfman didn't specify a particular file to commit,
-        Subversion commits <em>all</em> of his changes.
-        This is why he ran the <code>svn status</code> command first.
-      </p>
+  <p class="continue">
+    Note that since Wolfman didn't specify a particular file to commit,
+    Subversion commits <em>all</em> of his changes.
+    This is why he ran the <code>svn status</code> command first.
+  </p>
 
-      <div class="box" id="b:basics:transaction">
+  <div class="box">
+    <h3>Which Editor?</h3>
+    <p>
+      If you don't have a default editor set up,
+      Subversion will probably open an editor called Vi.
+      If this happens,
+      type escape-colon-w-q-! to exit
+      and hope it never happens again.
+    </p>
+  </div>
 
-        <h3>Working With Multiple Files</h3>
+  <div class="box" id="b:basics:transaction">
+    <h3>Working With Multiple Files</h3>
 
-        <p>
-          Our example only includes one file,
-          but version control can work on any number of files at once.
-          For example,
-          if Wolfman noticed that a dozen data files had the same incorrect header,
-          he could change it in all 12 files,
-          then commit all those changes at once.
-          This is actually the best way to work:
-          every logical change to the project should be a single commit,
-          and every commit should include everything involved in one logical change.
-        </p>
+    <p>
+      Our example only includes one file,
+      but version control can work on any number of files at once.
+      For example,
+      if Wolfman noticed that a dozen data files had the same incorrect header,
+      he could change it in all 12 files,
+      then commit all those changes at once.
+      This is actually the best way to work:
+      every logical change to the project should be a single commit,
+      and every commit should include everything involved in one logical change.
+    </p>
 
-      </div>
+  </div>
 
-      <p>
-        That night,
-        when Dracula rises from his coffin to start work,
-        the first thing he wants to do is get Wolfman's changes.
-        Before updating his working copy with <code>svn update</code>,
-        though,
-        he wants to see the differences between what he has
-        and what he <em>will</em> have if he updates.
-        To do this,
-        Dracula uses <code>svn diff</code>.
-        When run without arguments,
-        it compares what's in his working copy to what he started with,
-        and shows no differences:
-      </p>
+  <p>
+    That night,
+    Dracula wants to synchronize with Wolfman's work.
+    Before updating his working copy with <code>svn update</code>,
+    though,
+    he checks to see if he has made any changes locally
+    by running <code>svn diff</code>.
+    Without arguments,
+    it compares what's in his working copy to what he got the last time he updated.
+    There are no differences,
+    so there's no output:
+  </p>
 
 <pre>
 $ <span class="in">svn diff</span>
 $
 </pre>
 
-      <p class="continue">
-        To compare his working copy to the master,
-        Dracula uses <code>svn diff -r HEAD</code>.
-        The <code>-r</code> flag is used to specify a revision,
-        while <code>HEAD</code> means
-        "<a href="#a:define-head">the latest version of the master</a>".
-      </p>
+  <p class="continue">
+    To compare his working copy to the master,
+    Dracula uses <code>svn diff -r HEAD</code>.
+    The <code>-r</code> flag is used to specify a revision,
+    while <code>HEAD</code> means
+    "<a href="#a:define-head">the latest version of the master</a>".
+  </p>
 
 <pre>
 $ <span class="in">svn diff -r HEAD</span>
@@ -609,123 +641,136 @@ $ <span class="in">svn diff -r HEAD</span>
 </span>
 </pre>
 
-      <p class="continue">
-        After looking over the changes,
-        Dracula goes ahead and does the update.
-      </p>
+  <p class="continue">
+    After looking over the changes,
+    Dracula goes ahead and does the update.
+  </p>
 
-      <div class="box">
-        <h3>Reading a Diff</h3>
+  <div class="box">
+    <h3>Reading a Diff</h3>
 
-        <p>
-          The output of <code>diff</code> isn't particularly user-friendly,
-          but actually isn't that hard to figure out.
-          The first two lines:
-        </p>
+    <p>
+      The output of <code>diff</code> is cryptic even by Unix standards.
+      The first two lines:
+    </p>
 
 <pre>
 --- moons.txt(revision 9)
 +++ moons.txt(working copy)
 </pre>
 
-        <p class="continue">
-          signal that '-' will be used to show content from revision 9
-          and '+' to show content from the user's working copy.
-          The next line, with the '@' markers,
-          indicates where lines were inserted or removed.
-          This isn't really intended for human consumption:
-          a variety of other software tools will use this information.
-        </p>
+    <p class="continue">
+      signal that '-' will be used to show content from revision 9
+      and '+' to show content from the user's working copy.
+      The next line, with the '@' markers,
+      indicates where lines were inserted or removed.
+      This isn't really intended for human consumption:
+      editors and other tools can use this information
+      to replay a series of edits against a file.
+    </p>
 
-        <p>
-          The most important parts of what follows are the lines marked with '+' and '-',
-          which show insertions and deletions respectively.
-          Here,
-          we can see that the line for Amalthea was inserted,
-          and that the line for Callisto was changed
-          (which is indicated by an add and a delete right next to one another).
-          Many editors and other tools can display diffs like this in a two-column display,
-          highlighting changes.
-        </p>
+    <p>
+      The most important parts of what follows are the lines marked with '+' and '-',
+      which show insertions and deletions respectively.
+      Here,
+      we can see that the line for Amalthea was inserted,
+      and that the line for Callisto was changed
+      (which is indicated by an add and a delete right next to one another).
+      Many editors and other tools can display diffs like this in a two-column display,
+      highlighting changes.
+    </p>
 
-      </div>
+  </div>
 
-      <p>
-        This is a very common workflow,
-        and is the basic heartbeat of most developers' days.
-        To recap,
-        the steps are:
-      </p>
+  <p>
+    This is a very common workflow,
+    and is the basic heartbeat of most developers' days.
+    The steps are:
+  </p>
 
-      <ol>
+  <ol>
 
-        <li>
-          Check to see if there are changes in the repository to download.
-        </li>
+    <li>
+      Update our working copy
+      so that we have any changes other people have committed.
+    </li>
 
-        <li>
-          Update our working copy with those changes.
-        </li>
+    <li>
+      Do our own work.
+    </li>
 
-        <li>
-          Do our own work.
-        </li>
+    <li>
+      Commit our changes to the repository
+      so that other people can get them.
+    </li>
 
-        <li>
-          Commit our changes to the repository so that other people can get them.
-        </li>
+  </ol>
 
-      </ol>
+  <p>
+    It's worth noticing here how important Wolfman's comments about his changes were.
+    It's hard to see the difference between "Calisto" with one 'L' and "Callisto" with two,
+    even if the line containing the difference has been highlighted.
+    Without Wolfman's comments,
+    Dracula might have wasted time wondering what the difference was.
+  </p>
 
-      <p>
-        It's worth noticing here how important Wolfman's comments about his changes were.
-        It's hard to see the difference between "Calisto" with one 'L' and "Callisto" with two,
-        even if the line containing the difference has been highlighted.
-        Without Wolfman's comments,
-        Dracula might have wasted time wondering what the difference was.
-      </p>
+  <p>
+    In fact,
+    Wolfman should probably have committed his two changes separately,
+    since there's no logical connection between
+    fixing a typo in Callisto's name
+    and adding information about Amalthea to the same file.
+    Just as a function or program should do one job and one job only,
+    a single commit to version control should have a single logical purpose so that it's easier to find,
+    understand,
+    and if necessary undo later on.
+  </p>
 
-      <p>
-        In fact,
-        Wolfman should probably have committed his two changes separately,
-        since there's no logical connection between
-        fixing a typo in Callisto's name
-        and adding information about Amalthea to the same file.
-        Just as a function or program should do one job and one job only,
-        a single commit to version control should have a single logical purpose so that it's easier to find,
-        understand,
-        and if necessary undo later on.
-      </p>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Version control is a better way to manage shared files than email or shared folders.</li>
+      <li>The master copy is stored in a repository.</li>
+      <li>Nobody ever edits the master directory: instead, each person edits a local working copy.</li>
+      <li>People share changes by committing them to the master or updating their local copy from the master.</li>
+      <li>The version control system prevents people from overwriting each other's work by forcing them to merge concurrent changes before committing.</li>
+      <li>It also keeps a complete history of changes made to the master so that old versions can be recovered reliably.</li>
+      <li>Version control systems work best with text files, but can also handle binary files such as images and Word documents.</li>
+      <li>Every repository is identified by a URL.</li>
+      <li>Working copies of different repositories may not overlap.</li>
+      <li>Each changed to the master copy is identified by a unique revision number.</li>
+      <li>Revisions identify snapshots of the entire repository, not changes to individual files.</li>
+      <li>Each change should be commented to make the history more readable.</li>
+      <li>Commits are transactions: either all changes are successfully committed, or none are.</li>
+      <li>The basic workflow for version control is update-change-commit.</li>
+      <li><code>svn add <em>things</em></code> tells Subversion to start managing particular files or directories.</li>
+      <li><code>svn checkout <em>url</em></code> checks out a working copy of a repository.</li>
+      <li><code>svn commit -m "<em>message</em>" <em>things</em></code> sends changes to the repository.</li>
+      <li><code>svn diff</code> compares the current state of a working copy to the state after the most recent update.</li>
+      <li><code>svn diff -r HEAD</code> compares the current state of a working copy to the state of the master copy.</li>
+      <li><code>svn history</code> shows the history of a working copy.</li>
+      <li><code>svn status</code> shows the status of a working copy.</li>
+      <li><code>svn update</code> updates a working copy from the repository.</li>
+    </ul>
+  </div>
 
-      <div class="keypoints" id="k:basics">
-        <h3>Summary</h3>
-        <ul>
-          <li>Version control is a better way to manage shared files than email or shared folders.</li>
-          <li>The master copy is stored in a repository.</li>
-          <li>Nobody ever edits the master directory: instead, each person edits a local working copy.</li>
-          <li>People share changes by committing them to the master or updating their local copy from the master.</li>
-          <li idea="paranoia">The version control system prevents people from overwriting each other's work by forcing them to merge concurrent changes before committing.</li>
-          <li idea="perf">It also keeps a complete history of changes made to the master so that old versions can be recovered reliably.</li>
-          <li>Version control systems work best with text files, but can also handle binary files such as images and Word documents.</li>
-          <li>Every repository is identified by a URL.</li>
-          <li>Working copies of different repositories may not overlap.</li>
-          <li>Each changed to the master copy is identified by a unique revision number.</li>
-          <li>Revisions identify snapshots of the entire repository, not changes to individual files.</li>
-          <li idea="perf">Each change should be commented to make the history more readable.</li>
-          <li>Commits are transactions: either all changes are successfully committed, or none are.</li>
-          <li>The basic workflow for version control is update-change-commit.</li>
-          <li><code>svn add <em>things</em></code> tells Subversion to start managing particular files or directories.</li>
-          <li><code>svn checkout <em>url</em></code> checks out a working copy of a repository.</li>
-          <li><code>svn commit -m "<em>message</em>" <em>things</em></code> sends changes to the repository.</li>
-          <li><code>svn diff</code> compares the current state of a working copy to the state after the most recent update.</li>
-          <li><code>svn diff -r HEAD</code> compares the current state of a working copy to the state of the master copy.</li>
-          <li><code>svn history</code> shows the history of a working copy.</li>
-          <li><code>svn status</code> shows the status of a working copy.</li>
-          <li><code>svn update</code> updates a working copy from the repository.</li>
-        </ul>
-      </div>
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <ol>
 
-    </section>
+      <li>
+      </li>
+
+      <li>
+      </li>
+
+      <li>
+      </li>
+
+    </ol>
+  </div>
+
+</section>
 
     <section id="s:merge">
 
