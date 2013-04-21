@@ -182,7 +182,7 @@
   <h2>Selecting</h2>
 
   <div class="understand">
-    <h3>Learning Objectives:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Explain the difference between a table, a database, and a database manager.</li>
       <li>Explain the difference between a field and a record.</li>
@@ -549,7 +549,7 @@ select Personal, Family from PERSON;
   <h2>Removing Duplicates</h2>
 
   <div class="understand">
-    <h3>Learning Objectives:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Write queries that only display distinct results once.</li>
     </ul>
@@ -699,7 +699,7 @@ $ <span class="in">sqlite3 survey.db 'select person, quant from Survey;' | <em>c
   <h2>Filtering</h2>
 
   <div class="understand">
-    <h3>Learning Objectives:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Write queries that select records based on the values of their fields.</li>
       <li>Write queries that select records using combinations of several tests on their fields' values.</li>
@@ -1036,7 +1036,7 @@ select * from Site where (lat &gt; -30) or (lat &lt; 30);
   <h2>Calculating New Values</h2>
 
   <div class="understand">
-    <h3>Learning Objectives:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Write queries that do arithmetic using the values in individual records.</li>
     </ul>
@@ -1272,7 +1272,7 @@ select * from Site where (lat &gt; -30) or (lat &lt; 30);
   <h2>Ordering Results</h2>
 
   <div class="understand">
-    <h3>Learning Objectives:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Write queries that order results according to fields' values.</li>
       <li>Write queries that order results according to calculated values.</li>
@@ -1530,7 +1530,7 @@ select * from Survey where quant='rad' order by taken;
   <h2>Missing Data</h2>
 
   <div class="understand">
-    <h3>Learning Objectives:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Explain what databases use the special value <code>NULL</code> to represent.</li>
       <li>Explain why databases should <em>not</em> uses their own special values (like 9999 or "N/A") to represent missing or unknown data.</li>
@@ -1852,7 +1852,7 @@ select * from Visited where dated in ('1927-02-08', null);
   <h2>Aggregation</h2>
 
   <div class="understand">
-    <h3>Learning Objectives:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Write queries that combine values from many records to create a single aggregate value.</li>
       <li>Write queries that put records into groups based on their values.</li>
@@ -2096,7 +2096,7 @@ William Dyer, Frank Pabodie, Anderson Lake, Valentina Roerich, Frank Danforth
   <h2>Grouping</h2>
 
   <div class="understand">
-    <h3>Learning Objectives:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Group results to be aggregated separately.</li>
       <li>Explain when grouping occurs in the processing pipeline.</li>
@@ -2334,7 +2334,7 @@ group by taken, quant;
   <h2>Combining Data</h2>
 
   <div class="understand">
-    <h3>Learning Objectives:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Explain what primary keys and foreign keys are.</li>
       <li>Write queries that combine information from two or more tables by matching keys.</li>
@@ -2925,7 +2925,7 @@ Taken,Temp
   <h2>Transactions</h2>
 
   <div class="understand">
-    <h3>Learning Objectives:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Explain what a race condition is.</li>
       <li>Explain why database operations sometimes have to be placed ina transaction to ensure correct behavior.</li>
@@ -3207,7 +3207,7 @@ update Exposure set days = days + 1 where person='lake';
   <h2>Programming With Databases</h2>
 
   <div class="understand">
-    <h3>Learning Objectives:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Write a Python program that queries a database and processes the results.</li>
       <li>Explain what an SQL injection attack is.</li>
