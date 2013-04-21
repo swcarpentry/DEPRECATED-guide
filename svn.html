@@ -1216,28 +1216,27 @@ Elara           11740           259.6528        0.008           40.0
 
 </section>
 
-    <section id="s:rollback">
+<section id="s:rollback">
+  <h2>Recovering Old Versions</h2>
 
-      <h2>Recovering Old Versions</h2>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Discard changes made to a working copy.</li>
+      <li>Recover an old version of a file.</li>
+      <li>Explain what branches are and when they are used.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:rollback">
-        <h3>Understand:</h3>
-        <ul>
-          <li>How to undo changes to a working copy.</li>
-          <li>How to recover old versions of files.</li>
-          <li>What a branch is.</li>
-        </ul>
-      </div>
-
-      <p>
-        Now that we have seen how to merge files and resolve conflicts,
-        we can look at how to use version control as an "infinite undo".
-        Suppose that when Wolfman starts work late one night,
-        his copy of <code>explore</code> is in sync with the head at revision 12.
-        He decides to edit the file <code>moons.txt</code>;
-        unfortunately, he forgot that there was a full moon,
-        so his changes don't make a lot of sense:
-      </p>
+  <p>
+    Now that we have seen how to merge files and resolve conflicts,
+    we can look at how to use version control as an "infinite undo".
+    Suppose that when Wolfman starts work late one night,
+    his copy of <code>explore</code> is in sync with the head at revision 12.
+    He decides to edit the file <code>moons.txt</code>;
+    unfortunately, he forgot that there was a full moon,
+    so his changes don't make a lot of sense:
+  </p>
 
 <pre src="svn/poetry.txt">
 Just one moon can make me growl
@@ -1245,35 +1244,35 @@ Four would make me want to howl
 ...
 </pre>
 
-      <p>
-        When he's back in human form the next day,
-        he wants to undo his changes.
-        Without version control, his choices would be grim:
-        he could try to edit them back into their original state by hand
-        (which for some reason hardly ever seems to work),
-        or ask his colleagues to send him their copies of the files
-        (which is almost as embarrassing as chasing the neighbor's cat when in wolf form).
-      </p>
+  <p>
+    When he's back in human form the next day,
+    he wants to undo his changes.
+    Without version control, his choices would be grim:
+    he could try to edit them back into their original state by hand
+    (which for some reason hardly ever seems to work),
+    or ask his colleagues to send him their copies of the files
+    (which is almost as embarrassing as chasing the neighbor's cat when in wolf form).
+  </p>
 
-      <p>
-        Since he's using Subversion, though,
-        and hasn't committed his work to the repository,
-        all he has to do is <a href="glossary.html#revert">revert</a> his local changes.
-        <code>svn revert</code> simply throws away local changes to files
-        and puts things back the way they were before those changes were made.
-        This is a purely local operation:
-        since Subversion stores the history of the project inside every working copy,
-        Wolfman doesn't need to be connected to the network to do this.
-      </p>
+  <p>
+    Since he's using Subversion, though,
+    and hasn't committed his work to the repository,
+    all he has to do is <a href="glossary.html#revert">revert</a> his local changes.
+    <code>svn revert</code> simply throws away local changes to files
+    and puts things back the way they were before those changes were made.
+    This is a purely local operation:
+    since Subversion stores the history of the project inside every working copy,
+    Wolfman doesn't need to be connected to the network to do this.
+  </p>
 
-      <p>
-        To start,
-        Wolfman uses <code>svn diff</code> <em>without</em> the <code>-r HEAD</code> flag
-        to take a look at the differences between his file
-        and the master copy in the repository.
-        Since he doesn't want to keep his changes,
-        his next command is <code>svn revert moons.txt</code>.
-      </p>
+  <p>
+    To start,
+    Wolfman uses <code>svn diff</code> <em>without</em> the <code>-r HEAD</code> flag
+    to take a look at the differences between his file
+    and the master copy in the repository.
+    Since he doesn't want to keep his changes,
+    his next command is <code>svn revert moons.txt</code>.
+  </p>
 
 <pre>
 $ <span class="in">cd jupiter</span>
@@ -1281,13 +1280,13 @@ $ <span class="in">svn revert moons.txt</span>
 <span class="out">Reverted   moons.txt</span>
 </pre>
 
-      <p>
-        What if someone <em>has</em> committed their changes,
-        but still wants to undo them?
-        For example,
-        suppose Dracula decides that the numbers in <code>moons.txt</code> would look better with commas.
-        He edits the file to put them in:
-      </p>
+  <p>
+    What if someone <em>has</em> committed their changes,
+    but still wants to undo them?
+    For example,
+    suppose Dracula decides that the numbers in <code>moons.txt</code> would look better with commas.
+    He edits the file to put them in:
+  </p>
 
 <pre src="svn/moons_commas.txt">
 Name            Orbital Radius  Orbital Period  Mass            Radius
@@ -1301,47 +1300,49 @@ Himalia      11<span class="highlight">,</span>460           250.5662           
 Elara        11<span class="highlight">,</span>740           259.6528            0.008           40.0
 </pre>
 
-      <p class="continue">
-        then commits his changes to create revision 13.
-        A little while later,
-        the Mummy sees the change and orders Dracula to put things back the way they were.
-        What should Dracula do?
-      </p>
+  <p class="continue">
+    then commits his changes to create revision 13.
+    A little while later,
+    the Mummy sees the change and orders Dracula to put things back the way they were.
+    What should Dracula do?
+  </p>
 
-      <p>
-        We can draw the sequence of events leading up to revision 13
-        as shown in <a href="#f:before_undoing">Fixture XXX</a>:
-      </p>
+  <p>
+    We can draw the sequence of events leading up to revision 13
+    as shown in <a href="#f:before_undoing">Fixture 12</a>:
+  </p>
 
-      <figure id="f:before_undoing">
-        <img src="svn/before_undoing.png" alt="Before Undoing" />
-      </figure>
+  <figure id="f:before_undoing">
+    <img src="svn/before_undoing.png" alt="Before Undoing" />
+    <figcaption>Figure 12: Before Undoing</figcaption>
+  </figure>
 
-      <p class="continue">
-        Dracula wants to erase revision 13 from the repository,
-        but he can't actually do that:
-        once a change is in the repository,
-        it's there forever.
-        What he can do instead is merge the old revision with the current revision
-        to create a new revision
-        (<a href="#f:merging_history">Fixture XXX</a>).
-      </p>
+  <p class="continue">
+    Dracula wants to erase revision 13 from the repository,
+    but he can't actually do that:
+    once a change is in the repository,
+    it's there forever.
+    What he can do instead is merge the old revision with the current revision
+    to create a new revision
+    (<a href="#f:merging_history">Fixture 13</a>).
+  </p>
 
-      <figure id="f:merging_history">
-        <img src="svn/merging_history.png" alt="Merging History" />
-      </figure>
+  <figure id="f:merging_history">
+    <img src="svn/merging_history.png" alt="Merging History" />
+    <figcaption>Figure 13: Merging History</figcaption>
+  </figure>
 
-      <p class="continue">
-        This is exactly like merging changes made by two different people;
-        the only difference is that the "other person" is his past self.
-      </p>
+  <p class="continue">
+    This is exactly like merging changes made by two different people;
+    the only difference is that the "other person" is his past self.
+  </p>
 
-      <p>
-        To undo his commas,
-        Dracula must merge revision 12 (the one before his change)
-        with revision 13 (the current head revision)
-        using <code>svn merge</code>:
-      </p>
+  <p>
+    To undo his commas,
+    Dracula must merge revision 12 (the one before his change)
+    with revision 13 (the current head revision)
+    using <code>svn merge</code>:
+  </p>
 
 <pre>
 $ <span class="in">svn merge -r HEAD:12 moons.txt</span>
@@ -1349,111 +1350,125 @@ $ <span class="in">svn merge -r HEAD:12 moons.txt</span>
 U  moons.txt</span>
 </pre>
 
-      <p class="continue">
-        The <code>-r</code> flag specifies the range of revisions to merge:
-        to undo the changes from revision 12 to revision 13,
-        he uses either <code>13:12</code> or <code>HEAD:12</code>
-        (since he is going backward in time from the most recent revision to revision 12).
-        This is called a <a href="glossary.html#reverse-merge">reverse</a> merge
-        because he's going backward in time.
-      </p>
+  <p class="continue">
+    The <code>-r</code> flag specifies the range of revisions to merge:
+    to undo the changes from revision 12 to revision 13,
+    he uses either <code>13:12</code> or <code>HEAD:12</code>
+    (since he is going backward in time from the most recent revision to revision 12).
+    This is called a <a href="glossary.html#reverse-merge">reverse</a> merge
+    because he's going backward in time.
+  </p>
 
-      <p>
-        After he runs this command,
-        he must run <code>svn commit</code> to save the changes to the repository.
-        This creates a new revision, number 14,
-        rather than erasing revision 13.
-        That way,
-        the changes he made to create revision 13 are still there
-        if he can ever convince the Mummy that numbers should have commas.
-      </p>
+  <p>
+    After he runs this command,
+    he must run <code>svn commit</code> to save the changes to the repository.
+    This creates a new revision, number 14,
+    rather than erasing revision 13.
+    That way,
+    the changes he made to create revision 13 are still there
+    if he can ever convince the Mummy that numbers should have commas.
+  </p>
 
-      <p>
-        Merging can be used to recover older revisions of files,
-        not just the most recent,
-        and to recover many files or directories at a time.
-        The most frequent use, though,
-        is to manage parallel streams of development in large projects.
-        This is outside the scope of this chapter,
-        but the basic idea is simple.
-      </p>
+  <p>
+    Merging can be used to recover older revisions of files,
+    not just the most recent,
+    and to recover many files or directories at a time.
+    The most frequent use, though,
+    is to manage parallel streams of development in large projects.
+    This is outside the scope of this chapter,
+    but the basic idea is simple.
+  </p>
 
-      <p>
-        Suppose that Universal Monsters has just released a new program for designing secret lairs.
-        Dracula and Wolfman are supposed to start adding a few features
-        that had to be left out of the first release because time ran short.
-        At the same time,
-        Frankenstein and the Mummy are doing technical support:
-        their job is to fix any bugs that users find.
-        All sorts of things could go wrong if both teams tried to work on the same code at the same time.
-        For example,
-        if Frankenstein fixed a bug and sent a new copy of the program to a user in Greenland,
-        it would be all too easy for him to accidentally include
-        the half-completed shark tank control feature that Wolfman was working on.
-      </p>
+  <p>
+    Suppose that Universal Missions has just released a new program
+    for designing interplanetary voyages.
+    Dracula and Wolfman are supposed to add some features
+    that were left out of the first release because time ran short.
+    At the same time,
+    Frankenstein and the Mummy are doing technical support:
+    their job is to fix any bugs that users find.
+  </p>
 
-      <p>
-        The usual way to handle this situation is
-        to create a <a href="glossary.html#branch">branch</a>
-        in the repository for each major sub-project
-        (<a href="#f:branch_merge">Figure XXX</a>).
-        While Wolfman and Dracula work on
-        the <a href="glossary.html#main-line">main line</a>,
-        Frankenstein and the Mummy create a branch,
-        which is just another copy of the repository's files and directories
-        that is also under version control.
-        They can work in their branch without disturbing Wolfman and Dracula and vice versa:
-      </p>
+  <p>
+    All sorts of things could go wrong
+    if both teams tried to work on the same code at the same time.
+    In particular,
+    Dracula and Wolfman might want to make large changes
+    to the structure of the code
+    in order to make it easier to add new features,
+    while Frankenstein and the Mummy want to make as few changes as possible
+    so as not to introduce new bugs while fixing old ones.
+  </p>
 
-      <figure id="f:branch_merge">
-        <img src="svn/branch_merge.png" alt="Branching and Merging" />
-      </figure>
+  <p>
+    The usual way to handle this situation is
+    to create a <a href="glossary.html#branch">branch</a>
+    in the repository for each major sub-project
+    (<a href="#f:branch_merge">Figure 14</a>).
+    While Wolfman and Dracula work on
+    the <a href="glossary.html#main-line">main line</a>,
+    Frankenstein and the Mummy create a branch,
+    which is just another copy of the repository's files and directories
+    that is also under version control.
+    They can work in their branch without disturbing Wolfman and Dracula and vice versa:
+  </p>
 
-      <p>
-        Branches in version control repositories are often described as "parallel universes".
-        Each branch starts off as a clone of the project at some moment in time
-        (typically each time the software is released,
-        or whenever work starts on a major new feature).
-        Changes made to a branch only affect that branch,
-        just as changes made to the files in one directory don't affect files in other directories.
-        However,
-        the branch and the main line are both stored in the same repository,
-        so their revision numbers are always in step.
-      </p>
+  <figure id="f:branch_merge">
+    <img src="svn/branch_merge.png" alt="Branching and Merging" />
+    <figcaption>Figure 14: Branching and Merging</figcaption>
+  </figure>
 
-      <p>
-        If someone decides that a bug fix in one branch should also be made in another,
-        all they have to do is merge the files in question.
-        This is exactly like merging an old version of a file with the current one,
-        but instead of going backward in time,
-        the change is brought sideways from one branch to another.
-      </p>
+  <p>
+    Branches in version control repositories are often described as "parallel universes".
+    Each branch starts off as a clone of the project at some moment in time
+    (typically each time the software is released,
+    or whenever work starts on a major new feature).
+    Changes made to a branch only affect that branch,
+    just as changes made to the files in one directory don't affect files in other directories.
+    However,
+    the branch and the main line are both stored in the same repository,
+    so their revision numbers are always in step.
+  </p>
 
-      <p>
-        Branching helps projects scale up by letting sub-teams work independently,
-        but too many branches can cause as many problems as they solve.
-        Karl Fogel's excellent book
-        <a href="bib.html#fogel-producing-oss"><cite>Producing Open Source Software</cite></a>,
-        and Laura Wingerd and Christopher Seiwald's paper
-        "<a href="bib.html#wingerd-seiwald-scm">High-level Best Practices in Software Configuration Management</a>",
-        talk about branches in much more detail.
-        Projects usually don't need to do this until they have a dozen or more developers,
-        or until several versions of their software are in simultaneous use,
-        but using branches is a key part of switching from software carpentry to software engineering.
-      </p>
+  <p>
+    If someone decides that a bug fix in one branch should also be made in another,
+    all they have to do is merge the files in question.
+    This is exactly like merging an old version of a file with the current one,
+    but instead of going backward in time,
+    the change is brought sideways from one branch to another.
+  </p>
 
-      <div class="keypoints" id="k:rollback">
-        <h3>Summary</h3>
-        <ul>
-          <li>Old versions of files can be recovered by merging their old state with their current state.</li>
-          <li>Recovering an old version of a file does not erase the intervening changes.</li>
-          <li>Use branches to support parallel independent development.</li>
-          <li><code>svn merge</code> merges two revisions of a file.</li>
-          <li><code>svn revert</code> undoes local changes to files.</li>
-        </ul>
-      </div>
+  <p>
+    Branching helps projects scale up by letting sub-teams work independently,
+    but too many branches can cause as many problems as they solve.
+    Karl Fogel's excellent book
+    <a href="bib.html#fogel-producing-oss"><cite>Producing Open Source Software</cite></a>,
+    and Laura Wingerd and Christopher Seiwald's paper
+    "<a href="bib.html#wingerd-seiwald-scm">High-level Best Practices in Software Configuration Management</a>",
+    talk about branches in much more detail.
+    Projects usually don't need to do this until they have a dozen or more developers,
+    or until several versions of their software are in simultaneous use,
+    but using branches is a key part of switching from software carpentry to software engineering.
+  </p>
 
-    </section>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Old versions of files can be recovered by merging their old state with their current state.</li>
+      <li>Recovering an old version of a file does not erase the intervening changes.</li>
+      <li>Use branches to support parallel independent development.</li>
+      <li><code>svn merge</code> merges two revisions of a file.</li>
+      <li><code>svn revert</code> undoes local changes to files.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <p class="fixme">write some</p>
+  </div>
+
+</section>
 
     <section id="s:setup">
 
