@@ -221,7 +221,7 @@
     let's assume that the Mummy
     (Dracula and Wolfman's boss)
     has already put some notes in a version control repository
-    whose URL is <code>https://universal.software-carpentry.org/monsters</code>.
+    whose URL is <code>https://universal.software-carpentry.org/explore</code>.
     Every repository has an address like this that uniquely identifies the location of the master copy.
   </p>
 
@@ -252,24 +252,24 @@
   </p>
 
 <pre>
-$ <span class="in">svn checkout https://universal.software-carpentry.org/monsters</span>
+$ <span class="in">svn checkout https://universal.software-carpentry.org/explore</span>
 </pre>
 
   <p class="continue">
-    This creates a new directory called <code>monsters</code>
+    This creates a new directory called <code>explore</code>
     and fills it with a copy of the repository's contents
     (<a href="#f:example_repo">Figure 6</a>).
   </p>
 
 <pre>
-<span class="out">A    monsters/jupiter
-A    monsters/mars
-A    monsters/mars/mons-olympus.txt
-A    monsters/mars/cydonia.txt
-A    monsters/earth
-A    monsters/earth/himalayas.txt
-A    monsters/earth/antarctica.txt
-A    monsters/earth/carlsbad.txt
+<span class="out">A    explore/jupiter
+A    explore/mars
+A    explore/mars/mons-olympus.txt
+A    explore/mars/cydonia.txt
+A    explore/earth
+A    explore/earth/himalayas.txt
+A    explore/earth/antarctica.txt
+A    explore/earth/carlsbad.txt
 Checked out revision 6.</span>
 </pre>
 
@@ -284,7 +284,7 @@ Checked out revision 6.</span>
   </p>
 
 <pre>
-$ <span class="in">cd monsters</span>
+$ <span class="in">cd explore</span>
 $ <span class="in">ls</span>
 <span class="out">earth   jupiter mars</span>
 $ <span class="in">ls *</span>
@@ -311,7 +311,7 @@ cydonia.txt  mons-olympus.txt</span>
 
 <pre>
 $ <span class="in">pwd</span>
-<span class="out">/home/vlad/monsters</span>
+<span class="out">/home/vlad/explore</span>
 $ <span class="in">ls -a</span>
 <span class="out">.    ..    .svn    earth    jupiter    mars</span>
 $ <span class="in">ls -F .svn</span>
@@ -368,7 +368,7 @@ Send the probe to Mons Olympus?
     the date the change was made,
     and whatever comment the user provided when the change was submitted.
     As we can see,
-    the <code>monsters</code> project is currently at revision 6,
+    the <code>explore</code> project is currently at revision 6,
     and all changes so far have been made by the Mummy.
   </p>
 
@@ -855,24 +855,24 @@ $ <span class="in">diff left.txt right.txt</span>
 
 </section>
 
-    <section id="s:merge">
+<section id="s:merge">
+  <h2>Merging Conflicts</h2>
 
-      <h2>Merging Conflicts</h2>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Explain what causes conflicts to occur and how to tell when one has occurred.</li>
+      <li>Resolve a conflict.</li>
+      <li>Identify the auxiliary files created when a conflict occurs.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:merge">
-        <h3>Understand:</h3>
-        <ul>
-          <li>What a conflict in an update is.</li>
-          <li>How to resolve conflicts when updating.</li>
-        </ul>
-      </div>
-
-      <p>
-        Dracula and Wolfman have both synchronized their working copies of <code>monsters</code>
-        with version 8 of the repository.
-        Dracula now edits his copy to change Amalthea's radius
-        from a single number to a triple to reflect its irregular shape:
-      </p>
+  <p>
+    Dracula and Wolfman have both synchronized their working copies of <code>explore</code>
+    with version 8 of the repository.
+    Dracula now edits his copy to change Amalthea's radius
+    from a single number to a triple to reflect its irregular shape:
+  </p>
 
 <pre src="svn/moons_dracula_triple.txt">
 Name            Orbital Radius  Orbital Period  Mass            Radius
@@ -883,22 +883,23 @@ Ganymede        1070.4          7.154553        1481.9          2631.2
 Callisto        1882.7          16.689018       1075.9          2410.3
 </pre>
 
-      <p class="continue">
-        He then commits his work,
-        creating revision 9 of the repository
-        (<a href="#f:after_dracula_commits">Figure XXX</a>).
-      </p>
+  <p class="continue">
+    He then commits his work,
+    creating revision 9 of the repository
+    (<a href="#f:after_dracula_commits">Figure 9</a>).
+  </p>
 
-      <figure id="f:after_dracula_commits">
-        <img src="svn/after_dracula_commits.png" alt="After Dracula Commits" />
-      </figure>
+  <figure id="f:after_dracula_commits">
+    <img src="svn/after_dracula_commits.png" alt="After Dracula Commits" />
+    <figcaption>Figure 9: After Dracula Commits</figcaption>
+  </figure>
 
-      <p>
-        But while he is doing this,
-        Wolfman is editing <em>his</em> copy
-        to add information about two other minor moons,
-        Himalia and Elara:
-      </p>
+  <p>
+    But while he is doing this,
+    Wolfman is editing <em>his</em> copy
+    to add information about two other minor moons,
+    Himalia and Elara:
+  </p>
 
 <pre src="svn/moons_wolfman_extras.txt">
 Name            Orbital Radius  Orbital Period  Mass            Radius
@@ -911,10 +912,10 @@ Callisto        1882.7          16.689018       1075.9          2410.3
 Elara           11740           259.6528        0.008           40.0</span>
 </pre>
 
-      <p>
-        When Wolfman tries to commit his changes to the repository,
-        Subversion won't let him:
-      </p>
+  <p>
+    When Wolfman tries to commit his changes to the repository,
+    Subversion won't let him:
+  </p>
 
 <pre>
 $ <span class="in">svn commit -m "Added data for Himalia, Elara"</span>
@@ -924,40 +925,40 @@ svn: File or directory 'moons.txt' is out of date; try updating
 svn: resource out of date; try updating</span>
 </pre>
 
-      <p class="continue">
-        The reason is that
-        Wolfman's changes were based on revision 8,
-        but the repository is now at revision 9,
-        and the file that Wolfman is trying to overwrite
-        is different in the later revision.
-        (Remember,
-        one of version control's main jobs is to make sure that
-        people don't trample on each other's work.)
-        Wolfman has to update his working copy to get Dracula's changes before he can commit.
-        Luckily,
-        Dracula edited a line that Wolfman didn't change,
-        so Subversion can merge the differences automatically.
-      </p>
+  <p class="continue">
+    The reason is that
+    Wolfman's changes were based on revision 8,
+    but the repository is now at revision 9,
+    and the file that Wolfman is trying to overwrite
+    is different in the later revision.
+    (Remember,
+    one of version control's main jobs is to make sure that
+    people don't trample on each other's work.)
+    Wolfman has to update his working copy to get Dracula's changes before he can commit.
+    Luckily,
+    Dracula edited a line that Wolfman didn't change,
+    so Subversion can merge the differences automatically.
+  </p>
 
-      <p>
-        This does <em>not</em> mean that Wolfman's changes have been committed to the repository:
-        Subversion only does that when it's ordered to.
-        Wolfman's changes are still in his working copy,
-        and <em>only</em> in his working copy.
-        But since Wolfman's version of the file now includes
-        the lines that Dracula added,
-        Wolfman can go ahead and commit them as usual to create revision 10.
-      </p>
+  <p>
+    This does <em>not</em> mean that Wolfman's changes have been committed to the repository:
+    Subversion only does that when it's ordered to.
+    Wolfman's changes are still in his working copy,
+    and <em>only</em> in his working copy.
+    But since Wolfman's version of the file now includes
+    the lines that Dracula added,
+    Wolfman can go ahead and commit them as usual to create revision 10.
+  </p>
 
-      <p>
-        Wolfman's working copy is now in sync with the master,
-        but Dracula's is one behind at revision 9.
-        At this point,
-        they independently decide to add measurement units
-        to the columns in <code>moons.txt</code>.
-        Wolfman is quicker off the mark this time;
-        he adds a line to the file:
-      </p>
+  <p>
+    Wolfman's working copy is now in sync with the master,
+    but Dracula's is one behind at revision 9.
+    At this point,
+    they independently decide to add measurement units
+    to the columns in <code>moons.txt</code>.
+    Wolfman is quicker off the mark this time;
+    he adds a line to the file:
+  </p>
 
 <pre src="svn/moons_wolfman_units.txt">
 Name            Orbital Radius  Orbital Period  Mass            Radius
@@ -971,12 +972,12 @@ Himalia         11460           250.5662        0.095           85.0
 Elara           11740           259.6528        0.008           40.0
 </pre>
 
-      <p class="continue">
-        and commits it to create revision 11.
-        While he is doing this,
-        though,
-        Dracula inserts a different line at the top of the file:
-      </p>
+  <p class="continue">
+    and commits it to create revision 11.
+    While he is doing this,
+    though,
+    Dracula inserts a different line at the top of the file:
+  </p>
 
 <pre src="svn/moons_dracula_units.txt">
 Name            Orbital Radius  Orbital Period  Mass            Radius
@@ -990,16 +991,16 @@ Himalia         11460           250.5662        0.095           85.0
 Elara           11740           259.6528        0.008           40.0
 </pre>
 
-      <p>
-        Once again,
-        when Dracula tries to commit,
-        Subversion tells him he can't.
-        But this time,
-        when Dracula does updates his working copy,
-        he doesn't just get the line Wolfman added to create revision 11.
-        There is an actual conflict in the file,
-        so Subversion asks Dracula what he wants to do:
-      </p>
+  <p>
+    Once again,
+    when Dracula tries to commit,
+    Subversion tells him he can't.
+    But this time,
+    when Dracula does updates his working copy,
+    he doesn't just get the line Wolfman added to create revision 11.
+    There is an actual conflict in the file,
+    so Subversion asks Dracula what he wants to do:
+  </p>
 
 <pre src="svn/moons_dracula_conflict.txt">
 $ <span class="in">svn update</span>
@@ -1009,12 +1010,12 @@ Select: (p) postpone, (df) diff-full, (e) edit,
         (s) show all options:</span>
 </pre>
 
-      <p>
-        Dracula choose <code>p</code> for "postpone",
-        which tells Subversion that he'll deal with the problem later.
-        Once the update is finished,
-        he opens <code>moons.txt</code> in his editor and sees:
-      </p>
+  <p>
+    Dracula choose <code>p</code> for "postpone",
+    which tells Subversion that he'll deal with the problem later.
+    Once the update is finished,
+    he opens <code>moons.txt</code> in his editor and sees:
+  </p>
 
 <pre>
  Name            Orbital Radius  Orbital Period  Mass
@@ -1030,24 +1031,24 @@ Select: (p) postpone, (df) diff-full, (e) edit,
  Callisto        1882.7          16.689018       1075.9
 </pre>
 
-      <p class="continue">
-        As we can see,
-        Subversion has inserted
-        <a href="glossary.html#conflict-marker">conflict markers</a>
-        in <code>moons.txt</code>
-        wherever there is a conflict.
-        The line <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; .mine</code> shows the start of the conflict,
-        and is followed by the lines from the local copy of the file.
-        The separator <code>=======</code> is then
-        followed by the lines from the repository's file that are in conflict with that section,
-        while <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; .r11</code> marks the end of the conflict.
-      </p>
+  <p class="continue">
+    As we can see,
+    Subversion has inserted
+    <a href="glossary.html#conflict-marker">conflict markers</a>
+    in <code>moons.txt</code>
+    wherever there is a conflict.
+    The line <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; .mine</code> shows the start of the conflict,
+    and is followed by the lines from the local copy of the file.
+    The separator <code>=======</code> is then
+    followed by the lines from the repository's file that are in conflict with that section,
+    while <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; .r11</code> marks the end of the conflict.
+  </p>
 
-      <p>
-        Before he can commit,
-        Dracula has to edit his copy of the file to get rid of those markers.
-        He changes it to:
-      </p>
+  <p>
+    Before he can commit,
+    Dracula has to edit his copy of the file to get rid of those markers.
+    He changes it to:
+  </p>
 
 <pre src="svn/moons_dracula_resolved.txt">
 Name            Orbital Radius  Orbital Period  Mass            Radius
@@ -1061,109 +1062,159 @@ Himalia         11460           250.5662        0.095           85.0
 Elara           11740           259.6528        0.008           40.0
 </pre>
 
-      <p class="continue">
-        then uses the <code>svn resolved</code> command to tell Subversion that
-        he has fixed the problem.
-        Subversion will now let him commit to create revision 12.
-      </p>
+  <p class="continue">
+    then uses the <code>svn resolved</code> command to tell Subversion that
+    he has fixed the problem.
+    Subversion will now let him commit to create revision 12.
+  </p>
 
-      <div class="box">
+  <div class="box">
+    <h3>Auxiliary Files</h3>
 
-        <h3>Auxiliary Files</h3>
+    <p>
+      When Dracula did his update and Subversion detected the conflict in <code>moons.txt</code>,
+      it created three temporary files to help Dracula resolve it.
+      The first is called <code>moons.txt.r9</code>;
+      it is the file as it was in Dracula's local copy
+      before he started making changes,
+      i.e., the common ancestor for his work
+      and whatever he is in conflict with.
+    </p>
 
-        <p>
-          When Dracula did his update and Subversion detected the conflict in <code>moons.txt</code>,
-          it created three temporary files to help Dracula resolve it.
-          The first is called <code>moons.txt.r9</code>;
-          it is the file as it was in Dracula's local copy
-          before he started making changes,
-          i.e., the common ancestor for his work
-          and whatever he is in conflict with.
-        </p>
+    <p>
+      The second file is <code>moons.txt.r11</code>.
+      This is the most up-to-date revision from the repository&mdash;the
+      file as it is including Wolfman's changes.
+      The third temporary file, <code>moons.txt.mine</code>,
+      is the file as it was in Dracula's working copy before he did the Subversion update.
+    </p>
 
-        <p>
-          The second file is <code>moons.txt.r11</code>.
-          This is the most up-to-date revision from the repository&mdash;the
-          file as it is including Wolfman's changes.
-          The third temporary file, <code>moons.txt.mine</code>,
-          is the file as it was in Dracula's working copy before he did the Subversion update.
-        </p>
+    <p>
+      Subversion creates these auxiliary files primarily
+      to help people merge conflicts in binary files.
+      It wouldn't make sense to insert <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>
+      and <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> characters into an image file
+      (it would almost certainly result in a corrupted image).
+      The <code>svn resolved</code> command deletes these three extra files
+      as well as telling Subversion that the conflict has been taken care of.
+    </p>
 
-        <p>
-          Subversion creates these auxiliary files primarily
-          to help people merge conflicts in binary files.
-          It wouldn't make sense to insert <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>
-          and <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> characters into an image file
-          (it would almost certainly result in a corrupted image).
-          The <code>svn resolved</code> command deletes these three extra files
-          as well as telling Subversion that the conflict has been taken care of.
-        </p>
+  </div>
 
-      </div>
+  <p>
+    Some power users prefer to work with interpolated conflict markers directly,
+    but for the rest of us,
+    there are several tools for displaying differences and helping to merge them,
+    including <a href="http://diffuse.sourceforge.net/">Diffuse</a> and <a href="http://winmerge.org/">WinMerge</a>.
+    If Dracula launches Diffuse,
+    it displays his file,
+    the common base that he and Wolfman were working from,
+    and Wolfman's file in a three-pane view
+    (<a href="#f:diff_viewer">Figure 10</a>):
+  </p>
 
-      <p>
-        Some power users prefer to work with interpolated conflict markers directly,
-        but for the rest of us,
-        there are several tools for displaying differences and helping to merge them,
-        including <a href="http://diffuse.sourceforge.net/">Diffuse</a> and <a href="http://winmerge.org/">WinMerge</a>.
-        If Dracula launches Diffuse,
-        it displays his file,
-        the common base that he and Wolfman were working from,
-        and Wolfman's file in a three-pane view
-        (<a href="#f:diff_viewer">Figure XXX</a>):
-      </p>
+  <figure id="f:diff_viewer">
+    <img src="svn/diff_viewer.png" alt="A Difference Viewer" />
+    <figcaption>Figure 10: A Difference Viewer</figcaption>
+  </figure>
 
-      <figure id="f:diff_viewer">
-        <img src="svn/diff_viewer.png" alt="A Difference Viewer" />
-      </figure>
+  <p class="continue">
+    Dracula can use the buttons to merge changes from either of the edited versions
+    into the common ancestor,
+    or edit the central pane directly.
+    Again,
+    once he is done,
+    he uses <code>svn resolved</code> and <code>svn commit</code>
+    to create revision 12 of the repository.
+  </p>
 
-      <p class="continue">
-        Dracula can use the buttons to merge changes from either of the edited versions
-        into the common ancestor,
-        or edit the central pane directly.
-        Again,
-        once he is done,
-        he uses <code>svn resolved</code> and <code>svn commit</code>
-        to create revision 12 of the repository.
-      </p>
+  <p>
+    In this case, the conflict was small and easy to fix.
+    However, if two or more people on a team are repeatedly creating conflicts for one another,
+    it's usually a signal of deeper communication problems:
+    either they aren't talking as often as they should, or their responsibilities overlap.
+    If used properly,
+    the version control system can help the team find and fix these issues
+    so that it will be more productive in future.
+  </p>
 
-      <p>
-        In this case, the conflict was small and easy to fix.
-        However, if two or more people on a team are repeatedly creating conflicts for one another,
-        it's usually a signal of deeper communication problems:
-        either they aren't talking as often as they should, or their responsibilities overlap.
-        If used properly,
-        the version control system can help the team find and fix these issues
-        so that it will be more productive in future.
-      </p>
+  <div class="box">
+    <h3>Working With Multiple Files</h3>
 
-      <div class="box">
+    <p>
+      As mentioned <a href="#a:transaction">earlier</a>,
+      every logical change to a project should result in a single commit,
+      and every commit should represent one logical change.
+      This is especially true when resolving conflicts:
+      the work done to reconcile one person's changes with another are often complicated,
+      so it should be a single entry in the project's history,
+      with other, later, changes coming after it.
+    </p>
 
-        <h3>Working With Multiple Files</h3>
+  </div>
 
-        <p>
-          As mentioned <a href="#a:transaction">earlier</a>,
-          every logical change to a project should result in a single commit,
-          and every commit should represent one logical change.
-          This is especially true when resolving conflicts:
-          the work done to reconcile one person's changes with another are often complicated,
-          so it should be a single entry in the project's history,
-          with other, later, changes coming after it.
-        </p>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Conflicts must be resolved before a commit can be completed.</li>
+      <li>Subversion puts markers in text files to show regions of conflict.</li>
+      <li>For each conflicted file, Subversion creates auxiliary files containing the common parent, the master version, and the local version.</li>
+      <li><code>svn resolve <em>files</em></code> tells Subversion that conflicts have been resolved.</li>
+    </ul>
+  </div>
 
-      </div>
+  <div class="challenges">
+    <h3>Challenges</h3>
 
-      <div class="keypoints" id="k:merge">
-        <h3>Summary</h3>
-        <ul>
-          <li>Conflicts must be resolved before a commit can be completed.</li>
-          <li>Subversion puts markers in text files to show regions of conflict.</li>
-          <li>For each conflicted file, Subversion creates auxiliary files containing the common parent, the master version, and the local version.</li>
-          <li><code>svn resolve <em>files</em></code> tells Subversion that conflicts have been resolved.</li>
-        </ul>
-      </div>
+    <p>
+      If you are working in a group,
+      partner with someone who has also wrote a biography for themselves
+      for the previous section's challenges.
+    </p>
 
-    </section>
+    <ol>
+      <li>
+        Both partners use <code>svn update</code>
+        to make sure their working copies are up to date
+        and that there are no local changes.
+      </li>
+      <li>
+        The first partner edits her biography and commits the changes.
+      </li>
+      <li>
+        The second partner edits her copy of the file
+        (<em>without</em> having updated to get the first partner's changes),
+        then tries to <code>svn commit</code>.
+      </li>
+      <li>
+        Once the second partner has resolved the conflict,
+        she commits her changes.
+      </li>
+      <li>
+        Repeat these four steps with roles reversed.
+      </li>
+    </ol>
+
+    <p>
+      If you are working on your own,
+      you can simulate the steps above
+      by checking out a second copy of the project into a new directory.
+      (Remember,
+      this cannot overlap any existing checked-out copies.)
+      Edit your biography in one copy and commit those changes,
+      then switch to the other copy and edit the same file
+      before updating.
+      <a href="#f:challenge_conflict">Figure 11</a> shows
+      the differences between these two challenges.
+    </p>
+
+    <figure id="f:challenge_conflict">
+      <img src="svn/challenge_conflict.png" alt="Practicing Conflict Resolution" />
+      <figcaption>Figure 11: Practicing Conflict Resolution</figcaption>
+    </figure>
+  </div>
+
+</section>
 
     <section id="s:rollback">
 
@@ -1182,7 +1233,7 @@ Elara           11740           259.6528        0.008           40.0
         Now that we have seen how to merge files and resolve conflicts,
         we can look at how to use version control as an "infinite undo".
         Suppose that when Wolfman starts work late one night,
-        his copy of <code>monsters</code> is in sync with the head at revision 12.
+        his copy of <code>explore</code> is in sync with the head at revision 12.
         He decides to edit the file <code>moons.txt</code>;
         unfortunately, he forgot that there was a full moon,
         so his changes don't make a lot of sense:
