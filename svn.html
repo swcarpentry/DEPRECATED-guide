@@ -1094,8 +1094,14 @@ svn: resource out of date; try updating</span>
     and <em>only</em> in his working copy.
     But since Wolfman's version of the file now includes
     the lines that Dracula added,
-    Wolfman can go ahead and commit them as usual to create revision 10.
+    Wolfman can go ahead and commit them as usual to create revision 10
+    (<a href="#f:merge_without_conflict">Figure 10</a>).
   </p>
+
+  <figure id="f:merge_without_conflict">
+    <img src="svn/merge_without_conflict.png" alt="Merging Without Conflict" />
+    <figcaption>Figure 10: Merging Without Conflict</figcaption>
+  </figure>
 
   <p>
     Wolfman's working copy is now in sync with the master,
@@ -1144,7 +1150,16 @@ Elara           11740           259.6528        0.008           40.0
     Subversion tells him he can't.
     But this time,
     when Dracula does updates his working copy,
-    he doesn't just get the line Wolfman added to create revision 11.
+    he doesn't just get the line Wolfman added to create revision 11
+    (<a href="#f:merge_with_conflict">Figure 11</a>).
+  </p>
+
+  <figure id="f:merge_with_conflict">
+    <img src="svn/merge_with_conflict.png" alt="Merge With Conflict" />
+    <figcaption>Figure 11: Merge With Conflict</figcaption>
+  </figure>
+
+  <p>
     There is an actual conflict in the file,
     so Subversion asks Dracula what he wants to do:
   </p>
@@ -1257,12 +1272,12 @@ Elara           11740           259.6528        0.008           40.0
     it displays his file,
     the common base that he and Wolfman were working from,
     and Wolfman's file in a three-pane view
-    (<a href="#f:diff_viewer">Figure 10</a>):
+    (<a href="#f:diff_viewer">Figure 12</a>):
   </p>
 
   <figure id="f:diff_viewer">
     <img src="svn/diff_viewer.png" alt="A Difference Viewer" />
-    <figcaption>Figure 10: A Difference Viewer</figcaption>
+    <figcaption>Figure 12: A Difference Viewer</figcaption>
   </figure>
 
   <p class="continue">
@@ -1351,14 +1366,7 @@ Elara           11740           259.6528        0.008           40.0
       Edit your biography in one copy and commit those changes,
       then switch to the other copy and edit the same file
       before updating.
-      <a href="#f:challenge_conflict">Figure 11</a> shows
-      the differences between these two challenges.
     </p>
-
-    <figure id="f:challenge_conflict">
-      <img src="svn/challenge_conflict.png" alt="Practicing Conflict Resolution" />
-      <figcaption>Figure 11: Practicing Conflict Resolution</figcaption>
-    </figure>
   </div>
 
 </section>
@@ -1456,12 +1464,12 @@ Elara        11<span class="highlight">,</span>740           259.6528           
 
   <p>
     We can draw the sequence of events leading up to revision 13
-    as shown in <a href="#f:before_undoing">Fixture 12</a>:
+    as shown in <a href="#f:before_undoing">Figure 13</a>:
   </p>
 
   <figure id="f:before_undoing">
     <img src="svn/before_undoing.png" alt="Before Undoing" />
-    <figcaption>Figure 12: Before Undoing</figcaption>
+    <figcaption>Figure 13: Before Undoing</figcaption>
   </figure>
 
   <p class="continue">
@@ -1471,12 +1479,12 @@ Elara        11<span class="highlight">,</span>740           259.6528           
     it's there forever.
     What he can do instead is merge the old revision with the current revision
     to create a new revision
-    (<a href="#f:merging_history">Fixture 13</a>).
+    (<a href="#f:merging_history">Figure 14</a>).
   </p>
 
   <figure id="f:merging_history">
     <img src="svn/merging_history.png" alt="Merging History" />
-    <figcaption>Figure 13: Merging History</figcaption>
+    <figcaption>Figure 14: Merging History</figcaption>
   </figure>
 
   <p class="continue">
@@ -1578,7 +1586,7 @@ $ <span class="in">svn copy https://universal.software-carpentry.org/explore/mis
     The usual way to handle this situation is
     to create a <a href="glossary.html#branch">branch</a>
     in the repository for each major sub-project
-    (<a href="#f:branch_merge">Figure 14</a>).
+    (<a href="#f:branch_merge">Figure 15</a>).
     While Wolfman and Dracula work on
     the <a href="glossary.html#main-line">main line</a>,
     Frankenstein and the Mummy create a branch,
@@ -1589,7 +1597,7 @@ $ <span class="in">svn copy https://universal.software-carpentry.org/explore/mis
 
   <figure id="f:branch_merge">
     <img src="svn/branch_merge.png" alt="Branching and Merging" />
-    <figcaption>Figure 14: Branching and Merging</figcaption>
+    <figcaption>Figure 15: Branching and Merging</figcaption>
   </figure>
 
   <p>
@@ -1683,14 +1691,8 @@ svn diff -r 240:261 fish.dat
     it exchanges data with the copy of Subversion running on the server.
   </p>
 
-  <figure id="f:repo_four_things">
-    <img src="svn/repo_four_things.png" alt="What's Needed for a Repository" />
-    <figcaption>Figure 15: What's Needed for a Repository</figcaption>
-  </figure>
-
   <p>
-    To make this to work, we need four things
-    (<a href="#f:repo_four_things">Figure 15</a>):
+    To make this to work, we need four things:
   </p>
 
   <ol>
