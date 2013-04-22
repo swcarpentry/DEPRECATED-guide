@@ -109,36 +109,56 @@
   <div class="notes">
     <h3>Teaching Notes</h3>
     <ul>
-      <li>Start with sets
-        <ul>
-          <li>Familiar concept</li>
-          <li>No confusion between keys and values</li>
-          <li>Enough to motivate discussion of hash tables</li>
-        </ul>
+      <li>
+        Start with sets:
+        they're a familiar concept,
+        there's no confusion between keys and values,
+        and they are enough to motivate discussion of hash tables.
       </li>
-      <li>Explain hash tables (with lots of hand waving)
-        <ul>
-          <li>Explain "hash codes" and "hash functions"</li>
-          <li>Explain why hash tables are fast</li>
-          <li>Use an example to show why elements have to be immutable...</li>
-          <li>...and what can go wrong if hashes can contain mutable values</li>
-          <li>Show how to use tuples to store multi-part elements</li>
-        </ul>
+      <li>
+        Python's requirement that entries in hash-based data structures be immutable
+        only makes sense once the mechanics of hash tables are explained.
+        Terms like "hash codes" and "hash function" also come up
+        in error messages and Python's documentation,
+        so learners are likely to become confused
+        without some kind of hand-waving overview.
+        Tuples are also easy to explain as
+        "how to create immutable multi-part keys",
+        and it's easy to explain why entries can't be looked up by parts
+        (e.g., why a tuple containing a first and a last name
+        can't be looked up by last name only)
+        in terms of hash functions.
       </li>
-      <li>Then introduce dictionaries as "sets with extra information attached to each entry"</li>
-      <li>Canonical example: counting things</li>
-      <li>Solve original motivating problem
-        <ul>
-          <li>Requires a dictionary of dictionaries, but they have seen lists of lists</li>
-          <li>Re-emphasize modular breakdown of code into functions</li>
-        </ul>
+      <li>
+        Finally,
+        explaining why hash tables are fast
+        is a good first encounter with the idea of "big oh" complexity.
       </li>
-      <li>For advanced learners: work through phylogenetic trees example
-        <ul>
-          <li>Usually presented as a table, which makes an array a natural representation</li>
-          <li>Showing how and why to use dictionaries instead is as important as showing vector operations when introducing NumPy</li>
-          <li>But example is currently hard to follow/debug without graphical representation of generated tree...</li>
-        </ul>
+      <li>
+        Once sets have been mastered,
+        dictionaries can be explained as
+        "sets with extra information attached to each entry".
+        The canonical example&mdash;counting things&mdash;shows why
+        that "extra information" is useful.
+        The original motivating problem then uses
+        both a dictionary and a dictionary of dictionaries;
+        when introducing the latter,
+        compare it to a list of lists.
+      </li>
+      <li>
+        Use the nanotechnology inventory example
+        to re-emphasize how code is build top-down
+        by writing code as if desired functions existed,
+        then filling them in.
+      </li>
+      <li>
+        Only tackle the phylogenetic tree example with very advanced learners.
+        The algorithm is usually presented as a table,
+        which makes an array a natural representation.
+        Showing how and why to use dictionaries instead
+        is as important as showing vector operations when introducing NumPy,
+        but the example is hard to follow (and debug)
+        without a graphical representation of the evolving tree.
       </li>
     </ul>
   </div>
