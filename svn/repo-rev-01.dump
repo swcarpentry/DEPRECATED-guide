@@ -1,0 +1,59 @@
+SVN-fs-dump-format-version: 2
+
+UUID: 6cbfdc92-59cd-48ab-9090-5d5cd2426334
+
+Revision-number: 0
+Prop-content-length: 56
+Content-length: 56
+
+K 8
+svn:date
+V 27
+2010-07-26T11:51:14.912002Z
+PROPS-END
+
+Revision-number: 1
+Prop-content-length: 147
+Content-length: 147
+
+K 7
+svn:log
+V 47
+Thoughts on Mons Olympus (probably too obvious)
+K 10
+svn:author
+V 5
+mummy
+K 8
+svn:date
+V 27
+2010-07-26T13:08:23.651292Z
+PROPS-END
+
+Node-path: mars
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: mars/mons-olympus.txt
+Node-kind: file
+Node-action: add
+Prop-content-length: 36
+Text-content-length: 154
+Text-content-md5: 2af1831e90353973b21bb173ddd6240e
+Content-length: 190
+
+K 14
+svn:executable
+V 1
+*
+PROPS-END
+This would be a really good place for a secret base.
+But *everyone* would think of looking there.
+More thought required, but I must re-wrap myself first.
+
+

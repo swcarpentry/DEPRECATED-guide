@@ -1,0 +1,469 @@
+SVN-fs-dump-format-version: 2
+
+UUID: 6cbfdc92-59cd-48ab-9090-5d5cd2426334
+
+Revision-number: 0
+Prop-content-length: 56
+Content-length: 56
+
+K 8
+svn:date
+V 27
+2010-07-26T11:51:14.912002Z
+PROPS-END
+
+Revision-number: 1
+Prop-content-length: 147
+Content-length: 147
+
+K 7
+svn:log
+V 47
+Thoughts on Mons Olympus (probably too obvious)
+K 10
+svn:author
+V 5
+mummy
+K 8
+svn:date
+V 27
+2010-07-26T13:08:23.651292Z
+PROPS-END
+
+Node-path: mars
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: mars/mons-olympus.txt
+Node-kind: file
+Node-action: add
+Prop-content-length: 36
+Text-content-length: 154
+Text-content-md5: 2af1831e90353973b21bb173ddd6240e
+Content-length: 190
+
+K 14
+svn:executable
+V 1
+*
+PROPS-END
+This would be a really good place for a secret base.
+But *everyone* would think of looking there.
+More thought required, but I must re-wrap myself first.
+
+
+Revision-number: 2
+Prop-content-length: 139
+Content-length: 139
+
+K 7
+svn:log
+V 39
+Hide near the face in Cydonia, perhaps?
+K 10
+svn:author
+V 5
+mummy
+K 8
+svn:date
+V 27
+2010-07-26T13:11:55.285081Z
+PROPS-END
+
+Node-path: mars/cydonia.txt
+Node-kind: file
+Node-action: add
+Prop-content-length: 36
+Text-content-length: 182
+Text-content-md5: 2144dbecd5c039ba13b677e64b92e0c6
+Content-length: 218
+
+K 14
+svn:executable
+V 1
+*
+PROPS-END
+Another intriguing possibility.
+But again, too obvious.
+And it's hard to type with my bandages unravelling.
+Cheap synthetics --- bah.  I should have stuck with 100% Egyptian cotton.
+
+
+Revision-number: 3
+Prop-content-length: 134
+Content-length: 134
+
+K 7
+svn:log
+V 34
+Converting to wiki-formatted text.
+K 10
+svn:author
+V 5
+mummy
+K 8
+svn:date
+V 27
+2010-07-26T13:14:14.053266Z
+PROPS-END
+
+Node-path: mars/cydonia.txt
+Node-kind: file
+Node-action: change
+Text-content-length: 163
+Text-content-md5: a997185d3f183eee34245091a8600003
+Content-length: 163
+
+* Another intriguing possibility.
+* But again, too obvious.
+* And it's hard to type with my bandages unravelling.
+* I should have stuck with 100% Egyptian cotton.
+
+
+Node-path: mars/mons-olympus.txt
+Node-kind: file
+Node-action: change
+Text-content-length: 160
+Text-content-md5: 00167e2ee270ed4ace1b8fe692e37041
+Content-length: 160
+
+* This would be a really good place for a secret base.
+* But _everyone_ would think of looking there.
+* More thought required, but I must re-wrap myself first.
+
+
+Revision-number: 4
+Prop-content-length: 155
+Content-length: 155
+
+K 7
+svn:log
+V 55
+Budget cuts may force us to reconsider Earth as a base.
+K 10
+svn:author
+V 5
+mummy
+K 8
+svn:date
+V 27
+2010-07-26T13:17:46.279719Z
+PROPS-END
+
+Node-path: earth
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: earth/antarctica.txt
+Node-kind: file
+Node-action: add
+Prop-content-length: 10
+Text-content-length: 22
+Text-content-md5: f8d374ba5c3d1a50185d6e75f3ffb6c5
+Content-length: 32
+
+PROPS-END
+Put it under the ice!
+
+
+Node-path: earth/carlsbad.txt
+Node-kind: file
+Node-action: add
+Prop-content-length: 10
+Text-content-length: 16
+Text-content-md5: b0812cc478852638a1a0c394ede6bead
+Content-length: 26
+
+PROPS-END
+Carlsbad Cavern
+
+
+Node-path: earth/himalayas.txt
+Node-kind: file
+Node-action: add
+Prop-content-length: 10
+Text-content-length: 46
+Text-content-md5: 52d3f8672de4edb0fdecdc1ade5c65d9
+Content-length: 56
+
+PROPS-END
+I'm sure the Yeti would enjoy having company.
+
+
+Node-path: earth/marianas-trench.txt
+Node-kind: file
+Node-action: add
+Prop-content-length: 10
+Text-content-length: 46
+Text-content-md5: d9d4584fba5d0db25c8d129fef96aab1
+Content-length: 56
+
+PROPS-END
+Giant squid for dinner? Chewy, but delicious.
+
+
+Revision-number: 5
+Prop-content-length: 159
+Content-length: 159
+
+K 7
+svn:log
+V 59
+The budget might not even stretch to a deep-sea lair... :-(
+K 10
+svn:author
+V 5
+mummy
+K 8
+svn:date
+V 27
+2010-07-26T13:19:39.720362Z
+PROPS-END
+
+Node-path: earth/marianas-trench.txt
+Node-action: delete
+
+
+Revision-number: 6
+Prop-content-length: 173
+Content-length: 173
+
+K 7
+svn:log
+V 73
+Damn the budget---the Jovian moons would be a _perfect_ place for a lair.
+K 10
+svn:author
+V 5
+mummy
+K 8
+svn:date
+V 27
+2010-07-26T13:21:10.446103Z
+PROPS-END
+
+Node-path: jupiter
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Revision-number: 7
+Prop-content-length: 155
+Content-length: 155
+
+K 7
+svn:log
+V 53
+Some basic facts about the Galilean moons of Jupiter.
+K 10
+svn:author
+V 7
+dracula
+K 8
+svn:date
+V 27
+2010-07-26T14:16:09.147709Z
+PROPS-END
+
+Node-path: jupiter/moons.txt
+Node-kind: file
+Node-action: add
+Prop-content-length: 40
+Text-content-length: 354
+Text-content-md5: b7af5e73153a005d4a632464c02e4542
+Content-length: 394
+
+K 13
+svn:eol-style
+V 6
+native
+PROPS-END
+Name            Orbital Radius  Orbital Period  Mass            Radius
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Calisto         1882.7          16.689018       1075.9          2410.3
+
+Revision-number: 8
+Prop-content-length: 193
+Content-length: 193
+
+K 7
+svn:log
+V 91
+1. Fixed typo in moon's name: 'Calisto' -> 'Callisto'.
+2. Added information about Amalthea.
+K 10
+svn:author
+V 7
+wolfman
+K 8
+svn:date
+V 27
+2010-07-26T14:42:44.093487Z
+PROPS-END
+
+Node-path: jupiter/moons.txt
+Node-kind: file
+Node-action: change
+Text-content-length: 424
+Text-content-md5: 3d16eedc4c26275bdd65486993217c67
+Content-length: 424
+
+Name            Orbital Radius  Orbital Period  Mass            Radius
+Amalthea        181.4           0.498179        0.075           125.0
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Callisto        1882.7          16.689018       1075.9          2410.3
+
+Revision-number: 9
+Prop-content-length: 157
+Content-length: 157
+
+K 7
+svn:log
+V 55
+Changing radius of Amalthea to reflect irregular shape.
+K 10
+svn:author
+V 7
+dracula
+K 8
+svn:date
+V 27
+2010-07-27T16:21:56.168475Z
+PROPS-END
+
+Node-path: jupiter/moons.txt
+Node-kind: file
+Node-action: change
+Text-content-length: 432
+Text-content-md5: ea56f4eeedb1f1fb1deea15f60b192db
+Content-length: 432
+
+Name            Orbital Radius  Orbital Period  Mass            Radius
+Amalthea        181.4           0.498179        0.075           131 x 73 x 67
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Callisto        1882.7          16.689018       1075.9          2410.3
+
+Revision-number: 10
+Prop-content-length: 145
+Content-length: 145
+
+K 7
+svn:log
+V 43
+Adding information about Himalia and Elara.
+K 10
+svn:author
+V 7
+wolfman
+K 8
+svn:date
+V 27
+2010-07-27T16:26:12.159034Z
+PROPS-END
+
+Node-path: jupiter/moons.txt
+Node-kind: file
+Node-action: change
+Text-content-length: 570
+Text-content-md5: a80d4c9841fe880b6bb8a1bc02a08354
+Content-length: 570
+
+Name            Orbital Radius  Orbital Period  Mass            Radius
+Amalthea        181.4           0.498179        0.075           131 x 73 x 67
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Callisto        1882.7          16.689018       1075.9          2410.3
+Himalia         11460           250.5662        0.095           85.0
+Elara           11740           259.6528        0.008           40.0
+
+Revision-number: 11
+Prop-content-length: 137
+Content-length: 137
+
+K 7
+svn:log
+V 35
+Added column headers showing units.
+K 10
+svn:author
+V 7
+wolfman
+K 8
+svn:date
+V 27
+2010-07-27T16:37:25.441762Z
+PROPS-END
+
+Node-path: jupiter/moons.txt
+Node-kind: file
+Node-action: change
+Text-content-length: 639
+Text-content-md5: 9bd1c2dea2803ee57fc916f16b8a31d7
+Content-length: 639
+
+Name            Orbital Radius  Orbital Period  Mass            Radius
+                (10**3 km)      (days)          (10**20 kg)     (km)
+Amalthea        181.4           0.498179        0.075           131 x 73 x 67
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Callisto        1882.7          16.689018       1075.9          2410.3
+Himalia         11460           250.5662        0.095           85.0
+Elara           11740           259.6528        0.008           40.0
+
+Revision-number: 12
+Prop-content-length: 127
+Content-length: 127
+
+K 7
+svn:log
+V 25
+Putting units on columns.
+K 10
+svn:author
+V 7
+dracula
+K 8
+svn:date
+V 27
+2010-07-27T16:47:40.545140Z
+PROPS-END
+
+Node-path: jupiter/moons.txt
+Node-kind: file
+Node-action: change
+Text-content-length: 639
+Text-content-md5: 9ac085e1e3c68ee331ff5abe6e717385
+Content-length: 639
+
+Name            Orbital Radius  Orbital Period  Mass            Radius
+                * 10^3 km       * days          * 10^20 kg      * km
+Amalthea        181.4           0.498179        0.075           131 x 73 x 67
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Callisto        1882.7          16.689018       1075.9          2410.3
+Himalia         11460           250.5662        0.095           85.0
+Elara           11740           259.6528        0.008           40.0
+

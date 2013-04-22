@@ -1,0 +1,143 @@
+SVN-fs-dump-format-version: 2
+
+UUID: 6cbfdc92-59cd-48ab-9090-5d5cd2426334
+
+Revision-number: 9
+Prop-content-length: 157
+Content-length: 157
+
+K 7
+svn:log
+V 55
+Changing radius of Amalthea to reflect irregular shape.
+K 10
+svn:author
+V 7
+dracula
+K 8
+svn:date
+V 27
+2010-07-27T16:21:56.168475Z
+PROPS-END
+
+Node-path: jupiter
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: jupiter/moons.txt
+Node-kind: file
+Node-action: add
+Prop-content-length: 40
+Text-content-length: 432
+Text-content-md5: ea56f4eeedb1f1fb1deea15f60b192db
+Content-length: 472
+
+K 13
+svn:eol-style
+V 6
+native
+PROPS-END
+Name            Orbital Radius  Orbital Period  Mass            Radius
+Amalthea        181.4           0.498179        0.075           131 x 73 x 67
+Io              421.6           1.769138        893.2           1821.6
+Europa          670.9           3.551181        480.0           1560.8
+Ganymede        1070.4          7.154553        1481.9          2631.2
+Callisto        1882.7          16.689018       1075.9          2410.3
+
+Node-path: mars
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: mars/mons-olympus.txt
+Node-kind: file
+Node-action: add
+Prop-content-length: 36
+Text-content-length: 160
+Text-content-md5: 00167e2ee270ed4ace1b8fe692e37041
+Content-length: 196
+
+K 14
+svn:executable
+V 1
+*
+PROPS-END
+* This would be a really good place for a secret base.
+* But _everyone_ would think of looking there.
+* More thought required, but I must re-wrap myself first.
+
+
+Node-path: mars/cydonia.txt
+Node-kind: file
+Node-action: add
+Prop-content-length: 36
+Text-content-length: 163
+Text-content-md5: a997185d3f183eee34245091a8600003
+Content-length: 199
+
+K 14
+svn:executable
+V 1
+*
+PROPS-END
+* Another intriguing possibility.
+* But again, too obvious.
+* And it's hard to type with my bandages unravelling.
+* I should have stuck with 100% Egyptian cotton.
+
+
+Node-path: earth
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: earth/himalayas.txt
+Node-kind: file
+Node-action: add
+Prop-content-length: 10
+Text-content-length: 46
+Text-content-md5: 52d3f8672de4edb0fdecdc1ade5c65d9
+Content-length: 56
+
+PROPS-END
+I'm sure the Yeti would enjoy having company.
+
+
+Node-path: earth/antarctica.txt
+Node-kind: file
+Node-action: add
+Prop-content-length: 10
+Text-content-length: 22
+Text-content-md5: f8d374ba5c3d1a50185d6e75f3ffb6c5
+Content-length: 32
+
+PROPS-END
+Put it under the ice!
+
+
+Node-path: earth/carlsbad.txt
+Node-kind: file
+Node-action: add
+Prop-content-length: 10
+Text-content-length: 16
+Text-content-md5: b0812cc478852638a1a0c394ede6bead
+Content-length: 26
+
+PROPS-END
+Carlsbad Cavern
+
+
+
