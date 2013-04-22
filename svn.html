@@ -311,7 +311,7 @@ cydonia.txt  mons-olympus.txt</span>
 
 <pre>
 $ <span class="in">pwd</span>
-<span class="out">/home/vlad/explore</span>
+<span class="out">/home/dracula/explore</span>
 $ <span class="in">ls -a</span>
 <span class="out">.    ..    .svn    earth    jupiter    mars</span>
 $ <span class="in">ls -F .svn</span>
@@ -1369,6 +1369,33 @@ U  moons.txt</span>
     if he can ever convince the Mummy that numbers should have commas.
   </p>
 
+  <div class="box">
+    <h3>Another Way to Do It</h3>
+
+    <p>
+      Another way to recover a particular version of a particular file
+      is to use the <code>svn copy</code> command.
+      If the URL of our repository is
+      <code>https://universal.software-carpentry.org/explore</code>,
+      then the command:
+    </p>
+
+<pre>
+$ <span class="in">svn copy https://universal.software-carpentry.org/explore/mission.txt@120 ./mission.txt</span>
+</pre>
+
+    <p class="continue">
+      copies the file <code>mission.txt</code> as it was in revision 120
+      into our working directory
+      (overwriting whatever <code>mission.txt</code> file we currently have,
+      if any).
+      What's more,
+      using <code>svn copy</code> brings along the file's history as well,
+      so that future <code>svn log</code> operations will show
+      how <code>mission.txt</code> was resurrected.
+    </p>
+  </div>
+
   <p>
     Merging can be used to recover older revisions of files,
     not just the most recent,
@@ -1457,105 +1484,121 @@ U  moons.txt</span>
       <li>Old versions of files can be recovered by merging their old state with their current state.</li>
       <li>Recovering an old version of a file does not erase the intervening changes.</li>
       <li>Use branches to support parallel independent development.</li>
-      <li><code>svn merge</code> merges two revisions of a file.</li>
       <li><code>svn revert</code> undoes local changes to files.</li>
+      <li><code>svn merge</code> merges two revisions of a file.</li>
     </ul>
   </div>
 
   <div class="challenges">
     <h3>Challenges</h3>
 
-    <p class="fixme">write some</p>
+    <ol>
+      <li>
+        Explain what the command:
+<pre>
+svn diff -r 240:261 fish.dat
+</pre>
+        does, and when you might want to run it.
+      </li>
+
+      <li>
+        Suppose that a file called <code>mission.txt</code>
+        existed in revision 90 of a repository,
+        but had been deleted in revision 91.
+        What two commands could we use to recover it?
+      </li>
+
+    </ol>
   </div>
 
 </section>
 
-    <section id="s:setup">
+<section id="s:setup">
+  <h2>Setting up a Repository</h2>
 
-      <h2>Setting up a Repository</h2>
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>How to create a repository.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:setup">
-        <h3>Understand:</h3>
-        <ul>
-          <li>How to create a repository.</li>
-        </ul>
-      </div>
+  <p>
+    It is finally time to see how to create a repository.
+    As a quick recap,
+    we will keep the master copy of our work in a repository
+    on a server that we can access from other machines on the internet.
+    That master copy consists of files and directories that no-one ever edits directly.
+    Instead, a copy of Subversion running on that machine
+    manages updates for us and watches for conflicts.
+    Our working copy is a mirror image of the master sitting on our computer.
+    When our Subversion client needs to communicate with the master,
+    it exchanges data with the copy of Subversion running on the server.
+  </p>
 
-      <p>
-        It is finally time to see how to create a repository.
-        As a quick recap,
-        we will keep the master copy of our work in a repository
-        on a server that we can access from other machines on the internet.
-        That master copy consists of files and directories that no-one ever edits directly.
-        Instead, a copy of Subversion running on that machine
-        manages updates for us and watches for conflicts.
-        Our working copy is a mirror image of the master sitting on our computer.
-        When our Subversion client needs to communicate with the master,
-        it exchanges data with the copy of Subversion running on the server.
-      </p>
+  <figure id="f:repo_four_things">
+    <img src="svn/repo_four_things.png" alt="What's Needed for a Repository" />
+    <figcaption>Figure 15: What's Needed for a Repository</figcaption>
+  </figure>
 
-      <figure id="f:repo_four_things">
-        <img src="svn/repo_four_things.png" alt="What's Needed for a Repository" />
-      </figure>
+  <p>
+    To make this to work, we need four things
+    (<a href="#f:repo_four_things">Figure 15</a>):
+  </p>
 
-      <p>
-        To make this to work, we need four things
-        (<a href="#f:repo_four_things">Figure XXX</a>):
-      </p>
+  <ol>
 
-      <ol>
+    <li>
+      The repository itself.
+      It's not enough to create an empty directory and start filling it with files:
+      Subversion needs to create a lot of other structure
+      in order to keep track of old revisions, who made what changes, and so on.
+    </li>
 
-        <li>
-          The repository itself.
-          It's not enough to create an empty directory and start filling it with files:
-          Subversion needs to create a lot of other structure
-          in order to keep track of old revisions, who made what changes, and so on.
-        </li>
+    <li>
+      The full URL of the repository.
+      This includes the URL of the server
+      and the path to the repository on that machine.
+      (The second part is needed because a single server can,
+      and usually will,
+      host many repositories.)
+    </li>
 
-        <li>
-          The full URL of the repository.
-          This includes the URL of the server
-          and the path to the repository on that machine.
-          (The second part is needed because a single server can,
-          and usually will,
-          host many repositories.)
-        </li>
+    <li>
+      Permission to read or write the master copy.
+      Many open source projects give the whole world permission to read from their repository,
+      but very few allow strangers to write to it:
+      there are just too many possibilities for abuse.
+      Somehow, we have to set up a password or something like it
+      so that users can prove who they are.
+    </li>
 
-        <li>
-          Permission to read or write the master copy.
-          Many open source projects give the whole world permission to read from their repository,
-          but very few allow strangers to write to it:
-          there are just too many possibilities for abuse.
-          Somehow, we have to set up a password or something like it
-          so that users can prove who they are.
-        </li>
+    <li>
+      A working copy of the repository on our computer.
+      Once the first three things are in place,
+      this just means running the <code>checkout</code> command.
+    </li>
 
-        <li>
-          A working copy of the repository on our computer.
-          Once the first three things are in place,
-          this just means running the <code>checkout</code> command.
-        </li>
+  </ol>
 
-      </ol>
+  <p>
+    To keep things simple,
+    we will start by creating a repository on the machine that we're working on.
+    This won't let us share our work with other people,
+    but it <em>will</em> allow us to save the history of our work as we go along.
+  </p>
 
-      <p>
-        To keep things simple,
-        we will start by creating a repository on the machine that we're working on.
-        This won't let us share our work with other people,
-        but it <em>will</em> allow us to save the history of our work as we go along.
-      </p>
-
-      <p>
-        The command to create a repository is <code>svnadmin create</code>,
-        followed by the path to the repository.
-        If we want to create a repository called <code>lair_repo</code>
-        directly under our home directory,
-        we just <code>cd</code> to get home
-        and run <code>svnadmin create lair_repo</code>.
-        This command creates a directory called <code>lair_repo</code> to hold our repository,
-        and fills it with various files that Subversion uses
-        to keep track of the project's history:
-      </p>
+  <p>
+    The command to create a repository is <code>svnadmin create</code>,
+    followed by the path to the repository.
+    If we want to create a repository called <code>lair_repo</code>
+    directly under our home directory,
+    we just <code>cd</code> to get home
+    and run <code>svnadmin create lair_repo</code>.
+    This command creates a directory called <code>lair_repo</code> to hold our repository,
+    and fills it with various files that Subversion uses
+    to keep track of the project's history:
+  </p>
 
 <pre>
 $ <span class="in">cd</span>
@@ -1564,259 +1607,274 @@ $ <span class="in">ls -F lair_repo</span>
 <span class="out">README.txt    conf/    db/    format    hooks/    locks/</span>
 </pre>
 
-      <p class="continue">
-        We should <em>never</em> edit anything in this repository directly.
-        Doing so probably won't shred our sanity and leave us gibbering in mindless horror,
-        but it will almost certainly make the repository unusable.
-      </p>
+  <p class="continue">
+    We should <em>never</em> edit any of this directly,
+    since it will almost certainly make the repository unusable.
+    Instead,
+    we should use <code>svn checkout</code>
+    to get a working copy of this repository.
+    If our home directory is <code>/users/mummy</code>,
+    then the full path to the repository we just created is <code>/users/mummy/lair_repo</code>,
+    so we run <code>svn checkout file:///users/mummy/lair lair_working</code>.
+  </p>
 
-      <p>
-        To get a working copy of this repository,
-        we use Subversion's <code>checkout</code> command.
-        If our home directory is <code>/users/mummy</code>,
-        then the full path to the repository we just created is <code>/users/mummy/lair_repo</code>,
-        so we run <code>svn checkout file:///users/mummy/lair lair_working</code>.
-      </p>
+  <p>
+    Working backward,
+    the second argument,
+    <code>lair_working</code>,
+    specifies where the working copy is to be put.
+    The first argument is the URL of our repository,
+    and it has two parts.
+    <code>/users/mummy/lair_repo</code> is the path to repository directory.
+    <code>file://</code> specifies the <a href="glossary.html#protocol">protocol</a>
+    that Subversion will use to communicate with the repository&mdash;in this case,
+    it says that the repository is part of the local machine's filesystem.
+    (Notice that the protocol ends in two slashes,
+    while the absolute path to the repository starts with a slash,
+    making three in total.
+    A very common mistake is to type only two, since that's what web URLs normally have.)
+  </p>
 
-      <p>
-        Working backward,
-        the second argument,
-        <code>lair_working</code>,
-        specifies where the working copy is to be put.
-        The first argument is the URL of our repository,
-        and it has two parts.
-        <code>/users/mummy/lair_repo</code> is the path to repository directory.
-        <code>file://</code> specifies the <a href="glossary.html#protocol">protocol</a>
-        that Subversion will use to communicate with the repository&mdash;in this case,
-        it says that the repository is part of the local machine's filesystem.
-        Notice that the protocol ends in two slashes,
-        while the absolute path to the repository starts with a slash,
-        making three in total.
-        A very common mistake is to type only two, since that's what web URLs normally have.
-      </p>
+  <p>
+    When we're doing a checkout,
+    it is <em>very</em> important that we provide the second argument,
+    which specifies the name of the directory we want the working copy to be put in.
+    Without it,
+    Subversion will try to use the name of the repository,
+    <code>lair_repo</code>,
+    as the name of the working copy.
+    Since we're in the directory that contains the repository,
+    this means that Subversion will try to overwrite the repository with a working copy.
+    Again,
+    there isn't much risk of our sanity being torn to shreds,
+    but this could ruin our repository.
+  </p>
 
-      <p>
-        When we're doing a checkout,
-        it is <em>very</em> important that we provide the second argument,
-        which specifies the name of the directory we want the working copy to be put in.
-        Without it,
-        Subversion will try to use the name of the repository,
-        <code>lair_repo</code>,
-        as the name of the working copy.
-        Since we're in the directory that contains the repository,
-        this means that Subversion will try to overwrite the repository with a working copy.
-        Again,
-        there isn't much risk of our sanity being torn to shreds,
-        but this could ruin our repository.
-      </p>
+  <p>
+    To avoid this problem,
+    most people create a sub-directory in their account called something like <code>repos</code>,
+    and then create their repositories in that.
+    For example,
+    we could create our repository in <code>/users/mummy/repos/lair</code>,
+    then check out a working copy as <code>/users/mummy/lair</code>.
+    This practice makes both names easier to read.
+  </p>
 
-      <p>
-        To avoid this problem,
-        most people create a sub-directory in their account called something like <code>repos</code>,
-        and then create their repositories in that.
-        For example,
-        we could create our repository in <code>/users/mummy/repos/lair</code>,
-        then check out a working copy as <code>/users/mummy/lair</code>.
-        This practice makes both names easier to read.
-      </p>
+  <p class="fixme">HERE</p>
 
-      <p>
-        The obvious next steps are
-        to put our repository on a server,
-        rather than on our personal machine,
-        and to give other people access to the repository we have just created
-        so that they can work with us.
-        We'll discuss the first in <a href="web.html#s:svn">a later chapter</a>,
-        but unfortunately,
-        the second really does require things that we are not going to cover in this course.
-        If you want to do this, you can:
-      </p>
+  <p>
+    The obvious next steps are
+    to put our repository on a server,
+    rather than on our personal machine,
+    and to give other people access to the repository we have just created
+    so that they can work with us.
+    We should <em>always</em> keep repositories on a different machine than
+    the one we're using for day-to-day work
+    so that if the latter is lost or damaged,
+    we still have our master copy.
+  </p>
 
-      <ul>
+  <p>
+    The second step&mdash;sharing the repository with others&mdash;requires
+    skills that we are deliberately not going to cover.
+    As we discuss in the lessons on <a href="web.html">web programming</a>,
+    as soon as you make something available over the internet,
+    you open up a channel for attack.
+  </p>
 
-        <li>
-          ask your system administrator to set it up for you;
-        </li>
+  <p>
+    If you want to do this, you can:
+  </p>
 
-        <li>
-          use an open source hosting service like <a href="http://www.sf.net">SourceForge</a>,
-          <a href="http://code.google.com">Google Code</a>,
-          <a href="https://github.com/">GitHub</a>,
-          or <a href="https://bitbucket.org/">BitBucket</a>; or
-        </li>
+  <ul>
 
-        <li>
-          spend a few dollars a month on a commercial hosting service like <a href="http://dreamhost.com">DreamHost</a>
-          that provides web-based GUIs for creating and managing repositories.
-        </li>
+    <li>
+      ask your system administrator to set it up for you;
+    </li>
 
-      </ul>
+    <li>
+      use an open source hosting service like <a href="http://www.sf.net">SourceForge</a>,
+      <a href="http://code.google.com">Google Code</a>,
+      <a href="https://github.com/">GitHub</a>,
+      or <a href="https://bitbucket.org/">BitBucket</a>; or
+    </li>
 
-      <p>
-        If you choose the second or third option,
-        please check with whoever handles intellectual property at your institution
-        to make sure that putting your work on a commercially-operated machine
-        that is probably in some other legal jurisdiction
-        isn't going to cause trouble.
-        Many people assume that it's "just OK",
-        while others act as if not having asked will be an acceptable defence later on.
-        Unfortunately,
-        neither is true&hellip;
-      </p>
+    <li>
+      spend a few dollars a month on a commercial hosting service like <a href="http://dreamhost.com">DreamHost</a>
+      that provides web-based GUIs for creating and managing repositories.
+    </li>
 
-      <div class="keypoints" id="k:setup">
-        <h3>Summary</h3>
-        <ul>
-          <li>Repositories can be hosted locally, on local (departmental) servers, on hosting services, or on their owners' own domains.</li>
-          <li><code>svnadmin create <em>name</em></code> creates a new repository.</li>
-        </ul>
-      </div>
+  </ul>
 
-    </section>
+  <p>
+    If you choose the second or third option,
+    please check with whoever handles intellectual property at your institution
+    to make sure that putting your work on a commercially-operated machine
+    that is probably in some other legal jurisdiction
+    isn't going to cause trouble.
+    Many people assume that it's "just OK",
+    while others act as if not having asked will be an acceptable defence later on.
+    Unfortunately,
+    neither is true&hellip;
+  </p>
 
-    <section id="s:provenance">
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Repositories can be hosted locally, on local (departmental) servers, on hosting services, or on their owners' own domains.</li>
+      <li><code>svnadmin create <em>name</em></code> creates a new repository.</li>
+    </ul>
+  </div>
 
-      <h2>Provenance</h2>
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <p class="fixme">write some</p>
+  </div>
 
-      <div class="understand" id="u:provenance">
-        <h3>Understand:</h3>
-        <ul>
-          <li>What data provenance is.</li>
-          <li>How to embed version numbers and other information in files managed by version control.</li>
-          <li>How to record version information about a program in its output.</li>
-        </ul>
-      </div>
+</section>
 
-      <p>
-        In art,
-        the <a href="glossary.html#provenance">provenance</a> of a work
-        is the history of who owned it, when, and where.
-        In science,
-        it's the record of how a particular result came to be:
-        what raw data was processed by what version of what program to create which intermediate files,
-        what was used to turn those files into which figures of which papers,
-        and so on.
-      </p>
+<section id="s:provenance">
+  <h2>Provenance</h2>
 
-      <p>
-        One of the central ideas of this course is that
-        wen can automatically track the provenance of scientific data.
-        To start,
-        suppose we have a text file <code>combustion.dat</code> in a Subversion repository.
-        Run the following two commands:
-      </p>
+  <div class="understand">
+    <h3>Understand:</h3>
+    <ul>
+      <li>What data provenance is.</li>
+      <li>How to embed version numbers and other information in files managed by version control.</li>
+      <li>How to record version information about a program in its output.</li>
+    </ul>
+  </div>
+
+  <p>
+    In art,
+    the <a href="glossary.html#provenance">provenance</a> of a work
+    is the history of who owned it, when, and where.
+    In science,
+    it's the record of how a particular result came to be:
+    what raw data was processed by what version of what program to create which intermediate files,
+    what was used to turn those files into which figures of which papers,
+    and so on.
+  </p>
+
+  <p>
+    One of the central ideas of this course is that
+    wen can automatically track the provenance of scientific data.
+    To start,
+    suppose we have a text file <code>combustion.dat</code> in a Subversion repository.
+    Run the following two commands:
+  </p>
 
 <pre>
 $ svn propset svn:keywords Revision combustion.dat
 $ svn commit -m "Turning on the 'Revision' keyword" combustion.dat
 </pre>
 
-      <p>
-        Now open the file in an editor
-        and add the following line somewhere near the top:
-      </p>
+  <p>
+    Now open the file in an editor
+    and add the following line somewhere near the top:
+  </p>
 
 <pre>
 # $Revision:$
 </pre>
 
-      <p>
-        The '#' sign isn't important:
-        it's just what <code>.dat</code> files use to show comments.
-        The <code>$Revision:$</code> string,
-        on the other hand,
-        means something special to Subversion.
-        Save the file, and commit the change:
-      </p>
+  <p>
+    The '#' sign isn't important:
+    it's just what <code>.dat</code> files use to show comments.
+    The <code>$Revision:$</code> string,
+    on the other hand,
+    means something special to Subversion.
+    Save the file, and commit the change:
+  </p>
 
 <pre>
 $ svn commit -m "Inserting the 'Revision' keyword" combustion.dat
 </pre>
 
-      <p>
-        When we open the file again,
-        we'll see that Subversion has changed that line to something like:
-      </p>
+  <p>
+    When we open the file again,
+    we'll see that Subversion has changed that line to something like:
+  </p>
 
 <pre>
 # $Revision: 143$
 </pre>
 
-      <p class="continue">
-        i.e., Subversion has inserted the version number
-        after the colon and before the closing <code>$</code>.
-      </p>
+  <p class="continue">
+    i.e., Subversion has inserted the version number
+    after the colon and before the closing <code>$</code>.
+  </p>
 
-      <p>
-        Here's what just happened.
-        First, Subversion allows you to set
-        <a href="glossary.html#property-subversion">properties</a>
-        for files and and directories.
-        These properties aren't in the files or directories themselves,
-        but live in Subversion's database.
-        One of those properties,
-        <code>svn:keywords</code>,
-        tells Subversion to look in files that are being changed
-        for strings of the form <code>$propertyname: &hellip;$</code>,
-        where <code>propertyname</code> is a string like <code>Revision</code> or <code>Author</code>.
-        (About half a dozen such strings are supported.)
-      </p>
+  <p>
+    Here's what just happened.
+    First, Subversion allows you to set
+    <a href="glossary.html#property-subversion">properties</a>
+    for files and and directories.
+    These properties aren't in the files or directories themselves,
+    but live in Subversion's database.
+    One of those properties,
+    <code>svn:keywords</code>,
+    tells Subversion to look in files that are being changed
+    for strings of the form <code>$propertyname: &hellip;$</code>,
+    where <code>propertyname</code> is a string like <code>Revision</code> or <code>Author</code>.
+    (About half a dozen such strings are supported.)
+  </p>
 
-      <p>
-        If it sees such a string,
-        Subversion rewrites it as the commit is taking place to replace <code>&hellip;</code>
-        with the current version number,
-        the name of the person making the change,
-        or whatever else the property's name tells it to do.
-        You only have to add the string to the file once;
-        after that,
-        Subversion updates it for you every time the file changes.
-      </p>
+  <p>
+    If it sees such a string,
+    Subversion rewrites it as the commit is taking place to replace <code>&hellip;</code>
+    with the current version number,
+    the name of the person making the change,
+    or whatever else the property's name tells it to do.
+    You only have to add the string to the file once;
+    after that,
+    Subversion updates it for you every time the file changes.
+  </p>
 
-      <p>
-        Putting the version number in the file this way can be pretty handy.
-        If you copy the file to another machine,
-        for example,
-        it carries its version number with it,
-        so you can tell which version you have even if it's outside version control.
-        We'll see some more useful things we can do with this information in
-        <a href="python.html">the next chapter</a>.
-      </p>
+  <p>
+    Putting the version number in the file this way can be pretty handy.
+    If you copy the file to another machine,
+    for example,
+    it carries its version number with it,
+    so you can tell which version you have even if it's outside version control.
+    We'll see some more useful things we can do with this information in
+    <a href="python.html">the next chapter</a>.
+  </p>
 
-      <div class="box">
+  <div class="box">
+    <h3>When <em>Not</em> to Use Version Control</h3>
 
-        <h3>When <em>Not</em> to Use Version Control</h3>
+    <p>
+      Despite the rapidly decreasing cost of storage,
+      it is still possible to run out of disk space.
+      In some labs,
+      people can easy go through 2 TB/month if they're not careful.
+      Since version control tools usually store revisions in terms of lines,
+      with binary data files,
+      they end up essentially storing every revision separately.
+      This isn't that bad
+      (it's what we'd be doing anyway),
+      but it means version control isn't doing what it likes to do,
+      and the repository can get very large very quickly.
+      Another concern is that if very old data will no longer be used,
+      it can be nice to archive or delete old data files.
+      This is not possible if our data is version controlled:
+      information can only be added to a repository,
+      so it can only ever increase in size.
+    </p>
 
-        <p>
-          Despite the rapidly decreasing cost of storage,
-          it is still possible to run out of disk space.
-          In some labs,
-          people can easy go through 2 TB/month if they're not careful.
-          Since version control tools usually store revisions in terms of lines,
-          with binary data files,
-          they end up essentially storing every revision separately.
-          This isn't that bad
-          (it's what we'd be doing anyway),
-          but it means version control isn't doing what it likes to do,
-          and the repository can get very large very quickly.
-          Another concern is that if very old data will no longer be used,
-          it can be nice to archive or delete old data files.
-          This is not possible if our data is version controlled:
-          information can only be added to a repository,
-          so it can only ever increase in size.
-        </p>
+  </div>
 
-      </div>
-
-      <p>
-        We can use this trick with shell scripts too,
-        or with almost any other kind of program.
-        Going back to Nelle Nemo's data processing from the previous chapter,
-        for example,
-        suppose she writes a shell script that uses <code>gooclean</code>
-        to tidy up data files.
-        Her first version looks like this:
-      </p>
+  <p>
+    We can use this trick with shell scripts too,
+    or with almost any other kind of program.
+    Going back to Nelle Nemo's data processing from
+    the lesson on the <a href="shell.html">shell</a>,
+    for example,
+    suppose she writes a shell script that uses <code>gooclean</code>
+    to tidy up data files.
+    Her first version looks like this:
+  </p>
 
 <pre>
 for filename in $*
@@ -1825,13 +1883,13 @@ do
 done
 </pre>
 
-      <p class="continue">
-        i.e., it runs <code>gooclean</code> with bounding values of 0 and 100
-        for each specified file,
-        putting the result in a temporary file with a well-defined name.
-        Assuming that '#' is the comment character for those kinds of data files,
-        she could instead write:
-      </p>
+  <p class="continue">
+    i.e., it runs <code>gooclean</code> with bounding values of 0 and 100
+    for each specified file,
+    putting the result in a temporary file with a well-defined name.
+    Assuming that '#' is the comment character for those kinds of data files,
+    she could instead write:
+  </p>
 
 <pre>
 for filename in $*
@@ -1841,28 +1899,33 @@ do
 done
 </pre>
 
-      <p>
-        The first change puts a line in the output file
-        that describes how that file was created.
-        The second change is to use <code>&gt;&gt;</code> instead of <code>&gt;</code>
-        to redirect <code>gooclean</code>'s output to the file.
-        <code>&gt;&gt;</code> means "append to":
-        instead of overwriting whatever is in the file,
-        it adds more content to it.
-        This ensures that the first line of the file is the provenance record,
-        with the actual output of <code>gooclean</code> after it.
-      </p>
+  <p>
+    The first change puts a line in the output file
+    that describes how that file was created.
+    The second change is to use <code>&gt;&gt;</code> instead of <code>&gt;</code>
+    to redirect <code>gooclean</code>'s output to the file.
+    <code>&gt;&gt;</code> means "append to":
+    instead of overwriting whatever is in the file,
+    it adds more content to it.
+    This ensures that the first line of the file is the provenance record,
+    with the actual output of <code>gooclean</code> after it.
+  </p>
 
-      <div class="keypoints" id="k:provenance">
-        <h3>Summary</h3>
-        <ul>
-          <li><code>$Keyword:$</code> in a file can be filled in with a property value each time the file is committed.</li>
-          <li idea="paranoia">Put version numbers in programs' output to establish provenance for data.</li>
-          <li><code>svn propset svn:keywords <em>property</em> <em>files</em></code> tells Subversion to start filling in property values.</li>
-        </ul>
-      </div>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li><code>$Keyword:$</code> in a file can be filled in with a property value each time the file is committed.</li>
+      <li>Put version numbers in programs' output to establish provenance for data.</li>
+      <li><code>svn propset svn:keywords <em>property</em> <em>files</em></code> tells Subversion to start filling in property values.</li>
+    </ul>
+  </div>
 
-    </section>
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <p class="fixme">write some</p>
+  </div>
+
+</section>
 
 <section id="s:summary">
   <h2>Summing Up</h2>
