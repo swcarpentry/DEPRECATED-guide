@@ -32,10 +32,6 @@
   <li><a href="#s:summary">Summing Up</a></li>
 </ol>
 
-    <!-- LH: don't hard-code data values into your programs. Instead,
-    pass them to your programs via command-line parameters or input
-    files. -->
-
 <p>
   A cochlear implant is a small device placed in the inner ear
   to give the hearing impaired a sense of sound.
@@ -2187,6 +2183,21 @@ in_range += 0 &lt;= number &lt;= 5
       </li>
 
       <li>
+        Python considers zero and the empty string equivalent to be false,
+        and all non-zero numbers and non-empty strings equivalent to be true.
+        Knowing that,
+        how can you simplify the following lines of code:
+<pre>
+if len(some_string) != 0:
+    print 'string is not empty'
+elif some_number != 0:
+    print 'number is not zero'
+elif some_flag == True:
+    print 'flag is true'
+</pre>
+      </li>
+
+      <li>
         Aurora has inherited some audio sample files
         in which regions are marked with the words "begin" and "end":
 <pre>
@@ -2240,22 +2251,21 @@ print current
 
 </section>
 
-    <section id="s:parse">
+<section id="s:parse">
+  <h2>Reading Data Files</h2>
 
-      <h2>Reading Data Files</h2>
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Read a simple columnar data file and operate on its values.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:parse">
-        <h3>Learning Objectives</h3>
-        <ul>
-          <li>Read a simple columnar data file and operate on its values.</li>
-        </ul>
-      </div>
-
-      <p>
-        It's finally time to clean up Aurora's actual cochlear implant data files.
-        Once again,
-        these files typically look like this:
-      </p>
+  <p>
+    It's finally time to clean up Aurora's actual cochlear implant data files.
+    Once again,
+    these files typically look like this:
+  </p>
 
 <pre>
 Subject: 1782
@@ -2271,9 +2281,10 @@ volume   1    3.5
 volume   2    4.0
 </pre>
 
-      <p>
-        We already have a program that ignores everything up to and including the dashed lines:
-      </p>
+  <p>
+    We already know how to ignore everything
+    up to and including the dash line:
+  </p>
 
 <pre>
 import sys
@@ -2287,14 +2298,15 @@ for line in data:
 print 'Number of data lines:', number
 </pre>
 
-      <p class="continue">
-        Let's modify it to report scores that are outside the range 0&ndash;5.
-        First,
-        we need a way to break each line into columns.
-        Luckily for us,
-        strings know how to split themselves into fields:
-      </p>
-
+  <p class="continue">
+    Let's put that in a file called <code>check.py</code>
+    and modify it to report scores that are outside the range 0&ndash;5.
+    First,
+    we need a way to break each line into columns.
+    Luckily for us,
+    strings know how to split themselves into fields:
+  </p>
+  
 <pre>
 &gt;&gt;&gt; typical_line = 'volume   2    4.0'
 &gt;&gt;&gt; name, number, score = typical_line.split()
@@ -2306,23 +2318,20 @@ print 'Number of data lines:', number
 '4.0'
 </pre>
 
-    <!-- JK: It becomes clear later that these lines should be placed in a file 
-         called check.py - might want to say that here. -->
-
-      <p class="continue">
-        The <code>string.split</code> returns as many new strings
-        as there are whitespace-separated fields in the original string.
-        In our case,
-        there are three fields,
-        so we can assign them result of <code>split</code> to three separate variables simultaneously.
-        The third field,
-        which we have put in the variable <code>score</code>,
-        is a string;
-        if we want its value as a floating-point number,
-        we'll have to convert it using the <code>float</code> function.
-        Combining this code with the program we already had,
-        we get:
-      </p>
+  <p class="continue">
+    The <code>string.split</code> returns as many new strings
+    as there are whitespace-separated fields in the original string.
+    In our case,
+    there are three fields,
+    so we can assign them result of <code>split</code> to three separate variables simultaneously.
+    The third field,
+    which we have put in the variable <code>score</code>,
+    is a string;
+    if we want its value as a floating-point number,
+    we'll have to convert it using the <code>float</code> function.
+    Combining this code with the program we already had,
+    we get:
+  </p>
 
 <pre>
 import sys
@@ -2335,9 +2344,9 @@ for line in data:
         score = float(score)</span>
 </pre>
 
-      <p>
-        A simple <code>if</code> statement is the last piece of the puzzle:
-      </p>
+  <p>
+    A simple <code>if</code> statement is the last piece of the puzzle:
+  </p>
 
 <pre>
 import sys
@@ -2352,21 +2361,21 @@ for line in data:
             print 'Out of range:', name, number, score</span>
 </pre>
 
-      <p>
-        If we run this on our sample data file,
-        it produces no output,
-        because all the scores in the file are valid:
-      </p>
+  <p>
+    This program doesn't produce any output
+    when we run it on our original data file
+    because all the scores in the file are valid:
+  </p>
 
 <pre>
 $ <span class="in">python check.py &lt; cochlear01.txt</span>
 $
 </pre>
 
-      <p class="continue">
-        But if we make some of the scores invalid,
-        like this:
-      </p>
+  <p class="continue">
+    But if we make some of the scores invalid,
+    like this:
+  </p>
 
 <pre>
 Subject: 1782
@@ -2382,111 +2391,104 @@ volume   1    <span class="highlight">-3</span>
 volume   2    4.0
 </pre>
 
-      <p class="continue">
-        then the output changes to:
-      </p>
+  <p class="continue">
+    then the output changes to:
+  </p>
 
 <pre>
 <span class="out">Out of range: range 2 7.5
 Out of range: volume 1 -3.0</span>
 </pre>
 
-      <p class="continue">
-        which is what we wanted.
-      </p>
+  <p class="continue">
+    which is what we wanted.
+  </p>
 
-      <div class="keypoints" id="k:parse">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use <code>str.split()</code> to split a string into pieces on whitespace.</li>
-          <li>Values can be assigned to any number of variables at once.</li>
-        </ul>
-      </div>
+  <div class="box">
+    <h3>When Not To Do This</h3>
 
-      <div id="c:parse">
-        <h3>Challenges</h3>
+    <p>
+      The technical term for extracting information from a file
+      that has some internal structure
+      is <a href="glossary.html#parsing">parsing</a>.
+      Most of the time,
+      you <em>don't</em> want to do this.
+      Instead,
+      you want to use a parser that someone else has already written and tested.
+      We'll meet a few later in this lesson;
+      for now,
+      though,
+      learning how to get values out of files
+      is a good way to learn basic programming concepts.
+    </p>
+  </div>
 
-        <ol>
-          <li>
-            What does this program do?
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Use <code>str.split()</code> to split a string into pieces on whitespace.</li>
+      <li>Values can be assigned to any number of variables at once.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <ol>
+      <li>
+        What does this program calculate?
 <pre>
 for line in open('columns.txt', 'r'):
     first, second = line.strip().split()
     print int(first) + int(second)
 </pre>
-            <ol class="choices">
-              <li>Nothing: the first line contains a syntax error.</li>
-              <li>Adds pairs of numbers from a file containing two columns of data.</li>
-              <li>Totals the values in the first column of data and (separately) the values in the second column.</li>
-              <li>Nothing: the program fails because it doesn't close the file it opens.</li>
-            </ol>
-          </li>
+      </li>
 
-          <li>
-            What does this program do?
+      <li>
+        Explain what this program does,
+        and give an example of five or six lines of input
+        that will cause each line in this program to be executed
+        at least once.
 <pre>
-source = open('masses.txt', 'r')
+import sys
 total = 0.0
-for line in source:
+for line in sys.stdin:
     if line.startswith('#'):
         print total
         total = 0.0
     else:
         total += float(line)
-source.close()
 </pre>
-            <ol class="choices">
-              <li>Add up groups of numbers (one per line) separated by lines starting with '#', printing the totals.</li>
-              <li>As in #1, except the program does not print the first sub-total.</li>
-              <li>As in #1, except the program does not print the last sub-total.</li>
-              <li>As in #1, except the program does not include the first number in each group in its sub-total.</li>
-            </ol>
-          </li>
+      </li>
 
-          <li>
-            What does this program do?
+      <li>
+        Explain what this program does:
 <pre>
-reader = open('patients.txt', 'r')
+import sys
 largest = 0
-for line in reader:
+for line in sys.stdin:
     if '#' in line:
         line, rest = line.split('#')
     largest = max(largest, len(line.strip()))
-reader.close()
 print largest
 </pre>
-            <ol class="choices">
-              <li>Print the length of the longest line in the file.</li>
-              <li>As in #1, except it ignores everything after the first '#' in each line.</li>
-              <li>As in #2, except it does not include trailing whitespace in the length of the line.</li>
-              <li>As in #2, except it does not include leading or trailing whitespace in the length of the line.</li>
-            </ol>
-          </li>
+      </li>
 
-          <li>
-            What does this program do?
+      <li>
+        Explain what this program does:
 <pre>
-reader = open('patients.txt', 'r')
-writer = open('filtered.txt', 'w')
-for line in reader:
+import sys
+for line in sys.stdin:
     line = line.strip()
-    if len(line) &gt; 0:
-        writer.write(line)
-reader.close()
-writer.close()
+    if line:
+        print line
 </pre>
-            <ol class="choices">
-              <li>Copy the first non-blank line from <code>patients.txt</code> to <code>filtered.txt</code>.</li>
-              <li>Copy the longest non-blank line from <code>patients.txt</code> to <code>filtered.txt</code>.</li>
-              <li>Copy all lines from <code>patients.txt</code> to <code>filtered.txt</code>.</li>
-              <li>Copy all non-blank lines from <code>patients.txt</code> to <code>filtered.txt</code>.</li>
-            </ol>
-          </li>
+      </li>
 
-        </ol>
-      </div>
+    </ol>
+  </div>
 
-    </section>
+</section>
 
     <section id="s:lists">
 
