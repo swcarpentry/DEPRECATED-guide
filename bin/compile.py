@@ -13,7 +13,8 @@ import jinja2
 
 #----------------------------------------
 
-TITLE_RE = re.compile(r'<meta\s+name="title"\s+content="([^"]*)"\s*/>')
+TITLE_RE  = re.compile(r'<meta\s+name="title"\s+content="([^"]*)"\s*/>')
+STATUS_RE = re.compile(r'<meta\s+name="status"\s+content="([^"]*)"\s*/>')
 
 CONTACT_EMAIL   = 'info@software-carpentry.org'
 FACEBOOK_URL    = 'https://www.facebook.com/SoftwareCarpentry'
@@ -38,10 +39,12 @@ def main(out_dir, source_files):
     loader = jinja2.FileSystemLoader(['.'])
     environment = jinja2.Environment(loader=loader)
     for (i, f) in enumerate(source_files):
-        title = get_title(f)
+        title = get_meta(f, TITLE_RE, 'title', True)
+        status = get_meta(f, STATUS_RE, 'status', False)
         template = environment.get_template(f)
         page = {
             'title'           : title,
+            'status'          : status,
             'prev'            : get_prev(source_files, i),
             'next'            : get_next(source_files, i),
             'uplink'          : 'index.html'
@@ -52,14 +55,18 @@ def main(out_dir, source_files):
 
 #----------------------------------------
 
-def get_title(filename):
-    '''Extract title from Jinja2 file.'''
+def get_meta(filename, pattern, name, required):
+    '''Extract metadata from Jinja2 file.'''
 
     with open(filename, 'r') as reader:
         data = reader.read()
-    match = TITLE_RE.search(data)
-    assert match, 'No title found in %s' % filename
-    return match.group(1)
+    match = pattern.search(data)
+    if match:
+        return match.group(1)
+    elif required:
+        assert False, 'No match found in %s for %s' % (filename, name)
+    else:
+        return None
 
 #----------------------------------------
 
