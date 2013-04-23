@@ -399,7 +399,7 @@ NameError: name 'temp_celsius' is not defined</span>
     </ul>
   </div>
 
-  <div class="challenges" id="c:basic">
+  <div class="challenges">
     <h3>Challenges</h3>
 
     <ol>
@@ -1092,7 +1092,7 @@ writer.close()
     </ul>
   </div>
 
-  <div>
+  <div class="challenges">
     <h3>Challenges</h3>
 
     <ol>
@@ -1153,52 +1153,51 @@ writer.close()
 
 </section>
 
-    <section id="s:stdio">
+<section id="s:stdio">
+  <h2>Standard Input and Output</h2>
 
-      <h2>Standard Input and Output</h2>
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Explain what "importing a module" means and does.</li>
+      <li>Write programs that import standard library modules.</li>
+      <li>Explain what standard input and output are, and how they relate to the <a href="shell.html#b:pipefilter">pipe-and-filter</a> model.</li>
+      <li>Write programs that read from standard input.</li>
+      <li>Write programs that write to standard output.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:stdio">
-        <h3>Learning Objectives</h3>
-        <ul>
-          <li>Explain what "importing a module" means and does.</li>
-          <li>Write programs that import standard library modules.</li>
-          <li>Explain what standard input and output are, and how they relate to the <a href="shell.html#b:pipefilter">pipe-and-filter</a> model.</li>
-          <li>Write programs that read from standard input.</li>
-          <li>Write programs that write to standard output.</li>
-        </ul>
-      </div>
-
-      <p>
-        Our program currently reads the header from <code>cochlear01.txt</code>
-        every time we run it.
-        There's not much point in that:
-        what we really want is to read from any file,
-        or from several files in turn.
-        Doing that requires a bit of machinery we haven't seen yet,
-        so let's solve a simpler problem:
-        reading from standard input instead of from a file.
-        Once we can do that,
-        we can run our program as:
-      </p>
+  <p>
+    Our program currently reads the header from <code>cochlear01.txt</code>
+    every time we run it.
+    There's not much point in that:
+    what we really want is to read from any file,
+    or from several files in turn.
+    Doing that requires a bit of machinery we haven't seen yet,
+    so let's solve a simpler problem:
+    reading from standard input instead of from a file.
+    Once we can do that,
+    we can run our program as:
+  </p>
 
 <pre>
-$ <span class="in">python get-subject-date.py &lt; somefile.txt</span>
+$ <span class="in">python first.py &lt; somefile.txt</span>
 </pre>
 
-      <p class="continue">
-        or read from several files using:
-      </p>
+  <p class="continue">
+    or read from several files using:
+  </p>
 
 <pre>
 $ <span class="in">for inputfile in cochlear*.txt
 do
-    python get-subject-date.py &lt; $inputfile
+    python first.py &lt; $inputfile
 done</span>
 </pre>
 
-      <p>
-        Here's the modified program:
-      </p>
+  <p>
+    Here's the modified program:
+  </p>
 
 <pre>
 <span class="highlight">import sys
@@ -1209,119 +1208,106 @@ print first_line
 reader.close()
 </pre>
 
-      <p class="continue">
-        The two lines that have changed are highlighted at the top of the program.
-        The first loads a library called <code>sys</code>,
-        which connects Python to the system it is running on.
-        The second line sets <code>reader</code> to be <code>sys.stdin</code>,
-        which is just the standard input stream we met in
-        <a href="shell.html#s:pipefilter:pipes">our discussion of pipes</a>.
-        Nothing else changes,
-        since standard input tries really hard to behave like an open file
-        (<a href="#f:replacing_with_stdin">Figure XXX</a>).
-        In particular,
-        the object that <code>sys.stdin</code> (and hence <code>reader</code>) points at
-        has a method with the same name and behavior as a file's <code>readline</code> method,
-        and another with the same name and behavior as a file's <code>close</code>,
-        so we can swap one for the other without having to modify anything else.
-      </p>
+  <p class="continue">
+    The two lines that have changed are highlighted at the top of the program.
+    The first loads a library called <code>sys</code>,
+    which connects Python to the system it is running on.
+    The second line sets <code>reader</code> to be <code>sys.stdin</code>,
+    which is just the standard input stream we met in
+    <a href="shell.html#s:pipefilter:pipes">our discussion of pipes</a>.
+    Nothing else changes,
+    since standard input tries really hard to behave like an open file
+    (<a href="#f:replacing_with_stdin">Figure 9</a>).
+    In particular,
+    the object that <code>sys.stdin</code> (and hence <code>reader</code>) points at
+    has a method with the same name and behavior as a file's <code>readline</code> method,
+    and another with the same name and behavior as a file's <code>close</code>,
+    so we can swap one for the other without having to modify anything else.
+  </p>
 
-      <figure id="f:replacing_with_stdin">
-        <img src="python/replacing_with_stdin.png" alt="Replacing a File with Standard Input" />
-      </figure>
+  <figure id="f:replacing_with_stdin">
+    <img src="python/replacing_with_stdin.png" alt="Replacing a File with Standard Input" />
+    <figcaption>Figure 9: Replacing a File with Standard Input</figcaption>
+  </figure>
 
-      <div class="box">
+  <div class="box">
+    <h3>Interactive Testing</h3>
 
-        <h3>Interactive Testing</h3>
+    <p>
+      One other benefit of reading from standard input when no files are supplied
+      is that it allows interactive testing:
+      we can run our program
+      and then just type in things we want it to read.
+      If we do this,
+      we must type control-D to signal the end of input
+      (or control-Z in a Windows shell).
+    </p>
 
-        <p>
-          One other benefit of reading from standard input when no files are supplied
-          is that it allows interactive testing:
-          we can run our program
-          and then just type in things we want it to read.
-          If we do this,
-          we must type control-D to signal the end of input
-          (or control-Z in a Windows shell).
-        </p>
+  </div>
 
-      </div>
+  <div class="box">
+    <h3>Writing to Standard Output</h3>
 
-      <div class="box">
+    <p>
+      Just as we can write to an open file using <code>print &gt;&gt; handle</code>,
+      we can write to standard output using <code>print &gt;&gt; sys.stdout</code>.
+      This is redundant, though,
+      since <code>print</code> sends things to standard output by default.
+    </p>
 
-        <h3>Writing to Standard Output</h3>
+  </div>
 
-        <p>
-          Just as we can write to an open file using <code>print &gt;&gt; handle</code>,
-          we can write to standard output using <code>print &gt;&gt; sys.stdout</code>.
-          This is redundant, though,
-          since <code>print</code> sends things to standard output by default.
-        </p>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>The operating system automatically gives every program three open "files" called standard input, standard output, and standard error.</li>
+      <li>Standard input gets data from the keyboard, from a file when redirected with '&lt;', or from the previous stage in a pipeline with '|'.</li>
+      <li>Standard output writes data to the screen, to a file when redirected with '&gt;', or to the next stage in a pipeline with '|'.</li>
+      <li>Standard error also writes data to the screen, and is not redirected by '&gt;' or '|'.</li>
+      <li>Use <code>import <em>library</em></code> to import a library.</li>
+      <li>Use <code>library.thing</code> to refer to something imported from a library.</li>
+      <li>The <code>sys</code> library provides open "files" called <code>sys.stdin</code> and <code>sys.stdout</code> for standard input and output.</li>
+    </ul>
+  </div>
 
-      </div>
+  <div class="challenges">
+    <h3>Challenges</h3>
 
-      <div class="keypoints" id="k:stdio">
-        <h3>Summary</h3>
-        <ul>
-          <li>The operating system automatically gives every program three open "files" called standard input, standard output, and standard error.</li>
-          <li>Standard input gets data from the keyboard, from a file when redirected with '&lt;', or from the previous stage in a pipeline with '|'.</li>
-          <li>Standard output writes data to the screen, to a file when redirected with '&gt;', or to the next stage in a pipeline with '|'.</li>
-          <li>Standard error also writes data to the screen, and is not redirected by '&gt;' or '|'.</li>
-          <li>Use <code>import <em>library</em></code> to import a library.</li>
-          <li>Use <code>library.thing</code> to refer to something imported from a library.</li>
-          <li>The <code>sys</code> library provides open "files" called <code>sys.stdin</code> and <code>sys.stdout</code> for standard input and output.</li>
-        </ul>
-      </div>
+    <ol>
 
-      <div id="c:stdio">
-        <h3>Challenges</h3>
-
-        <ol>
-
-          <li>
-            What is the difference between:
+      <li>
+        What is the difference between:
 <pre>
 import sys
 reader = sys.stdin
 print len(reader.readline())
 </pre>
-            and:
+        and:
 <pre>
 import sys
 print len(sys.stdin.readline())
 </pre>
-            <ol class="choices">
-              <li>Nothing: they do exactly the same thing.</li>
-              <li>The second is not legal Python.</li>
-              <li>The first waits until there is actually input before running; the second does not.</li>
-              <li>None of the above (i.e., they are different in some other way).</li>
-            </ol>
-          </li>
-<!-- EP: the trend I'm really seeing in these questions is "what does X do?" and this /really/ isn't getting at conceptual knowledge. It's really a lot of pattern matching so far, or just compiling and seeing the difference. I'd strongly encourage you to think beyond the "what does X do" questions. -->
+      </li>
 
-          <li>
-            What does this program do?
+      <li>
+        What is the error in the following program,
+        and how would you fix it?
 <pre>
-import sys                                <span class="comment"># line 1</span>
-sys.stdin = open('temporary.txt', 'w')    <span class="comment"># line 2</span>
-sys.stdin.write(123)                      <span class="comment"># line 3</span>
-sys.stdin.close()                         <span class="comment"># line 4</span>
+import sys
+sys.stdin = open('temporary.txt', 'w')
+sys.stdin.write(123)
+sys.stdin.close()
 </pre>
-            <ol class="choices">
-              <li>It produces an error message on line 2 because <code>sys.stdin</code> cannot be opened for writing.</li>
-              <li>It produces an error message on line 3 because the number 123 cannot be written written using <code>file.write</code>.</li>
-              <li>It sends the number 123 to the previous stage in the command-line pipeline.</li>
-              <li>It saves the number 123 to the file <code>temporary.txt</code>.</li>
-            </ol>
-          </li>
+      </li>
 
-          <li>
-            Nelle wants to copy the first line of <code>patients.txt</code>
-            to the file <code>subjects.txt</code>
-            using the shell command:
+      <li>
+        Nelle wants to copy the first line of <code>patients.txt</code>
+        to the file <code>subjects.txt</code>
+        using the shell command:
 <pre>
 $ <span class="in">python copier.py &gt; subjects.txt</span>
 </pre>
-            Fill in the blanks in the program below so that it does this.
+        Fill in the blanks in the program below so that it does this.
 <pre>
 import sys
 source = ________
@@ -1329,115 +1315,86 @@ line = ________
 source.close()
 ________.________(line)
 </pre>
-            <table class="choices">
-              <tr>
-                <td>1.</td>
-                <td>2.</td>
-                <td>3.</td>
-                <td>4.</td>
-              </tr>
-              <tr>
-                <td><code>open(sys.stdin)</code></td>
-                <td><code>sys.stdin</code></td>
-                <td><code>sys.stdin</code></td>
-              </tr>
-              <tr>
-                <td><code>source.readline()</code></td>
-                <td><code>source.readline()</code></td>
-                <td><code>sys.stdin.readline()</code></td>
-              </tr>
-              <tr>
-                <td><code>stdout</code></td>
-                <td><code>sys.stdout</code></td>
-                <td><code>sys</code></td>
-              </tr>
-              <tr>
-                <td><code>write</code></td>
-                <td><code>write</code></td>
-                <td><code>stdout</code></td>
-              </tr>
-            </table>
-          </li>
+      </li>
 
-        </ol>
+    </ol>
 
-      </div>
+  </div>
 
+</section>
 
-    </section>
+<section id="s:for">
+  <h2>Repeating Things</h2>
 
-    <section id="s:for">
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Write a loop that processes the lines of a file.</li>
+      <li>Trace the values taken on by a loop variable during execution of the loop.</li>
+      <li>Explain what the "body" of a loop is, and correctly identify the bodies of loops.</li>
+    </ul>
+  </div>
 
-      <h2>Repeating Things</h2>
-
-      <div class="understand" id="u:for">
-        <h3>Learning Objectives</h3>
-        <ul>
-          <li>Write a loop that processes the lines of a file.</li>
-          <li>Trace the values taken on by a loop variable during execution of the loop.</li>
-          <li>Explain what the "body" of a loop is, and correctly identify the bodies of loops.</li>
-        </ul>
-      </div>
-
-      <p>
-        Computers are useful because they can do lots of calculations on lots of data,
-        which means we need a concise way to represent multiple steps.
-        (After all,
-        writing out a million additions would take longer than doing them.)
-        Let's start by finding out how many lines we have in our data file:
-      </p>
+  <p>
+    Computers are useful because they can do lots of calculations on lots of data,
+    which means we need a concise way to represent multiple steps.
+    (After all,
+    writing out a million additions would take longer than doing them.)
+    Let's start by finding out how many lines we have in our data file:
+  </p>
 
 <pre>
-reader = file('cochlear01.txt', 'r')
-number = 0
-for line in reader:
-    number = number + 1
-reader.close()
-print number, 'lines in file'
+&gt;&gt;&gt; reader = file('cochlear01.txt', 'r')
+&gt;&gt;&gt; number = 0
+&gt;&gt;&gt; for line in reader:
+...    number = number + 1
+&gt;&gt;&gt; reader.close()
+&gt;&gt;&gt; print number, 'lines in file'
 <span class="out">11 lines in file</span>
 </pre>
 
-      <p class="continue">
-        Once again, we create a connection to the file using <code>file</code>.
-        We then use a <a href="glossary.html#for-loop">for loop</a>
-        to get one line from the file at a time.
-        We don't do anything with the lines;
-        instead,
-        we add 1 to the value of <code>number</code> each time we see a new one.
-        Once we're done,
-        we close the file
-        (so that other people and programs can access it safely)
-        and report our findings
-        (<a href="#f:for_loop">Figure XXX</a>).
-      </p>
+  <p class="continue">
+    Once again, we create a connection to the file using <code>file</code>.
+    We then use a <a href="glossary.html#for-loop">for loop</a>
+    to get one line from the file at a time.
+    We don't do anything with the lines;
+    instead,
+    we add 1 to the value of <code>number</code> each time we see a new one.
+    Once we're done,
+    we close the file
+    (so that other people and programs can access it safely)
+    and report our findings
+    (<a href="#f:for_loop">Figure 10</a>).
+  </p>
 
-      <figure id="f:for_loop">
-        <img src="python/for_loop.png" alt="For Loop" />
-      </figure>
+  <figure id="f:for_loop">
+    <img src="python/for_loop.png" alt="For Loop" />
+    <figcaption>Figure 10: For Loop</figcaption>
+  </figure>
 
-      <p>
-        The indented line is called the <a href="glossary.html#loop-body">body</a> of the loop.
-        It's the command that Python executes repeatedly.
-        When Python is expecting us to type in the body of a loop interactively,
-        it changes its prompt from <code>&gt;&gt;&gt;</code> to <code>...</code>
-        as a reminder.
-      </p>
+  <p>
+    The indented line is called the <a href="glossary.html#loop-body">body</a> of the loop.
+    It's the command that Python executes repeatedly.
+    When Python is expecting us to type in the body of a loop interactively,
+    it changes its prompt from <code>&gt;&gt;&gt;</code> to <code>...</code>
+    as a reminder.
+  </p>
 
-      <p>
-        The variable <code>line</code> is sometimes called
-        the <a href="glossary.html#loop-variable">loop variable</a>.
-        There's nothing special about its name:
-        we could equally well have called it <code>something</code>.
-        What's important is that the <code>for</code> loop repeatedly
-        assigns a value to it,
-        then executes the loop body one more time.
-      </p>
+  <p>
+    The variable <code>line</code> is sometimes called
+    the <a href="glossary.html#loop-variable">loop variable</a>.
+    There's nothing special about its name:
+    we could equally well have called it <code>something</code>.
+    What's important is that the <code>for</code> loop repeatedly
+    assigns a value to it,
+    then executes the loop body one more time.
+  </p>
 
-      <p>
-        Python always uses indentation to show what's in the body of a loop
-        (or anything else&mdash;we'll see other things that have bodies soon).
-        This means that:
-      </p>
+  <p>
+    Python always uses indentation to show what's in the body of a loop
+    (or anything else&mdash;we'll see other things that have bodies soon).
+    This means that:
+  </p>
 
 <pre>
 for line in reader:
@@ -1445,9 +1402,9 @@ for line in reader:
     print "done"
 </pre>
 
-       <p class="continue">
-         and:
-       </p>
+  <p class="continue">
+    and:
+  </p>
 
 <pre>
 for line in reader:
@@ -1455,9 +1412,9 @@ for line in reader:
 print "done"
 </pre>
 
-      <p class="continue">
-        are different programs.  The first one prints:
-      </p>
+  <p class="continue">
+    behave differently.  The first one prints:
+  </p>
 
 <pre>
 <span class="out">Subject: 1782
@@ -1469,10 +1426,10 @@ done
 ...</span>
 </pre>
 
-      <p class="continue">
-        because the statement <code>print "done"</code> is inside the loop body.
-        The second prints:
-      </p>
+  <p class="continue">
+    because the statement <code>print "done"</code> is inside the loop.
+    The second prints:
+  </p>
 
 <pre>
 <span class="out">Subject: 1782
@@ -1484,18 +1441,17 @@ done
 </span>
 </pre>
 
-      <p class="continue">
-        because it is not.
-      </p>
+  <p class="continue">
+    because it is not.
+  </p>
 
-      <div class="box">
+  <div class="box">
+    <h3>Why Indentation?</h3>
 
-        <h3>Why Indentation?</h3>
-
-        <p>
-          Most other languages use visible markers to show the beginnings and ends of loop bodies,
-          such as:
-        </p>
+    <p>
+      Most other languages use visible markers to show the beginnings and ends of loop bodies,
+      such as:
+    </p>
 
 <pre>
 for value in data {
@@ -1503,9 +1459,9 @@ for value in data {
 }
 </pre>
 
-        <p class="continue">
-          or:
-        </p>
+    <p class="continue">
+      or:
+    </p>
 
 <pre>
 for value in data
@@ -1514,11 +1470,11 @@ begin
 end
 </pre>
 
-        <p>
-          Python uses indentation because studies done in the 1980s showed
-          that's what people actually pay attention to.
-          If we write something as:
-        </p>
+    <p>
+      Python uses indentation because studies of how people read programs have found
+      that's what people actually pay attention to.
+      If we write something as:
+    </p>
 <pre>
 for value in data {
     print value
@@ -1526,36 +1482,38 @@ for value in data {
     print "done"
 </pre>
 
-        <p class="continue">
-          then most people reading the code in a hurry will "see"
-          the second <code>print</code> statement as part of the loop.
-        </p>
+    <p class="continue">
+      then most people reading the code in a hurry will "see"
+      the second <code>print</code> statement as part of the loop,
+      even though it's not.
+    </p>
 
-      </div>
+  </div>
 
-      <div class="keypoints" id="k:for">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use <code>for <em>variable</em> in <em>something</em>:</code> to loop over the parts of something.</li>
-          <li>The body of a loop must be indented consistently.</li>
-          <li>The parts of a string are its characters; the parts of a file are its lines.</li>
-        </ul>
-      </div>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Use <code>for <em>variable</em> in <em>something</em>:</code> to loop over the parts of something.</li>
+      <li>The body of a loop must be indented consistently.</li>
+      <li>The parts of a string are its characters; the parts of a file are its lines.</li>
+    </ul>
+  </div>
 
-      <div id="c:for">
-        <h3>Challenges</h3>
+  <div class="challenges">
+    <h3>Challenges</h3>
 
-        <ol>
+    <ol>
 
-          <li>
-            Suppose that the file <code>counts.txt</code> contains:
+      <li>
+        Suppose that the file <code>counts.txt</code> contains:
 <pre>
 1
 2
 3
 </pre>
-            What does the following program print?
-<!-- EP: said it before, but I'm actually getting rather bored of the "What does X do" MCQs. Vary it up. You're really only probing one type of understanding here. -->
+        What are the values of <code>result</code> and <code>data</code>
+        each time the loop shown below is executed,
+        and what are their final values?
 <pre>
 source = open('counts.txt', 'r')
 result = 'result:'
@@ -1564,127 +1522,57 @@ for data in source:
 source.close()
 print result
 </pre>
-            <ol class="choices">
-              <li>An error message, because you cannot add numbers to strings.</li>
-              <li><code class="out">result:123</code></li>
-              <li><code class="out">result:6</code></li>
-              <li>None of the above.</li>
-            </ol>
-          </li>
+      </li>
 
-          <li>
-            If <code>counts.txt</code> contains the same data,
-            what does the following program print?
+      <li>
+        If <code>lines.txt</code> contains dozens or hundreds of lines,
+        what is a good short description of what the following program does?
 <pre>
-source = open('counts.txt', 'r')
-first = source.readline()
-second = source.readline()
+source = open(lines.txt', 'r')
+one = source.readline()
+two = source.readline()
 for next in source:
-    first = second
-    second = next
+    one = two
+    two = next
 source.close()
-print first, second, next
+print one
 </pre>
-<!-- EP: table formatting is confusing. Also: vertical whitespace, man!-->
-            <table class="choices">
-              <tr>
-                <td>1.</td>
-                <td>2.</td>
-                <td>3.</td>
-                <td>4.</td>
-              </tr>
-              <tr>
-                <td>
-<pre>
-1 2 3
-</pre>
-                </td>
-                <td>
-<pre>
-1
-2
-3
-</pre>
-                </td>
-                <td>
-<pre>
-1
-3
-3
-</pre>
-                </td>
-                <td>
-<pre>
-2
-3
-3
-</pre>
-                </td>
-              </tr>
-            </table>
-          </li>
+      </li>
 
-          <li>
-            What does the following program print?
-<pre>
-odds = '135'
-evens = '246'
-total = 0
-for first in odds:
-    total = total + int(first)
-for second in evens:
-    total = total + int(first)
-print total
-</pre>
-            <ol class="choices">
-              <li>12</li>
-              <li>21</li>
-              <li>24</li>
-              <li>An error message.</li>
-            </ol>
-          </li>
-
-          <li>
-            What does the following program print?
+      <li>
+        What does the following program print?
 <pre>
 text = 'abc'
 for char in text:
     text = text + char
 print text
 </pre>
-            <ol class="choices">
-              <li><code class="out">abca</code></li>
-              <li><code class="out">abcabc</code></li>
-              <li><code class="out">abcc</code></li>
-              <li>An error message (the program eventually crashes when it runs out of memory).</li>
-            </ol>
-          </li>
+      </li>
 
-        </ol>
+    </ol>
 
-      </div>
+  </div>
 
-    </section>
+</section>
 
-    <section id="s:logic">
+<section id="s:logic">
+  <h2>Making Choices</h2>
 
-      <h2>Making Choices</h2>
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Trace the execution of conditional statements.</li>
+      <li>Write conditional statements to perform selected statements only under specific conditions.</li>
+      <li>Use logical operators to combine tests in conditional statements.</li>
+      <li>Explain what "in-place operators" are, and correctly write statements using them.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:logic">
-        <h3>Learning Objectives</h3>
-        <ul>
-          <li>Trace the execution of conditional statements.</li>
-          <li>Write conditional statements to perform selected statements only under specific conditions.</li>
-          <li>Use logical operators to combine tests in conditional statements.</li>
-          <li>Explain what "in-place operators" are, and correctly write statements using them.</li>
-        </ul>
-      </div>
-
-      <p>
-        Let's make one more change to our program.
-        If you recall,
-        our data files look like this:
-      </p>
+  <p>
+    Let's make another change to our program <code>first.py</code>.
+    If you recall,
+    our data files look like this:
+  </p>
 
 <pre>
 Subject: 1782
@@ -1700,33 +1588,36 @@ volume   1    3.5
 volume   2    4.0
 </pre>
 
-      <p class="continue">
-        The first four lines aren't actually data,
-        so we really shouldn't include them in our count:
-      </p>
+  <p class="continue">
+    The first four lines aren't actually data,
+    so we really shouldn't include them
+    when we're counting how many records are in the file.
+    We could "fix" this simply by counting the total number of lines
+    and subtracting four:
+  </p>
 
 <pre>
+<span class="comment"># second.py</span>
 reader = file('cochlear01.txt', 'r')
 number = 0
 for line in reader:
     number = number + 1
 reader.close()
-print number <span class="highlight">- 4</span>, 'lines in file'
-<span class="out">7 lines in file</span>
+print number - 4, 'records in file'
 </pre>
 
-      <p>
-        Of course,
-        if anyone ever puts more (or less) than four descriptive lines at the top of a data file,
-        our count will be wrong again.
-        What we <em>really</em> want to do is skip everything up to the dashed lines.
-        We also want to check that all the scores are between 0 and 5.
-      </p>
+  <p class="continue">
+    but that is fragile:
+    if anyone ever puts more (or less) than four descriptive lines at the top of a data file,
+    our count will be wrong again.
+    What we <em>really</em> want to do is skip everything up to the dashed lines.
+    We also want to check that all the scores are between 0 and 5.
+  </p>
 
-      <p>
-        Let's step back and build up the machinery we need.
-        Suppose that our data files contained nothing but a single number on each line:
-      </p>
+  <p>
+    Let's step back and build up the machinery we need.
+    Suppose that our data files contained nothing but a single number on each line:
+  </p>
 
 <pre>
 3
@@ -1738,11 +1629,11 @@ print number <span class="highlight">- 4</span>, 'lines in file'
 4.0
 </pre>
 
-      <p class="continue">
-        (We have deliberately added two out-of-range values for our program to find.)
-        Here's a program that reads the data
-        and counts the number that fall outside the allowed range:
-      </p>
+  <p class="continue">
+    (We have deliberately added two out-of-range values for our program to find.)
+    Here's a program that reads the data
+    and counts the number that fall outside the allowed range:
+  </p>
 
 <pre>
 import sys
@@ -1755,49 +1646,63 @@ for value in sys.stdin:
 print num_outliers, "values out of range"
 </pre>
 
-      <p class="continue">
-        The command <code>if</code> means exactly what it does in English:
-        if a particular condition is true,
-        then do the statement or statements that are in the <code>if</code> statement's body
-        (i.e., indented underneath it).
-        Here,
-        we are using one <code>if</code> to see if the current value is less than 0,
-        and another to see if it is greater than 5.
-        In either case,
-        we add one to the count of outliers.
-        If neither condition is satisfied,
-        the value is clean,
-        and <code>num_outliers</code> won't be changed in that loop
-        (<a href="#f:loop_cond_flow">Figure XXX</a>).
-      </p>
+  <p class="continue">
+    The command <code>if</code> means exactly what it does in English:
+    if a particular condition is true,
+    then do the statement or statements that are in the <code>if</code> statement's body
+    (i.e., indented underneath it).
+    Here,
+    we are using one <code>if</code> to see if the current value is less than 0,
+    and another to see if it is greater than 5.
+    In either case,
+    we add one to the count of outliers.
+    If neither condition is satisfied,
+    the value is clean,
+    and <code>num_outliers</code> won't be changed in that loop
+    (<a href="#f:loop_cond_flow">Figure 11</a>).
+  </p>
 
-      <figure id="f:loop_cond_flow">
-        <img src="python/loop_cond_flow.png" alt="Conditional Execution" />
-      </figure>
+  <figure id="f:loop_cond_flow">
+    <img src="python/loop_cond_flow.png" alt="Conditional Execution" />
+    <figcaption>Figure 11: Conditional Execution</figcaption>
+  </figure>
 
-      <p>
-        When we run this program, though, we don't get a count of outliers.
-        Instead,
-        we get an error message:
-      </p>
+  <p>
+    When we run this program, though,
+    it reports that all of the values in the input are outliers:
+  </p>
 
 <pre>
-$ <span class="in">python count-outliers.py &lt; cochlear01.txt</span>
-<span class="err">fixme: error message</span>
+$ <span class="in">python second.py &lt; cochlear01.txt</span>
+<span class="out">7 values out of range</span>
 </pre>
 
-      <p class="continue">
-        The problem is once again one of types:
-        the loop variable <code>line</code> holds a string like <code>'3'</code>,
-        not the number 3.
-        The fix is straightforward:
-      </p>
+  <p class="continue">
+    The problem is once again one of types:
+    the loop variable <code>line</code> holds a string like <code>'3'</code>,
+    not the number 3,
+    and all strings are greater than all numbers:
+  </p>
+
+<pre>
+&gt;&gt;&gt; <span class="in">'hello' &gt; 0</span>
+<span class="out">True</span>
+&gt;&gt;&gt; <span class="in">'hello' &gt; 1000000</span>
+<span class="out">True</span>
+&gt;&gt;&gt; <span class="in">'' &gt; 1000000</span> <span class="comment"># even the empty string</span>
+<span class="out">True</span>
+</pre>
+
+  <p>
+    The fix is straightforward&mdash;we just have to convert
+    all the strings to numbers before we do the comparison:
+  </p>
 
 <pre>
 import sys
 num_outliers = 0
-for line in sys.stdin:
-    value = float(line)
+for <span class="highlight">line</span> in sys.stdin:
+    <span class="highlight">value = float(line)</span>
     if value &lt; 0:
         num_outliers = num_outliers + 1
     if value &gt; 5:
@@ -1806,9 +1711,19 @@ print num_outliers, "values out of range"
 <span class="out">2 values out of range</span>
 </pre>
 
-      <p>
-        We can combine our two tests using <code>and</code> and <code>or</code>:
-      </p>
+  <div class="box">
+    <h3>Why Isn't It An Error?</h3>
+
+    <p class="fixme">explain</p>
+  </div>
+
+  <p>
+    Let's make this program a little more readable.
+    First,
+    we'll combine our two tests using <code>or</code>
+    so that the statement that adds one to <code>num_outliers</code>
+    doesn't have to be duplicated:
+  </p>
 
 <pre>
 import sys
@@ -1818,39 +1733,27 @@ for line in sys.stdin:
     if (value &lt; 0) or (value &gt; 5):
         num_outliers = num_outliers + 1
 print num_outliers, "values out of range"
-<span class="out">2 values out of range</span>
 </pre>
 
-    <!-- JK: Here as before, I might find the box somewhat confusing if I were 
-         a beginner. Either the lines are supposed to be entered sequentially
-         in an interpreter, in which case the prompts are missing, or all lines 
-         except the final one should be in a text file and run, which one can
-         infer but requires a small mental jump - or was this style introduced
-         earlier in the book? -->
-
-      <p class="continue">
-        Alternatively,
-        we could count how many values are in range by reversing the test:
-      </p>
+  <p class="continue">
+    Alternatively,
+    we could count how many values are in range using <code>and</code>:
+  </p>
 
 <pre>
 import sys
 num_valid = 0
 for line in sys.stdin:
     value = float(line)
-    if (0 &lt;= value) and (n &lt;= value):
+    if (0 &lt;= value) and (value &lt;= 5):
         num_valid = num_valid + 1
 print num_valid, "values in range"
-<span class="out">5 values in range</span>
 </pre>
 
-    <!-- JK: I think there's an error in the above - should it read 
-         if (0 <= value) and (value <= 5): ? In any event, there's no n 
-         variable here. -->
-
-      <p class="continue">
-        or even:
-      </p>
+  <p class="continue">
+    which tells us that five values are in range.
+    We can simplify the test even further by writing it the way a mathematician would:
+  </p>
 
 <pre>
 import sys
@@ -1860,14 +1763,21 @@ for line in data:
     if <span class="highlight">0 &lt;= value &lt;= 5</span>:
         num_valid = num_valid + 1
 print num_valid, "values in range"
-<span class="out">5 values in range</span>
 </pre>
 
-      <p>
-        And if we want to count both at once,
-        we can use <code>else</code>.
-        The code it controls is executed when the code in the <code>if</code> <em>isn't</em>:
-      </p>
+  <p>
+    And if we want to count in-range values and outliers at the same time,
+    we can use <code>else</code>.
+    Its block of code is executed when
+    the code in the <code>if</code> it's paired with
+    <em>isn't</em> executed
+    (<a href="#f:else_flow">Figure 12</a>):
+  </p>
+
+  <figure id="f:else_flow">
+    <img src="python/else_flow.png" alt="If and Else" />
+    <figcaption>Figure 12: If and Else</figcaption>
+  </figure>
 
 <pre>
 import sys
@@ -1880,93 +1790,77 @@ for line in sys.stdin:
     else:
         num_outliers = num_outliers + 1
 print num_valid, "in range and", num_outliers, "outliers"
-<span class="out">5 in range and 2 outliers</span>
 </pre>
 
-      <div class="box">
-
-        <h3>In-Place Operators</h3>
-
-        <p>
-          We have seen expressions like:
-        </p>
+  <p>
+    Finally,
+    we have seen expressions like:
+  </p>
 
 <pre>
 num_valid = num_valid + 1
 </pre>
 
-        <p class="continue">
-          several times now.
-          In Python and many other languages,
-          we can simplify this by writing:
-        </p>
+  <p class="continue">
+    several times now.
+    In Python and many other languages,
+    we can simplify this by writing:
+  </p>
 
 <pre>
 num_valid += 1
 </pre>
 
-        <p class="continue">
-          which means,
-          "Update the value on the left using addition with the value on the right."
-          Similarly,
-          we can also double values using <code>*=</code> like this:
-        </p>
+  <p class="continue">
+    which means,
+    "Update the value on the left using addition with the value on the right."
+    Similarly,
+    we could double the value in the variable <code>something</code>
+    like this:
+  </p>
 
 <pre>
 something *= 2
 </pre>
 
-        <p class="continue">
-          and so on for other binary (two-valued) operators.
-          It may seem like a small saving,
-          but it actually prevents a lot of bugs
-          by eliminating duplicated code.
-        </p>
+  <p class="continue">
+    and so on for other binary (two-valued) operators.
+    It may seem like a small saving,
+    but it actually prevents a lot of bugs
+    by eliminating duplicated code.
+  </p>
+  
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Use <code>if <em>test</em></code> to do something only when a condition is true.</li>
+      <li>Use <code>else</code> to do something when a preceding <code>if</code> test is not true.</li>
+      <li>The body of an <code>if</code> or <code>else</code> must be indented consistently.</li>
+      <li>Combine tests using <code>and</code> and <code>or</code>.</li>
+      <li>Use '&lt;', '&lt;=', '&gt;=', and '&gt;' to compare numbers or strings.</li>
+      <li>Use '==' to test for equality and '!=' to test for inequality.</li>
+      <li>Use <code><em>variable</em> += <em>expression</em></code> as a shorthand for <code><em>variable</em> = <em>variable</em> + <em>expression</em></code> (and similarly for other arithmetic operations).</li>
+    </ul>
+  </div>
 
-      </div>
+  <div class="challenges">
+    <h3>Challenges</h3>
 
-      <div class="keypoints" id="k:logic">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use <code>if <em>test</em></code> to do something only when a condition is true.</li>
-          <li>Use <code>else</code> to do something when a preceding <code>if</code> test is not true.</li>
-          <li>The body of an <code>if</code> or <code>else</code> must be indented consistently.</li>
-          <li>Combine tests using <code>and</code> and <code>or</code>.</li>
-          <li>Use '&lt;', '&lt;=', '&gt;=', and '&gt;' to compare numbers or strings.</li>
-          <li>Use '==' to test for equality and '!=' to test for inequality.</li>
-          <li>Use <code><em>variable</em> += <em>expression</em></code> as a shorthand for <code><em>variable</em> = <em>variable</em> + <em>expression</em></code> (and similarly for other arithmetic operations).</li>
-        </ul>
-      </div>
-
-      <div id="c:logic">
-        <h3>Challenges</h3>
-
-        <ol>
-          <li>
-            What is the value of <code>x</code> after executing the code shown below?
+    <ol>
+      <li>
+        What is the value of <code>x</code> after executing the code shown below?
 <pre>
 x = 1
 x += x + 1
 </pre>
-            <ol class="choices">
-              <li>
-                Undefined (an error occurs).
-              </li>
-              <li>
-                1
-              </li>
-              <li>
-                2
-              </li>
-              <li>
-                3
-              </li>
-            </ol>
-          </li>
+        Should you write code this way?
+        Why or why not?
+      </li>
 
-          <li>
-            What change must be made to the following code
-            so that it produces the output shown?
+      <li>
+        What change must be made to the following code
+        (if any)
+        so that it prints the word "one"?
 <pre>
 major = 5 &gt; 0
 minor = 0.5 &lt;= 0
@@ -1976,66 +1870,54 @@ elif major or minor:
     print 'one'
 else:
     print 'neither'
-<span class="out">one</span>
 </pre>
-            <ol class="choices">
-              <li>
-                The <code>if</code> test must be <code>if (major == True) and (minor == True)</code>,
-                and the <code>elif</code> test must be <code>if (major == True) or (minor == True)</code>.
-              </li>
-              <li>
-                The <code>if</code> test must be <code>if major or minor</code>,
-                and the <code>elif</code> test must be <code>if major</code>.
-              </li>
-              <li>
-                The <code>if</code> test must be <code>if major</code>,
-                and the <code>elif</code> test must be <code>if minor</code>.
-              </li>
-              <li>
-                No change is required.
-              </li>
-            </ol>
-          </li>
+      </li>
 
-          <li>
-            A program initially executes these two lines:
+      <li>
+        A program starts with these two lines:
 <pre>
 color = 'green'
 shape = 'triangle'
 </pre>
-            Match each snippet of code to the final values of <code>color</code> and <code>shape</code>.
-            <table>
-              <tr>
-                <td>A</td>
-                <td>B</td>
-                <td>C</td>
-              </tr>
-              <tr>
-                <td valign="top">
+        Which of the blocks of code shown below
+        changes the shape to a square
+        without changing the color?
+        <table>
+          <tr>
+            <td valign="top">A</td>
+            <td valign="top">
 <pre>
 if color == 'green':
     shape = 'square'
 elif shape == 'square':
     color = 'red'
 </pre>
-                </td>
-                <td valign="top">
+            </td>
+          </tr>
+          <tr>
+             <td valign="top">B</td>
+             <td valign="top">
 <pre>
 if color == 'green':
     shape = 'square'
 if shape == 'square':
     color = 'red'
 </pre>
-                </td>
-                <td valign="top">
+             </td>
+          </tr>
+          <tr>
+            <td valign="top">C</td>
+            <td valign="top">
 <pre>
 if color == 'green' or shape == 'square':
     shape = 'circle'
 if shape == 'square':
     color = 'red'
 </pre>
-                </td>
-                <td valign="top">
+            </td>
+            <tr>
+              <td valign="top">D</td>
+              <td valign="top">
 <pre>
 if color == 'green':
     if shape != 'triangle':
@@ -2043,138 +1925,28 @@ if color == 'green':
 else:
     shape = 'square'
 </pre>
-                </td>
-              </tr>
-            </table>
+              </td>
+            </tr>
+        </table>
+      </li>
 
-            <table>
-              <tr>
-                <td></td>
-                <td>1</td>
-                <td>2</td>
-                <td>3</td>
-              </tr>
-              <tr>
-                <td><code>color</code></td>
-                <td><code>red</code></td>
-                <td><code>green</code></td>
-                <td><code>green</code></td>
-                <td><code>green</code></td>
-              </tr>
-              <tr>
-                <td><code>shape</code></td>
-                <td><code>square</code></td>
-                <td><code>circle</code></td>
-                <td><code>square</code></td>
-                <td><code>triangle</code></td>
-              </tr>
-            </table>
-
-          </li>
-
-          <li>
-            What does the following code print?
+      <li>
+        Python allows programmers to attach an <code>else</code> to a <code>for</code> loop:
 <pre>
-for char in 'CGT' * 0:
+name = ''
+for char in name:
     print char
 else:
-    print 'not found'
+    print 'nothing in name'
 </pre>
-            <table class="choices">
-              <tr>
-                <td>A</td>
-                <td>B</td>
-                <td>C</td>
-                <td>D</td>
-              </tr>
-              <tr>
-                <td valign="top">
-<pre>
-C
-G
-T
-</pre>
-                </td>
-                <td valign="top">
-<pre>
-0
-</pre>
-                </td>
-                <td valign="top">
-<pre>
-not found
-</pre>
-                </td>
-                <td valign="top">
-                  An "invalid syntax" error message.
-                </td>
-              </tr>
-            </table>
-          </li>
+        When would you use this in a data analysis program?
+      </li>
 
-          <li>
-            Fill in the blanks so that the program below prints out
-            the sum of the values in the list
-            <em>after</em> the last negative number.
-<pre>
-data = [5, -2, 3, 1, -6, 2, 4]
-total = 0
-for value in data:
-    if ________ &lt; 0:
-        ________ = 0
-    else:
-        ________ += ________
-print total
-</pre>
-            <table class="choices">
-              <tr>
-                <td>A</td>
-                <td>B</td>
-                <td>C</td>
-                <td>D</td>
-              </tr>
-              <tr>
-                <td valign="top">
-<pre>
-total
-total
-value
-value
-</pre>
-                </td>
-                <td valign="top">
-<pre>
-value
-total
-value
-total
-</pre>
-                </td>
-                <td valign="top">
-<pre>
-total
-value
-total
-value
-</pre>
-                </td>
-                <td valign="top">
-<pre>
-value
-total
-total
-value
-</pre>
-                </td>
-              </tr>
-            </table>
-          </li>
+    </ol>
 
-        </ol>
+  </div>
 
-      </div>
-
-    </section>
+</section>
 
     <section id="s:flag">
 
