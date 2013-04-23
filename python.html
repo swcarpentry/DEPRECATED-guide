@@ -147,9 +147,18 @@
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">print x</span>
+print x
+<hr/>
 <span class="out">2</span>
 </pre>
+
+  <p class="continue">
+    (Here and elsewhere,
+    we will leave out the Python prompts and just show the code.
+    When we do this,
+    we will use a horizontal line to separate
+    the program from its output.)
+  </p>
 
   <figure id="f:first_variable">
     <img src="python/first_variable.png" alt="Our First Variable" />
@@ -168,6 +177,7 @@
 
 <pre>
 print x = 1 + 2
+<hr/>
 <span class="err">SyntaxError: invalid syntax</span>
 </pre>
 
@@ -200,8 +210,9 @@ print x = 1 + 2
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">print x * 2</span>
-4
+print x * 2
+<hr/>
+<span class="out">4</span>
 </pre>
 
   <p class="continue">
@@ -209,8 +220,9 @@ print x = 1 + 2
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">y = x * 2</span>
-&gt;&gt;&gt; <span class="in">print y</span>
+y = x * 2
+print y
+<hr/>
 <span class="out">4</span>
 </pre>
 
@@ -220,9 +232,10 @@ print x = 1 + 2
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">x = 10</span>
-&gt;&gt;&gt; <span class="in">print x</span>
-10
+x = 10
+print x
+<hr/>
+<span class="out">10</span>
 </pre>
 
   <p class="continue">
@@ -245,9 +258,10 @@ print x = 1 + 2
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">x = 98.6</span>
-&gt;&gt;&gt; <span class="in">y = (x - 32.0) * (5.0 / 9.0) + 273.15</span>
-&gt;&gt;&gt; <span class="in">print y</span>
+x = 98.6
+y = (x - 32.0) * (5.0 / 9.0) + 273.15
+print y
+<hr/>
 <span class="out">310.15</span>
 </pre>
 
@@ -256,9 +270,10 @@ print x = 1 + 2
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">temp_fahr = 98.6</span>
-&gt;&gt;&gt; <span class="in">temp_kelvin = (temp_fahr - 32.0) * (5.0 / 9.0) + 273.15</span>
-&gt;&gt;&gt; <span class="in">print "body temperature in Kelvin:", temp_kelvin</span>
+temp_fahr = 98.6
+temp_kelvin = (temp_fahr - 32.0) * (5.0 / 9.0) + 273.15
+print "body temperature in Kelvin:", temp_kelvin
+<hr/>
 <span class="out">body temperature in Kelvin: 310.15</span>
 </pre>
 
@@ -314,7 +329,7 @@ print x = 1 + 2
     </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">double_temp = temp_celsius * 2</span>
+double_temp = temp_celsius * 2
 </pre>
 
     <p class="continue">
@@ -334,7 +349,7 @@ NameError: name 'temp_celsius' is not defined</span>
     </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">temp_kelvin = (<span class="highlight">temp_far</span> - 32.0) * (5.0 / 9.0) + 273.15</span>
+temp_kelvin = (<span class="highlight">temp_far</span> - 32.0) * (5.0 / 9.0) + 273.15
 </pre>
 
     <p class="continue">
@@ -407,20 +422,21 @@ NameError: name 'temp_celsius' is not defined</span>
       <li>
         What is the output of:
 <pre>
-&gt;&gt;&gt; <span class="in">inner = 13.0</span>
-&gt;&gt;&gt; <span class="in">outer = 2 * inner</span>
-&gt;&gt;&gt; <span class="in">inner = 2 * inner</span>
-&gt;&gt;&gt; <span class="in">print outer</span>
+inner = 13.0
+outer = 2 * inner
+inner = 2 * inner
+print outer
 </pre>
       </li>
 
       <li>
         Fill in the blank so that these lines of code produce the output shown.
 <pre>
-&gt;&gt;&gt; <span class="in">female = 'GGT'</span>
-&gt;&gt;&gt; <span class="in">male = 'CAC'</span>
-&gt;&gt;&gt; <span class="in">________</span>
-&gt;&gt;&gt; <span class="in">print female</span>
+female = 'GGT'
+male = 'CAC'
+________
+print female
+<hr/>
 <span class="out">GGTGGTCAC</span>
 </pre>
       </li>
@@ -428,10 +444,11 @@ NameError: name 'temp_celsius' is not defined</span>
       <li>
         What single change can be made to the first three lines below to get the output shown?
 <pre>
-&gt;&gt;&gt; <span class="in">scaling = 10</span> <span class="comment"># line 1</span>
-&gt;&gt;&gt; <span class="in">original = 7</span> <span class="comment"># line 2</span>
-&gt;&gt;&gt; <span class="in">adjusted = primary / scaling</span> <span class="comment"># line 3</span>
-&gt;&gt;&gt; <span class="in">print original + adjusted</span> <span class="comment"># line 4</span>
+scaling = 10
+original = 7
+adjusted = primary / scaling
+print original + adjusted
+<hr/>
 <span class="out">7.7</span>
 </pre>
       </li>
@@ -503,7 +520,8 @@ print "before", 1/0, "after"
   </p>
 
 <pre>
-<span class="out">before</span>
+before
+<hr/>
 <span class="err">Traceback (most recent call last):
   File "a.py", line 2, in &lt;module&gt;
     1/0
@@ -585,6 +603,7 @@ print mass
 temp_fahr = 98.6
 temp_kelvin = (temp_fahr - 32.0) * (5.0 / 9.0) + 273.15
 print "body temperature in Kelvin:", temp_kelvin
+<hr/>
 <span class="out">body temperature in Kelvin: 310.15</span>
 </pre>
 
@@ -594,9 +613,10 @@ print "body temperature in Kelvin:", temp_kelvin
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">temp_fahr = 98.6</span>
+temp_fahr = 98.6
 <span class="highlight">temp_kelvin = (temp_fahr - 32) * (5 / 9) + 273.15</span>
-&gt;&gt;&gt; <span class="in">print "body temperature in Kelvin:", temp_kelvin</span>
+print "body temperature in Kelvin:", temp_kelvin
+<hr/>
 <span class="out">body temperature in Kelvin: 273.15</span>
 </pre>
 
@@ -607,7 +627,8 @@ print "body temperature in Kelvin:", temp_kelvin
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">5/9</span>
+5/9
+<hr/>
 <span class="out">0</span>
 </pre>
 
@@ -626,12 +647,24 @@ print "body temperature in Kelvin:", temp_kelvin
     the result is a float if either of the values involved is a float:
   </p>
 
+  <table>
+    <tr>
+      <td valign="top">
 <pre>
-&gt;&gt;&gt; <span class="in">10 / 3</span>
+print 10 / 3
+<hr/>
 <span class="out">3</span>
-&gt;&gt;&gt; <span class="in">10.0 / 3</span>
+</pre>
+      </td>
+      <td valign="top">
+<pre>
+10.0 / 3
+<hr/>
 <span class="out">3.3333333333333335</span>
 </pre>
+      </td>
+    </tr>
+  </table>
 
   <p class="continue">
     This makes sense,
@@ -651,12 +684,23 @@ print "body temperature in Kelvin:", temp_kelvin
     using a built-in <a href="glossary.html#function">function</a> called <code>type</code>:
   </p>
 
+  <table>
+    <tr>
+      <td valign="top">
 <pre>
-&gt;&gt;&gt; <span class="in">type(12)</span>
+print type(12)
+<hr/>
 <span class="out">&lt;type 'int'&gt;</span>
-&gt;&gt;&gt; <span class="in">type(12.0)</span>
+</pre>
+      </td>
+      <td valign="top">
+<pre>
+type(12.0)
 <span class="out">&lt;type 'float'&gt;</span>
 </pre>
+      </td>
+    </tr>
+  </table>
 
   <p>
     Integers and floating-point numbers are two common types;
@@ -666,9 +710,10 @@ print "body temperature in Kelvin:", temp_kelvin
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">name = "Alan Turing"</span>
-&gt;&gt;&gt; <span class="in">born = 'June 23, 1912'</span>
-&gt;&gt;&gt; <span class="in">print name, born</span>
+name = "Alan Turing"
+born = 'June 23, 1912'
+print name, born
+<hr/>
 <span class="out">Alan Turing June 23, 1912</span>
 </pre>
 
@@ -677,8 +722,9 @@ print "body temperature in Kelvin:", temp_kelvin
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">full = name + " (" + born + ")"</span>
-&gt;&gt;&gt; <span class="in">print full</span>
+full = name + " (" + born + ")"
+print full
+<hr/>
 <span class="out">Alan Turing (June 23, 1912)</span>
 </pre>
 
@@ -687,7 +733,8 @@ print "body temperature in Kelvin:", temp_kelvin
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">print 2 + "three"</span>
+print 2 + "three"
+<hr/>
 <span class="err">Traceback (most recent call last):
   File "add-numbers-strings.py", line 1, in &lt;module&gt;
     print 2 + "three"
@@ -702,12 +749,24 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'</span>
     Python expects some guidance:
   </p>
 
+  <table>
+    <tr>
+      <td valign="top">
 <pre>
-&gt;&gt;&gt; <span class="in">print 2 + int("3")</span>
+print 2 + int("3")
+<hr/>
 <span class="out">5</span>
-&gt;&gt;&gt; <span class="in">print str(2) + "3"</span>
+</pre>
+      </td>
+      <td valign="top">
+<pre>
+print str(2) + "3"
+<hr/>
 <span class="out">23</span>
 </pre>
+      </td>
+    </tr>
+  </table>
 
   <p>
     <code>int</code> and <code>str</code> are two more built-in functions
@@ -746,9 +805,9 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'</span>
       <li>
         What is value of <code>molecule</code> after the following code is run?
 <pre>
-&gt;&gt;&gt; <span class="in">oxygen = 'O'</span>
-&gt;&gt;&gt; <span class="in">carbon = 'C</span>
-&gt;&gt;&gt; <span class="in">molecule = carbon + oxygen * 2</span>
+oxygen = 'O'
+carbon = 'C
+molecule = carbon + oxygen * 2
 </pre>
       </li>
 
@@ -987,7 +1046,7 @@ $ <span class="in">python first.py</span>
     the <code>print</code> command automatically adds an end-of-line marker
     to its output.
     We can tell it not to do that by putting a comma at the end of the line.
-    This usually makes things confusing:
+    This can make things confusing when we're using the interpreter interactively:
   </p>
 
 <pre>
@@ -1006,6 +1065,7 @@ reader = file('cochlear01.txt', 'r')
 first_line = reader.readline()
 print first_line<span class="highlight">,</span>
 reader.close()
+<hr/>
 <span class="out">Subject: 1782</span>
 </pre>
 
@@ -1019,6 +1079,7 @@ first_line = reader.readline()
 <span class="highlight">first_line = first_line.strip()</span>
 print first_line
 reader.close()
+<hr/>
 <span class="out">Subject: 1782</span>
 </pre>
 
@@ -1337,10 +1398,11 @@ ________.________(line)
 
   <p>
     Computers are useful because they can do lots of calculations on lots of data,
-    which means we need a concise way to represent multiple steps.
-    (After all,
-    writing out a million additions would take longer than doing them.)
-    Let's start by finding out how many lines we have in our data file:
+    which means we need a concise way to represent multiple steps:
+    after all,
+    writing out a million additions would take longer than doing them.
+    Let's start by finding out how many lines we have in our data file,
+    showing the prompts as the Python interpreter displays them:
   </p>
 
 <pre>
@@ -1604,6 +1666,8 @@ for line in reader:
     number = number + 1
 reader.close()
 print number - 4, 'records in file'
+<hr/>
+<span class="out">7 records in file</span>
 </pre>
 
   <p class="continue">
@@ -1685,11 +1749,8 @@ $ <span class="in">python second.py &lt; cochlear01.txt</span>
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">'hello' &gt; 0</span>
-<span class="out">True</span>
-&gt;&gt;&gt; <span class="in">'hello' &gt; 1000000</span>
-<span class="out">True</span>
-&gt;&gt;&gt; <span class="in">'' &gt; 1000000</span> <span class="comment"># even the empty string</span>
+'hello' &gt; 0
+<hr/>
 <span class="out">True</span>
 </pre>
 
@@ -1791,6 +1852,11 @@ for line in sys.stdin:
         num_outliers = num_outliers + 1
 print num_valid, "in range and", num_outliers, "outliers"
 </pre>
+
+  <div class="box">
+    <h3>Alternatives</h3>
+    <p class="fixme">Introduce elif</p>
+  </div>
 
   <p>
     Finally,
@@ -1948,44 +2014,49 @@ else:
 
 </section>
 
-    <section id="s:flag">
+<section id="s:flag">
+  <h2>Flags</h2>
 
-      <h2>Flags</h2>
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Explain the difference between Boolean expressions and Boolean values.</li>
+      <li>Write statements that create and store Boolean values, and use them correctly in conditional statements.</li>
+      <li>Write examples showing how to keep track of events using flag variables.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:flag">
-        <h3>Learning Objectives</h3>
-        <ul>
-          <li>Explain what Boolean values are.</li>
-          <li>Write statements that create and store Boolean values, and use them correctly in conditional statements.</li>
-          <li>Write examples showing how to keep track of events using flag variables.</li>
-        </ul>
-      </div>
-
-      <p>
-        An expression like <code>value &lt; 0</code> produces one of two values
-        called (unsurprisingly) <code>True</code> and <code>False</code>.
-        These values can be assigned to variables like anything else:
-      </p>
+  <p>
+    We're used to thinking of "less than" and "equal to" as adjectives.
+    In a program,
+    though,
+    an expression like <code>value &lt; 0</code> produces one of two values
+    called (unsurprisingly) <code>True</code> and <code>False</code>.
+    These are called <a href="glossary.html#boolean">Boolean values</a>,
+    after the English mathematician George Boole,
+    and they can be assigned to variables like any other kind of values:
+  </p>
 
 <pre>
 x = 5
 is_less_than = x &lt; 0
 print is_less_than
+<hr/>
 <span class="out">False</span>
 </pre>
 
-      <p>
-        It's very common to assign <code>True</code> and <code>False</code> to variables
-        to keep track of whether some event has happened.
-        For example,
-        we could create a variable called <code>have_seen_dashed_line</code>
-        to keep track of whether or not we have seen the dashed line that separates
-        the header in a data file from the actual data.
-        Its initial value will be <code>False</code>,
-        because we obviously haven't seen the dashed line before we've read any input.
-        As soon as we do see the dashed line,
-        we set it to <code>True</code>:
-      </p>
+  <p>
+    It's very common to assign <code>True</code> and <code>False</code> to variables
+    to keep track of whether some event has happened.
+    For example,
+    we could create a variable called <code>have_seen_dashed_line</code>
+    to keep track of whether or not we have seen the dashed line that separates
+    the header in a data file from the actual data.
+    Its initial value will be <code>False</code>,
+    because we obviously haven't seen the dashed line before we've read any input.
+    As soon as we do see the dashed line,
+    we set it to <code>True</code>:
+  </p>
 
 <pre>
 import sys
@@ -1994,15 +2065,16 @@ for line in data:
     if line.startswith('---'):
         have_seen_dashed_line = True
 print 'Did we ever see the dashed line?', have_seen_dashed_line
+<hr/>
 <span class="out">True</span>
 </pre>
 
-      <p>
-        A variable that is used this way is often called
-        a <a href="glossary.html#flag">flag</a>.
-        We can use the <code>have_seen_dashed_line</code> flag's value
-        to decide whether or not to count a line as data:
-      </p>
+  <p>
+    A variable that is used this way is often called
+    a <a href="glossary.html#flag">flag</a>.
+    We can use the <code>have_seen_dashed_line</code> flag's value
+    to decide whether or not to count a line as data:
+  </p>
 
 <pre>
 import sys
@@ -2014,28 +2086,30 @@ for line in data:
     if have_seen_dashed_line:
         number = number + 1
 print 'Number of data lines:', number
+<hr/>
 <span class="out">Number of data lines: 8</span>
 </pre>
 
-      <figure id="f:set_and_increment">
-        <img src="python/set_and_increment.png" alt="Flagging and Incrementing" />
-      </figure>
+  <figure id="f:set_and_increment">
+    <img src="python/set_and_increment.png" alt="Flagging and Incrementing" />
+    <figcaption>Figure 13: Flagging and Incrementing</figcaption>
+  </figure>
 
-      <p>
-        Whoops&mdash;that's almost right, but not quite.
-        There are only 7 data lines in our file:
-        why are we reporting 8?
-        The reason is that when we see the dashed line,
-        we set <code>have_seen_dashed_line</code> to <code>True</code>,
-        then immediately check its value,
-        see that it's true,
-        and increment <code>number</code>
-        (<a href="#f:set_and_increment">Figure XXX</a>).
-        What we want to do is <em>either</em> set the flag
-        (so that we'll start incrementing on the next iteration),
-        <em>or</em> add one to <code>number</code>.
-        Here's the fixed program:
-      </p>
+  <p>
+    Whoops&mdash;that's almost right, but not quite.
+    There are only 7 data lines in our file:
+    why are we reporting 8?
+    The reason is that when we see the dashed line,
+    we set <code>have_seen_dashed_line</code> to <code>True</code>,
+    then immediately check its value,
+    see that it's true,
+    and increment <code>number</code>
+    (<a href="#f:set_and_increment">Figure 13</a>).
+    What we want to do is <em>either</em> set the flag
+    (so that we'll start incrementing on the next iteration),
+    <em>or</em> add one to <code>number</code>.
+    Here's the fixed program:
+  </p>
 
 <pre>
 import sys
@@ -2044,23 +2118,19 @@ number = 0
 for line in data:
     if line.startswith('---'):
         have_seen_dashed_line = True
-    else:
+<span class="highlight">    else:
         if have_seen_dashed_line:
-            number = number + 1
+            number = number + 1</span>
 print 'Number of data lines:', number
+<hr/>
 <span class="out">Number of data lines: 7</span>
 </pre>
 
-    <!-- JK: This is definitely a style question, but I would prefer to see
-         the if line.startswith set the flag and then continue, and then the 
-         second check of the flag remain its own if. That shows me that the 
-         two conditions are not logically dependent, as in the first 
-         necessarily must fail for the second to be evaluated. Tehnically, this
-         is true here, but probably not in the spirit of the code. -->
-
-      <p>
-        And here's a version that combines the second <code>if</code> with the <code>else</code>:
-      </p>
+  <p>
+    And here's a version that combines the second <code>if</code>
+    with the <code>else</code>
+    using <code>elif</code>:
+  </p>
 
 <pre>
 import sys
@@ -2072,173 +2142,103 @@ for line in data:
     elif have_seen_dashed_line:
         number = number + 1
 print 'Number of data lines:', number
+<hr/>
 <span class="out">Number of data lines: 7</span>
 </pre>
 
-      <p class="continue">
-        Organizing the <a href="glossary.html#branch">branches</a> of the <code>if</code> this way
-        makes it clearer that exactly one will be executed.
-      </p>
+  <p class="continue">
+    Organizing our choices this way makes it clearer that
+    exactly one will be executed.
+  </p>
 
-      <div class="keypoints" id="k:flag">
-        <h3>Summary</h3>
-        <ul>
-          <li>The two Boolean values <code>True</code> and <code>False</code> can be assigned to variables like any other values.</li>
-          <li>Programs often use Boolean values as flags to indicate whether something has happened yet or not.</li>
-        </ul>
-      </div>
+  <div class="keypoints" id="k:flag">
+    <h3>Summary</h3>
+    <ul>
+      <li>The two Boolean values <code>True</code> and <code>False</code> can be assigned to variables like any other values.</li>
+      <li>Programs often use Boolean values as flags to indicate whether something has happened yet or not.</li>
+    </ul>
+  </div>
 
-      <div id="c:flag">
-        <h3>Challenges</h3>
+  <div class="challenges">
+    <h3>Challenges</h3>
 
-        <ol>
-          <li>
-            What does the following program print?
+    <ol>
+      <li>
+        When converted to numbers,
+        <code>True</code> has the value 1 and <code>False</code> has the value 0:
 <pre>
-pressure = 55.3
-regions = [0 &lt;= pressure &lt; 50, 50 &lt;= pressure &lt; 80]
-print regions
+print True + True + False
+<hr/>
+<span class="out">2</span>
 </pre>
-            <ol class="choices">
-              <li><code>[0, 50]</code></li>
-              <li><code>[0, 1]</code></li>
-              <li><code>[False, True]</code></li>
-              <li>A syntax error message.</li>
-            </ol>
-          </li>
-
-          <li>
-            What does the following program print?
+        Knowing this,
+        explain what the following does and why it works:
 <pre>
-data = [10, 50, 30, 20, 40]
-capped = False
-total = 0
-for value in data:
-    if capped:
-        total = value
-    elif value &gt; total:
-        capped = True
+in_range += 0 &lt;= number &lt;= 5
+</pre>
+        Do you think this is readable or not?
+        Do you think your opinion will change over the next few months or not?
+      </li>
+
+      <li>
+        Using the same relationship between Boolean values and numbers,
+        explain why <code>5 &lt; 0 &lt; 10</code> is <code>False</code>,
+        but <code>(5 &lt; 0) &lt; 10</code> is <code>True</code>.
+      </li>
+
+      <li>
+        Aurora has inherited some audio sample files
+        in which regions are marked with the words "begin" and "end":
+<pre>
+4.1
+4.3
+begin
+7.2
+7.9
+8.1
+end
+5.5
+begin
+12.0
+11.5
+end
+9.2
+</pre>
+        She wants to add up the values that lie within each marked region,
+        so that for the sample data shown above,
+        her program's output would be:
+<pre>
+<span class="out">23.2
+23.5</span>
+</pre>
+        Fill in the program shown below to do this.
+<pre>
+import sys
+in_region = False
+current = 0.0
+for line in sys.stdin:
+    line = line.strip()
+    if in_region:
+        if line == 'end':
+            print current
+            ________
+        else:
+            ________
     else:
-        total += value
-print total
+        if line == ________:
+            ________
+            current = 0.0
+print current
 </pre>
-            <ol class="choices">
-              <li><code>1500</code></li>
-              <li><code>40</code></li>
-              <li><code>60</code></li>
-              <li><code>True</code></li>
-            </ol>
-          </li>
+        Why is the final <code>print</code> statement needed?
+        How will the output of the program be wrong without it?
+      </li>
 
-          <li>
-            The <code>break</code> statement tells Python to exit a loop immediately.
-            For example:
-<pre>
-for value in [1, 2, 3, 4, 5]:
-    print value
-    if value == 3:
-        break
-</pre>
-            prints:
-<pre>
-<span class="out">1
-2
-3</span>
-</pre>
-            Which of the following programs prints the same thing
-            <em>without</em> using <code>break</code>?
-            <table class="choices">
-              <tr>
-                <td>A</td>
-                <td>B</td>
-                <td>C</td>
-                <td>D</td>
-              </tr>
-              <tr>
-                <td valign="top">
-<pre>
-for value in [1, 2, 3, 4, 5]:
-    if value &lt;= 3:
-        print value
-</pre>
-                </td>
-                <td valign="top">
-<pre>
-seen = False
-for value in [1, 2, 3, 4, 5]:
-    print value
-    if value &gt; 2:
-        seen = True
-</pre>
-                </td>
-                <td valign="top">
-<pre>
-printing = True
-for value in [1, 2, 3, 4, 5]:
-    if printing:
-        print value
-    printing = value &lt; 2
-</pre>
-                </td>
-                <td valign="top">
-                  All of the above.
-                </td>
-              </tr>
-            </table>
-          </li>
+    </ol>
 
-          <li>
-            What does the program below print?
-<pre>
-deviated = True
-for value in [1, 2, 3, 4, 5]:
-    if deviated:
-        print value
-        if value &gt; 2 and deviated:
-            deviated = False
-</pre>
-            <table class="choices">
-              <tr>
-                <td>A</td>
-                <td>B</td>
-                <td>C</td>
-                <td>D</td>
-              </tr>
-              <tr>
-                <td valign="top">
-<pre>
-1
-2
-</pre>
-                </td>
-                <td valign="top">
-<pre>
-1
-2
-3
-</pre>
-                </td>
-                <td valign="top">
-<pre>
-1
-2
-3
-4
-5
-</pre>
-                </td>
-                <td valign="top">
-                  None of the above.
-                </td>
-              </tr>
-            </table>
-          </li>
+  </div>
 
-        </ol>
-
-      </div>
-
-    </section>
+</section>
 
     <section id="s:parse">
 
