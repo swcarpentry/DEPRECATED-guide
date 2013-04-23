@@ -17,7 +17,6 @@
   <li><a href="#s:flag">Flags</a></li>
   <li><a href="#s:parse">Reading Data Files</a></li>
   <li><a href="#s:lists">Lists</a></li>
-  <li><a href="#s:morelist">More About Lists</a></li>
   <li><a href="#s:nestloop">Nesting Loops</a></li>
   <li><a href="#s:nestlist">Nesting Lists</a></li>
   <li><a href="#s:alias">Aliasing</a></li>
@@ -2490,53 +2489,63 @@ for line in sys.stdin:
 
 </section>
 
-    <section id="s:lists">
+<section id="s:lists">
+  <h2>Lists</h2>
 
-      <h2>Lists</h2>
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Explain why it is useful to store many values together.</li>
+      <li>Write programs that create and manipulate lists of numbers and strings.</li>
+      <li>Write programs that use loops to operate independently on each value in a list.</li>
+      <li>Explain why programs should be tested on short, simple inputs first.</li>
+      <li>Explain the difference between mutable and immutable values.</li>
+      <li>Index a list to retrieve values at specific locations.</li>
+      <li>Show how to alter the values in a list.</li>
+      <li>Trace changes to a list's values as a result of assignment.</li>
+      <li>Explain what an "out-of-bounds error" is, and give an example showing when one would occur.</li>
+      <li>Show how to generate all the valid indices for a list's elements.</li>
+      <li>Explain when it is appropriate to use short or long variable names, and why.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:lists">
-        <h3>Learning Objectives</h3>
-        <ul>
-          <li>Explain why it is useful to store many values together.</li>
-          <li>Write programs that create and manipulate lists of numbers and strings.</li>
-          <li>Write programs that use loops to operate independently on each value in a list.</li>
-          <li>Explain why programs should be tested on short, simple inputs first.</li>
-        </ul>
-      </div>
-
-      <p>
-        To start our exploration of lists,
-        let's run an interpreter and try this:
-      </p>
+  <p>
+    Loops give us a way to do many operations by repeating a few instructions.
+    Lists give us a way to store many values under one name,
+    so that we can do the same things to all of them.
+    To start our exploration of lists,
+    let's run an interpreter and try this:
+  </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">data = [1, 3, 5]</span>
-&gt;&gt;&gt; <span class="in">for value in data:</span>
-... <span class="in">    print value</span>
-...
+data = [1, 3, 5]
+for value in data:
+    print value
+<hr/>
 <span class="out">1
 3
 5</span>
 </pre>
 
-      <p>
-        <code>[1, 3, 5]</code> is a <a href="glossary.html#list">list</a>:
-        a single object that stores multiple values
-        (<a href="#f:simple_list">Figure XXX</a>).
-        Just as a <code>for</code> loop over an open file
-        reads lines from that file one by one
-        and assigns them to the loop variable,
-        a <code>for</code> loop over a list assigns each value in the list
-        to the loop variable in turn.
-      </p>
+  <p>
+    <code>[1, 3, 5]</code> is a <a href="glossary.html#list">list</a>:
+    a single object that stores multiple values
+    (<a href="#f:simple_list">Figure 14</a>).
+    Just as a <code>for</code> loop over an open file
+    reads lines from that file one by one
+    and assigns them to the loop variable,
+    a <code>for</code> loop over a list assigns each value in the list
+    to the loop variable in turn.
+  </p>
 
-      <figure id="f:simple_list">
-        <img src="python/simple_list.png" alt="A Simple List" />
-      </figure>
+  <figure id="f:simple_list">
+    <img src="python/simple_list.png" alt="A Simple List" />
+    <figcaption>Figure 14: A Simple List</figcaption>
+  </figure>
 
-      <p>
-        Let's do something a bit more useful:
-      </p>
+  <p>
+    Let's do something a bit more useful with those numbers:
+  </p>
 
 <pre>
 data = [1, 4, 2, 3, 3, 4, 3, 4, 1]
@@ -2545,29 +2554,30 @@ for n in data:
     total += n
 mean = total / len(data)
 print "mean is", mean
+<hr/>
 <span class="out">mean is 2</span>
 </pre>
 
-      <p class="continue">
-        This loop adds each value in the list to <code>total</code>.
-        Once the loop is over,
-        we divide <code>total</code> by the length of the list,
-        which we find using the built-in function <code>len</code>.
-      </p>
+  <p class="continue">
+    This loop adds each value in the list to <code>total</code>.
+    Once the loop is over,
+    we divide <code>total</code> by the length of the list,
+    which we find using the built-in function <code>len</code>.
+  </p>
 
-      <p>
-        Unfortunately,
-        the result in the example above is wrong:
-        The total of the numbers in the list is 25,
-        but we're printing 2 instead of 25/9
-        (which is 2.7777&hellip;).
-        The problem once again is that we're dividing one integer by another,
-        which throws away the remainder.
-        We can fix this by initializing <code>total</code> to 0.0
-        (so that all the additions involve a floating-point number and an integer,
-        which produces a floating-point number),
-        or by using the <code>float</code> function to do the conversion explicitly:
-      </p>
+  <p>
+    The result should be the average of the values in the list,
+    but what we get isn't quite right.
+    The total of the numbers in the list is 25,
+    but we're printing 2 instead of 25/9
+    (which is 2.7777&hellip;).
+    The problem (once again) is that we're dividing one integer by another,
+    which throws away the remainder.
+    We can fix this by initializing <code>total</code> to 0.0
+    (so that all the additions involve a floating-point number and an integer,
+    which produces a floating-point number),
+    or by using the <code>float</code> function to do the conversion explicitly:
+  </p>
 
 <pre>
 data = [1, 4, 2, 3, 3, 4, 3, 4, 1]
@@ -2579,217 +2589,100 @@ print "mean is", mean
 <span class="out">mean is 2.77777777778</span>
 </pre>
 
-      <p>
-        The <em>real</em> problem isn't a matter of integers versus floats, though.
-        The real problem with this program is that
-        we didn't know whether the answer was right or wrong,
-        so we couldn't tell if the program was correct or not.
-        After all,
-        the average of these nine numbers might well have been 2.
-      </p>
+  <p>
+    The <em>real</em> problem isn't a matter of integers versus floats, though.
+    The real problem with this program is that
+    we didn't know whether the answer was right or wrong,
+    so we couldn't tell if the program was correct or not.
+    After all,
+    the average of these nine numbers might well have been 2.
+  </p>
+  
+  <p>
+    The fact that a program runs without crashing doesn't mean it's correct.
+    One way to make programs easier to check
+    is to run them on smaller or more regular data.
+    For example,
+    If we ran the program on <code>[1, 4]</code>,
+    we'd probably notice that we were getting 2 instead of 2.5.
+    Writing programs so that they're checkable is another idea
+    that we'll explore in detail <a href="quality.html">later</a>.
+  </p>
 
-      <p>
-        The fact that a program runs without crashing doesn't mean it's correct.
-        One way to make programs easier to check
-        is to run them on smaller or more regular data.
-        For example,
-        If we ran the program on <code>[1, 4]</code>,
-        we'd probably notice that we were getting 2 instead of 2.5.
-        Writing programs so that they're checkable is another idea
-        that we'll explore in detail <a href="quality.html">later</a>.
-      </p>
+  <div class="box">
+    <h3>Even Simpler</h3>
 
-      <div class="box">
-
-        <h3>Even Simpler</h3>
-
-        <p>
-          Python actually has a built-in function called <code>sum</code>,
-          so we can get rid of the loop entirely:
-        </p>
+    <p>
+      Python actually has a built-in function called <code>sum</code>,
+      so we can get rid of the loop entirely:
+    </p>
 
 <pre>
 total = sum(data)
 print "mean is", float(total) / len(data)
 </pre>
 
-        <p class="continue">
-          and shorten this even further by calling <code>float</code>
-          directly on the result of <code>sum</code>:
-        </p>
+    <p class="continue">
+      and shorten this even further by calling <code>float</code>
+      directly on the result of <code>sum</code>:
+    </p>
 
 <pre>
 print "mean is", float(sum(data)) / len(data)
 </pre>
 
-        <p>
-          <code>float(sum(data))</code> is like <em>sin(log(x))</em>:
-          the inner function is evaluated first,
-          and its result is used as the input to the outer function.
-          It's important to get the parentheses in the right place,
-          since the expressions:
-        </p>
-
+    <p>
+      <code>float(sum(data))</code> is like <em>sin(log(x))</em>:
+      the inner function is evaluated first,
+      and its result is used as the input to the outer function.
+      It's important to get the parentheses in the right place,
+      since the expressions:
+    </p>
+    
 <pre>
 float(sum(data)) / len(data)
 </pre>
 
-        <p class="continue">
-          and
-        </p>
+    <p class="continue">
+      and
+    </p>
 
 <pre>
 float(sum(data) / len(data))
 </pre>
 
-        <p class="continue">
-          calculate different things.
-          In the first,
-          <code>float</code> is applied to <code>sum(data)</code>,
-          i.e.,
-          Python adds up all the numbers,
-          then converts the result to a floating-point value
-          before dividing by <code>len(data)</code>
-          to get the mean.
-        </p>
+    <p class="continue">
+      calculate different things.
+      In the first,
+      <code>float</code> is applied to <code>sum(data)</code>,
+      i.e.,
+      Python adds up all the numbers,
+      then converts the result to a floating-point value
+      before dividing by <code>len(data)</code>
+      to get the mean.
+    </p>
 
-        <p>
-          In the second,
-          Python adds up the numbers,
-          divides by <code>len(data)</code> to get an integer result,
-          and then converts that integer to a floating point number.
-          This is just our original bug in a more compact form.
-          Once again,
-          the only way to guard against it is to test the program.
-        </p>
+    <p>
+      In the second,
+      Python adds up the numbers,
+      divides by <code>len(data)</code> to get an integer result,
+      and then converts that integer to a floating point number.
+      This is just our original bug in a more compact form.
+      Once again,
+      the only way to guard against it is to test the program.
+    </p>
 
-      </div>
+  </div>
 
-      <div class="keypoints" id="k:lists">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use <code>[<em>value</em>, <em>value</em>, ...]</code> to create a list of values.</li>
-          <li><code>for</code> loops process the elements of a list, in order.</li>
-          <li><code>len(<em>list</em>)</code> returns the length of a list.</li>
-          <li><code>[]</code> is an empty list with no values.</li>
-        </ul>
-      </div>
-
-      <div id="c:lists">
-        <h3>Challenges</h3>
-
-        <ol>
-
-          <li>
-            What does the following program print?
-<pre>
-total = 0
-for v in []:
-    total += v
-print total
-</pre>
-            <ol class="choices">
-              <li>Nothing</li>
-              <li>0</li>
-              <li>The program doesn't run because of a syntax error.</li>
-              <li>None of the above.</li>
-            </ol>
-          </li>
-
-          <li>
-            The expression <code>list('abc')</code> produces the list <code>['a', 'b', 'c']</code>.
-            What does the expression <code>str(['a', 'b', 'c'])</code> produce?
-            <ol class="choices">
-              <li><code>'abc'</code></li>
-              <li><code>['abc']</code></li>
-              <li><code>['a', 'b', 'c']</code></li>
-              <li>An error message.</li>
-            </ol>
-          </li>
-
-          <li>
-            What is the value of the expression <code>len(['abc', 'def'])</code>?
-            <ol class="choices">
-              <li>6</li>
-              <li><code>[3, 3]</code></li>
-              <li>2</li>
-              <li>3</li>
-            </ol>
-          </li>
-
-          <li>
-            What does this program print?
-<pre>
-for i in 4:
-    print i
-</pre>
-            <table class="choices">
-              <tr>
-                <td>A</td>
-                <td>B</td>
-                <td>C</td>
-                <td>D</td>
-              </tr>
-              <tr>
-                <td valign="top">
-<pre>
-0
-1
-2
-3
-</pre>
-                </td>
-                <td valign="top">
-<pre>
-1
-2
-3
-4
-</pre>
-                </td>
-                <td valign="top">
-                  Nothing
-                </td>
-                <td valign="top">
-                  A syntax error message
-                </td>
-              </tr>
-            </table>
-          </li>
-
-        </ol>
-
-      </div>
-
-    </section>
-
-    <section id="s:morelist">
-
-      <h2>More About Lists</h2>
-
-      <div class="understand" id="u:morelist">
-        <h3>Learning Objectives</h3>
-        <ul>
-          <li>Explain the difference between mutable and immutable values.</li>
-          <li>Index a list to retrieve values at specific locations.</li>
-          <li>Show how to alter the values in a list.</li>
-          <li>Trace changes to a list's values as a result of assignment.</li>
-          <li>Explain what an "out-of-bounds error" is, and give an example showing when one would occur.</li>
-          <li>Show how to generate all the valid indices for a list's elements.</li>
-          <li>Explain when it is appropriate to use short or long variable names, and why.</li>
-        </ul>
-      </div>
-
-      <p>
-        Lists (and their equivalents in other languages)
-        are used more than any other data structure,
-        so let's have a closer look at them.
-        First,
-        lists are <a href="glossary.html#mutable">mutable</a>,
-        i.e.,
-        they can be changed after they are created:
-      </p>
-
+  <p>
+    Lists are probably used more than any other data structure in programming,
+    so let's have a closer look at them.
+    First,
+    lists are <a href="glossary.html#mutable">mutable</a>,
+    i.e.,
+    they can be changed after they are created:
+  </p>
+  
 <pre>
 data = [1, 4, 2, 3]
 result = []
@@ -2798,149 +2691,150 @@ for n in data:
     current = current + n
     result.append(current)
 print "running total:", result
+<hr/>
 <span class="out">[1, 5, 7, 10]</span>
 </pre>
 
-      <p class="continue">
-        <code>result</code> starts off as an <a href="glossary.html#empty-list">empty list</a>,
-        and <code>current</code> starts off as zero
-        (<a href="#f:running_total">Figure XXX</a>).
-        Each time the loop executes&mdash;i.e.,
-        for each number in <code>values</code>&mdash;Python
-        adds the next value in the list to <code>current</code>
-        to calculate the running total.
-        It then append this value to <code>result</code>,
-        so that when the program finishes,
-        we have a complete list of partial sums.
-      </p>
+  <p class="continue">
+    <code>result</code> starts off as an <a href="glossary.html#empty-list">empty list</a>,
+    and <code>current</code> starts off as zero
+    (<a href="#f:running_total">Figure 15</a>).
+    Each time the loop executes&mdash;i.e.,
+    for each number in <code>values</code>&mdash;Python
+    adds the next value in the list to <code>current</code>
+    to calculate the running total.
+    It then append this value to <code>result</code>,
+    so that when the program finishes,
+    we have a complete list of partial sums.
+  </p>
 
-      <figure id="f:running_total">
-        <img src="python/running_total.png" alt="Running Total" />
-      </figure>
+  <figure id="f:running_total">
+    <img src="python/running_total.png" alt="Running Total" />
+    <figcaption>Figure 15: Running Total</figcaption>
+  </figure>
 
-      <p>
-        What if we want to double the values in <code>data</code> in place?
-        We could try this:
-      </p>
+  <p>
+    What if we want to double the values in <code>data</code> in place?
+    We could try this:
+  </p>
 
 <pre>
 data = [1, 4, 2, 3]
 for n in data:
     n = 2 * n
 print "doubled data is:", data
+<hr/>
 <span class="out">doubled data is [1, 4, 2, 3]</span>
 </pre>
 
-      <p class="continue">
-        but as we can see,
-        it doesn't work.
-        When Python calculates <code>2*n</code>,
-        it creates a new value in memory
-        (<a href="#f:doubling_list">Figure XXX</a>).
-        It then makes the variable <code>n</code> point at the value for a few microseconds
-        before going around the loop again
-        and pointing <code>n</code> at the next value from the list instead.
-        Since nothing is pointing to the temporary value we just created any longer,
-        Python throws it away.
-      </p>
+  <p class="continue">
+    but as we can see,
+    it doesn't work.
+    When Python calculates <code>2*n</code>,
+    it creates a new value in memory
+    (<a href="#f:doubling_list">Figure 16</a>).
+    It then makes the variable <code>n</code> point at the value for a few microseconds
+    before going around the loop again
+    and pointing <code>n</code> at the next value from the list instead.
+    Since nothing is pointing to the temporary value we just created any longer,
+    Python throws it away.
+  </p>
 
-      <figure id="f:doubling_list">
-        <img src="python/doubling_list.png" alt="Failed Attempt to Double Values in a List" />
-      </figure>
+  <figure id="f:doubling_list">
+    <img src="python/doubling_list.png" alt="Failed Attempt to Double Values in a List" />
+    <figcaption>Figure 16: Failed Attempt to Double Values in a List</figcaption>
+  </figure>
 
-      <p>
-        The solution to our problem is to <a href="glossary.html#list-indexing">index</a> the list,
-        which is just like subscripting a vector in mathematics.
-        Here are some examples:
-      </p>
+  <p>
+    The solution to our problem is to <a href="glossary.html#list-indexing">index</a> the list,
+    which is just like subscripting a vector in mathematics.
+    Here are some examples:
+  </p>
 
 <pre>
-scientists = ["Newton", "Darwing", "Turing"]
-print "length:", len(scientists)
+&gt;&gt;&gt; <span class="in">scientists = ["Newton", "Darwing", "Turing"]</span>
+&gt;&gt;&gt; <span class="in">print "length:", len(scientists)</span>
 <span class="out">length: 3</span>
-print "first element:", scientists[0]
+&gt;&gt;&gt; <span class="in">print "first element:", scientists[0]</span>
 <span class="out">first element: Newton</span>
-print "second element:", scientists[1]
+&gt;&gt;&gt; <span class="in">print "second element:", scientists[1]</span>
 <span class="out">second element: Darwing</span>
-print "third element:", scientists[2]
+&gt;&gt;&gt; <span class="in">print "third element:", scientists[2]</span>
 <span class="out">third element: Turing</span>
 </pre>
 
-      <div class="box">
+  <div class="box">
+    <h3>It Seemed Like a Good Idea at the Time</h3>
 
-        <h3>It Seemed Like a Good Idea at the Time</h3>
+    <p>
+      For reasons that made sense in 1970,
+      when the C programming language was invented,
+      Python lists are indexed from 0 to N-1 rather than 1 to N.
+      C++, C#, Java, and other languages that imitate C also use 0 to N-1,
+      while Fortran, Pascal, MATLAB,
+      and other languages that imitate human beings use 1 to N.
+    </p>
 
-    <!-- JK: Harsh! ;-) Having spent a lot of time in Matlab and R before 
-         coming over to Python, I personally find indexing by 0 (combined with 
-         Python's overall indexing syntax) to be preferable, as it helps me
-         avoid off-by-one errors and gives the (to me) obvious answer for
-         list = [0,1,2,3,4], len(list[0:3]) or len(list[1:4]) >>> 3, not 4. -->
+  </div>
 
-        <p>
-          For reasons that made sense in 1970,
-          when the C programming language was invented,
-          Python lists are indexed from 0 to N-1 rather than 1 to N.
-          C++, C#, Java, and other languages that imitate C also use 0 to N-1,
-          while Fortran, Pascal, MATLAB,
-          and other languages that imitate human beings use 1 to N.
-        </p>
-
-      </div>
-
-      <p>
-        How does indexing help us?
-        Well,
-        after noticing that we have misspelled Darwin's name as "Darwing",
-        we can fix it by assigning a new value to that location in the list:
-      </p>
+  <p>
+    How does indexing help us?
+    Well,
+    after noticing that we have misspelled Darwin's name as "Darwing",
+    we can fix it by assigning a new value to that location in the list:
+  </p>
 
 <pre>
 scientists[1] = "Darwin"
 print scientists
+<hr/>
 <span class="out">["Newton", "Darwin", "Turing"]</span>
 </pre>
 
-      <p class="continue">
-        <a href="#f:update_list">Figure XXX</a> shows
-        the list before and after the change.
-        Again,
-        once we've made the update,
-        nothing is pointing to the string "Darwing" with a "g" on the end,
-        so the memory it's using is recycled.
-      </p>
+  <p class="continue">
+    <a href="#f:update_list">Figure 17</a> shows
+    the list before and after the change.
+    Again,
+    once we've made the update,
+    nothing is pointing to the string "Darwing" with a "g" on the end,
+    so the memory it's using is recycled.
+  </p>
 
-      <figure id="f:update_list">
-        <img src="python/update_list.png" alt="Successfully Doubling Values in a List" />
-      </figure>
+  <figure id="f:update_list">
+    <img src="python/update_list.png" alt="Successfully Doubling Values in a List" />
+    <figcaption>Figure 17: Successfully Doubling Values in a List</figcaption>
+  </figure>
 
-      <p>
-        In order for Python to give us a sensible value,
-        the index we provide for a list must be in range,
-        i.e.,
-        between 0 and one less than the length of the list.
-        If it's too large,
-        we get an error message:
-      </p>
+  <p>
+    In order for Python to give us a sensible value,
+    the index we provide for a list must be in range,
+    i.e.,
+    between 0 and one less than the length of the list.
+    If it's too large,
+    we get an error message:
+  </p>
 
 <pre>
 scientists = ["Newton", "Darwin", "Turing"]
 print scientists[55]
+<hr/>
 <span class="err">Traceback (most recent call last):
   File "list-04.py", line 2, in &lt;module&gt;
     print "out of range:", scientists[55]
 IndexError: list index out of range</span>
 </pre>
 
-      <p class="continue">
-        The error message doesn't appear
-        until Python actually tries to fetch the out-of-bounds value.
-        If this is in the middle of some other operation,
-        we may see some partial output before our error message:
-      </p>
+  <p class="continue">
+    The error message doesn't appear
+    until Python actually tries to fetch the out-of-bounds value.
+    If this is in the middle of some other operation,
+    we may see some partial output before our error message:
+  </p>
 
 <pre>
 scientists = ["Newton", "Darwin", "Turing"]
 print "out of range:", scientists[55]
+<hr/>
 <span class="out">out of range:</span>
 <span class="err">Traceback (most recent call last):
   File "list-04.py", line 2, in &lt;module&gt;
@@ -2948,31 +2842,36 @@ print "out of range:", scientists[55]
 IndexError: list index out of range</span>
 </pre>
 
-      <p>
-        And here's something else that's useful.
-        In Python (but <em>not</em> in most other languages),
-        negative indices count backward from the end of a list:
-      </p>
+  <div class="box">
+    <h3>Useful but not Intuitive</h3>
+
+    <p>
+      Here's something else that's useful.
+      In Python (but <em>not</em> in most other languages),
+      negative indices count backward from the end of a list:
+    </p>
 
 <pre>
 scientists = ["Newton", "Darwin", "Turing"]
 print "last:", scientists[-1]
 print "penultimate:", scientists[-2]
+<hr/>
 <span class="out">last: Turing
 penultimate: Darwin</span>
 </pre>
 
-      <p class="continue">
-        It's a lot easier to type <code>scientists[-1]</code>
-        than <code>scientists[len(scientists)-1]</code>
-        to get the last item in a list,
-        but it does take some getting used to.
-      </p>
-
-      <p>
-        Now, back to our original problem of doubling values in place.
-        We now know that we can do this:
-      </p>
+    <p class="continue">
+      It's a lot easier to type <code>scientists[-1]</code>
+      than <code>scientists[len(scientists)-1]</code>
+      to get the last item in a list,
+      but it does take some getting used to.
+    </p>
+  </div>
+    
+  <p>
+    Back to our original problem of doubling values in place.
+    We now know that we can do this:
+  </p>
 
 <pre>
 data = [1, 4, 2]
@@ -2980,82 +2879,88 @@ data[0] = 2 * data[0]
 data[1] = 2 * data[1]
 data[2] = 2 * data[2]
 print "doubled data is:", data
+<hr/>
 <span class="out">doubled data is [2, 8, 4]</span>
 </pre>
 
-      <p class="continue">
-        but it clearly doesn't scale:
-        we're not going to write a million statements
-        to update a list of a million values.
-        We need to use a loop,
-        but instead of looping over the values in the list,
-        we want to loop over the allowed indices of the list.
-        To do this,
-        we will rely on a function called <code>range</code>
-        which creates a list of the first N integers:
-      </p>
+  <p class="continue">
+    but it clearly doesn't scale:
+    we're not going to write a million statements
+    to update a list of a million values.
+    We need to use a loop,
+    but instead of looping over the values in the list,
+    we want to loop over the allowed indices of the list.
+    To do this,
+    we will rely on a function called <code>range</code>
+    which creates a list of the first N integers:
+  </p>
 
 <pre>
 print range(5)
+<hr/>
 <span class="out">[0, 1, 2, 3, 4]</span>
 </pre>
 
-      <p>
-        Once again,
-        the values go from 0 to one less than the number given to <code>range</code>,
-        which just happens to be exactly the indices of a list of that length.
-        Let's try it out:
-      </p>
+  <p>
+    Once again,
+    the values go from 0 to one less than the number given to <code>range</code>,
+    which just happens to be exactly the indices of a list of that length.
+    Let's try it out:
+  </p>
 
 <pre>
 data = [1, 4, 2]
 indices = range(3)
 for i in indices:
     print i, data[i]
+<hr/>
 <span class="out">0 1
 1 4
 2 2</span>
 </pre>
 
-      <p class="continue">
-        then fold the call to <code>range</code> into the loop:
-      </p>
+  <p class="continue">
+    then fold the call to <code>range</code> into the loop:
+  </p>
 
 <pre>
 data = [1, 4, 2]
 for i in <span class="highlight">range(3)</span>:
     print i, data[i]
+<hr/>
 <span class="out">0 1
 1 4
 2 2</span>
 </pre>
 
-      <p>
-        This program is correct, but fragile:
-        if we add more values to the list,
-        Python will still only execute the loop three times,
-        so we'll still only print the first three values in the list:
-      </p>
+  <p>
+    This program is correct, but fragile:
+    if we add more values to the list,
+    Python will still only execute the loop three times,
+    so we'll still only print the first three values in the list:
+  </p>
 
 <pre>
 data = [1, 4, 2<span class="highlight">, 5, 1, 3</span>]
 for i in range(3):
     print i, data[i]
+<hr/>
 <span class="out">0 1
 1 4
 2 2</span>
 </pre>
 
-      <p>
-        What we want is for the loop to automatically adjust itself
-        based on the length of the list:
-      </p>
+  <p>
+    What we want is for the loop to automatically adjust itself
+    based on the length of the list:
+  </p>
 
 <pre>
 data = [1, 4, 2, 5, 1, 3]
 <span class="highlight">data_length = len(data)</span>
 for i in range(<span class="highlight">data_length</span>):
     print i, data[i]
+<hr/>
 <span class="out">0 1
 1 4
 2 2
@@ -3064,16 +2969,17 @@ for i in range(<span class="highlight">data_length</span>):
 5 3</span>
 </pre>
 
-      <p>
-        We can get rid of the variable <code>data_length</code>
-        by putting the call to <code>len(data)</code>
-        inside the call to <code>range</code>:
-      </p>
+  <p>
+    We can now get rid of the variable <code>data_length</code>
+    by putting the call to <code>len(data)</code>
+    inside the call to <code>range</code>:
+  </p>
 
 <pre>
 data = [1, 4, 2, 5, 1, 3]
 for i in range(<span class="highlight">len(data)</span>):
     print i, data[i]
+<hr/>
 <span class="out">0 1
 1 4
 2 2
@@ -3082,56 +2988,55 @@ for i in range(<span class="highlight">len(data)</span>):
 5 3</span>
 </pre>
 
-      <p class="continue">
-        Again,
-        <code>range(len(data))</code> is like <em>sin(log(x))</em>:
-        the inner function is evaluated first,
-        and its result becomes the input to the outer function.
-        Put together like this,
-        they are a common <a href="glossary.html#idiom">idiom</a> in Python,
-        i.e.,
-        a way of saying something that everyone recognizes and uses.
-        When an experienced programmer sees:
-      </p>
+  <p class="continue">
+    Again,
+    <code>range(len(data))</code> is like <em>sin(log(x))</em>:
+    the inner function is evaluated first,
+    and its result becomes the input to the outer function.
+    Put together like this,
+    they are a common <a href="glossary.html#idiom">idiom</a> in Python,
+    i.e.,
+    a way of saying something that everyone recognizes and uses.
+    When an experienced programmer sees:
+  </p>
 
 <pre>
 for i in range(len(something)):
 </pre>
 
-      <p class="continue">
-        what she "hears" is:
-      </p>
+  <p class="continue">
+    what she "hears" is:
+  </p>
 
 <pre>
 for each legal index of something:
 </pre>
 
-      <p>
-        The reason this idiom is better than what we started with is that
-        there is no duplicated information.
-        Instead of having a list of length 3,
-        and looping from 0 up to 3,
-        we have a list of any length whatever,
-        and loop from 0 up to that length.
-        In general,
-        anything that is repeated two or more times in a program
-        will eventually be wrong in at least one.
-        Putting it another way,
-        any piece of information should appear exactly once in a program,
-        so that if it needs to change,
-        it only needs to be changed in one place.
-      </p>
+  <p>
+    The reason this idiom is better than what we started with is that
+    there is no duplicated information.
+    Instead of having a list of length 3,
+    and looping from 0 up to 3,
+    we have a list of any length whatever,
+    and loop from 0 up to that length.
+    In general,
+    anything that is repeated two or more times in a program
+    will eventually be wrong in at least one.
+    Putting it another way,
+    any piece of information should appear exactly once in a program,
+    so that if it needs to change,
+    it only needs to be changed in one place.
+  </p>
 
-      <div class="box">
+  <div class="box">
+    <h3>Short and Long Variable Names</h3>
 
-        <h3>Short and Long Variable Names</h3>
-
-        <p>
-          We have said several times that programs should use meaningful variable names.
-          Are we not violating our own rule by using <code>i</code> as a variable in this program?
-          The short answer is "yes", but it's a defensible violation.
-          Suppose we re-write our loop as:
-        </p>
+    <p>
+      We have said several times that programs should use meaningful variable names.
+      Are we not violating our own rule by using <code>i</code> as a variable in this program?
+      The short answer is "yes", but it's a defensible violation.
+      Suppose we re-write our loop as:
+    </p>
 
 <pre>
 data = [1, 4, 2, 5, 1, 3]
@@ -3139,88 +3044,83 @@ for location in range(len(data)):
     print location, data[location]
 </pre>
 
-        <p class="continue">
-          The longer name are more meaningful,
-          but it also takes longer to read.
-          Since the original <code>i</code> is only used for a few lines,
-          users will easily be able to keep its meaning in short-term memory
-          as long as they need to.
-          On balance,
-          therefore,
-          the short name are better in this case.
-        </p>
+    <p class="continue">
+      The longer name are more meaningful,
+      but it also takes longer to read.
+      Since the original <code>i</code> is only used for a few lines,
+      users will easily be able to keep its meaning in short-term memory
+      as long as they need to.
+      On balance,
+      therefore,
+      the short name are better in this case.
+    </p>
 
-        <p>
-          This is actually a general principle in program design.
-          A variable that holds a simple value,
-          and is only used in a few adjacent lines of code,
-          can (and usually should) have a short name.
-          A variable that holds a complex value,
-          or one which is used over more than a few lines of code,
-          should have a longer name
-          in order to optimize the tradeoff between reading speed
-          and the limitations of human short-term memory.
-        </p>
+    <p>
+      This is actually a general principle in program design.
+      A variable that holds a simple value,
+      and is only used in a few adjacent lines of code,
+      can (and usually should) have a short name.
+      A variable that holds a complex value,
+      or one which is used over more than a few lines of code,
+      should have a longer name
+      in order to optimize the tradeoff between reading speed
+      and the limitations of human short-term memory.
+    </p>
 
-      </div>
+  </div>
 
-    <!-- JK: Also, to hearken back to the previous paragraph, the use of i as a 
-         counter in a for loop is arguably another common idiom that 
-         experienced programmers will recognize right away as a counter. At 
-         least if they're not also mathematicians who read it as an imaginary 
-         number... -->
-
-      <p>
-        Let's finally go back and double the values in place:
-      </p>
+  <p>
+    Let's finally go back and double the values in place:
+  </p>
 
 <pre>
 data = [1, 4, 2, 5, 3, 4, 5]
 for i in range(len(data)):
     data[i] = 2 * data[i]
 print data
+<hr/>
 <span class="out">[2, 8, 4, 10, 6, 8, 10]</span>
 </pre>
 
-      <div class="box">
+  <div class="box">
+    <h3>Left and Right</h3>
 
-        <h3>Left and Right</h3>
+    <p>
+      Seeing the expression <em>x = 2x</em>,
+      most mathematicians would say,
+      "Right&mdash;so <em>x</em> is zero."
+      Seeing the same expression,
+      most programmers would say,
+      "Right&mdash;you're doubling the value of <em>x</em>."
+      <a href="#f:double_in_place">Figure 18</a> shows
+      how that actually works:
+    </p>
 
-        <p>
-          Seeing the expression <em>x = 2x</em>,
-          most mathematicians would say,
-          "Right&mdash;so <em>x</em> is zero."
-          Seeing the same expression,
-          most programmers would say,
-          "Right&mdash;you're doubling the value of <em>x</em>."
-          <a href="#f:double_in_place">Figure XXX</a> shows
-          how that actually works:
-        </p>
+    <ol>
 
-        <ol>
+      <li>
+        Python reads the current value of <code>x</code> from memory.
+      </li>
 
-          <li>
-            Python reads the current value of <code>x</code> from memory.
-          </li>
+      <li>
+        It multiplies that value by 2,
+        storing the result in a temporary location&hellip;
+      </li>
 
-          <li>
-            It multiplies that value by 2,
-            storing the result in a temporary location&hellip;
-          </li>
+      <li>
+        &hellip;and then modifies <code>x</code> to point at the new value.
+      </li>
 
-          <li>
-            &hellip;and then modifies <code>x</code> to point at the new value.
-          </li>
+    </ol>
 
-        </ol>
+    <figure id="f:double_in_place">
+      <img src="python/double_in_place.png" alt="Doubling in Place" />
+      <figcaption>Figure 18: Doubling in Place</figcaption>
+    </figure>
 
-        <figure id="f:double_in_place">
-          <img src="python/double_in_place.png" alt="Doubling in Place" />
-        </figure>
-
-        <p>
-          Now look at what happens when Python execute the statements:
-        </p>
+    <p>
+      Now look at what happens when Python execute the statements:
+    </p>
 
 <pre>
 x = 5
@@ -3228,64 +3128,170 @@ y = x
 x = 2 * x
 </pre>
 
-        <ol>
+    <ol>
 
-          <li>
-            The variable <code>x</code> is created,
-            and set to point at the value 5
-            (<a href="#f:new_values_for_variables">Figure XXX</a>).
-          </li>
+      <li>
+        The variable <code>x</code> is created,
+        and set to point at the value 5
+        (<a href="#f:new_values_for_variables">Figure 19</a>).
+      </li>
 
-          <li>
-            The variable <code>y</code> is created,
-            and set to point at the same value.
-          </li>
+      <li>
+        The variable <code>y</code> is created,
+        and set to point at the same value.
+      </li>
 
-          <li>
-            The value 10 (i.e., 2&times;5) is created and stored in a temporary location.
-          </li>
+      <li>
+        The value 10 (i.e., 2&times;5) is created and stored in a temporary location.
+      </li>
 
-          <li>
-            <code>x</code> is altered to point at that value.
-          </li>
+      <li>
+        <code>x</code> is altered to point at that value.
+      </li>
 
-        </ol>
+    </ol>
 
-        <figure id="f:new_values_for_variables">
-          <img src="python/new_values_for_variables.png" alt="New Values for Variables" />
-        </figure>
+    <figure id="f:new_values_for_variables">
+      <img src="python/new_values_for_variables.png" alt="New Values for Variables" />
+      <figcaption>Figure 19: New Values for Variables</figcaption>
+    </figure>
 
-        <p>
-          After these operations are complete,
-          <code>y</code> is left pointing at the original value, 5.
-          It does <em>not</em> point at the same thing <code>x</code> does any longer,
-          and its value is <em>not</em> automatically recalculated
-          to keep it twice the value of <code>x</code>.
-        </p>
+    <p>
+      After these operations are complete,
+      <code>y</code> is left pointing at the original value, 5.
+      It does <em>not</em> point at the same thing <code>x</code> does any longer,
+      and its value is <em>not</em> automatically recalculated
+      to keep it twice the value of <code>x</code>.
+    </p>
 
-      </div>
+  </div>
 
-      <div class="keypoints" id="k:morelist">
-        <h3>Summary</h3>
-        <ul>
-          <li>Lists are mutable: they can be changed in place.</li>
-          <li>Use <code><em>list</em>.append(<em>value</em>)</code> to append something to the end of a list.</li>
-          <li>Use <code><em>list</em>[<em>index</em>]</code> to access a list element by location.</li>
-          <li>The index of the first element of a list is 0; the index of the last element is <code>len(<em>list</em>)-1</code>.</li>
-          <li>Negative indices count backward from the end of the list, so <code><em>list</em>[-1]</code> is the last element.</li>
-          <li>Trying to access an element with an out-of-bounds index is an error.</li>
-          <li><code>range(<em>number</em>)</code> produces the list of numbers <code>[0, 1, ..., <em>number</em>-1]</code>.</li>
-          <li><code>range(len(<em>list</em>))</code> produces the list of legal indices for <code><em>list</em></code>.</li>
-        </ul>
-      </div>
+  <div class="box">
+    <h3>Even More Idiomatic</h3>
 
-      <div id="c:morelist">
-        <h3>Challenges</h3>
+    <p>
+      There's an even better way to do this job.
+      Python allows us to assign values to multiple variables at once:
+    </p>
 
-        <ol>
+<pre>
+red, green, blue = 1.0, 0.5, 0.25
+print blue, green, red
+<hr/>
+<span class="out">0.25 0.5 1.0</span>
+</pre>
 
-          <li>
-            What does this program print?
+    <p>
+      One thing this lets us do is swap variables' values in a single statement:
+    </p>
+
+<pre>
+left = 'red
+right = 'green'
+left, right = right, left
+print 'left is now', left, 'and right is now', right
+<hr/>
+<span class="out">left is now green and right is now red</span>
+</pre>
+
+    <p>
+      Some functions can also return multiple values&mdash;for example,
+      <code>divmod</code> returns the quotient and remainder in a single call:
+    </p>
+
+<pre>
+q, r = divmod(11, 3)
+print 'quotient is', q
+print 'remainder is', r
+<hr/>
+<span class="out">quotient is 3
+remainder is 2</span>
+</pre>
+
+    <p>
+      The <code>enumerate</code> function takes as its argument
+      anything that a <code>for</code> loop can loop over,
+      and returns pairs,
+      where each pair contains an index and the value at that index:
+    </p>
+
+<pre>
+for (i, c) in enumerate('word'):
+    print 'index', i, 'character', c
+<hr/>
+index 0 character w
+index 1 character o
+index 2 character r
+index 3 character d
+</pre>
+
+    <p>
+      These days,
+      most Python programmers would use <code>enumerate</code>
+      instead of <code>range(len())</code> to update a list in place:
+    </p>
+
+
+<pre>
+data = [1, 4, 2, 5, 1, 3]
+for (loc, val) in enumerate(data):
+    data[loc] = 2 * val
+</pre>
+
+  </div>
+
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Use <code>[<em>value</em>, <em>value</em>, ...]</code> to create a list of values.</li>
+      <li><code>for</code> loops process the elements of a list, in order.</li>
+      <li><code>len(<em>list</em>)</code> returns the length of a list.</li>
+      <li><code>[]</code> is an empty list with no values.</li>
+      <li>Lists are mutable: they can be changed in place.</li>
+      <li>Use <code><em>list</em>.append(<em>value</em>)</code> to append something to the end of a list.</li>
+      <li>Use <code><em>list</em>[<em>index</em>]</code> to access a list element by location.</li>
+      <li>The index of the first element of a list is 0; the index of the last element is <code>len(<em>list</em>)-1</code>.</li>
+      <li>Negative indices count backward from the end of the list, so <code><em>list</em>[-1]</code> is the last element.</li>
+      <li>Trying to access an element with an out-of-bounds index is an error.</li>
+      <li><code>range(<em>number</em>)</code> produces the list of numbers <code>[0, 1, ..., <em>number</em>-1]</code>.</li>
+      <li><code>range(len(<em>list</em>))</code> produces the list of legal indices for <code><em>list</em></code>.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <ol>
+
+      <li>
+        What does the following program print?
+<pre>
+total = 0
+for v in []:
+    total += v
+print total
+</pre>
+      </li>
+
+      <li>
+        The expression <code>list('abc')</code> produces the list <code>['a', 'b', 'c']</code>.
+        What does the expression <code>str(['a', 'b', 'c'])</code> produce?
+      </li>
+
+      <li>
+        What is the value of the expression <code>len(['abc', 'def'])</code>?
+      </li>
+
+      <li>
+        What does this program print, and why?
+<pre>
+for i in 4:
+    print i
+</pre>
+      </li>
+
+      <li>
+        What does this program print?
 <pre>
 sizes = [0, 1, 1, 2, 2]
 total = 0
@@ -3293,96 +3299,54 @@ for s in sizes:
     total += sizes[s]
 print total
 </pre>
-            <ol class="choices">
-              <li>0</li>
-              <li>2</li>
-              <li>4</li>
-              <li>6</li>
-            </ol>
-          </li>
+      </li>
 
-          <li>
-            What does this program print?
+      <li>
+        Explain the order in which operations occur
+        in the final line of the program below.
 <pre>
 pop = [20, 40, 30]
 loc = [1, 2, 1]
-print pop[loc[0]], pop[loc[2]]
+print pop[loc[2]]
 </pre>
-            <ol class="choices">
-              <li>Nothing: there is a syntax error.</li>
-              <li>Nothing: the program is syntactically correct, but fails when run.</li>
-              <li><code>1 1</code></li>
-              <li><code>20 30</code></li>
-            </ol>
-          </li>
+      </li>
 
-          <li>
-            What does this program print?
+      <li>
+        What does this program print?
 <pre>
 genders = list('FMFFMFM')
 print [genders[0] + genders[-1]]
 </pre>
-            <ol class="choices">
-              <li><code>'FM'</code></li>
-              <li><code>['FM']</code></li>
-              <li><code>['F', 'M']</code></li>
-              <li><code>['M', 'F']</code></li>
-            </ol>
-          </li>
+      </li>
 
-          <li>
-            What does this program print?
+      <li>
+        What is the value of the list <code>letters</code>
+        before the loop shown below,
+        and during each iteration of the loop?
 <pre>
-result = ''
-for i in range(5):
-    result += str(i/2)
-print result
+letters = list('abcd')
+for i in range(len(letters)):
+    letters[i] = letters[-i]
 </pre>
-            <ol class="choices">
-              <li>An error message.</li>
-              <li>01122</li>
-              <li>00112</li>
-              <li>range(5)</li>
-            </ol>
-          </li>
+      </li>
 
-          <li>
-            What does this program print?
-<pre>
-values = list('abcd')
-for i in range(len(values)):
-    values[i] = values[-i]
-print values
-</pre>
-            <ol class="choices">
-              <li>['a', 'b', 'c', 'd']</li>
-              <li>['d', 'c', 'b', 'a']</li>
-              <li>['a', 'c', 'c', 'a']</li>
-              <li>['a', 'd', 'c', 'd']</li>
-            </ol>
-          </li>
-
-          <li>
-            What does this program print?
+      <li>
+        What appears to happen when the program below is run?
+        Why?
 <pre>
 values = list('abcd')
 for char in values:
     values.append(char)
-print values
 </pre>
-            <ol class="choices">
-              <li>['a', 'b', 'c', 'd']</li>
-              <li>['a', 'b', 'c', 'd', 'a']</li>
-              <li>['a', 'b', 'c', 'd', 'a', 'b', 'c', 'd']</li>
-              <li>It never finishes running.</li>
-            </ol>
-          </li>
+        (Remember:
+        to interrupt a running program, type control-C.)
+      </li>
 
-        </ol>
+    </ol>
 
-      </div>
+  </div>
 
-    </section>
+</section>
 
     <section id="s:nestloop">
 
