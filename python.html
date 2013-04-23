@@ -16,7 +16,6 @@
   <li><a href="#s:logic">Making Choices</a></li>
   <li><a href="#s:flag">Flags</a></li>
   <li><a href="#s:parse">Reading Data Files</a></li>
-  <li><a href="#s:provenance">Provenance Revisited</a></li>
   <li><a href="#s:lists">Lists</a></li>
   <li><a href="#s:morelist">More About Lists</a></li>
   <li><a href="#s:nestloop">Nesting Loops</a></li>
@@ -26,7 +25,7 @@
 </ol>
 
     <!-- LH: don't hard-code data values into your programs. Instead,
-    pass them to your programs via command-line arguments or input
+    pass them to your programs via command-line parameters or input
     files. -->
 
 <p>
@@ -145,7 +144,7 @@
 </pre>
 
   <figure id="f:first_variable">
-    <img src="img/python/first_variable.png" alt="Our First Variable" />
+    <img src="python/first_variable.png" alt="Our First Variable" />
     <figcaption>Figure 1: Our First Variable</figcaption>
   </figure>
 
@@ -229,7 +228,7 @@ print x = 1 + 2
   </p>
 
   <figure id="f:assign_new_value">
-    <img src="img/python/assign_new_value.png" alt="Assigning a New Value" />
+    <img src="python/assign_new_value.png" alt="Assigning a New Value" />
     <figcaption>Figure 2: Assigning a New Value</figcaption>
   </figure>
 
@@ -237,7 +236,7 @@ print x = 1 + 2
     Here's a more complex calculation:
   </p>
 
-<pre src="src/python/fahrenheit_to_kelvin_unreadable.py">
+<pre>
 &gt;&gt;&gt; <span class="in">x = 98.6</span>
 &gt;&gt;&gt; <span class="in">y = (x - 32.0) * (5.0 / 9.0) + 273.15</span>
 &gt;&gt;&gt; <span class="in">print y</span>
@@ -248,7 +247,7 @@ print x = 1 + 2
     Its meaning becomes clearer if we rewrite it as:
   </p>
 
-<pre src="src/python/fahrenheit_to_kelvin.py">
+<pre>
 &gt;&gt;&gt; <span class="in">temp_fahr = 98.6</span>
 &gt;&gt;&gt; <span class="in">temp_kelvin = (temp_fahr - 32.0) * (5.0 / 9.0) + 273.15</span>
 &gt;&gt;&gt; <span class="in">print "body temperature in Kelvin:", temp_kelvin</span>
@@ -272,7 +271,7 @@ print x = 1 + 2
   </p>
 
   <figure id="f:first_memory_model">
-    <img src="img/python/first_memory_model.png" alt="First Memory Model" />
+    <img src="python/first_memory_model.png" alt="First Memory Model" />
     <figcaption>Figure 3: First Memory Model</figcaption>
   </figure>
 
@@ -433,68 +432,69 @@ NameError: name 'temp_celsius' is not defined</span>
  
 </section>
 
-    <section id="s:program">
+<section id="s:program">
+  <h2>Creating Programs</h2>
 
-      <h2>Creating Programs</h2>
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Store Python commands in a file.</li>
+      <li>Use the interpreter to run a file containing Python commands.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:program">
-        <h3>Learning Objectives</h3>
-        <ul>
-          <li>Store Python commands in a file.</li>
-          <li>Use the interpreter to run a file containing Python commands.</li>
-        </ul>
-      </div>
+  <p>
+    Typing in commands over and over again is tedious and error-prone.
+    Just as we saved shell commands in <a href="shell.html#s:scripts">shell scripts</a>,
+    we can save Python commands in files
+    and then have the Python interpreter run those.
+    Using your favorite text editor,
+    put the following three lines into a plain text file:
+  </p>
 
-      <p>
-        Typing in commands over and over again is tedious and error-prone.
-        Just as we saved shell commands in <a href="shell.html#s:scripts">shell scripts</a>,
-        we can save Python commands in files
-        and then have the Python interpreter run those.
-        Using your favorite text editor,
-        put the following three lines into a plain text file:
-      </p>
-
-<pre src="src/python/greeting.py">
+<pre>
 left = "hello"
 right = "there"
 print left, right
 </pre>
 
-      <p class="continue">
-        and then save it as <code>greeting.py</code>.
-        (By convention,
-        Python files end in '.py'
-        rather than '.txt'.)
-        To run it from the shell,
-        type:
-      </p>
+  <p class="continue">
+    and then save it as <code>greeting.py</code>.
+    (By convention,
+    Python files end in '.py'
+    rather than '.txt'.)
+    To run it from the shell,
+    type:
+  </p>
 
 <pre>
 $ <span class="in">python greeting.py</span>
 <span class="out">hello there</span>
 </pre>
 
-      <p>
-        When the Python interpreter executes a file,
-        it runs the commands in that file
-        just as if they had been typed in interactively.
-        It doesn't wait until the whole file has been read
-        to start executing;
-        instead,
-        as the example below shows,
-        it runs each command as soon as it can:
-      </p>
+  <p>
+    When the Python interpreter executes a file,
+    it runs the commands in that file
+    just as if they had been typed in interactively.
+    It doesn't wait until the whole file has been read
+    to start executing;
+    instead,
+    it runs each command as soon as it can.
+    For example,
+    if we create another file called <code>division.py</code>
+    that contains the single line:
+  </p>
 
-    <!-- JK: I think what was intended here was for the first 3 lines to 
-         replace the existing 3 lines in greeting.py, then 'python greeting.py' 
-         was to be run from the shell? If so, having the first 3 new lines in a 
-         separate blue box might be more clear. Also, the text below currently
-         references a.py. -->
+<pre>
+print "before", 1/0, "after"
+</pre>
 
-<pre src="src/python/executing_file.py">
-print "before"
-1/0
-print "after"
+  <p class="continue">
+    and run it,
+    the output is:
+  </p>
+
+<pre>
 <span class="out">before</span>
 <span class="err">Traceback (most recent call last):
   File "a.py", line 2, in &lt;module&gt;
@@ -502,141 +502,121 @@ print "after"
 ZeroDivisionError: integer division or modulo by zero</span>
 </pre>
 
-      <p class="continue">
-        Note that this can lead to some confusing output.
-        For example,
-        if we change the example above to:
-      </p>
+  <p class="continue">
+    because Python tries (and fails) to divide by zero
+    before printing the word "after".
+  </p>
 
-<pre>
-print "before", 1/0, "after"
-</pre>
+  <div class="box">
+    <h3>Using the IPython Notebook</h3>
+    <p class="fixme">explain how to use the notebook instead</p>
+  </div>
 
-      <p class="continue">
-        then the output is:
-      </p>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Store programs in files whose names end in <code>.py</code> and run them with <code>python <em>name.py</em></code>.</li>
+    </ul>
+  </div>
 
-<pre><span class="out">before</span>
-<span class="err">Traceback (most recent call last):
-  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
-ZeroDivisionError: integer division or modulo by zero</span>
-</pre>
+  <div class="challenges">
+    <h3>Challenges</h3>
 
-      <div class="keypoints" id="k:program">
-        <h3>Summary</h3>
-        <ul>
-          <li>Store programs in files whose names end in <code>.py</code> and run them with <code>python <em>name.py</em></code>.</li>
-        </ul>
-      </div>
+    <ol>
 
-      <div class="challenges" id="c:program">
-        <h3>Challenges</h3>
-
-        <ol class="challenges">
-
-          <li>
-            Nelle has created a file called <code>example.py</code>
-            that contains the following lines:
+      <li>
+        Nelle has created a file called <code>example.py</code>
+        that contains the following lines:
 <pre>
 tolerance = 5.0e3
-diameter = 2 * (tolerance/1000) ** 2 <span class="comment">note the double '*'</span>
+thinning = 2 * tolerance / 1000
 </pre>
-            What happens when she runs this file from the shell using the command:
+        What happens when she runs this file from the shell using the command:
 <pre>
 $ <span class="in">python -i example.py</span>
 </pre>
-            <ol class="choices">
-              <li>The statements are run in reverse order ('i' for 'inverted').</li>
-              <li>The interpreter runs the program, then waits for interactive commands ('i' for 'interactive').</li>
-              <li>The interpreter prints a list of the variables defined in the program ('i' for 'inspect').</li>
-              <li>None of the above.</li>
-            </ol>
-          </li>
-<!-- EP: something to be careful of when writing MCQs: make sure all the options are all of approximately the same length. Smart students tend to realize that the longest answer is often correct. -->
+      </li>
 
-          <li>
-            Nelle has created two programs called <code>prepare.py</code> and <code>analyze.py</code>.
-            What happens when she runs the command:
-          </li>
+      <li>
+        Nelle has a file called <code>powers.txt</code> that contains:
 <pre>
-$ <span class="in">python prepare.py analyze.py</span>
+density = 1.417e3
+radius = 4.5
+mass = density * (4.0/3.0) * 3.14159 * radius ** 3
+print mass
 </pre>
-          <ol class="choices">
-            <li>Python runs the two programs in the order shown.</li>
-            <li>Python runs <code>prepare.py</code> but not <code>analyze.py</code>.</li>
-            <li>Python runs <code>analyze.py</code> but not <code>first.py</code>.</li>
-            <li>Python reports an error.</li>
-          </ol>
+        What does the double asterisk <code>**</code> do?
+        And does she have to rename this file to <code>powers.py</code>
+        in order to run it?
+      </li>
 
-        </ol>
+    </ol>
 
-      </div>
+  </div>
+</section>
 
-    </section>
+<section id="s:types">
+  <h2>Types</h2>
 
-    <section id="s:types">
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Explain what a data type is, and give examples of three different data types.</li>
+      <li>Correctly identify the types of integer, floating-point, and string values.</li>
+      <li>Call a built-in function.</li>
+      <li>Explain what "type conversion" is, and give an example.</li>
+      <li>Explain (with an example) why programs shouldn't guess what people want to do.</li>
+    </ul>
+  </div>
 
-      <h2>Types</h2>
+  <p>
+    Let's take another look at our temperature conversion program:
+  </p>
 
-      <div class="understand" id="u:types">
-        <h3>Learning Objectives</h3>
-        <ul>
-          <li>Explain what a data type is, and give examples of three different data types.</li>
-          <li>Correctly identify the types of integer, floating-point, and string values.</li>
-          <li>Call a built-in function.</li>
-          <li>Explain what "type conversion" is, and give an example.</li>
-          <li>Explain (with an example) why programs shouldn't guess what people want to do.</li>
-        </ul>
-      </div>
-
-      <p>
-        Let's take another look at our program:
-      </p>
-
-<pre src="src/python/fahrenheit_to_kelvin.py">
+<pre>
 temp_fahr = 98.6
 temp_kelvin = (temp_fahr - 32.0) * (5.0 / 9.0) + 273.15
 print "body temperature in Kelvin:", temp_kelvin
 <span class="out">body temperature in Kelvin: 310.15</span>
 </pre>
 
-      <p>
-        Why have we written 5.0/9.0 instead of 5/9?
-        Let's see what happens if we take out the .0's:
-      </p>
+  <p>
+    Why have we written 5.0/9.0 instead of 5/9?
+    Let's see what happens if we take out the .0's:
+  </p>
 
-<pre src="src/python/fahrenheit_to_kelvin_int.py">
+<pre>
 &gt;&gt;&gt; <span class="in">temp_fahr = 98.6</span>
 <span class="highlight">temp_kelvin = (temp_fahr - 32) * (5 / 9) + 273.15</span>
 &gt;&gt;&gt; <span class="in">print "body temperature in Kelvin:", temp_kelvin</span>
 <span class="out">body temperature in Kelvin: 273.15</span>
 </pre>
 
-      <p>
-        That's not right.
-        To understand what's gone wrong,
-        let's look at 5/9:
-      </p>
+  <p>
+    That's not right.
+    To understand what's gone wrong,
+    let's look at 5/9:
+  </p>
 
 <pre>
 &gt;&gt;&gt; <span class="in">5/9</span>
 <span class="out">0</span>
 </pre>
 
-      <p>
-        The problem is that integers and floating point numbers
-        (or <a href="glossary.html#float">floats</a>)
-        are different things to a computer.
-        If a number doesn't have a decimal point,
-        then Python stores its value as an integer (with no fractional part).
-        When it divides one integer by another,
-        it throws away the remainder.
-        If a number contains a decimal point,
-        though,
-        Python stores it as a float.
-        When it does division (or any other kind of arithmetic),
-        the result is a float if either of the values involved is a float:
-      </p>
+  <p>
+    The problem is that integers and floating point numbers
+    (or <a href="glossary.html#float">floats</a>)
+    are different things to a computer.
+    If a number doesn't have a decimal point,
+    then Python stores its value as an integer (with no fractional part).
+    When it divides one integer by another,
+    it throws away the remainder.
+    If a number contains a decimal point,
+    though,
+    Python stores it as a float.
+    When it does division (or any other kind of arithmetic),
+    the result is a float if either of the values involved is a float:
+  </p>
 
 <pre>
 &gt;&gt;&gt; <span class="in">10 / 3</span>
@@ -645,29 +625,23 @@ print "body temperature in Kelvin:", temp_kelvin
 <span class="out">3.3333333333333335</span>
 </pre>
 
-      <p class="continue">
-        This makes sense,
-        but only if you understand how the chips inside computers work.
-        Version 3 of Python changed the rules for division
-        so that it returns fractional numbers whenever it needs to.
-        However,
-        we're using Python 2.7 in this course,
-        so 10/3 is 3 until further notice.
-      </p>
+  <p class="continue">
+    This makes sense,
+    but only if you understand how the chips inside computers work.
+    Version 3 of Python changed the rules for division
+    so that it returns fractional numbers whenever it needs to.
+    However,
+    we're using Python 2.7 in this course,
+    so 10/3 is 3 until further notice.
+  </p>
 
-      <!-- JK: I would suggest bringing this up earlier, since it's also 
-           relevant to the print statement. Also, does dynamic typing need to 
-           be introduced, or at least mentioned, around here somewhere? An 
-           example could be x=2, type(x) >>> int, x='hello', type(x) >>>
-           string. -->
-
-      <p>
-        Every value in a program has a specific <a href="glossary.html#type">type</a>
-        which determines how it behaves
-        and what can be done to it.
-        We can find out what type something is
-        using a built-in <a href="glossary.html#function">function</a> called <code>type</code>:
-      </p>
+  <p>
+    Every value in a program has a specific <a href="glossary.html#type">type</a>
+    which determines how it behaves
+    and what can be done to it.
+    We can find out what type something is
+    using a built-in <a href="glossary.html#function">function</a> called <code>type</code>:
+  </p>
 
 <pre>
 &gt;&gt;&gt; <span class="in">type(12)</span>
@@ -676,35 +650,35 @@ print "body temperature in Kelvin:", temp_kelvin
 <span class="out">&lt;type 'float'&gt;</span>
 </pre>
 
-      <p>
-        Integers and floating-point numbers are two common types;
-        another is the character string.
-        We can create one by putting characters inside either single or double quotes
-        (as long as they match at the beginning and end):
-      </p>
+  <p>
+    Integers and floating-point numbers are two common types;
+    another is the character string.
+    We can create one by putting characters inside either single or double quotes
+    (as long as they match at the beginning and end):
+  </p>
 
-<pre src="src/python/simple_string.py">
+<pre>
 &gt;&gt;&gt; <span class="in">name = "Alan Turing"</span>
 &gt;&gt;&gt; <span class="in">born = 'June 23, 1912'</span>
 &gt;&gt;&gt; <span class="in">print name, born</span>
 <span class="out">Alan Turing June 23, 1912</span>
 </pre>
 
-      <p>
-        We can also "add" strings:
-      </p>
+  <p>
+    We can also "add" strings:
+  </p>
 
-<pre src="src/python/simple_string.py">
+<pre>
 &gt;&gt;&gt; <span class="in">full = name + " (" + born + ")"</span>
 &gt;&gt;&gt; <span class="in">print full</span>
 <span class="out">Alan Turing (June 23, 1912)</span>
 </pre>
 
-      <p>
-        What we <em>can't</em> do is add numbers and strings:
-      </p>
+  <p>
+    What we <em>can't</em> do is add numbers and strings:
+  </p>
 
-<pre src="src/python/add_numbers_strings.py">
+<pre>
 &gt;&gt;&gt; <span class="in">print 2 + "three"</span>
 <span class="err">Traceback (most recent call last):
   File "add-numbers-strings.py", line 1, in &lt;module&gt;
@@ -712,13 +686,13 @@ print "body temperature in Kelvin:", temp_kelvin
 TypeError: unsupported operand type(s) for +: 'int' and 'str'</span>
 </pre>
 
-      <p>
-        The string "2three" would be a reasonable result in this case,
-        but it's not so clear what <code>2+"3"</code> should do:
-        should it produce the integer 5 or the string <code>"23"</code>?
-        Rather than guessing at the programmer's intentions,
-        Python expects some guidance:
-      </p>
+  <p>
+    The string "2three" would be a reasonable result in this case,
+    but it's not so where <code>2+"3"</code> should produce
+    the integer 5 or the string <code>"23"</code>.
+    Rather than guessing at the programmer's intentions,
+    Python expects some guidance:
+  </p>
 
 <pre>
 &gt;&gt;&gt; <span class="in">print 2 + int("3")</span>
@@ -727,188 +701,147 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'</span>
 <span class="out">23</span>
 </pre>
 
-      <p>
-        <code>int</code> and <code>str</code> are two more built-in functions
-        which convert values to particular types.
-        We'll look at functions in much more detail
-        in <a href="funclib.html">the next chapter</a>.
-      </p>
+  <p>
+    <code>int</code> and <code>str</code> are two more built-in functions
+    which convert values to particular types.
+    We'll look at functions in much more detail later.
+  </p>
 
-      <div class="keypoints" id="k:types">
-        <h3>Summary</h3>
-        <ul>
-          <li>The most commonly used data types in Python are integers (<code>int</code>), floating-point numbers (<code>float</code>), and strings (<code>str</code>).</li>
-          <li>Strings can start and end with either single quote (') or double quote (&quot;).</li>
-          <li>Division ('/') produces an <code>int</code> result when given <code>int</code> values: one or both arguments must be <code>float</code> to get a <code>float</code> result.</li>
-          <li>"Adding" strings concatenates them, multiplying strings by numbers repeats them.</li>
-          <li idea="meaning">Strings and numbers cannot be added because the behavior is ambiguous: convert one to the other type first.</li>
-          <li>Variables do not have types, but values do.</li>
-        </ul>
-      </div>
+  <div class="box">
+    <h3>Values Have Types, Variables Don't</h3>
 
-      <div class="challenges" id="c:types">
-        <h3>Challenges</h3>
+    <p class="fixme">explain</p>
+  </div>
 
-        <ol class="challenges">
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>The most commonly used data types in Python are integers (<code>int</code>), floating-point numbers (<code>float</code>), and strings (<code>str</code>).</li>
+      <li>Strings can start and end with either single quote (') or double quote (&quot;).</li>
+      <li>Division ('/') produces an <code>int</code> result when given <code>int</code> values: one or both parameters must be <code>float</code> to get a <code>float</code> result.</li>
+      <li>"Adding" strings concatenates them, multiplying strings by numbers repeats them.</li>
+      <li>Strings and numbers cannot be added because the behavior is ambiguous: convert one to the other type first.</li>
+      <li>Variables do not have types, but values do.</li>
+    </ul>
+  </div>
 
-          <li>
-            If the variable <code>x</code> holds a number,
-            is the value of <code>int(str(x))</code> always the same as the value of <code>x</code>?
-            <ol class="choices">
-              <li>Yes.</li>
-              <li>No, because functions cannot be put inside functions.</li>
-              <li>No, because the expression should be <code>int('str(x)')</code> (with quotes).</li>
-              <li>No, because <code>x</code> might be a floating-point number.</li>
-<!-- EP: "always" is a word that frequently trips students up. -->
-            </ol>
-          </li>
+  <div class="challenges">
+    <h3>Challenges</h3>
 
-          <li>
-            What is value of <code>molecule</code> after the following code is run?
+    <ol>
+
+      <li>
+        If the variable <code>x</code> holds a number,
+        is the value of <code>int(str(x))</code> the same as the value of <code>x</code>?
+      </li>
+
+      <li>
+        What is value of <code>molecule</code> after the following code is run?
 <pre>
 &gt;&gt;&gt; <span class="in">oxygen = 'O'</span>
 &gt;&gt;&gt; <span class="in">carbon = 'C</span>
 &gt;&gt;&gt; <span class="in">molecule = carbon + oxygen * 2</span>
 </pre>
-            <ol class="choices">
-              <li><code>'COO'</code></li>
-              <li><code>'CO2'</code></li>
-              <li><code>'COCO'</code></li>
-              <li>None of the above: an error occurs on the last line.</li>
-            </ol>
-          </li>
+      </li>
 
-          <li>
-            Fill in the blanks so that these lines of code produce the output shown.
+    </ol>
+
+  </div>
+
+</section>
+
+<section id="s:io">
+  <h2>Reading Files</h2>
+
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Draw a diagram to explain where computers store data.</li>
+      <li>Write programs that open, read, and close files.</li>
+      <li>Explain how "lines" of text are actually stored in files.</li>
+      <li>Call a pre-defined method of a built-in type.</li>
+      <li>Write programs that write data to files.</li>
+    </ul>
+  </div>
+
+  <p>
+    Broadly speaking,
+    modern computers store data in one of six places
+    (<a href="#f:memory_architecture">Figure 4</a>):
+  </p>
+
+  <ol>
+
+    <li>
+      Inside the processor itself.
+    </li>
+
+    <li>
+      In memory.
+    </li>
+
+    <li>
+      On a local disk.
+    </li>
+
+    <li>
+      On disk somewhere else on a network.
+    </li>
+
+    <li>
+      In an offline archive,
+      such as a DVD jukebox.
+    </li>
+
+  </ol>
+
+  <figure id="f:memory_architecture">
+    <img src="python/memory_architecture.png" alt="Where Data is Stored" />
+    <figcaption>Figure 4: Where Data is Stored</figcaption>
+  </figure>
+
+  <p>
+    Each level is tens to thousands of times faster than the one below it,
+    but tens to thousands of times more expensive per byte.
+    Broadly speaking,
+    programs access information in three different ways:
+  </p>
+
+  <ol>
+
+    <li>
+      The data is in memory.
+      The program can manipulate it directly,
+      but changes will not be saved when the program ends.
+    </li>
+
+    <li>
+      The data is on disk.
+      The program has to read it into memory to work with it,
+      and write changes back out,
+      but those changes will persist after the program ends.
+    </li>
+
+    <li>
+      The data is far away,
+      and must be copied to the local machine for use
+      (although given the speed of today's internet,
+      there is much less difference between "local" and "remote"
+      than there used to be).
+    </li>
+
+  </ol>
+
+  <p>
+    We'll deal with the third case <a href="web.html">later</a>.
+    For now,
+    let's look at how to get data out of a file on our computer's hard drive.
+    Suppose that one of our hearing data files,
+    <code>cochlear01.txt</code>,
+    is formatted like this:
+  </p>
+
 <pre>
-&gt;&gt;&gt; <span class="in">pi = 3.14</span>
-&gt;&gt;&gt; <span class="in">x = ____(pi)</span>
-&gt;&gt;&gt; <span class="in">y = ____(x)</span>
-&gt;&gt;&gt; <span class="in">print y</span>
-<span class="out">3.14</span>
-</pre>
-            <ol class="choices">
-              <li><code>float</code> and <code>str</code></li>
-              <li><code>str</code> and <code>str</code></li>
-              <li><code>str</code> and <code>float</code></li>
-              <li><code>int</code> and <code>float</code></li>
-            </ol>
-          </li>
-<!-- EP: this feels like a makework problem rather than directly probing what you want to get out of it. -->
-
-        </ol>
-
-      </div>
-
-    </section>
-
-    <section id="s:io">
-
-      <h2>Reading Files</h2>
-
-      <div class="understand" id="u:io">
-        <h3>Learning Objectives</h3>
-        <ul>
-          <li>Draw a diagram to explain where computers store data.</li>
-          <li>Write programs that open, read, and close files.</li>
-          <li>Explain how "lines" of text are actually stored in files.</li>
-          <li>Call a pre-defined method of a built-in type.</li>
-          <li>Write programs that write data to files.</li>
-        </ul>
-      </div>
-
-      <p>
-        Broadly speaking,
-        modern computers store data in one of six places
-        (<a href="#f:memory_architecture">Figure XXX</a>):
-      </p>
-
-      <ol>
-
-        <li>
-          Inside the processor itself.
-        </li>
-
-        <li>
-          Inside a short-term memory called cache.
-        </li>
-
-        <li>
-          In main memory.
-        </li>
-
-        <li>
-          On a local disk.
-        </li>
-
-        <li>
-          On disk somewhere else on a network.
-        </li>
-
-        <li>
-          In an offline archive,
-          such as a DVD jukebox.
-        </li>
-
-      </ol>
-
-      <figure id="f:memory_architecture">
-        <img src="img/python/memory_architecture.png" alt="Where Data is Stored" />
-      </figure>
-
-      <p>
-        Each level is tens to thousands of times faster than the one below it,
-        but tens to thousands of times more expensive per byte.
-        Computer systems have therefore been designed to expose some of these layers to users,
-        but not others:
-        for example,
-        it's actually hard to figure out exactly when data is in the CPU,
-        in cache,
-        or in main memory.
-      </p>
-
-      <p>
-        In practice,
-        this six-level hierarchy can be divided into three layers:
-      </p>
-
-      <ol>
-
-        <li>
-          The data is in memory.
-          The program can manipulate it directly,
-          but changes will not be saved when the program ends.
-        </li>
-
-        <li>
-          The data is on disk.
-          The program has to read it into memory to work with it,
-          and write changes back out,
-          but those changes will persist after the program ends.
-        </li>
-
-        <li>
-          The data is far away,
-          and may not be available when we want it.
-        </li>
-
-      </ol>
-
-    <!-- JK: Could be a teachable moment here about "the cloud" as something 
-         that makes data that's actually far away look like it's on disk - if 
-         you wanted a digression ;-) -->
-
-      <p>
-        We'll deal with the third issue in a <a href="web.html">later chapter</a>.
-        For now,
-        let's look at how to get data out of a file on our computer's hard drive.
-        Suppose our hearing test data files are formatted like this:
-      </p>
-
-<!-- This is referred to later as cochlear01.txt, might be worth saying 
-     "suppose we have a hearing data file named cochlear01.txt that is..." -->
-
-<pre src="src/python/cochlear01.txt">
 Subject: 1782
 Date:    2012-05-21
 Test     Run  Score
@@ -922,145 +855,145 @@ volume   1    3.5
 volume   2    4.0
 </pre>
 
-      <p class="continue">
-        It's easy to see where the tester decided that half-point scores were OK.
-        We can also see that the tester either forgot to record
-        the result of the third discrimination test,
-        or decided to leave it out.
-        Before worrying about that,
-        let's write a small program that extracts the subject ID from a data file:
-      </p>
+  <p class="continue">
+    It's easy to see where the tester decided that half-point scores were OK.
+    We can also see that the tester either forgot to record
+    the result of the third discrimination test,
+    or decided to leave it out.
+    Before worrying about that,
+    let's write a small program that extracts the subject ID from a data file.
+    Save the lines below in a file called <code>first.py</code>
+    in the same directory as the <code>cochlear01.txt</code> data file:
+  </p>
 
-    <!-- JK: Might want a "save these lines in a file called 
-         get-subject-data.py in the same directory as data file" here for
-         clarity. -->
-
-<pre src="src/python/get_subject_date.py">
+<pre>
 reader = file('cochlear01.txt', 'r')
 first_line = reader.readline()
 print first_line
 reader.close()
 </pre>
 
-      <p>
-        The first line uses a built-in function called <code>file</code>
-        to open our file.
-        Its first argument is the name of the file being opened.
-        Its second is the string <code>'r'</code>,
-        which signals that we want to read from this file
-        (rather than write to it).
-      </p>
+  <p>
+    The first line uses a built-in function called <code>file</code>
+    to open our file.
+    Its first parameter is the name of the file being opened.
+    Its second is the string <code>'r'</code>,
+    which signals that we want to read from this file
+    (rather than write to it).
+  </p>
 
-      <p>
-        <code>file</code>
-        creates a connection (or <a href="glossary.html#handle">handle</a>)
-        between the program and the data on disk
-        (<a href="#f:file_object">Figure XXX</a>),
-        which is assigned to the variable <code>reader</code>.
-        There's nothing special about that name&mdash;we could call it <code>newton</code>&mdash;but
-        whatever we call it,
-        we can ask it to read a line from the file for us
-        and assign that string to <code>first_line</code>
-        by calling its <a href="glossary.html#method">method</a> <code>readline</code>.
-        The program then prints that line and tells the file to close itself.
-        This last step isn't strictly necessary in a small program&mdash;Python
-        automatically closes any files that are open when the program finishes&mdash;but
-        it's a good habit to get into,
-        since the operating system limits the number of files any one program can have open at a time.
-      </p>
+  <p>
+    <code>file</code>
+    creates a connection (or <a href="glossary.html#handle">handle</a>)
+    between the program and the data on disk
+    (<a href="#f:file_object">Figure 5</a>),
+    which is assigned to the variable <code>reader</code>.
+    There's nothing special about that name&mdash;we could call it <code>newton</code>&mdash;but
+    whatever we call it,
+    we can ask it to read a line from the file for us
+    and assign that string to <code>first_line</code>
+    by calling its <a href="glossary.html#method">method</a> <code>readline</code>.
+    The program then prints that line and tells the file to close itself.
+    This last step isn't strictly necessary in a small program&mdash;Python
+    automatically closes any files that are open when the program finishes&mdash;but
+    it's a good habit to get into,
+    since the operating system limits the number of files any one program can have open at a time.
+  </p>
 
-      <figure id="f:file_object">
-        <img src="img/python/file_object.png" alt="File Objects" />
-      </figure>
+  <figure id="f:file_object">
+    <img src="python/file_object.png" alt="File Objects" />
+    <figcaption>Figure 5: File Objects</figcaption>
+  </figure>
 
-      <div class="box">
+  <div class="box">
+    <h3>Methods</h3>
 
-        <h3>Methods</h3>
+    <p>
+      <code>readline</code> is a special kind of function
+      called a <a href="glossary.html#method">method</a>.
+      It's attached to a particular object&mdash;in this case,
+      to the file handle <code>reader</code>.
+      You can think of objects and methods as nouns and verbs,
+      so when we write <code>reader.readline()</code>,
+      we're asking whatever the variable <code>reader</code> points at
+      to do <code>readline</code> for us.
+      As <a href="#f:methods">Figure 6</a> shows,
+      the methods are associated with the thing the variable points at,
+      not with the variable itself.
+    </p>
 
-        <p>
-          <code>readline</code> is a special kind of function
-          called a <a href="glossary.html#method">method</a>.
-          It's attached to a particular object&mdash;in this case,
-          to the file handle <code>reader</code>.
-          You can think of objects and methods as nouns and verbs,
-          so when we write <code>reader.readline()</code>,
-          we're asking whatever the variable <code>reader</code> points at
-          to do <code>readline</code> for us.
-          As <a href="#f:methods">Figure XXX</a> shows,
-          the methods are associated with the thing the variable points at,
-          not with the variable itself.
-        </p>
+    <figure id="f:methods">
+      <img src="python/methods.png" alt="Where Methods Are Stored" />
+      <figcaption>Figure 6: Where Methods Are Stored</figcaption>
+    </figure>
 
-        <figure id="f:methods">
-          <img src="img/python/methods.png" alt="Where Methods are Stored" />
-        </figure>
+  </div>
 
-      </div>
-
-      <p>
-        Here's what happens when we run our program:
-      </p>
+  <p>
+    Here's what happens when we run our program:
+  </p>
 
 <pre>
-$ <span class="in">python get-subject-date.py</span>
+$ <span class="in">python first.py</span>
 <span class="out">Subject: 1782
 
 </span>
 </pre>
 
-      <p>
-        It's not easy to see, but there's actually an extra blank line in the output.
-        Where does it come from?
-      </p>
+  <p>
+    It's not easy to see, but there's actually an extra blank line in the output.
+    Where does it come from?
+  </p>
 
-      <p>
-        The answer depends on the fact that text files aren't stored in lines:
-        that's just how things like text editors and shell commands display them.
-        A text file is actually stored as a sequence of bytes
-        (<a href="#f:text_file_storage">Figure XXX</a>).
-        Some of those happen to be newline characters,
-        and most tools interpret them as meaning "end of line".
-        In particular,
-        when asked to read the next line from a file,
-        Python's file-reading functions read up to and including the end-of-line marker
-        and return that.
-      </p>
+  <p>
+    The answer depends on the fact that text files aren't stored in lines:
+    that's just how things like text editors and shell commands display them.
+    A text file is actually stored as a sequence of bytes
+    (<a href="#f:text_file_storage">Figure 7</a>).
+    Some of those happen to be newline characters,
+    and most tools interpret them as meaning "end of line".
+    In particular,
+    when asked to read the next line from a file,
+    Python's file-reading functions read up to and including the end-of-line marker
+    and return that.
+  </p>
 
-      <figure id="f:text_file_storage">
-        <img src="img/python/text_file_storage.png" alt="Text File Storage" />
-      </figure>
+  <figure id="f:text_file_storage">
+    <img src="python/text_file_storage.png" alt="Text File Storage" />
+    <figcaption>Figure 7: Text File Storage</figcaption>
+  </figure>
 
-      <p>
-        Nothing says files have to be stored this way, though.
-        On Windows,
-        text files use two characters&mdash;a carriage return and a newline&mdash;to
-        mark the end of line.
-        If we are using Python on Windows,
-        it automatically translates those two characters into a single newline when reading,
-        and translates newlines back into those two characters when writing,
-        so that our programs don't have to worry about it.
-      </p>
+  <p>
+    Nothing says files have to be stored this way, though.
+    On Windows,
+    text files use two characters&mdash;a carriage return and a newline&mdash;to
+    mark the end of line.
+    If we are using Python on Windows,
+    it automatically translates those two characters into a single newline when reading,
+    and translates newlines back into those two characters when writing,
+    so that our programs don't have to worry about it.
+  </p>
 
-      <p>
-        Coming back to our program,
-        the <code>print</code> command automatically adds an end-of-line marker
-        to its output.
-        We can tell it not to do that by putting a comma at the end of the line.
-        This usually makes things confusing:
-      </p>
+  <p>
+    Coming back to our program,
+    the <code>print</code> command automatically adds an end-of-line marker
+    to its output.
+    We can tell it not to do that by putting a comma at the end of the line.
+    This usually makes things confusing:
+  </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">print 5</span>
+&gt;&gt;&gt; <span class="in">print 5</span> <span class="comment"># without comma</span>
 <span class="out">5</span>
-&gt;&gt;&gt; <span class="in">print 5,</span>
+&gt;&gt;&gt; <span class="in">print 5,</span> <span class="comment"># with comma</span>
 <span class="out">5</span>&gt;&gt;&gt;
 </pre>
 
-      <p class="continue">
-        but it's useful when we want to prevent newlines doubling up:
-      </p>
+  <p class="continue">
+    but it's useful when we want to prevent newlines doubling up:
+  </p>
 
-<pre src="src/python/get_subject_date_newline.py">
+<pre>
 reader = file('cochlear01.txt', 'r')
 first_line = reader.readline()
 print first_line<span class="highlight">,</span>
@@ -1068,11 +1001,11 @@ reader.close()
 <span class="out">Subject: 1782</span>
 </pre>
 
-      <p>
-        A better way to solve the problem is to get rid of the line ending on the string:
-      </p>
+  <p>
+    A better way to solve the problem is to get rid of the line ending on the string:
+  </p>
 
-<pre src="src/python/get_subject_date_newline.py">
+<pre>
 reader = file('cochlear01.txt', 'r')
 first_line = reader.readline()
 <span class="highlight">first_line = first_line.strip()</span>
@@ -1081,105 +1014,92 @@ reader.close()
 <span class="out">Subject: 1782</span>
 </pre>
 
-    <!-- JK: "...and, like files, strings have methods." is a tricky statment 
-         since you mean file in the Python object sense, not the sense of a 
-         string of bytes called my_file.txt that's sitting on disk. "File 
-         objects", or "the reader variable", might be more clear. --> 
+  <p class="continue">
+    The variable <code>first_line</code> refers to a string,
+    and strings in Python are also objects with methods.
+    One of those methods,
+    <code>strip</code>,
+    creates a new string by removing any leading or trailing spaces, tabs, or line-ending characters
+    from the original string
+    (<a href="#f:string_strip">Figure 8</a>).
+    It does <em>not</em> modify the original string:
+    in Python,
+    any string has a fixed value,
+    just as the integer <code>5</code>'s value is always fixed at 5.
+  </p>
 
-      <p class="continue">
-        <code>first_line</code> is a string,
-        and,
-        like files,
-        strings have methods.
-        One of them, <code>strip</code>,
-        creates a new string by removing any leading or trailing spaces, tabs, or line-ending characters
-        from the original string
-        (<a href="#f:string_strip">Figure XXX</a>).
-        It does <em>not</em> modify the original string:
-        in Python,
-        any string has a fixed value,
-        just as the integer <code>5</code>'s value is always fixed at 5.
-      </p>
+  <figure id="f:string_strip">
+    <img src="python/string_strip.png" alt="Stripping Strings" />
+    <figcaption>Figure 8: Stripping Strings</figcaption>
+  </figure>
 
-      <figure id="f:string_strip">
-        <img src="img/python/string_strip.png" alt="Stripping Strings" />
-      </figure>
+  <div class="box">
+    <h3>Writing Files</h3>
 
-      <div class="box">
+    <p>
+      Writing to a file is as easy as reading from one:
+    </p>
 
-        <h3>Writing Files</h3>
-
-        <p>
-          Writing to a file is as easy as reading from one:
-        </p>
-
-<pre src="src/python/writing.py">
+<pre>
 writer = file('mydata.txt', 'w')
 print &gt;&gt; writer, 'largest value:', 20
 print &gt;&gt; writer, 'smallest value:', -2
 writer.close()
 </pre>
 
-        <p class="continue">
-          We begin by opening the file in <code>'w'</code> (write) mode.
-          This gives us a handle that we can use in subsequent operations,
-          which we assign to a variable.
-          (We've called it <code>writer</code> here,
-          but we could call it anything.)
-          After that,
-          we can print to the file exactly as we have been printing to the screen;
-          as always,
-          we close the file when we're done
-          (which is when the last few things we've written to the file are actually stored on disk).
-        </p>
+    <p class="continue">
+      We begin by opening the file in <code>'w'</code> (write) mode.
+      This gives us a handle that we can use in subsequent operations,
+      which we assign to a variable.
+      (We've called it <code>writer</code> here,
+      but we could call it anything.)
+      After that,
+      we can print to the file exactly as we have been printing to the screen;
+      as always,
+      we close the file when we're done
+      (which is when the last few things we've written to the file are actually stored on disk).
+    </p>
 
-        <p>
-          Opening a file for writing erases its previous content,
-          or creates the file if it didn't already exist.
-          If we don't want to erase any previous content,
-          we can open the file for appending using <code>'a'</code> instead of <code>'w'</code>.
-        </p>
+    <p>
+      Opening a file for writing erases its previous content,
+      or creates the file if it didn't already exist.
+      If we don't want to erase any previous content,
+      we can open the file for appending using <code>'a'</code> instead of <code>'w'</code>.
+    </p>
 
-      </div>
+  </div>
 
-      <div class="keypoints" id="k:io">
-        <h3>Summary</h3>
-        <ul>
-          <li>Data is either in memory, on disk, or far away.</li>
-          <li>Most things in Python are objects, and have attached functions called methods.</li>
-          <li>When lines are read from files, Python keeps their end-of-line characters.</li>
-          <li>Use <code>str.strip</code> to remove leading and trailing whitespace (including end-of-line characters).</li>
-          <li>Use <code>file(<em>name</em>, <em>mode</em>)</code> to open a file for reading ('r'), writing ('w'), or appending ('a').</li>
-          <li>Opening a file for writing erases any existing content.</li>
-          <li>Use <code>file.readline</code> to read a line from a file.</li>
-          <li>Use <code>file.close</code> to close an open file.</li>
-          <li>Use <code>print &gt;&gt; file</code> to print to a file.</li>
-        </ul>
-      </div>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Data is either in memory, on disk, or far away.</li>
+      <li>Most things in Python are objects, and have attached functions called methods.</li>
+      <li>When lines are read from files, Python keeps their end-of-line characters.</li>
+      <li>Use <code>str.strip</code> to remove leading and trailing whitespace (including end-of-line characters).</li>
+      <li>Use <code>file(<em>name</em>, <em>mode</em>)</code> to open a file for reading ('r'), writing ('w'), or appending ('a').</li>
+      <li>Opening a file for writing erases any existing content.</li>
+      <li>Use <code>file.readline</code> to read a line from a file.</li>
+      <li>Use <code>file.close</code> to close an open file.</li>
+      <li>Use <code>print &gt;&gt; file</code> to print to a file.</li>
+    </ul>
+  </div>
 
-      <div class="challenges" id="c:io">
-        <h3>Challenges</h3>
+  <div>
+    <h3>Challenges</h3>
 
-        <ol class="challenges">
+    <ol>
 
-          <li>
-            If <code>species.txt</code> is a text file,
-            what do the following lines print?
+      <li>
+        If <code>species.txt</code> is a text file,
+        what do the following lines print?
 <pre>
 info = open('species.txt', 'r')
 print info.readline().strip()
 </pre>
-            <ol class="choices">
-              <li>The first character of the file.</li>
-              <li>Any blanks at the start or end of the first line of the file.</li>
-              <li>The first line of the file with leading and trailing blanks removed.</li>
-              <li>Nothing: the statement is an error.</li>
-            </ol>
+      </li>
 
-          </li>
-
-          <li>
-            What does the following program leave in the file <code>output.txt</code>?
+      <li>
+        What does the following program leave in the file <code>output.txt</code>?
 <pre>
 results = open('output.txt', 'w')
 results.write('first')
@@ -1188,85 +1108,42 @@ results = open('output.txt', 'a')
 results.write('second')
 results.close()
 </pre>
-            <table class="choices">
-              <tr>
-                <td>1.</td>
-                <td>2.</td>
-                <td>3.</td>
-                <td>4.</td>
-              </tr>
-<!-- EP: awkward formatting of the table. Would suggest a vertical arrangement like the other questions. I'd also add a line of whitespace between the results.close() and results.open('output.txt', 'a'): this at first is a lot for a novice to read and improving readibility will help. Always assume novices will have a hard time reading everything. (Likewise, syntax highlighting would be a great thing in this document.) -->
-              <tr>
-                <td>
-<pre>
-firstsecond
-</pre>
-                </td>
-                <td>
-<pre>
-first
-second
-</pre>
-                </td>
-                <td>
-<pre>
-second
-</pre>
-                </td>
-                <td>
-                  Nothing.
-                </td>
-              </tr>
-            </table>
-          </li>
+      </li>
 
-          <li>
-            If the file <code>square.txt</code> contains:
+      <li>
+        If the file <code>square.txt</code> contains:
 <pre>
 abcde
 fghij
 klmno
 </pre>
-            what does the following program print?
+        what does the following program print?
 <pre>
 handle = open('square.txt', 'r')
 result = len(handle)
 handle.close()
 print result
 </pre>
-            <ol class="choices">
-              <li>3</li>
-              <li>15</li>
-              <li>18</li>
-              <li>The program produces an error message.</li>
-            </ol>
-          </li>
+      </li>
 
-          <li>
-            If <code>square.txt</code> contains the three lines shown above,
-            and the file <code>final.txt</code> does not exist,
-            what is the effect of the following program?
+      <li>
+        If <code>square.txt</code> contains the three lines shown above,
+        and the file <code>final.txt</code> does not exist,
+        what is the effect of the following program?
 <pre>
 reader = open('square.txt', 'r')
 writer = open('final.txt', 'w')
 writer = reader
 reader.close()
 writer.close()
-<!-- EP: add vertical whitespace! -->
 </pre>
-            <ol class="choices">
-              <li>It creates an empty file called <code>final.txt</code>.</li>
-              <li>It copies the first line of <code>square.txt</code> to <code>final.txt</code>.</li>
-              <li>It copies all three lines from <code>square.txt</code> to <code>final.txt</code>.</li>
-              <li>It copies all three lines from <code>square.txt</code> to <code>final.txt</code>, but leaves <code>square.txt</code> empty.</li>
-            </ol>
-          </li>
+      </li>
 
-        </ol>
+    </ol>
 
-      </div>
+  </div>
 
-    </section>
+</section>
 
     <section id="s:stdio">
 
@@ -1315,7 +1192,7 @@ done</span>
         Here's the modified program:
       </p>
 
-<pre src="src/python/get_subject_date_stdin.py">
+<pre>
 <span class="highlight">import sys
 reader = sys.stdin</span>
 first_line = reader.readline()
@@ -1342,7 +1219,7 @@ reader.close()
       </p>
 
       <figure id="f:replacing_with_stdin">
-        <img src="img/python/replacing_with_stdin.png" alt="Replacing a File with Standard Input" />
+        <img src="python/replacing_with_stdin.png" alt="Replacing a File with Standard Input" />
       </figure>
 
       <div class="box">
@@ -1387,10 +1264,10 @@ reader.close()
         </ul>
       </div>
 
-      <div class="challenges" id="c:stdio">
+      <div id="c:stdio">
         <h3>Challenges</h3>
 
-        <ol class="challenges">
+        <ol>
 
           <li>
             What is the difference between:
@@ -1502,7 +1379,7 @@ ________.________(line)
         Let's start by finding out how many lines we have in our data file:
       </p>
 
-<pre src="src/python/count_line_in_file.py">
+<pre>
 reader = file('cochlear01.txt', 'r')
 number = 0
 for line in reader:
@@ -1527,7 +1404,7 @@ print number, 'lines in file'
       </p>
 
       <figure id="f:for_loop">
-        <img src="img/python/for_loop.png" alt="For Loop" />
+        <img src="python/for_loop.png" alt="For Loop" />
       </figure>
 
       <p>
@@ -1554,7 +1431,7 @@ print number, 'lines in file'
         This means that:
       </p>
 
-<pre src="src/python/incorrectly_nested.py">
+<pre>
 for line in reader:
     print line.strip()
     print "done"
@@ -1564,7 +1441,7 @@ for line in reader:
          and:
        </p>
 
-<pre src="src/python/correctly_nested.py">
+<pre>
 for line in reader:
     print line.strip()
 print "done"
@@ -1657,10 +1534,10 @@ for value in data {
         </ul>
       </div>
 
-      <div class="challenges" id="c:for">
+      <div id="c:for">
         <h3>Challenges</h3>
 
-        <ol class="challenges">
+        <ol>
 
           <li>
             Suppose that the file <code>counts.txt</code> contains:
@@ -1801,7 +1678,7 @@ print text
         our data files look like this:
       </p>
 
-<pre src="src/python/cochlear01.txt">
+<pre>
 Subject: 1782
 Date:    2012-05-21
 Test     Run  Score
@@ -1820,7 +1697,7 @@ volume   2    4.0
         so we really shouldn't include them in our count:
       </p>
 
-<pre src="src/python/count_line_in_file_corrected.py">
+<pre>
 reader = file('cochlear01.txt', 'r')
 number = 0
 for line in reader:
@@ -1843,7 +1720,7 @@ print number <span class="highlight">- 4</span>, 'lines in file'
         Suppose that our data files contained nothing but a single number on each line:
       </p>
 
-<pre src="src/python/simple_cochlear02.txt">
+<pre>
 3
 5
 <span class="highlight">-1</span>
@@ -1859,7 +1736,7 @@ print number <span class="highlight">- 4</span>, 'lines in file'
         and counts the number that fall outside the allowed range:
       </p>
 
-<pre src="src/python/counting_outliers_wrong.py">
+<pre>
 import sys
 num_outliers = 0
 for value in sys.stdin:
@@ -1887,7 +1764,7 @@ print num_outliers, "values out of range"
       </p>
 
       <figure id="f:loop_cond_flow">
-        <img src="img/python/loop_cond_flow.png" alt="Conditional Execution" />
+        <img src="python/loop_cond_flow.png" alt="Conditional Execution" />
       </figure>
 
       <p>
@@ -1908,7 +1785,7 @@ $ <span class="in">python count-outliers.py &lt; cochlear01.txt</span>
         The fix is straightforward:
       </p>
 
-<pre src="src/python/counting_outliers_wrong.py">
+<pre>
 import sys
 num_outliers = 0
 for line in sys.stdin:
@@ -1925,7 +1802,7 @@ print num_outliers, "values out of range"
         We can combine our two tests using <code>and</code> and <code>or</code>:
       </p>
 
-<pre src="src/python/simple_and_or.py">
+<pre>
 import sys
 num_outliers = 0
 for line in sys.stdin:
@@ -1948,7 +1825,7 @@ print num_outliers, "values out of range"
         we could count how many values are in range by reversing the test:
       </p>
 
-<pre src="src/python/simple_in_range.py">
+<pre>
 import sys
 num_valid = 0
 for line in sys.stdin:
@@ -1967,7 +1844,7 @@ print num_valid, "values in range"
         or even:
       </p>
 
-<pre src="src/python/single_range_test.py">
+<pre>
 import sys
 num_valid = 0
 for line in data:
@@ -1984,7 +1861,7 @@ print num_valid, "values in range"
         The code it controls is executed when the code in the <code>if</code> <em>isn't</em>:
       </p>
 
-<pre src="src/python/simple_else.py">
+<pre>
 import sys
 num_outliers = 0
 num_valid = 0
@@ -2053,10 +1930,10 @@ something *= 2
         </ul>
       </div>
 
-      <div class="challenges" id="c:logic">
+      <div id="c:logic">
         <h3>Challenges</h3>
 
-        <ol class="challenges">
+        <ol>
           <li>
             What is the value of <code>x</code> after executing the code shown below?
 <pre>
@@ -2361,7 +2238,7 @@ print 'Number of data lines:', number
 </pre>
 
       <figure id="f:set_and_increment">
-        <img src="img/python/set_and_increment.png" alt="Flagging and Incrementing" />
+        <img src="python/set_and_increment.png" alt="Flagging and Incrementing" />
       </figure>
 
       <p>
@@ -2431,10 +2308,10 @@ print 'Number of data lines:', number
         </ul>
       </div>
 
-      <div class="challenges" id="c:flag">
+      <div id="c:flag">
         <h3>Challenges</h3>
 
-        <ol class="challenges">
+        <ol>
           <li>
             What does the following program print?
 <pre>
@@ -2600,7 +2477,7 @@ for value in [1, 2, 3, 4, 5]:
         these files typically look like this:
       </p>
 
-<pre src="src/python/cochlear01.txt">
+<pre>
 Subject: 1782
 Date:    2012-05-21
 Test     Run  Score
@@ -2711,7 +2588,7 @@ $
         like this:
       </p>
 
-<pre src="src/python/cochlear01.txt">
+<pre>
 Subject: 1782
 Date:    2012-05-21
 Test     Run  Score
@@ -2746,10 +2623,10 @@ Out of range: volume 1 -3.0</span>
         </ul>
       </div>
 
-      <div class="challenges" id="c:parse">
+      <div id="c:parse">
         <h3>Challenges</h3>
 
-        <ol class="challenges">
+        <ol>
           <li>
             What does this program do?
 <pre>
@@ -2831,264 +2708,6 @@ writer.close()
 
     </section>
 
-    <section id="s:provenance">
-
-      <h2>Provenance Revisited</h2>
-
-      <div class="understand" id="u:provenance">
-        <h3>Learning Objectives</h3>
-        <ul>
-          <li>Demonstrate how to embed provenance information in a program.</li>
-          <li>Write programs that carry simple provenance information forward.</li>
-          <li>Explain how automatically tracking provenance helps computational research.</li>
-        </ul>
-      </div>
-
-      <p>
-        As we said near the end of <a href="svn.html#provenance">the previous chapter</a>,
-        if we put a string like:
-      </p>
-
-<pre>
-$Revision: ...$
-</pre>
-
-      <p class="continue">
-        in a file,
-        Subversion can automatically update it
-        each time we commit a change to that file.
-        Let's add put <code>$Revision:$</code> in our program:
-      </p>
-
-<pre>
-import sys
-<span class="highlight">my_version = '$Revision: 143$'</span>
-<span class="highlight">'Processed by check.py:', my_version</span>
-have_seen_dashed_line = False
-for line in data:
-    if line.startswith('---'):
-        have_seen_dashed_line = True
-    elif have_seen_dashed_line:
-        name, number, score = line.split()
-        score = float(score)
-        if (score &lt; 0.0) or (score &gt; 5.0):
-            print 'Out of range:', name, number, score
-<span class="out">Processed by check.py: $Revision: 143$
-Out of range: range 2 7.5
-Out of range: volume 1 -3.0</span>
-</pre>
-
-      <p>
-        This is kind of handy:
-        our output now automatically includes a description of who produced it&mdash;<em>exactly</em> who,
-        i.e.,
-        not just the name of the program,
-        but also which version.
-        To see why this is useful,
-        let's rewrite the program so that it clips scores to lie inside 0&ndash;5
-        instead of just reporting outlying values:
-      </p>
-
-<pre>
-import sys
-my_version = '$Revision: 143$'
-'Processed by clip.py:', my_version
-have_seen_dashed_line = False
-for line in data:
-
-    if have_seen_dashed_line:
-        name, number, score = line.split()
-        score = float(score)
-        if score &lt; 0.0:
-            print 0.0
-        elif score &gt; 5.0:
-            print 5.0
-        else:
-            print score
-
-    else:
-        print line.rstrip()
-        if line.startswith('---'):
-            have_seen_dashed_line = True
-</pre>
-
-      <div class="box">
-
-        <h3>Ordering</h3>
-
-        <p>
-          Note that this version checked the <code>have_seen_dashed_line</code> flag first,
-          then handles the case where the flag isn't yet true.
-          Some people find this ordering easier to understand,
-          because the "main" case that handles actual data comes first.
-          Others prefer the original,
-          arguing that the cases should appear in the order in which
-          we expect the data to occur.
-          It doesn't matter which we use,
-          as long as we're consistent with our other loops.
-        </p>
-
-      </div>
-
-      <p>
-        When we run this program on the data that has invalid scores, it prints:
-      </p>
-
-<pre>
-<span class="out"><span class="highlight">Processed by clip.py: $Revision: 143$</span>
-Subject: 1782
-Date:    2012-05-21
-Test     Run  Score
-----     ---  -----
-range    1    3
-<span class="highlight">range    2    5.0</span>
-discrim  1    1
-discrim  2    1
-discrim  4    1.5
-<span class="highlight">volume   1    0.0</span>
-volume   2    4.0</span>
-</pre>
-
-      <p>
-        The three most important lines are highlighted.
-        Two of them&mdash;the data lines&mdash;have been cleaned up;
-        the line at the very top tells us who did the cleaning up.
-        This is another step in our march toward having a real data provenance system:
-        now,
-        if we discover a bug in a program,
-        we can look at our files and see which ones had been processed by that program.
-        As we'll see in the <a href="funclib.html">next chapter</a>,
-        we can extend this further to carry provenance information forward through an entire pipeline.
-      </p>
-
-      <div class="keypoints" id="k:provenance">
-        <h3>Summary</h3>
-        <ul>
-          <li idea="paranoia">Put version numbers in programs' output to establish provenance for data.</li>
-        </ul>
-      </div>
-
-      <div class="challenges" id="c:provenance">
-        <h3>Challenges</h3>
-
-        <ol class="challenges">
-          <li>
-            Fill in the blanks so that this program prints a line like:
-<pre>
-# Version: 123
-</pre>
-            in its output instead of just copying the raw provenance forward.
-<pre>
-my_version = '$Revision: 123$'
-cleaned = my_version.________('$')
-front, back = cleaned.split(________)
-print '# Version:', ________.strip()
-</pre>
-            <table class="choices">
-              <tr>
-                <td></td>
-                <td>A</td>
-                <td>B</td>
-                <td>C</td>
-                <td>D</td>
-              </tr>
-              <tr>
-                <td>1.</td>
-                <td><code>split</code></td>
-                <td><code>strip</code></td>
-                <td><code>find</code></td>
-                <td><code>strip</code></td>
-              </tr>
-              <tr>
-                <td>2.</td>
-                <td><code>' '</code></td>
-                <td><code>':'</code></td>
-                <td><code>'$'</code></td>
-                <td><code>'$'</code></td>
-              </tr>
-              <tr>
-                <td>3.</td>
-                <td><code>front</code></td>
-                <td><code>back</code></td>
-                <td><code>back</code></td>
-                <td><code>back</code></td>
-              </tr>
-            </table>
-          </li>
-
-          <li>
-            Suppose our data files are also under version control,
-            and also include revision numbers:
-<pre>
-Version: $Revision: 227$
-Subject: 1782
-Date:    2012-05-21
-Test     Run  Score
-----     ---  -----
-range    1    3
-range    2    5
-discrim  1    1
-discrim  2    1
-discrim  4    1.5
-volume   1    3.5
-volume   2    4.0
-</pre>
-            Which block of code must we add to:
-<pre>
-source = open('data.txt', 'r')
-largest = None
-for line in source:
-    if ':' in line:
-        ________
-    else:
-        name, number, score = line.strip().split()
-        if largest is None:
-            largest = score
-        else:
-            largest = max(largest, score)
-source.close()
-print 'Version:', version_number
-print 'Largest:', largest
-</pre>
-            to copy the data file's version into the output?
-            <table class="choices">
-              <tr>
-                <td>A</td>
-                <td>B</td>
-                <td>C</td>
-                <td>D</td>
-              </tr>
-              <tr>
-                <td valign="top">
-<pre>
-name, keyword, version_number = line.strip('$').split(':')
-version_number = version_number.strip()
-</pre>
-                </td>
-                <td valign="top">
-<pre>
-name, keyword, version_number = line.strip('$').split(':').strip()
-</pre>
-                </td>
-                <td valign="top">
-<pre>
-name, keyword, version_number = line.strip('$').split(':')
-version_number = version_number.strip()
-</pre>
-                </td>
-                <td valign="top">
-                  None of the above.
-                </td>
-              </tr>
-            </table>
-          </li>
-
-        </ol>
-
-      </div>
-
-    </section>
-
     <section id="s:lists">
 
       <h2>Lists</h2>
@@ -3108,7 +2727,7 @@ version_number = version_number.strip()
         let's run an interpreter and try this:
       </p>
 
-<pre src="src/python/sum_values.py">
+<pre>
 &gt;&gt;&gt; <span class="in">data = [1, 3, 5]</span>
 &gt;&gt;&gt; <span class="in">for value in data:</span>
 ... <span class="in">    print value</span>
@@ -3130,14 +2749,14 @@ version_number = version_number.strip()
       </p>
 
       <figure id="f:simple_list">
-        <img src="img/python/simple_list.png" alt="A Simple List" />
+        <img src="python/simple_list.png" alt="A Simple List" />
       </figure>
 
       <p>
         Let's do something a bit more useful:
       </p>
 
-<pre src="src/python/first_mean.py">
+<pre>
 data = [1, 4, 2, 3, 3, 4, 3, 4, 1]
 total = 0
 for n in data:
@@ -3168,7 +2787,7 @@ print "mean is", mean
         or by using the <code>float</code> function to do the conversion explicitly:
       </p>
 
-<pre src="src/python/second_mean.py">
+<pre>
 data = [1, 4, 2, 3, 3, 4, 3, 4, 1]
 total = 0
 for n in data:
@@ -3207,7 +2826,7 @@ print "mean is", mean
           so we can get rid of the loop entirely:
         </p>
 
-<pre src="src/python/loopless.py">
+<pre>
 total = sum(data)
 print "mean is", float(total) / len(data)
 </pre>
@@ -3217,7 +2836,7 @@ print "mean is", float(total) / len(data)
           directly on the result of <code>sum</code>:
         </p>
 
-<pre src="src/python/one_liner.py">
+<pre>
 print "mean is", float(sum(data)) / len(data)
 </pre>
 
@@ -3229,7 +2848,7 @@ print "mean is", float(sum(data)) / len(data)
           since the expressions:
         </p>
 
-<pre src="src/python/one_liner.py">
+<pre>
 float(sum(data)) / len(data)
 </pre>
 
@@ -3237,7 +2856,7 @@ float(sum(data)) / len(data)
           and
         </p>
 
-<pre src="src/python/incorrect_one_liner.py">
+<pre>
 float(sum(data) / len(data))
 </pre>
 
@@ -3274,10 +2893,10 @@ float(sum(data) / len(data))
         </ul>
       </div>
 
-      <div class="challenges" id="c:lists">
+      <div id="c:lists">
         <h3>Challenges</h3>
 
-        <ol class="challenges">
+        <ol>
 
           <li>
             What does the following program print?
@@ -3389,7 +3008,7 @@ for i in 4:
         they can be changed after they are created:
       </p>
 
-<pre src="src/python/appending.py">
+<pre>
 data = [1, 4, 2, 3]
 result = []
 current = 0
@@ -3414,7 +3033,7 @@ print "running total:", result
       </p>
 
       <figure id="f:running_total">
-        <img src="img/python/running_total.png" alt="Running Total" />
+        <img src="python/running_total.png" alt="Running Total" />
       </figure>
 
       <p>
@@ -3422,7 +3041,7 @@ print "running total:", result
         We could try this:
       </p>
 
-<pre src="src/python/incorrect_doubling_in_place.py">
+<pre>
 data = [1, 4, 2, 3]
 for n in data:
     n = 2 * n
@@ -3444,7 +3063,7 @@ print "doubled data is:", data
       </p>
 
       <figure id="f:doubling_list">
-        <img src="img/python/doubling_list.png" alt="Failed Attempt to Double Values in a List" />
+        <img src="python/doubling_list.png" alt="Failed Attempt to Double Values in a List" />
       </figure>
 
       <p>
@@ -3453,7 +3072,7 @@ print "doubled data is:", data
         Here are some examples:
       </p>
 
-<pre src="src/python/modify_list.py">
+<pre>
 scientists = ["Newton", "Darwing", "Turing"]
 print "length:", len(scientists)
 <span class="out">length: 3</span>
@@ -3493,7 +3112,7 @@ print "third element:", scientists[2]
         we can fix it by assigning a new value to that location in the list:
       </p>
 
-<pre src="src/python/modify_list_continued.py">
+<pre>
 scientists[1] = "Darwin"
 print scientists
 <span class="out">["Newton", "Darwin", "Turing"]</span>
@@ -3509,7 +3128,7 @@ print scientists
       </p>
 
       <figure id="f:update_list">
-        <img src="img/python/update_list.png" alt="Successfully Doubling Values in a List" />
+        <img src="python/update_list.png" alt="Successfully Doubling Values in a List" />
       </figure>
 
       <p>
@@ -3521,7 +3140,7 @@ print scientists
         we get an error message:
       </p>
 
-<pre src="src/python/list_out_of_range.py">
+<pre>
 scientists = ["Newton", "Darwin", "Turing"]
 print scientists[55]
 <span class="err">Traceback (most recent call last):
@@ -3537,7 +3156,7 @@ IndexError: list index out of range</span>
         we may see some partial output before our error message:
       </p>
 
-<pre src="src/python/list_out_of_range_partial.py">
+<pre>
 scientists = ["Newton", "Darwin", "Turing"]
 print "out of range:", scientists[55]
 <span class="out">out of range:</span>
@@ -3553,7 +3172,7 @@ IndexError: list index out of range</span>
         negative indices count backward from the end of a list:
       </p>
 
-<pre src="src/python/list_negative_indexing.py">
+<pre>
 scientists = ["Newton", "Darwin", "Turing"]
 print "last:", scientists[-1]
 print "penultimate:", scientists[-2]
@@ -3573,7 +3192,7 @@ penultimate: Darwin</span>
         We now know that we can do this:
       </p>
 
-<pre src="src/python/explicit_doubling.py">
+<pre>
 data = [1, 4, 2]
 data[0] = 2 * data[0]
 data[1] = 2 * data[1]
@@ -3594,7 +3213,7 @@ print "doubled data is:", data
         which creates a list of the first N integers:
       </p>
 
-<pre src="src/python/range_5.py">
+<pre>
 print range(5)
 <span class="out">[0, 1, 2, 3, 4]</span>
 </pre>
@@ -3606,7 +3225,7 @@ print range(5)
         Let's try it out:
       </p>
 
-<pre src="src/python/range_loop.py">
+<pre>
 data = [1, 4, 2]
 indices = range(3)
 for i in indices:
@@ -3620,7 +3239,7 @@ for i in indices:
         then fold the call to <code>range</code> into the loop:
       </p>
 
-<pre src="src/python/range_loop_2.py">
+<pre>
 data = [1, 4, 2]
 for i in <span class="highlight">range(3)</span>:
     print i, data[i]
@@ -3636,7 +3255,7 @@ for i in <span class="highlight">range(3)</span>:
         so we'll still only print the first three values in the list:
       </p>
 
-<pre src="src/python/incorrect_range_loop.py">
+<pre>
 data = [1, 4, 2<span class="highlight">, 5, 1, 3</span>]
 for i in range(3):
     print i, data[i]
@@ -3650,7 +3269,7 @@ for i in range(3):
         based on the length of the list:
       </p>
 
-<pre src="src/python/data_length_loop.py">
+<pre>
 data = [1, 4, 2, 5, 1, 3]
 <span class="highlight">data_length = len(data)</span>
 for i in range(<span class="highlight">data_length</span>):
@@ -3669,7 +3288,7 @@ for i in range(<span class="highlight">data_length</span>):
         inside the call to <code>range</code>:
       </p>
 
-<pre src="src/python/idiomatic_range_loop.py">
+<pre>
 data = [1, 4, 2, 5, 1, 3]
 for i in range(<span class="highlight">len(data)</span>):
     print i, data[i]
@@ -3773,7 +3392,7 @@ for location in range(len(data)):
         Let's finally go back and double the values in place:
       </p>
 
-<pre src="src/python/doubling_in_place.py">
+<pre>
 data = [1, 4, 2, 5, 3, 4, 5]
 for i in range(len(data)):
     data[i] = 2 * data[i]
@@ -3814,7 +3433,7 @@ print data
         </ol>
 
         <figure id="f:double_in_place">
-          <img src="img/python/double_in_place.png" alt="Doubling in Place" />
+          <img src="python/double_in_place.png" alt="Doubling in Place" />
         </figure>
 
         <p>
@@ -3851,7 +3470,7 @@ x = 2 * x
         </ol>
 
         <figure id="f:new_values_for_variables">
-          <img src="img/python/new_values_for_variables.png" alt="New Values for Variables" />
+          <img src="python/new_values_for_variables.png" alt="New Values for Variables" />
         </figure>
 
         <p>
@@ -3878,10 +3497,10 @@ x = 2 * x
         </ul>
       </div>
 
-      <div class="challenges" id="c:morelist">
+      <div id="c:morelist">
         <h3>Challenges</h3>
 
-        <ol class="challenges">
+        <ol>
 
           <li>
             What does this program print?
@@ -4008,7 +3627,7 @@ print values
         to make the sample code clearer):
       </p>
 
-<pre src="src/python/incorrect_upward_check.py">
+<pre>
 data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
 for i in range(len(data)):
     if data[i] &lt; data[i-1]:
@@ -4029,7 +3648,7 @@ failure at index: 8</span>
         to the ones before them:
       </p>
 
-<pre src="src/python/correct_upward_check.py">
+<pre>
 data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
 for i in <span class="highlight">range(1, len(data))</span>:
     if data[i] &lt; data[i-1]:
@@ -4061,7 +3680,7 @@ for i in <span class="highlight">range(1, len(data))</span>:
         Our first try steps through the indices three at a time:
       </p>
 
-<pre src="src/python/a_step_too_far.py">
+<pre>
 data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
 result = []
 for i in range(0, len(data), 3):
@@ -4088,7 +3707,7 @@ IndexError: list index out of range</span>
       </p>
 
       <figure id="f:a_step_too_far">
-        <img src="img/python/a_step_too_far.png" alt="A Step Too Far" />
+        <img src="python/a_step_too_far.png" alt="A Step Too Far" />
       </figure>
 
       <p>
@@ -4099,7 +3718,7 @@ IndexError: list index out of range</span>
         Let's assume the latter for now:
       </p>
 
-<pre src="src/python/awkward_smoothing.py">
+<pre>
 data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
 result = []
 for i in range(0, len(data), 3):
@@ -4125,7 +3744,7 @@ print "grouped data:", result
         Our first step toward that better way looks like this:
       </p>
 
-<pre src="src/python/simple_nested_loop.py">
+<pre>
 vowels = "ae"
 consonants = "dnx"
 for v in vowels:
@@ -4150,7 +3769,7 @@ ex</span>
       </p>
 
       <figure id="f:nested_flowchart">
-        <img src="img/python/nested_flowchart.png" alt="Nested Loops" />
+        <img src="python/nested_flowchart.png" alt="Nested Loops" />
       </figure>
 
       <p>
@@ -4163,7 +3782,7 @@ ex</span>
         based on the current value of the outer loop's counter:
       </p>
 
-<pre src="src/python/triangle_nested_loop.py">
+<pre>
 for i in range(4):
     for j in range(i):
         print i, j
@@ -4176,7 +3795,7 @@ for i in range(4):
 </pre>
 
       <figure id="f:triangle_nested_loop">
-        <img src="img/python/triangle_nested_loop.png" alt="Nested Loop Execution" />
+        <img src="python/triangle_nested_loop.png" alt="Nested Loop Execution" />
       </figure>
 
       <p>
@@ -4265,7 +3884,7 @@ for i in range(0, len(data), 3):
         Here's the completed data smoothing program:
       </p>
 
-<pre src="src/python/data_smoothing.py">
+<pre>
 data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
 result = []
 for i in range(0, len(data), 3):
@@ -4287,7 +3906,7 @@ print "grouped data:", result
         we'll only need to change it once:
       </p>
 
-<pre src="src/python/data_smoothing_generalized.py">
+<pre>
 data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
 <span class="highlight">width = 3</span>
 result = []
@@ -4323,10 +3942,10 @@ print "grouped data:", result
         </ul>
       </div>
 
-      <div class="challenges" id="c:nestloop">
+      <div id="c:nestloop">
         <h3>Challenges</h3>
 
-        <ol class="challenges">
+        <ol>
 
           <li>
             What does this program print?
@@ -4457,7 +4076,7 @@ print final
         and extract the XY values on each line:
       </p>
 
-<pre src="src/python/read_separate_xy.py">
+<pre>
 x_values = []
 y_values = []
 reader = file('data.txt', 'r')
@@ -4475,7 +4094,7 @@ reader.close()
         by combining the calls to <code>float</code> and <code>append</code>:
       </p>
 
-<pre src="src/python/read_separate_xy_combined.py">
+<pre>
 x_values = []
 y_values = []
 reader = file('data.txt', 'r')
@@ -4507,7 +4126,7 @@ reader.close()
          the values they contain can't be changed, and that they come up in  
          other people's programs? -->
 
-<pre src="src/python/nested_list_explicit.py">
+<pre>
 &gt;&gt;&gt; <span class="in">coordinates = [ [4.2, 1.7], [3.1, 5.0], [0.8, 6.1] ]</span>
 &gt;&gt;&gt; <span class="in">print coordinates[0]</span>
 <span class="out">[4.2, 1.7]</span>
@@ -4516,7 +4135,7 @@ reader.close()
 </pre>
 
       <figure id="f:simple_nested_list">
-        <img src="img/python/simple_nested_list.py" alt="A Simple Nested List" />
+        <img src="python/simple_nested_list.py" alt="A Simple Nested List" />
       </figure>
 
       <p>
@@ -4546,7 +4165,7 @@ reader.close()
       </p>
 
       <figure id="f:indexing_nested_lists">
-        <img src="img/python/indexing_nested_lists.png" alt="Indexing Nested Lists" />
+        <img src="python/indexing_nested_lists.png" alt="Indexing Nested Lists" />
       </figure>
 
       <p>
@@ -4560,7 +4179,7 @@ reader.close()
         it's straightforward to create a list of coordinate pairs:
       </p>
 
-<pre src="src/python/nested_vector.py">
+<pre>
 values = []
 reader = file('data.txt', 'r')
 for line in reader:
@@ -4582,7 +4201,7 @@ reader.close()
         and we want to find the average distance between corresponding coordinates.
       </p>
 
-<pre src="src/python/vector_diff.py">
+<pre>
 expected = [ [4.0, 2.0], [3.0, 5.0], [1.0, 6.0] ]
 actual   = [ [4.2, 1.7], [3.1, 5.0], [0.8, 6.1] ]
 x_diff, y_diff = 0.0,  0.0
@@ -4620,10 +4239,10 @@ print "average errors:", x_diff / len(actual), y_diff / len(actual)
         </ul>
       </div>
 
-      <div class="challenges" id="c:nestlist">
+      <div id="c:nestlist">
         <h3>Challenges</h3>
 
-        <ol class="challenges">
+        <ol>
 
           <li>
             A colleague has defined a 3&times;3 matrix like this:
@@ -4723,7 +4342,7 @@ len([ [0], [0, 1], [0, 1, 2] ])
         Consider the following snippet of Python:
       </p>
 
-<pre src="src/python/aliasing.py">
+<pre>
 &gt;&gt;&gt; <span class="in">outer = [ [10, 20, 30], [40, 50, 60] ]</span>
 &gt;&gt;&gt; <span class="in">inner = outer[0]</span>
 </pre>
@@ -4837,10 +4456,10 @@ len([ [0], [0, 1], [0, 1, 2] ])
         </ul>
       </div>
 
-      <div class="challenges" id="c:alias">
+      <div id="c:alias">
         <h3>Challenges</h3>
 
-        <ol class="challenges">
+        <ol>
 
           <li>
             Which diagram most accurately shows the state of memory after this code has executed?
@@ -4856,10 +4475,10 @@ base.append(base)
                 <td>D</td>
               </tr>
               <tr>
-                <td><img src="img/python/challenge.png"></td>
-                <td><img src="img/python/challenge.png"></td>
-                <td><img src="img/python/challenge.png"></td>
-                <td><img src="img/python/challenge.png"></td>
+                <td><img src="python/challenge.png"></td>
+                <td><img src="python/challenge.png"></td>
+                <td><img src="python/challenge.png"></td>
+                <td><img src="python/challenge.png"></td>
               </tr>
             </table>
           </li>

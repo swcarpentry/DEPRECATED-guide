@@ -1,3 +1,5 @@
+Replace 'argument' with 'parameter' throughout.
+
 Elizabeth Patitsas (a grad student in Computer Science at the
 University of Toronto with an interest in CS education) looked at the
 questions I’d written for the Python section of the Software Carpentry

@@ -17,6 +17,133 @@
 
 </section>
 
+<section id="s:python">
+  <h2>Python</h2>
+
+    <section id="s:python:provenance">
+      <h3>Provenance Revisited</h3>
+
+      <p>
+        As we said near the end of <a href="svn.html#provenance">the previous chapter</a>,
+        if we put a string like:
+      </p>
+
+<pre>
+$Revision: ...$
+</pre>
+
+      <p class="continue">
+        in a file,
+        Subversion can automatically update it
+        each time we commit a change to that file.
+        Let's add put <code>$Revision:$</code> in our program:
+      </p>
+
+<pre>
+import sys
+<span class="highlight">my_version = '$Revision: 143$'</span>
+<span class="highlight">'Processed by check.py:', my_version</span>
+have_seen_dashed_line = False
+for line in data:
+    if line.startswith('---'):
+        have_seen_dashed_line = True
+    elif have_seen_dashed_line:
+        name, number, score = line.split()
+        score = float(score)
+        if (score &lt; 0.0) or (score &gt; 5.0):
+            print 'Out of range:', name, number, score
+<span class="out">Processed by check.py: $Revision: 143$
+Out of range: range 2 7.5
+Out of range: volume 1 -3.0</span>
+</pre>
+
+      <p>
+        This is kind of handy:
+        our output now automatically includes a description of who produced it&mdash;<em>exactly</em> who,
+        i.e.,
+        not just the name of the program,
+        but also which version.
+        To see why this is useful,
+        let's rewrite the program so that it clips scores to lie inside 0&ndash;5
+        instead of just reporting outlying values:
+      </p>
+
+<pre>
+import sys
+my_version = '$Revision: 143$'
+'Processed by clip.py:', my_version
+have_seen_dashed_line = False
+for line in data:
+
+    if have_seen_dashed_line:
+        name, number, score = line.split()
+        score = float(score)
+        if score &lt; 0.0:
+            print 0.0
+        elif score &gt; 5.0:
+            print 5.0
+        else:
+            print score
+
+    else:
+        print line.rstrip()
+        if line.startswith('---'):
+            have_seen_dashed_line = True
+</pre>
+
+      <div class="box">
+
+        <h3>Ordering</h3>
+
+        <p>
+          Note that this version checked the <code>have_seen_dashed_line</code> flag first,
+          then handles the case where the flag isn't yet true.
+          Some people find this ordering easier to understand,
+          because the "main" case that handles actual data comes first.
+          Others prefer the original,
+          arguing that the cases should appear in the order in which
+          we expect the data to occur.
+          It doesn't matter which we use,
+          as long as we're consistent with our other loops.
+        </p>
+
+      </div>
+
+      <p>
+        When we run this program on the data that has invalid scores, it prints:
+      </p>
+
+<pre>
+<span class="out"><span class="highlight">Processed by clip.py: $Revision: 143$</span>
+Subject: 1782
+Date:    2012-05-21
+Test     Run  Score
+----     ---  -----
+range    1    3
+<span class="highlight">range    2    5.0</span>
+discrim  1    1
+discrim  2    1
+discrim  4    1.5
+<span class="highlight">volume   1    0.0</span>
+volume   2    4.0</span>
+</pre>
+
+      <p>
+        The three most important lines are highlighted.
+        Two of them&mdash;the data lines&mdash;have been cleaned up;
+        the line at the very top tells us who did the cleaning up.
+        This is another step in our march toward having a real data provenance system:
+        now,
+        if we discover a bug in a program,
+        we can look at our files and see which ones had been processed by that program.
+        As we'll see in the <a href="funclib.html">next chapter</a>,
+        we can extend this further to carry provenance information forward through an entire pipeline.
+      </p>
+
+    </section>
+
+</section>
+
 <section id="s:web">
   <h2>Web Programming in Python</h2>
   
