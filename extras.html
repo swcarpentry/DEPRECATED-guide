@@ -142,6 +142,401 @@ volume   2    4.0</span>
 
     </section>
 
+    <section id="s:python:funcobj">
+
+      <h3>Functions as Objects</h3>
+
+      <p>
+        An integer is just 32 or 64 bits of data that a variable can refer to,
+        while a string is just a sequence of bytes that a variable can also refer to.
+        Functions are just more bytes in memory&mdash;ones that happen to represent instructions.
+        That means that variables can refer to them
+        just as they can refer to any other data.
+      </p>
+
+      <p>
+        This insight&mdash;the fact that code is just another kind of data,
+        and can be manipulated like integers or strings&mdash;is
+        one of the most useful and powerful in all computing.
+        To understand why,
+        let's have a closer look at what actually happens when we define a function:
+      </p>
+
+<pre src="src/funclib/threshold.py">
+def threshold(signal):
+    return 1.0 / sum(signal)
+</pre>
+
+      <p class="continue">
+        These two lines tell Python that <code>threshold</code> is
+        a function that returns one over the sum of the values in <code>signal</code>.
+        When we define it,
+        Python translates the statements in the function into a blob of bytes,
+        then creates a variable called <code>threshold</code> and makes it point at that blob:
+      </p>
+
+      <figure id="f:defining_function">
+        <img src="img/funclib/defining_function.png" alt="Defining a Function" />
+      </figure>
+
+      <p class="continue">
+        This is not really any different from assigning the string <code>'alan turing'</code>
+        to the variable <code>name</code>.
+        the only difference is what's in the memory the variable points to.
+      </p>
+
+      <p>
+        If <code>threshold</code> is just a reference to something in memory,
+        we should be able to assign that reference to another variable.
+        Sure enough,
+        we can,
+        and when we call the function via that newly-created alias,
+        the result is exactly what we would get
+        if we called the original function with the same parameters,
+        because there's really only one function&mdash;it just has two names:
+      </p>
+
+<pre src="src/funclib/threshold.py">
+data = [0.1, 0.4, 0.2]
+print threshold(data)
+<span class="out">1.42857</span>
+t = threshold
+print t(data)
+<span class="out">1.42857</span>
+</pre>
+
+      <figure id="f:aliasing_function">
+        <img src="img/funclib/aliasing_function.png" alt="Aliasing a Function" />
+      </figure>
+
+      <div class="box">
+        <h3>Aliasing and Importing</h3>
+
+        <p>
+          We have created aliases for functions before without realizing it.
+          When we execute <code>from math import sqrt as square_root</code>,
+          we are loading the <code>math</code> module,
+          then creating an alias called <code>square_root</code>
+          for its function <code>sqrt</code>.
+        </p>
+      </div>
+
+      <p>
+        If a function is just another kind of data,
+        and we can create an alias for it,
+        can we put it in a list?
+        More precisely,
+        can we put a reference to a function in a list?
+        Let's define two functions,
+        <code>area</code> and <code>circumference</code>,
+        each of which takes a circle's radius as a parameter and returns the appropriate value:
+      </p>
+
+<pre src="src/funclib/funclist.py">
+def area(r):
+    return pi * r * r
+
+def circumference(r):
+    return 2 * pi * r
+</pre>
+
+      <p class="continue">
+        Once those functions are defined, we can put them into a list
+        (more precisely, put references to them in a list):
+      </p>
+
+<pre src="src/funclib/funclist.py">
+funcs = [area, circumference]
+</pre>
+
+      <figure id="f:list_of_functions">
+        <img src="img/funclib/list_of_functions.png" alt="A List of Functions" />
+      </figure>
+
+      <p>
+        We can now loop through the functions in the list,
+        calling each in turn.
+        Sure enough,
+        the output is what we would get if we called <code>area</code>
+        and then <code>circumference</code>:
+      </p>
+
+<pre src="src/funclib/funclist.py">
+for f in funcs:
+    print f(1.0)
+<span class="out">3.14159
+6.28318</span>
+</pre>
+
+      <p>
+        Let's go a little further.
+        Instead of storing a reference to a function in a list,
+        let's pass that reference into another function,
+        just as we would pass a reference to an integer, a string, or a list.
+        Here's a function called <code>call_it</code> that takes two parameters:
+        a reference to some other function, and some other value.
+      </p>
+
+<pre src="src/funclib/passfunc.py">
+def call_it(func, value):
+    return func(value)
+</pre>
+
+      <p class="continue">
+        All <code>call_it</code> does is call that other function with the given value as a parameter:
+      </p>
+
+<pre src="src/funclib/passfunc.py">
+print call_it(area, 1.0)
+<span class="out">3.14159</span>
+
+print call_it(circumference, 1.0)
+<span class="out">6.28318</span>
+</pre>
+
+      <p>
+        Now it's time for the payoff.
+        Here's a function called <code>do_all</code>
+        that applies a function&mdash;anything at all that takes one argument&mdash;to
+        each value in a list,
+        and returns a list of the results:
+      </p>
+
+<pre src="src/funclib/doall.py">
+def do_all(func, values):
+    result = []
+    for v in values:
+        temp = func(v)
+        result.append(temp)
+    return result
+</pre>
+
+      <p>
+        If we call <code>do_all</code> with <code>area</code> and a list of numbers,
+        we get what we would get if we called <code>area</code> directly on each number in turn:
+      </p>
+
+<pre src="src/funclib/doall.py">
+print do_all(area, [1.0, 2.0, 3.0])
+<span class="out">[3.14159, 12.56636, 28.27431]</span>
+</pre>
+
+      <p class="continue">
+        And if we define a function to "slim down" strings of text
+        by throwing away their first and last characters,
+        we can apply it to every string in a list,
+        without having to write another copy of the code that loops through the list,
+        calls the function,
+        and concatenates the results:
+      </p>
+
+<pre src="src/funclib/doall.py">
+def slim(text):
+    return text[1:-1]
+
+print do_all(slim, ['abc', 'defgh'])
+<span class="out">b efg</span>
+</pre>
+
+      <p>
+        Functions that operate on other functions are called
+        <a href="glossary.html#higher-order-functions">higher-order functions</a>.
+        They're common in mathematics:
+        integration,
+        for example,
+        is a function that operates on some other function.
+        In programming,
+        higher-order functions allow us to mix and match pieces of code
+        rather than duplicating them.
+      </p>
+
+      <p>
+        As another example,
+        let's look at <code>combine_values</code>,
+        which takes a function and a list of values as parameters,
+        and combines the values in the list using the function provided:
+      </p>
+
+<pre src="src/funclib/combine.py">
+def combine_values(func, values):
+    current = values[0]
+    for i in range(1, len(values)):
+        current = func(current, values[i])
+    return current
+</pre>
+
+      <p class="continue">
+        Now let's define <code>add</code> and <code>mul</code> to add and multiply values:
+      </p>
+
+<pre src="src/funclib/combine.py">
+def add(x, y):
+    return x + y
+
+def mul(x, y):
+    return x * y
+</pre>
+
+      <p class="continue">
+        If we combine 1, 3, and 5 with <code>add</code>, we get their sum, 9:
+      </p>
+
+<pre src="src/funclib/combine.py">
+print combine_values(add, [1, 3, 5])
+<span class="out">9</span>
+</pre>
+
+      <p class="continue">
+        If we combine the same values with <code>mul</code>, we get their product, 15:
+      </p>
+
+<pre src="src/funclib/combine.py">
+print combine_values(mul, [1, 3, 5])
+<span class="out">15</span>
+</pre>
+
+      <p class="continue">
+        This same higher-order function <code>combine_values</code> could concatenate lists of strings, too,
+        or multiply several matrices together, or whatever else we wanted,
+        without us having to write or test the loop ever again.
+        Without higher-order functions,
+        we would have to  write one function for each combination of data structure and operation,
+        i.e.,
+        one function to add numbers,
+        another to concatenate strings,
+        a third to sum matrices,
+        and so on.
+        <em>With</em> higher-order functions,
+        on the other hand,
+        we only write one function for each basic operation,
+        and one function for each kind of data structure.
+        Since A plus B is usually a lot smaller than A times B,
+        this saves us coding, testing, reading, and debugging.
+      </p>
+
+      <p>
+        Several higher-order functions are built in to Python.
+        One is <code>filter</code>,
+        which constructs a new list containing all the values in an original list
+        for which some function is true:
+      </p>
+
+<pre src="src/funclib/hof.py">
+def positive(x):
+    return x &gt; 0
+
+print filter(positive, [-5, 3, -2, 9, 0])
+<span class="out">[3, 9]</span>
+</pre>
+
+      <p class="continue">
+        Another is <code>map</code>,
+        which applies a function to every element of a list and returns a list of results:
+      </p>
+
+<pre src="src/funclib/hof.py">
+def bump(x):
+    return x + 10
+
+print map(bump, [-5, 3, -2, 9, 0])
+<span class="out">[5, 13, 8, 19, 10]</span>
+</pre>
+
+      <p class="continue">
+        And then there's <code>reduce</code>,
+        which combines values using a binary function,
+        returning a single value as a result:
+      </p>
+
+<pre src="src/funclib/hof.py">
+def add(x, y):
+    return x + y
+
+print reduce(add, [-5, 3, -2, 9, 0])
+<span class="out">5</span>
+</pre>
+
+      <p>
+        Combining all of these is a very powerful way to do a lot of computation
+        with very little typing:
+      </p>
+
+<pre src="src/funclib/hof.py">
+print reduce(add, map(bump, filter(positive, [-5, 3, -2, 9, 0])))
+<span class="out">32</span>
+</pre>
+
+      <p class="continue">
+        Reading from the inside out, we have:
+      </p>
+
+      <ol>
+        <li>
+          filtered the list, keeping only the positive values,
+        </li>
+        <li>
+          bumped them up by 10, and
+        </li>
+        <li>
+          summed the results.
+        </li>
+      </ol>
+
+      <p class="continue">
+        Written out, this is:
+      </p>
+
+<pre src="src/funclib/hof.py">
+total = 0
+for val in [-5, 3, -2, 9, 0]:
+    if val &gt; 0:
+        total += (val + 10)
+print total
+</pre>
+
+      <p>
+        The functional approach is usually more economical,
+        and isn't too bad to read once calls are indented:
+      </p>
+
+<pre>
+print reduce(add,
+             map(bump,
+             filter(positive,
+                    [-5, 3, -2, 9, 0])))
+</pre>
+
+      <p class="continue">
+        However,
+        the all-in-one-loop approach <em>is</em> faster,
+        since each call in the functional approach is creating its own temporary list of results,
+        only to have it discarded by the next function in the chain.
+        As always,
+        we should only worry about this once we are sure that
+        (a) the program is working correctly,
+        and (b) its performance really is a problem.
+      </p>
+
+      <div class="box">
+        <h3>List Comprehensions</h3>
+        <p class="fixme">explain list comprehensions</p>
+      </div>
+
+      <div class="keypoints" id="k:funcobj">
+        <h3>Summary</h3>
+        <ul>
+          <li idea="turing">A function is just another kind of data.</li>
+          <li>Defining a function creates a function object and assigns it to a variable.</li>
+          <li>Functions can be assigned to other variables, put in lists, and passed as parameters.</li>
+          <li>Writing higher-order functions helps eliminate redundancy in programs.</li>
+          <li>Use <code>filter</code> to select values from a list.</li>
+          <li>Use <code>map</code> to apply a function to each element of a list.</li>
+          <li>Use <code>reduce</code> to combine the elements of a list.</li>
+        </ul>
+      </div>
+
+    </section>
+
 </section>
 
 <section id="s:web">
