@@ -3348,30 +3348,29 @@ for char in values:
 
 </section>
 
-    <section id="s:nestloop">
+<section id="s:nestloop">
+  <h2>Nesting Loops</h2>
 
-      <h2>Nesting Loops</h2>
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Trace the execution of a nested loop.</li>
+      <li>Give examples of the kinds of problems that nested loops should be used to solve.</li>
+      <li>Construct nested loops with independent ranges.</li>
+      <li>Construct nested loops in which the range of the inner loop depends on the state of the outer loop, and give an example showing when this is useful.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:nestloop">
-        <h3>Learning Objectives</h3>
-        <ul>
-          <li>Trace the execution of a nested loop.</li>
-          <li>Give examples of the kinds of problems that nested loops should be used to solve.</li>
-          <li>Construct nested loops with independent ranges.</li>
-          <li>Construct nested loops in which the range of the inner loop depends on the state of the outer loop, and give an example showing when this is useful.</li>
-        </ul>
-      </div>
-
-      <p>
-        Going back to Aurora's data cleanup problem,
-        suppose that the scores in each data set
-        are always supposed to ramp upward:
-        if we ever see a value that's less than the value before it,
-        something's gong wrong.
-        Here's a program that tries to check that
-        (again, using inline data instead of reading from a file
-        to make the sample code clearer):
-      </p>
+  <p>
+    Going back to Aurora's data cleanup problem,
+    suppose that the scores in each data set
+    are always supposed to ramp upward:
+    if we ever see a value that's less than the value before it,
+    something's gong wrong.
+    Here's a program that tries to check that
+    (again, using inline data instead of reading from a file
+    to make the sample code clearer):
+  </p>
 
 <pre>
 data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
@@ -3379,20 +3378,21 @@ for i in range(len(data)):
     if data[i] &lt; data[i-1]:
         print "failure at index:", i
     i = i + 1
+<hr/>
 <span class="out">failure at index: 0
 failure at index: 8</span>
 </pre>
 
-      <p class="continue">
-        Whoops&mdash;why is it telling us that there's a failure at index 0?
-        Take a close look at the third line:
-        when <code>i</code> is 0,
-        it compares <code>data[0]</code> to <code>data[-1]</code>,
-        but as we said earlier,
-        index -1 means the last element of the list.
-        We need to make sure that we only compare the <em>second</em> and higher elements
-        to the ones before them:
-      </p>
+  <p class="continue">
+    Whoops&mdash;why is it telling us that there's a failure at index 0?
+    Take a close look at the third line:
+    when <code>i</code> is 0,
+    it compares <code>data[0]</code> to <code>data[-1]</code>,
+    but as we said earlier,
+    index -1 means the last element of the list.
+    We need to make sure that we only compare the <em>second</em> and higher elements
+    to the ones before them:
+  </p>
 
 <pre>
 data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
@@ -3400,31 +3400,26 @@ for i in <span class="highlight">range(1, len(data))</span>:
     if data[i] &lt; data[i-1]:
         print "failure at index:", i
     i = i + 1
+<hr/>
 <span class="out">failure at index: 8</span>
 </pre>
 
-      <p class="continue">
-        This program uses the fact that <code>range(low, high)</code>
-        generates the values from <code>low</code> to <code>high-1</code>.
-        We can also use <code>range(low, high, stride)</code>
-        to generate values that are spaced <code>stride</code> apart,
-        so that <code>range(5, 20, 3)</code> produces
-        <code>[5, 8, 11, 14, 17]</code>.
-        (Remember,
-        <code>range</code> goes up to but not including the top value.)
-      </p>
+  <p class="continue">
+    This program uses the fact that <code>range(low, high)</code>
+    generates the values from <code>low</code> to <code>high-1</code>.
+    We can also use <code>range(low, high, stride)</code>
+    to generate values that are spaced <code>stride</code> apart,
+    so that <code>range(5, 20, 3)</code> produces
+    <code>[5, 8, 11, 14, 17]</code>.
+    (Remember,
+    <code>range</code> goes up to but not including the top value.)
+  </p>
 
-    <!-- JK: I like the data smoothing example, but, just to stay in character, 
-         it's unclear how it relates to Aurora's problem exactly? There wasn't 
-         anything set up in her problem statement related to consecutive data, 
-         or smoothing. Later on, this is referred to as "Aurora's data 
-         smoothing". -->
-
-      <p>
-        Now suppose that we need to add up successive triples of our data
-        to smooth out the scores.
-        Our first try steps through the indices three at a time:
-      </p>
+  <p>
+    Now suppose that Aurora needs to add up successive triples of her data
+    to time-average the scores.
+    Our first try steps through the indices three at a time:
+  </p>
 
 <pre>
 data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
@@ -3433,36 +3428,38 @@ for i in range(0, len(data), 3):
     sum = data[i] + data[i+1] + data[i+2]
     result.append(sum)
 print "grouped data:", result
+<hr/>
 <span class="err">Traceback (most recent call last):
   File "group-by-threes-fails.py", line 6, in &lt;module&gt;
     sum = data[i] + data[i+1] + data[i+2]
 IndexError: list index out of range</span>
 </pre>
 
-      <p class="continue">
-        It's not immediately obvious what's wrong,
-        but a bit of experimenting with shorter lists turns up the problem.
-        If the number of elements in the list isn't exactly divisible by 3,
-        our program is going to try to reach past the end of the list.
-        For example,
-        if we have a 4-element list,
-        we will add up the values at locations 0, 1, and 2,
-        then try to add up the values at locations 3, 4, and 5,
-        but locations 4 and 5 aren't valid
-        (<a href="#f:a_step_too_far">Figure XXX</a>).
-      </p>
+  <p class="continue">
+    It's not immediately obvious what's wrong,
+    but a bit of experimenting with shorter lists turns up the problem.
+    If the number of elements in the list isn't exactly divisible by 3,
+    our program is going to try to reach past the end of the list.
+    For example,
+    if we have a 4-element list,
+    we will add up the values at locations 0, 1, and 2,
+    then try to add up the values at locations 3, 4, and 5,
+    but locations 4 and 5 aren't valid
+    (<a href="#f:a_step_too_far">Figure 20</a>).
+  </p>
 
-      <figure id="f:a_step_too_far">
-        <img src="python/a_step_too_far.png" alt="A Step Too Far" />
-      </figure>
+  <figure id="f:a_step_too_far">
+    <img src="python/a_step_too_far.png" alt="A Step Too Far" />
+    <figcaption>Figure 20: A Step Too Far</figcaption>
+  </figure>
 
-      <p>
-        How we should fix this is a question for a scientist
-        (or at least a statistician).
-        Should we throw away the top few values if there aren't enough to make another triple,
-        or add up as many as there are and hope for the best?
-        Let's assume the latter for now:
-      </p>
+  <p>
+    How we should fix this is a question for a scientist
+    (or at least a statistician):
+    should we throw away the top few values if there aren't enough to make another triple,
+    or add up as many as there are and hope for the best?
+    Let's assume the latter for now:
+  </p>
 
 <pre>
 data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
@@ -3475,20 +3472,21 @@ for i in range(0, len(data), 3):
         sum += data[i+2]
     result.append(sum)
 print "grouped data:", result
+<hr/>
 <span class="out">grouped data: [5, 11, 16, 20, 8]</span>
 </pre>
 
-      <p>
-        This works,
-        but it feels clumsy:
-        if we were adding up in groups of ten,
-        we'd have a lot of <code>if</code> statements.
-        We need a better way.
-      </p>
+  <p>
+    This works,
+    but it feels clumsy:
+    if we were adding up in groups of ten,
+    we'd have a lot of <code>if</code> statements.
+    We need a better way.
+  </p>
 
-      <p>
-        Our first step toward that better way looks like this:
-      </p>
+  <p>
+    Our first step toward that better way looks like this:
+  </p>
 
 <pre>
 vowels = "ae"
@@ -3496,6 +3494,7 @@ consonants = "dnx"
 for v in vowels:
     for c in consonants:
         print v + c
+<hr/>
 <span class="out">ad
 an
 ax
@@ -3504,34 +3503,36 @@ en
 ex</span>
 </pre>
 
-      <p>
-        <a href="#f:nested_flowchart">Figure XXX</a> shows
-        what's going on in this <a href="glossary.html#nested-loop">nested loop</a>.
-        Each time the <a href="glossary.html#outer-loop">outer loop</a> executes,
-        Python runs the entire <a href="glossary.html#inner-loop">inner loop</a>.
-        The innermost <code>print</code> statement therefore executes six times,
-        because the outer loop runs twice,
-        and the inner loop runs three times for each of those iterations.
-      </p>
+  <p>
+    <a href="#f:nested_flowchart">Figure 21</a> shows
+    what's going on in this <a href="glossary.html#nested-loop">nested loop</a>.
+    Each time the <a href="glossary.html#outer-loop">outer loop</a> executes,
+    Python runs the entire <a href="glossary.html#inner-loop">inner loop</a>.
+    The innermost <code>print</code> statement therefore executes six times,
+    because the outer loop runs twice,
+    and the inner loop runs three times for each of those iterations.
+  </p>
 
-      <figure id="f:nested_flowchart">
-        <img src="python/nested_flowchart.png" alt="Nested Loops" />
-      </figure>
+  <figure id="f:nested_flowchart">
+    <img src="python/nested_flowchart.png" alt="Nested Loops" />
+    <figcaption>Figure 21: Nested Loops</figcaption>
+  </figure>
 
-      <p>
-        In this case,
-        both loops execute a fixed number of times,
-        but that doesn't have to be the case.
-        It's common,
-        for example,
-        to set the number of times an inner loop runs
-        based on the current value of the outer loop's counter:
-      </p>
+  <p>
+    In this case,
+    both loops execute a fixed number of times,
+    but that doesn't have to be the case.
+    It's common,
+    for example,
+    to set the number of times an inner loop runs
+    based on the current value of the outer loop's counter:
+  </p>
 
 <pre>
 for i in range(4):
     for j in range(i):
         print i, j
+<hr/>
 <span class="out">1 0
 2 0
 2 1
@@ -3540,62 +3541,63 @@ for i in range(4):
 3 2</span>
 </pre>
 
-      <figure id="f:triangle_nested_loop">
-        <img src="python/triangle_nested_loop.png" alt="Nested Loop Execution" />
-      </figure>
+  <figure id="f:triangle_nested_loop">
+    <img src="python/triangle_nested_loop.png" alt="Nested Loop Execution" />
+    <figcaption>Figure 22: Nested Loop Execution</figcaption>
+  </figure>
 
-      <p>
-        <a href="#f:triangle_nested_loop">Figure XXX</a> traces
-        this little program's execution.
-        The first time through,
-        <code>i</code> is 0.
-        Since <code>range(0)</code> is the empty list <code>[]</code>,
-        the inner loop is effectively:
-      </p>
+  <p>
+    <a href="#f:triangle_nested_loop">Figure 22</a> traces
+    this little program's execution.
+    The first time through,
+    <code>i</code> is 0.
+    Since <code>range(0)</code> is the empty list <code>[]</code>,
+    the inner loop is effectively:
+  </p>
 
 <pre>
     for j in []:
         print i, j
 </pre>
 
-      <p class="continue">
-        so it doesn't execute at all.
-        The next time,
-        though,
-        when <code>i</code> is 1,
-        the inner loop is effectively:
-      </p>
+  <p class="continue">
+    so it doesn't execute at all.
+    The next time,
+    though,
+    when <code>i</code> is 1,
+    the inner loop is effectively:
+  </p>
 
 <pre>
     for j in [0]:
         print i, j
 </pre>
 
-      <p class="continue">
-        so the innermost <code>print</code> statement is executed once
-        with <code>i</code> equal to 1 and <code>j</code> equal to 0.
-        The third time around the outer loop,
-        <code>i</code> is 2,
-        so <code>range(i)</code> is <code>[0, 1]</code>.
-        This makes the inner loop execute twice,
-        and so on.
-      </p>
+  <p class="continue">
+    so the innermost <code>print</code> statement is executed once
+    with <code>i</code> equal to 1 and <code>j</code> equal to 0.
+    The third time around the outer loop,
+    <code>i</code> is 2,
+    so <code>range(i)</code> is <code>[0, 1]</code>.
+    This makes the inner loop execute twice,
+    and so on.
+  </p>
 
-      <p>
-        Now let's go back to Aurora's data smoothing.
-        We can step through the data in threes like this:
-      </p>
+  <p>
+    Now let's go back to Aurora's data smoothing.
+    We can step through the data in threes like this:
+  </p>
 
 <pre>
 for i in range(0, len(data), 3):
     ...body of loop...
 </pre>
 
-      <p>
-        If we know that the length of a list is an exact multiple of three,
-        we can always loop from index <code>i</code>
-        up to (but not including) <code>i+3</code>:
-      </p>
+  <p>
+    If we know that the length of a list is an exact multiple of three,
+    we can always loop from index <code>i</code>
+    up to (but not including) <code>i+3</code>:
+  </p>
 
 <pre>
 for i in range(0, len(data), 3):
@@ -3603,21 +3605,21 @@ for i in range(0, len(data), 3):
         ...body of loop...
 </pre>
 
-      <p>
-        If the list isn't long enough for us to do this,
-        we want to go as high as
-        the least of <code>i+3</code> and <code>len(data)</code>.
-        Using Python's built-in <code>min</code> function,
-        this is:
-      </p>
+  <p>
+    If the list isn't long enough for us to do this,
+    we want to go as high as
+    the least of <code>i+3</code> and <code>len(data)</code>.
+    Using Python's built-in <code>min</code> function,
+    this is:
+  </p>
 
 <pre>
 min(i+3, len(data))
 </pre>
 
-      <p class="continue">
-        so we can write our inner loop as:
-      </p>
+  <p class="continue">
+    so we can write our inner loop as:
+  </p>
 
 <pre>
 for i in range(0, len(data), 3):
@@ -3626,9 +3628,9 @@ for i in range(0, len(data), 3):
         ...smooth data...
 </pre>
 
-      <p>
-        Here's the completed data smoothing program:
-      </p>
+  <p>
+    Here's the completed data smoothing program:
+  </p>
 
 <pre>
 data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
@@ -3640,17 +3642,19 @@ for i in range(0, len(data), 3):
         sum += data[j]
     result.append(sum)
 print "grouped data:", result
+<hr/>
 <span class="out">grouped data: [5, 11, 16, 20, 8]</span>
 </pre>
 
-      <p>
-        This program works,
-        but there's room for improvement.
-        If we ever want to change the smoothing interval,
-        we have to replace the number 3 in two places.
-        If we put that value in a variable <code>width</code>,
-        we'll only need to change it once:
-      </p>
+  <p>
+    This program works,
+    but there's room for improvement.
+    If we ever want to change the smoothing interval,
+    we have to replace the number 3 in two places.
+    Let's put that value in a variable <code>width</code>
+    to reduce the odds of us updating it one place
+    and not the other:
+  </p>
 
 <pre>
 data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
@@ -3663,38 +3667,39 @@ for i in range(0, len(data), <span class="highlight">width</span>):
         sum += data[j]
     result.append(sum)
 print "grouped data:", result
+<hr/>
 <span class="out">grouped data: [5, 11, 16, 20, 8]</span>
 </pre>
 
-      <p>
-        This change also tells readers
-        (including our future selves)
-        that the stride in the outer loop,
-        and the offset used to calculate <code>upper_bound</code>,
-        are always supposed to be the same.
-        That's yet another reason to use variables with meaningful names:
-        it tells people when values are intentionally the same,
-        as opposed to accidentally the same.
-      </p>
+  <p>
+    This change also tells readers
+    (including our future selves)
+    that the stride in the outer loop,
+    and the offset used to calculate <code>upper_bound</code>,
+    are always supposed to be the same.
+    That's yet another reason to use variables with meaningful names:
+    it tells people when values are intentionally the same,
+    as opposed to accidentally the same.
+  </p>
 
-      <div class="keypoints" id="k:nestloop">
-        <h3>Summary</h3>
-        <ul>
-          <li><code>range(<em>start</em>, <em>end</em>)</code> creates the list of numbers from <code><em>start</em></code> up to, but not including, <code><em>end</em></code>.</li>
-          <li><code>range(<em>start</em>, <em>end</em>, <em>stride</em>)</code> creates the list of numbers from <code><em>start</em></code> up to <code><em>end</em></code> in steps of <code><em>stride</em></code>.</li>
-          <li>Use nested loops to do things for combinations of things.</li>
-          <li>Make the range of the inner loop depend on the state of the outer loop to automatically adjust how much data is processed.</li>
-          <li>Use <code>min(...)</code> and <code>max(...)</code> to find the minimum and maximum of any number of values.</li>
-        </ul>
-      </div>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li><code>range(<em>start</em>, <em>end</em>)</code> creates the list of numbers from <code><em>start</em></code> up to, but not including, <code><em>end</em></code>.</li>
+      <li><code>range(<em>start</em>, <em>end</em>, <em>stride</em>)</code> creates the list of numbers from <code><em>start</em></code> up to <code><em>end</em></code> in steps of <code><em>stride</em></code>.</li>
+      <li>Use nested loops to do things for combinations of things.</li>
+      <li>Make the range of the inner loop depend on the state of the outer loop to automatically adjust how much data is processed.</li>
+      <li>Use <code>min(...)</code> and <code>max(...)</code> to find the minimum and maximum of any number of values.</li>
+    </ul>
+  </div>
 
-      <div id="c:nestloop">
-        <h3>Challenges</h3>
+  <div class="challenges">
+    <h3>Challenges</h3>
 
-        <ol>
+    <ol>
 
-          <li>
-            What does this program print?
+      <li>
+        What is the final value of <code>total</code> in this program?
 <pre>
 total = 0
 for i in range(2):
@@ -3702,50 +3707,44 @@ for i in range(2):
         total += j
 print total
 </pre>
-            <ol class="choices">
-              <li>-2</li>
-              <li>-1</li>
-              <li>0</li>
-              <li>1</li>
-            </ol>
-          </li>
+      </li>
 
-          <li>
-            How many different numbers can be put in the blank below so that the value of the expression is 12?
+      <li>
+        How many different numbers can be put in the blank below so that the value of the expression is 12?
 <pre>
 sum(range(1, ____, 3))
 </pre>
-            <ol class="choices">
-              <li>Only 1</li>
-              <li>2 different values</li>
-              <li>3 different values</li>
-              <li>The expression's value can never be 12</li>
-            </ol>
-          </li>
+        <ol class="choices">
+          <li>Only 1</li>
+          <li>2 different values</li>
+          <li>3 different values</li>
+          <li>The expression's value can never be 12</li>
+        </ol>
+      </li>
 
-          <li>
-            How many different numbers can be put in the blank below so that the value of the expression is 12?
+      <li>
+        How many different numbers can be put in the blank below so that the value of the expression is 12?
 <pre>
 sum(range(1, 3, ____))
 </pre>
-            <ol class="choices">
-              <li>Only 1</li>
-              <li>2 different values</li>
-              <li>3 different values</li>
-              <li>The expression's value can never be 12</li>
-            </ol>
-          </li>
+        <ol class="choices">
+          <li>Only 1</li>
+          <li>2 different values</li>
+          <li>3 different values</li>
+          <li>The expression's value can never be 12</li>
+        </ol>
+      </li>
 
-          <li>
-            Fill in the blanks in:
-            <blockquote>
-              <code>final_mass</code> starts at 0,
-              which is less than any of the values in ________,
-              so <code>________(final_mass, inner)</code> is always 0,
-              so <code>max(outer, min(...))</code> is always just ________,
-              so the final value is just the last value of <code>outer_masses</code>.
-            </blockquote>
-            so that it is an accurate description of the behavior of this program:
+      <li>
+        Fill in the blanks so that this accurately describes
+        the fragment of code given below.
+        <blockquote>
+          <code>final_mass</code> starts at 0,
+          which is less than any of the values in ________,
+          so <code>________(final_mass, inner)</code> is always 0,
+          so <code>max(outer, min(...))</code> is always just ________,
+          so the final value is just the last value of <code>outer_masses</code>.
+        </blockquote>
 <pre>
 outer_masses = [10, 20, 30]
 inner_masses = [1, 2, 3]
@@ -3755,33 +3754,13 @@ for outer in outer_masses:
         final = max(outer, min(final, inner))
 print final
 </pre>
-            <table class="choices">
-              <tr>
-                <td>A</td>
-                <td><code>inner_masses</code></td>
-                <td><code>min</code></td>
-                <td><code>outer</code></td>
-              </tr>
-              <tr>
-                <td>B</td>
-                <td><code>outer_masses</code></td>
-                <td><code>min</code></td>
-                <td><code>0</code></td>
-              </tr>
-              <tr>
-                <td>C</td>
-                <td><code>inner_masses</code></td>
-                <td><code>max</code></td>
-                <td><code>inner_masses[-1]</code></td>
-              </tr>
-            </table>
-          </li>
+      </li>
 
-        </ol>
+    </ol>
 
-      </div>
+  </div>
 
-    </section>
+</section>
 
     <section id="s:nestlist">
 
