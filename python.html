@@ -73,7 +73,7 @@
 <div class="guide">
   <h2>For Instructors</h2>
 
-  <p class="fixme">write</p>
+  <p class="fixme">This is the slower-paced one for people new to programming.</p>
 
   <div class="prereq">
     <h3>Prerequisites</h3>
@@ -3762,24 +3762,23 @@ print final
 
 </section>
 
-    <section id="s:nestlist">
+<section id="s:nestlist">
+  <h2>Nesting Lists</h2>
 
-      <h2>Nesting Lists</h2>
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Explain what nested lists are, and their relationship to nested loops.</li>
+      <li>Draw data structure diagrams corresponding to nested lists, and write nested lists that correspond to given diagrams.</li>
+      <li>Explain what happens when an expression like "<code>table[3][2]</code>" is evaluated.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:nestlist">
-        <h3>Learning Objectives</h3>
-        <ul>
-          <li>Explain what is meant by "nested lists", and what their relationship is to nested loops.</li>
-          <li>Draw data structure diagrams corresponding to nested lists, and write nested lists that correspond to given diagrams.</li>
-          <li>Explain what happens when an expression like "<code>table[3][2]</code>" is evaluated.</li>
-        </ul>
-      </div>
-
-      <p>
-        One of the hearing tests Aurora uses
-        asks people to point out where a sound is coming from.
-        The data files contain lists of XY coordinates:
-      </p>
+  <p>
+    One of the hearing tests Aurora uses
+    asks people to point out where a sound is coming from.
+    The data files contain lists of XY coordinates:
+  </p>
 
 <pre>
 4.2 1.7
@@ -3788,18 +3787,18 @@ print final
 ... ...
 </pre>
 
-      <p>
-        She has roughly 100 such files,
-        and one more file (in the same format)
-        that holds the actual location of each sound.
-        She wants to calculate the average distance between
-        each actual and reported location.
-      </p>
+  <p>
+    She has roughly 100 such files,
+    and one more file (in the same format)
+    that holds the actual location of each sound.
+    She wants to calculate the average distance between
+    each actual and reported location.
+  </p>
 
-      <p>
-        The first step is to read a file
-        and extract the XY values on each line:
-      </p>
+  <p>
+    The first step is to read a file
+    and extract the XY values on each line:
+  </p>
 
 <pre>
 x_values = []
@@ -3814,10 +3813,10 @@ for line in reader:
 reader.close()
 </pre>
 
-      <p>
-        We can make this a bit more readable
-        by combining the calls to <code>float</code> and <code>append</code>:
-      </p>
+  <p>
+    We can make this a bit more readable
+    by combining the calls to <code>float</code> and <code>append</code>:
+  </p>
 
 <pre>
 x_values = []
@@ -3830,26 +3829,18 @@ for line in reader:
 reader.close()
 </pre>
 
-      <p class="continue">
-        but the basic approach is still unwieldy.
-        What we really want is a list of XY coordinates,
-        not two parallel lists of X and Y coordinates.
-        We can easily create what we want
-        using <a id="g:nested-list" href="glossary.html#nested-list">nested list</a>.
-        <a href="#f:simple_nested_list">Figure XXX</a> shows
-        what we're going to do,
-        and the code below shows
-        how we would create a nested list by hand
-        for specific XY values:
-      </p>
-
-    <!-- JK: Tuples? I'm just thinking of this now, because I would normally 
-         treat x, y as a tuple (no particular reason, just force of habit) 
-         presuming that x and y didn't need to change later. I see the argument 
-         for using lists throughout here, but maybe a box that just mentions 
-         that tuples exist, they work like lists (in this context) except that
-         the values they contain can't be changed, and that they come up in  
-         other people's programs? -->
+  <p class="continue">
+    but the basic approach is still unwieldy.
+    What we really want is a list of XY coordinates,
+    not two parallel lists of X and Y coordinates.
+    We can easily create what we want
+    using <a id="g:nested-list" href="glossary.html#nested-list">nested list</a>.
+    <a href="#f:simple_nested_list">Figure 23</a> shows
+    what we're going to do,
+    and the code below shows
+    how we would create a nested list by hand
+    for specific XY values:
+  </p>
 
 <pre>
 &gt;&gt;&gt; <span class="in">coordinates = [ [4.2, 1.7], [3.1, 5.0], [0.8, 6.1] ]</span>
@@ -3859,21 +3850,22 @@ reader.close()
 <span class="out">1.7</span>
 </pre>
 
-      <figure id="f:simple_nested_list">
-        <img src="python/simple_nested_list.py" alt="A Simple Nested List" />
-      </figure>
+    <figure id="f:simple_nested_list">
+      <img src="python/simple_nested_list.py" alt="A Simple Nested List" />
+      <figcaption>Figure 23: A Simple Nested List</figcaption>
+    </figure>
 
-      <p>
-        This isn't as complicated as it first looks.
-        Just as a variable can point at any object,
-        so too can any entry in a list.
-        And since a list is just an object in memory,
-        one list can contain a reference to another.
-        This is why <code>coordinates[0]</code> is <code>[4.2, 1.7]</code>:
-        the first entry of the outer list is
-        a reference to an entire sublist.
-        We could just as easily write:
-      </p>
+  <p>
+    This isn't as complicated as it first looks.
+    Just as a variable can point at any object,
+    so too can any entry in a list.
+    And since a list is just an object in memory,
+    one list can contain a <a href="glossary.html#reference">reference</a> to another.
+    This is why <code>coordinates[0]</code> is <code>[4.2, 1.7]</code>:
+    the first entry of the outer list is
+    a reference to an entire sublist.
+    We could just as easily write:
+  </p>
 
 <pre>
 &gt;&gt;&gt; <span class="in">temp = coordinates[0]</span>
@@ -3881,28 +3873,29 @@ reader.close()
 <span class="out">[4.2, 1.7]</span>
 </pre>
 
-      <p class="continue">
-        And since <code>x[1]</code> is 4.2,
-        so too is <code>coordinates[0][1]</code>:
-        the first subscript select the sublist,
-        while the second selects an element from that sublist
-        (<a href="#f:indexing_nested_lists">Figure XXX</a>).
-      </p>
+  <p class="continue">
+    And since <code>x[1]</code> is 4.2,
+    so too is <code>coordinates[0][1]</code>:
+    the first subscript select the sublist,
+    while the second selects an element from that sublist
+    (<a href="#f:indexing_nested_lists">Figure 24</a>).
+  </p>
 
-      <figure id="f:indexing_nested_lists">
-        <img src="python/indexing_nested_lists.png" alt="Indexing Nested Lists" />
-      </figure>
+  <figure id="f:indexing_nested_lists">
+    <img src="python/indexing_nested_lists.png" alt="Indexing Nested Lists" />
+    <figcaption>Figure 24: Indexing Nested Lists</figcaption>
+  </figure>
 
-      <p>
-        It's important to understand that the inner list isn't "in" the outer list:
-        what the outer list contains is a reference to the inner one.
-        We'll return to this <a href="#s:alias">later</a>.
-      </p>
+  <p>
+    It's important to understand that the inner list isn't "in" the outer list:
+    what the outer list contains is a reference to the inner one.
+    We'll return to this <a href="#s:alias">later</a>.
+  </p>
 
-      <p>
-        With nested lists in hand,
-        it's straightforward to create a list of coordinate pairs:
-      </p>
+  <p>
+    With nested lists in hand,
+    it's straightforward to create a list of coordinate pairs:
+  </p>
 
 <pre>
 values = []
@@ -3914,17 +3907,27 @@ for line in reader:
 reader.close()
 </pre>
 
-      <p class="continue">
-        Each time the loop executes,
-        this program splits the line into two strings,
-        creates a new two-element list containing the corresponding numbers,
-        and then appends that list to <code>values</code>.
-      </p>
+  <p class="continue">
+    Each time the loop executes,
+    this program splits the line into two strings,
+    creates a new two-element list containing the corresponding numbers,
+    and then appends that list to <code>values</code>.
+    <a href="#f:growing_nested_list">Figure 25</a> shows how
+    the <code>values</code> list grows as successive pairs of numbers are read.
+  </p>
 
-      <p>
-        Now suppose that we have two such lists,
-        and we want to find the average distance between corresponding coordinates.
-      </p>
+  <figure id="f:growing_nested_list">
+    <img src="python/growing_nested_list.png" alt="Growing a Nested List" />
+    <figcaption>Figure 25: Growing a Nested List</figcaption>
+  </figure>
+
+  <p>
+    Now suppose that we have two lists of coordinates,
+    and we want to find the average distance between corresponding coordinates.
+    For the moment,
+    we'll just create two representative lists in memory
+    and find their average difference:
+  </p>
 
 <pre>
 expected = [ [4.0, 2.0], [3.0, 5.0], [1.0, 6.0] ]
@@ -3936,79 +3939,206 @@ for i in range(len(actual)):
     x_diff += abs(e[0] - a[0])
     y_diff += abs(e[1] - a[1])
 print "average errors:", x_diff / len(actual), y_diff / len(actual)
+<hr/>
 <span class="out">average errors: 0.166666666667 0.133333333333</span>
 </pre>
 
-      <p class="continue">
-        The first two lines set up our data:
-        in a real program,
-        we'd read values from files.
-        The next line initializes <code>x_diff</code> and <code>y_diff</code>,
-        which will hold the errors in X and Y respectively.
-        Each iteration of the loop
-        sets <code>a</code> and <code>e</code> to point at
-        corresponding elements of the vectors.
-        <code>a[0]</code> is then the X coordinate of an actual point,
-        while <code>e[0]</code> is the X coordinate of the corresponding expected point,
-        so <code>abs(e[0] - a[0])</code> is the difference,
-        which we add to <code>x_diff</code> using <code>+=</code>.
-      </p>
+  <p class="continue">
+    The first two lines set up our data:
+    in a real program,
+    we'd read values from files.
+    The next line initializes <code>x_diff</code> and <code>y_diff</code>,
+    which will hold the errors in X and Y respectively.
+    Each iteration of the loop
+    sets <code>a</code> and <code>e</code> to point at
+    corresponding elements of the vectors.
+    <code>a[0]</code> is then the X coordinate of an actual point,
+    while <code>e[0]</code> is the X coordinate of the corresponding expected point,
+    so <code>abs(e[0] - a[0])</code> is the difference,
+    which we add to <code>x_diff</code> using <code>+=</code>.
+  </p>
 
-      <div class="keypoints" id="k:nestlist">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use nested lists to store multi-dimensional data or values that have regular internal structure (such as XYZ coordinates).</li>
-          <li>Use <code><em>list_of_lists</em>[<em>first</em>]</code> to access an entire sub-list.</li>
-          <li>Use <code><em>list_of_lists</em>[<em>first</em>][<em>second</em>]</code> to access a particular element of a sub-list.</li>
-          <li>Use nested loops to process nested lists.</li>
-        </ul>
-      </div>
+  <div class="box">
+    <h3>Choosing Better Test Cases</h3>
 
-      <div id="c:nestlist">
-        <h3>Challenges</h3>
+    <p>
+      How can we be sure that the code shown above is working correctly?
+      Putting it another way,
+      what test data should we use so that we can tell
+      if the answer is right or not?
+      One better set of inputs would be:
+    </p>
+<pre>
+expected = [ [0.0, 0.0], [0.0, 0.0], [0.0, 0.0] ]
+actual   = [ [1.0, 2.0], [1.0, 4.0], [1.0, 6.0] ]
+</pre>
+    <p>
+      It's clear in this case that the right answers are
+      1.0 and 4.0 for X and Y.
+      We'll discuss the choice of test cases in more detail
+      in a <a href="quality.html">later lesson</a>.
+    </p>
+  </div>
 
-        <ol>
+  <p>
+    Nested lists have a close relationship to nested loops.
+    For example,
+    suppose that Aurora has a list with one entry for each test subject,
+    and that each of those entries contains several test scores:
+  </p>
 
-          <li>
-            A colleague has defined a 3&times;3 matrix like this:
+<pre>
+scores = [ [1.5, 2.2, 1.7, 1.6],
+           [2.8, 3.5, 3.6, 1.6],
+           [1.3, 1.1, 1.7, 1.4] ]
+</pre>
+
+  <p>
+    To calculate the average of all these scores,
+    she needs to loop over the outer list
+    (to cover each test subject),
+    and also to loop over every element of each entry
+    (to cover each subject's scores):
+  </p>
+
+<pre>
+total = 0.0
+number = 0
+for entry in scores:
+    for value in entry:
+        total += value
+        number += 1
+average = total / number
+print average
+<hr/>
+<span class="out">2.0</span>
+</pre>
+
+  <p>
+    Since the data structure is a list of lists,
+    we need to use a loop within a loop.
+    If we want to average the scores per subject,
+    we would only need to make a small change to this code:
+  </p>
+
+<pre>
+for entry in scores:
+<span class="highlight">    total = 0.0
+    number = 0</span>
+    for value in entry:
+        total += value
+        number += 1
+<span class="highlight">    average = total / number
+    print average</span>
+<hr/>
+<span class="out">1.75
+2.875
+1.375</span>
+</pre>
+
+  <p class="continue">
+    The important change here is that
+    <code>total</code> and <code>number</code> are re-initialized
+    and then reported
+    <em>inside</em> the main loop,
+    so that each subject's scores are calculated and printed separately.
+  </p>
+
+  <p>
+    If we want to average corresponding scores for each subject,
+    i.e.,
+    get the average of each subject's zeroth score,
+    then the average of their first score,
+    and so on,
+    the code suddenly becomes more complex.
+    The reason is that
+    while <code>scores[1]</code> is "all the scores associated with subject 1",
+    there is no equally simple expression meaning
+    "the first score associated with all subjects".
+    (We will see a structure that allows us to do this <a href="numpy.html">later</a>.)
+  </p>
+
+  <p>
+    Here's the code that averages corresponding scores across subjects:
+  </p>
+
+<pre id="a:average_scores">
+scores = [ [1.5, 2.2, 1.7, 1.6],
+           [2.8, 3.5, 3.6, 1.6],
+           [1.3, 1.1, 1.7, 1.4] ]
+for loc in range(len(scores[0])):
+    total = 0.0
+    number = 0
+    for entry in scores:
+        total += entry[loc]
+        number += 1
+    average = total / number
+    print average
+<hr/>
+<span class="out">1.86666666667
+2.26666666667
+2.33333333333
+1.53333333333</span>
+</pre>
+
+  <p class="continue">
+    We will take a closer look at how and why it works in the challenges below.
+  </p>
+
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Use nested lists to store multi-dimensional data or values that have regular internal structure (such as XYZ coordinates).</li>
+      <li>Use <code><em>list_of_lists</em>[<em>first</em>]</code> to access an entire sub-list.</li>
+      <li>Use <code><em>list_of_lists</em>[<em>first</em>][<em>second</em>]</code> to access a particular element of a sub-list.</li>
+      <li>Use nested loops to process nested lists.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <ol>
+
+      <li>
+        Trace the values of <code>loc</code>, <code>total</code>,
+        <code>number</code>, <code>entry</code>, and <code>average</code>
+        for each iteration of the loop in the 
+        <a href="#a:average_scores">final code sample</a>
+        in above.
+        Why does the loop use the expression <code>range(len(scores[0]))</code>?
+      </li>
+
+      <li>
+        A colleague has defined a 3&times;3 matrix like this:
 <pre>
 tensor = [ [0, 1, 2],
            [3, 4, 5],
            [6, 7, 8] ]
 </pre>
-            They then try to transpose it like this:
+        She then tries to transpose it like this:
 <pre>
 transpose = []
 for i in [-1, -2, -3]:
     transpose.append(tensor[i])
 </pre>
-            What is the actual result?
-            <ol class="choices">
-              <li><code>transpose</code> contains the transpose of <code>tensor</code> as desired.</li>
-              <li><code>transpose</code> contains the rows of <code>tensor</code> in reverse order.</li>
-              <li><code>transpose</code> contains the columns of <code>tensor</code> in reverse order.</li>
-              <li>An error occurs.</li>
-            </ol>
-          </li>
+        What is the actual result?
+      </li>
 
-          <li>
-            What is the output of this program?
+      <li>
+        Fill in the blanks so that this program produces the output shown.
 <pre>
 final = []
-for i in range(3):
-    final.append(range(i))
+for i in range(______):
+    final.append(range(______))
 print final
+<hr/>
+<span class="out">[[], [0], [0, 1]]</span>
 </pre>
-            <ol class="choices">
-              <li><code>[0, 1, 2]</code></li>
-              <li><code>[[0], [1, [2]]</code></li>
-              <li><code>[[], [0], [0, 1]]</code></li>
-              <li><code>[[0, 1, 2]]</code></li>
-            </ol>
-          </li>
+      </li>
 
-          <li>
-            What does this program do?
+      <li>
+        What does this program do?
 <pre>
 alpha = [ [1, 2], [3, 4] ]
 beta = [ [10, 20], [30, 40] ]
@@ -4018,32 +4148,19 @@ for i in range(2):
         for k in range(2):
             result[i][j] += alpha[i][k] * beta[k][j]
 </pre>
-            <ol class="choices">
-              <li>Calculate the sums of the rows and columns of <code>alpha</code> and <code>beta</code>.</li>
-              <li>Calculate the products of the elements the rows and columns of <code>alpha</code> and <code>beta</code>.</li>
-              <li>Calculate the matrix product <code>alpha</code>&times;<code>beta</code></li>
-              <li>Calculate the matrix product <code>beta</code>&times;<code>alpha</code></li>
-            </ol>
-          </li>
-
-          <li>
-            What is:
-<pre>
-len([ [0], [0, 1], [0, 1, 2] ])
-</pre>
-            <ol class="choices">
-              <li>0</li>
-              <li>3</li>
-              <li>6</li>
-              <li>undefined (the lists have different lengths)</li>
-            </ol>
-          </li>
-
+        <ol>
+          <li>Calculate the sums of the rows and columns of <code>alpha</code> and <code>beta</code>.</li>
+          <li>Calculate the products of the elements the rows and columns of <code>alpha</code> and <code>beta</code>.</li>
+          <li>Calculate the matrix product <code>alpha</code>&times;<code>beta</code></li>
+          <li>Calculate the matrix product <code>beta</code>&times;<code>alpha</code></li>
         </ol>
+      </li>
 
-      </div>
+    </ol>
 
-    </section>
+  </div>
+
+</section>
 
     <section id="s:alias">
 
