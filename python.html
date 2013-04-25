@@ -4162,58 +4162,59 @@ for i in range(2):
 
 </section>
 
-    <section id="s:alias">
+<section id="s:alias">
+  <h2>Aliasing</h2>
 
-      <h2>Aliasing</h2>
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Explain what an "alias" is.</li>
+      <li>Explain why aliases are useful.</li>
+      <li>Explain why aliases can make programs harder to understand.</li>
+      <li>Identify examples in which aliasing does and does not occur.</li>
+      <li>Construct programs which create aliases for data.</li>
+      <li>Trace changes to data in programs that contain aliases.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:alias">
-        <h3>Learning Objectives</h3>
-        <ul>
-          <li>Explain what an "alias" for a value is.</li>
-          <li>Explain why aliases can make programs harder to understand.</li>
-          <li>Identify examples in which aliasing does and does not occur.</li>
-          <li>Construct programs which create aliases for data.</li>
-          <li>Trace changes to data in programs that contain aliases.</li>
-        </ul>
-      </div>
-
-      <p>
-        At this point,
-        we need to take a small side trip to explore something which is very useful,
-        but which can also be the source of some hard-to-find bugs.
-        Consider the following snippet of Python:
-      </p>
-
-<pre>
-&gt;&gt;&gt; <span class="in">outer = [ [10, 20, 30], [40, 50, 60] ]</span>
-&gt;&gt;&gt; <span class="in">inner = outer[0]</span>
-</pre>
-
-      <p class="continue">
-        After these two lines have been executed,
-        the program's memory is as shown in <a href="#f:aliasing_a">Figure XXX</a>:
-        <code>outer</code> refers to a two-element list
-        containing references to a couple of three-element lists,
-        while <code>inner</code> refers to the first of those three-element lists.
-      </p>
-
-      <figure id="f:aliasing_a">
-        <img src="src/python/aliasing_a.png" alt="First Step of Aliasing Example" />
-      </figure>
-
-      <p>
-        Now let's change the last value of the list that <code>inner</code> refers to:
-      </p>
+  <p>
+    At this point,
+    we need to take a small side trip to explore something which is very useful,
+    but which can also be the source of some hard-to-find bugs.
+    Consider the following snippet of Python:
+  </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">inner[2] = 99</span>
+outer = [ [10, 20, 30], [40, 50, 60] ]
+inner = outer[0]
 </pre>
 
-      <p class="continue">
-        This changes memory as shown in <a href="#f:aliasing_b">Figure XXX</a>,
-        which means that the values of both <code>inner</code> <em>and</em> <code>outer</code>
-        have changed:
-      </p>
+  <p class="continue">
+    After these two lines have been executed,
+    the program's memory is as shown in <a href="#f:aliasing_a">Figure 26</a>:
+    <code>outer</code> refers to a two-element list
+    containing references to a couple of three-element lists,
+    while <code>inner</code> refers to the first of those three-element lists.
+  </p>
+  
+  <figure id="f:aliasing_a">
+    <img src="src/python/aliasing_a.png" alt="First Step of Aliasing Example" />
+    <figcaption>Figure 26: First Step of Aliasing Example</figcaption>
+  </figure>
+
+  <p>
+    Now let's change the last value of the list that <code>inner</code> refers to:
+  </p>
+
+<pre>
+inner[2] = 99
+</pre>
+
+  <p class="continue">
+    This changes memory as shown in <a href="#f:aliasing_b">Figure 27</a>,
+    which means that the values of both <code>inner</code> <em>and</em> <code>outer</code>
+    have changed:
+  </p>
 
 <pre>
 &gt;&gt;&gt; <span class="in">print inner</span>
@@ -4222,152 +4223,151 @@ for i in range(2):
 <span class="out">[[10, 20, 99], [40, 50, 60]]</span>
 </pre>
 
-      <figure id="f:aliasing_b">
-        <img src="src/python/aliasing_b.png" alt="Second Step of Aliasing Example" />
-      </figure>
+  <figure id="f:aliasing_b">
+    <img src="src/python/aliasing_b.png" alt="Second Step of Aliasing Example" />
+    <figcaption>Figure 27: Second Step of Aliasing Example</figcaption>
+  </figure>
 
-    <!-- JK: Might also be worth introducing the word 'pointer' here -->
-
-      <p>
-        This is called <a href="glossary.html#alias">aliasing</a>,
-        and it is not a bug:
-        the program is supposed to work this way.
-        It doesn't have to, though;
-        Python's creator could have decided that:
-      </p>
+  <p>
+    This is called <a href="glossary.html#alias">aliasing</a>.
+    It is not a bug:
+    the program is supposed to work this way.
+    It doesn't have to, though;
+    Python's creator could have decided that:
+  </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">inner = outer[0]</span>
+inner = outer[0]
 </pre>
 
-      <p class="continue">
-        would create a copy of <code>outer[0]</code>
-        and assign that to <code>inner</code>
-        rather than aliasing the first element of <code>outer</code>
-        (<a href="#f:aliasing_copy">Figure XXX</a>).
-        That would be easier to understand&mdash;there would be no chance that
-        assigning to one variable would cause another variable's value to change&mdash;but
-        it would also be less efficient.
-        If our sublists contain a million elements each,
-        and we're assigning them to temporary variables
-        simply to make our program more readable,
-        copying would cause unnecessary slow-down.
-      </p>
+  <p class="continue">
+    would create a copy of <code>outer[0]</code>
+    and assign that to <code>inner</code>
+    rather than aliasing the first element of <code>outer</code>
+    (<a href="#f:aliasing_copy">Figure 28</a>).
+    That would be easier to understand&mdash;there would be no chance that
+    assigning to one variable would cause another variable's value to change&mdash;but
+    it would also be less efficient.
+    If our sublists contain a million elements each,
+    and we're assigning them to temporary variables
+    simply to make our program more readable,
+    copying would cause unnecessary slow-down.
+  </p>
 
-      <figure id="f:aliasing_copy">
-        <img src="src/python/aliasing_copy.png" alt="Copying Instead of Aliasing" />
-      </figure>
+  <figure id="f:aliasing_copy">
+    <img src="src/python/aliasing_copy.png" alt="Copying Instead of Aliasing" />
+    <figcaption>Figure 28: Copying Instead of Aliasing</figcaption>
+  </figure>
 
-      <p>
-        When a programming language copies data,
-        and when it creates aliases instead,
-        is one of the most important things a programmer must know about it.
-        As we'll see when we start doing <a href="web.html">web programming</a>,
-        it's also one of the most important things to know about large systems of any kind.
-        If we query a database,
-        is the result a copy of the data as it was when we made the query,
-        or a reference to the master copy?
-        In the first case,
-        we can now change the data however we want without affecting other people,
-        but we won't see any updates they make
-        (<a href="#f:aliasing_data">Figure XXX</a>).
-        In the second case,
-        we will automatically see updates to the data,
-        but that means our program has to cope with changes at unpredictable times
-        (and also has to re-fetch the data each time it needs it,
-        which will reduce performance).
-        Neither approach is right or wrong:
-        there are simply engineering tradeoffs that we have to be aware of.
-      </p>
+  <p>
+    When a programming language copies data,
+    and when it creates aliases instead,
+    is one of the most important things a programmer must know about it.
+    As we'll see <a href="web.html">later</a>,
+    it's also one of the most important things to know about large systems of any kind.
+    If we query a database,
+    is the result a copy of the data as it was when we made the query,
+    or a reference to the master copy?
+    In the first case,
+    we can now change the data however we want without affecting other people,
+    but we won't see any updates they make.
+    In the second case,
+    we will automatically see updates to the data,
+    but that means our program has to cope with changes at unpredictable times
+    (and also has to re-fetch the data each time it needs it,
+    which will reduce performance).
+    Neither approach is right or wrong:
+    there are simply engineering tradeoffs that we have to be aware of.
+  </p>
 
-      <figure id="f:aliasing_data">
-        <img src="src/python/aliasing_data.png" alt="Aliasing Data" />
-      </figure>
+  <div class="box">
+    <h3>Copying When You Want To</h3>
 
-    <!-- JK: While copying in Python can certainly be hard to understand, it 
-         might be worth a box and a mention that there is a module called copy
-         (or the function copy.copy) that will make a copy if that's really
-         what you want to do. Otherwise, it sort of implies that if you 
-         actually want to make a copy, you can't. -->
+    <p>
+      Python has a library called (naturally enough) <code>copy</code>
+      that knows how to copy complex data structures.
+      We will take a look at it <a href="#a:copy_library">later</a>
+      once we have looked at how Python manages libraries in general.
+    </p>
+  </div>
 
-      <div class="keypoints" id="k:alias">
-        <h3>Summary</h3>
-        <ul>
-          <li>Several variables can alias the same data.</li>
-          <li>If that data is mutable (e.g., a list), a change made through one variable is visible through all other aliases.</li>
-        </ul>
-      </div>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Several variables can alias the same data.</li>
+      <li>If that data is mutable (e.g., a list), a change made through one variable is visible through all other aliases.</li>
+    </ul>
+  </div>
 
-      <div id="c:alias">
-        <h3>Challenges</h3>
+  <div id="c:alias">
+    <h3>Challenges</h3>
 
-        <ol>
+    <ol>
 
-          <li>
-            Which diagram most accurately shows the state of memory after this code has executed?
+      <li>
+        Draw a diagram to show the state of memory
+        after the two lines below have been executed.
 <pre>
 base = [1]
 base.append(base)
 </pre>
-            <table class="choices">
-              <tr>
-                <td>A</td>
-                <td>B</td>
-                <td>C</td>
-                <td>D</td>
-              </tr>
-              <tr>
-                <td><img src="python/challenge.png"></td>
-                <td><img src="python/challenge.png"></td>
-                <td><img src="python/challenge.png"></td>
-                <td><img src="python/challenge.png"></td>
-              </tr>
-            </table>
-          </li>
+      </li>
 
-          <li>
-            Which program creates the memory layout shown below?
-            <table class="choices">
-              <tr>
-                <td>A</td>
-                <td>B</td>
-                <td>C</td>
-                <td>D</td>
-              </tr>
-              <tr>
-                <td valign="top">
+      <li>
+        Which program creates the memory layout shown in
+        <a href="#f:memory_layout_challenge">Figure 29</a>?
+
+        <figure id="f:memory_layout_challenge">
+          <img src="python/memory_layout_challenge.png" alt="Memory Layout Challenge" />
+          <figcaption>Figure 29: Memory Layout Challenge</figcaption>
+        </figure>
+
+        <table>
+          <tr>
+            <td valign="top">A</td>
+            <td valign="top">
 <pre>
 alpha = [beta]
 beta = [alpha]
 </pre>
-                </td>
-                <td valign="top">
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">B</td>
+            <td valign="top">
 <pre>
 alpha = []
 beta = []
 alpha[0] = beta
 beta[0] = alpha
 </pre>
-                </td>
-                <td valign="top">
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">C</td>
+            <td valign="top">
 <pre>
 alpha = [beta] + alpha
 </pre>
-                </td>
-                <td valign="top">
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">D</td>
+            <td valign="top">
 <pre>
 alpha = []
 beta = []
 alpha.append(beta)
 beta.append(alpha)
 </pre>
-                </td>
-              </tr>
-            </table>
-          </li>
+            </td>
+          </tr>
+        </table>
+      </li>
 
-          <li>
-            What does this program print?
+      <li>
+        Modify this program so that it prints
+        <code>[[100, 200], [300, 400]]</code>.
 <pre>
 vector = [100, 200]
 matrix = []
@@ -4377,29 +4377,30 @@ vector[1] = 400
 matrix.append(vector)
 print matrix
 </pre>
-            <ol class="choices">
-              <li><code>[[100, 200], [300, 400]]</code></li>
-              <li><code>[[300, 400], [300, 400]]</code></li>
-              <li><code>[[100, 200], [100, 200]]</code></li>
-              <li>None of the above</li>
-            </ol>
-          </li>
+      </li>
 
-          <li>
-            What does this program print?
+      <li>
+        These lines produce the output shown:
 <pre>
-readings = [0] * 5
-readings[1] = 12
-readings[3] = 34
+readings = [0] * 3
+readings[-1] = 'zero'
 print readings
+<hr/>
+<span class="out">[0, 0, 'zero']</span>
 </pre>
-            <ol class="choices">
-              <li><code>[0, 12, 2, 34, 4]</code></li>
-              <li><code>[0, 12, 0, 34, 0]</code></li>
-              <li><code>[0, 34, 0, 34, 0]</code></li>
-              <li>None of the above</li>
-            </ol>
-          </li>
+        By analogy,
+        the author of these lines wanted to create a 3&times;3 matrix of zeroes
+        with a single value set to the string <code>'zero'</code>.
+        What has she actually produced,
+        why does it work that way,
+        and how can she change her code to get what she wants?
+<pre>
+vec = [0] * 3
+mat = [vec] * 3
+mat[-1][-1] = 'zero'
+print mat
+</pre>
+      </li>
 
         </ol>
 
@@ -6039,6 +6040,8 @@ list ['alan']</span>
     <section id="s:libraries">
 
       <h2>Libraries</h2>
+
+      <p id="a:copy_library" class="fixme">introduce the copy library</p>
 
       <div class="understand" id="u:libraries">
         <h3>Understand:</h3>
