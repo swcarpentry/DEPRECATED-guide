@@ -3994,47 +3994,53 @@ print sum([1, 2])                       <span class="comment"># 11</span>
 
 </section>
 
-    <section id="s:global">
+<section id="s:global">
+  <h2>Global Variables</h2>
 
-      <h2>Global Variables</h2>
+  <div class="understand">
+    <h3>Understand:</h3>
+    <ul>
+      <li>Explain what global scope is, and how it differs from local scope.</li>
+      <li>Explain why functions shouldn't pass information through global variables.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:global">
-        <h3>Understand:</h3>
-        <ul>
-          <li>What global scope is.</li>
-          <li>Why functions shouldn't communicate via global variables.</li>
-        </ul>
-      </div>
+  <p>
+    There is one important pragmatic exception to the "local scope only" rule
+    mentioned at the end of the previous section.
+    Every function also has access to the <a href="glossary.html#global-scope">global scope</a>,
+    which is all the top-level definitions in the program
+    (i.e., ones that aren't inside any particular function).
+    In our pictures,
+    the global scope is the bottom-most frame on the stack,
+    which is there when the program starts and never goes away
+    (<a href="#f:global_scope">Figure 30</a>).
+  </p>
 
-      <p>
-        There is one important pragmatic exception to the "local scope only" rule.
-        Every function also has access to the <a href="glossary.html#global-scope">global scope</a>,
-        which is all the top-level definitions in the program
-        (i.e., ones that aren't inside any particular function).
-        In our pictures,
-        the global scope is the bottom-most frame on the stack,
-        which is there when the program starts and never goes away.
-      </p>
+  <figure id="f:searching_scopes">
+    <img src="python/searching_scopes.png" alt="Global Scope" />
+    <figcaption>Figure 30: Global Scope</figcaption>
+  </figure>
 
-      <p>
-        Functions need access to the global scope because
-        that is where other functions are defined.
-        Going back to our temperature calculator,
-        if <code>fahr_to_celsius</code> could only see variables defined in its local scope,
-        it wouldn't be able to see either <code>fahr_to_kelvin</code>
-        or <code>kelvin_to_celsius</code>,
-        and therefore wouldn't be able to call them.
-      </p>
+  <p>
+    Functions need access to the global scope because
+    that is where other functions are defined.
+    Going back to our temperature calculator,
+    if <code>fahr_to_celsius</code> could only see variables defined in its local scope,
+    it wouldn't be able to see either <code>fahr_to_kelvin</code>
+    or <code>kelvin_to_celsius</code>,
+    and therefore wouldn't be able to call them.
+  </p>
 
-      <p>
-        Programmers also usually put constants at the top level of their program
-        (i.e., define them in the global scope)
-        so that they don't need to pass them into functions.
-        For example,
-        it's common to see code like this:
-      </p>
+  <p>
+    Programmers also usually put constants at the top level of their program
+    (i.e., define them in the global scope)
+    so that they don't need to pass them into functions.
+    For example,
+    it's common to see code like this:
+  </p>
 
-<pre src="src/funclib/constant.py">
+<pre>
 SCALING = 2.5
 
 def scale_up(x):
@@ -4044,27 +4050,24 @@ def scale_down(x):
     return x / SCALING
 </pre>
 
-      <p class="continue">
-        (Many programmers write constants' names in upper case as a cue to readers,
-        but Python doesn't enforce this.)
-        When Python executes <code>scale_up</code> (or <code>scale_down</code>),
-        it looks inside that function's scope for a variable called <code>SCALING</code>.
-        Since there isn't one,
-        it then checks the global scope,
-        where it finds what it needs:
-      </p>
+  <p class="continue">
+    (Many programmers write the names of constants in upper case
+    to help readers distinguish them from variables,
+    but languages don't enforce this.)
+    When Python executes <code>scale_up</code> (or <code>scale_down</code>),
+    it looks inside that function's scope for a variable called <code>SCALING</code>.
+    Since there isn't one,
+    it then checks the global scope,
+    where it finds what it needs.
+  </p>
 
-      <figure id="f:searching_scopes">
-        <img src="python/searching_scopes.png" alt="Searching Scopes" />
-      </figure>
+  <p>
+    Defining <code>SCALING</code> once at the top of the program
+    ensures that both functions always use the same scaling factor.
+    This code produces the same result:
+  </p>
 
-      <p>
-        Defining <code>SCALING</code> once at the top of the program
-        ensures that both functions always use the same scaling factor;
-        this code has the same effect:
-      </p>
-
-<pre src="src/funclib/constant_duplicated.py">
+<pre>
 def scale_up(x):
     return x * 2.5
 
@@ -4072,24 +4075,29 @@ def scale_down(x):
     return x / 2.5
 </pre>
 
-      <p class="continue">
-        but it would be very easy for a programmer to change the scaling factor in one function
-        and forget to change it in the other.
-      </p>
+  <p class="continue">
+    but experience shows that
+    it's very easy for a programmer to change the scaling factor in one function
+    and forget to change it in the other.
+    Programs always evolve to meet new needs;
+    good programmers plan for this,
+    because they know that if they don't,
+    they'll eventually pay the price.
+  </p>
 
-      <p>
-        Putting constants in the global scope is good style,
-        but the following is definitely not:
-      </p>
+  <p>
+    Putting constants in the global scope is good style.
+    The following is not
+    (and in fact,
+    isn't even legal Python,
+    for reasons we'll discuss in a moment):
+  </p>
 
-<pre src="src/funclib/badglobal.py">
+<pre>
 largest = 0
 
 def fixup(values):
-    global largest
     for i in range(len(values)):
-        if values[i] &lt; 0.0:
-            values[i] = 0.0
         if values[i] &gt; largest:
             largest = values[i]
 
@@ -4098,86 +4106,111 @@ def scale(values):
         values[i] = values[i] / largest
 </pre>
 
-      <p class="continue">
-        Here,
-        the function <code>fixup</code> puts the largest value it has seen
-        in a global variable called <code>largest</code>,
-        which the function <code>scale</code> then uses.
-      </p>
-
-      <div class="box">
-        <h3>The <code>global</code> Statement</h3>
-
-        <p>
-          Since we actually assign a value to <code>largest</code> inside <code>fixup</code>,
-          instead of just reading its value,
-          we have to tell Python that we want to use the global variable <code>largest</code>
-          rather than creating one inside the function
-          (which is what it would do by default);
-          this is why we need the statement:
-        </p>
+  <p class="continue">
+    Here,
+    the function <code>fixup</code> puts the largest value it has seen
+    in a global variable called <code>largest</code>,
+    which <code>scale</code> then uses.
+    This works in simple cases:
+  </p>
 
 <pre>
-    global largest
-</pre>
-
-        <p class="continue">
-          at the top of the function.
-        </p>
-      </div>
-
-      <p>
-        Using a global variable to move information from one function to another
-        works fine in simple cases:
-      </p>
-
-<pre src="src/funclib/badglobal.py">
 rows = [1.0, 4.0, -2.5, 3.5]
 fixup(rows)
 scale(rows)
 print rows
+<hr/>
 <span class="out">[0.25, 1.0, 0.0, 0.875]</span>
 </pre>
 
-      <p class="continue">
-        but look what happens when we start working with multiple data sets:
-      </p>
+  <p class="continue">
+    but look what happens when we try to process another data set:
+  </p>
 
-<pre src="src/funclib/badglobal.py">
+<pre>
 columns = [1.5, 1.5, -2.0, 3.0]
 fixup(columns)
 scale(columns)
 print columns
+<hr/>
 <span class="out">[0.375, 0.375, 0.0, 0.75]</span>
 </pre>
 
-      <p class="continue">
-        If we actually want each data set fixed up and scaled separately,
-        the answer for <code>columns</code> should be <code>[0.5, 0.5, 0.0, 1.0]</code>.
-        The problem is that
-        the values in <code>columns</code> are actually being scaled by
-        the largest value found in <code>rows</code>.
-        Bugs like this,
-        which are caused by <a href="glossary.html#side-effect">side effects</a>
-        that aren't visible in either the functions' definitions or calls,
-        are notoriously difficult to track down.
-        In fact,
-        one of the reasons Python requires us to use the <code>global</code> statement
-        in <code>fixup</code>
-        is to make the use of global variables more obvious,
-        and to discourage us from doing so.
-      </p>
+  <p class="continue">
+    If we actually want each data set fixed up and scaled separately,
+    the answer for <code>columns</code> should be <code>[0.5, 0.5, 0.0, 1.0]</code>.
+    The problem is that
+    the values in <code>columns</code> are actually being scaled by
+    the largest value found in <code>rows</code>,
+    because that's what was left behind in <code>largest</code>
+    by the initial call.
+  </p>
 
-      <div class="keypoints" id="k:global">
-        <h3>Summary</h3>
-        <ul>
-          <li>Every function always has access to variables defined in the global scope.</li>
-          <li idea="perf">Programmers often write constants' names in upper case to make their intention easier to recognize.</li>
-          <li idea="perf">Functions should <em>not</em> communicate by modifying global variables.</li>
-        </ul>
-      </div>
+  <p>
+    Bugs like this are caused by <a href="glossary.html#side-effect">side effects</a>
+    that aren't visible in either the functions' definitions or calls.
+    They are notoriously difficult to track down,
+    so most modern programming languages discourage programmers from using global variables.
+    In Python,
+    for example,
+    the sample program shown above doesn't actually run.
+    If we really want it to,
+    we have to add one more line:
+  </p>
 
-    </section>
+<pre>
+largest = 0
+
+def fixup(values):
+    <span class="highlight">global largest</span>
+    for i in range(len(values)):
+        if values[i] &gt; largest:
+            largest = values[i]
+
+def scale(values):
+    for i in range(len(values)):
+        values[i] = values[i] / largest
+</pre>
+
+  <p>
+    Without the highlighted <code>global</code> statement,
+    Python assumes that <code>largest</code> is local to the function <code>fixup</code>.
+    Again,
+    the root cause is the way that human memory works.
+    If information only comes into a function through its parameters,
+    it's easy for readers to keep track of what they need to know
+    in order to trace the function's behavior.
+    But if information can magically appear in the middle of a function
+    (as it does in <code>scale</code> when <code>largest</code> is suddenly used
+    without having been defined),
+    the person reading the program has to keep much more information in their head.
+    This increases the chances that they'll misunderstand the program,
+    which in turn increases the chances of that program being wrong.
+    As a rule,
+    therefore,
+    functions should <em>only</em> use
+    values passed in explicitly as parameters,
+    values defined as global constants,
+    and variables created locally.
+  </p>
+
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Every function always has access to variables defined in the global scope.</li>
+      <li>Programmers often write constants' names in upper case to make their intention easier to recognize.</li>
+      <li>Functions should <em>not</em> communicate through global variables.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <p class="fixme">write</p>
+
+  </div>
+
+</section>
 
     <section id="s:params">
 
