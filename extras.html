@@ -20,6 +20,1248 @@
 <section id="s:python">
   <h2>Python</h2>
 
+<section id="s:nestloop">
+  <h2>Nesting Loops</h2>
+
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Trace the execution of a nested loop.</li>
+      <li>Give examples of the kinds of problems that nested loops should be used to solve.</li>
+      <li>Construct nested loops with independent ranges.</li>
+      <li>Construct nested loops in which the range of the inner loop depends on the state of the outer loop, and give an example showing when this is useful.</li>
+    </ul>
+  </div>
+
+  <p>
+    Going back to Aurora's data cleanup problem,
+    suppose that the scores in each data set
+    are always supposed to ramp upward:
+    if we ever see a value that's less than the value before it,
+    something's gong wrong.
+    Here's a program that tries to check that
+    (again, using inline data instead of reading from a file
+    to make the sample code clearer):
+  </p>
+
+<pre>
+data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
+for i in range(len(data)):
+    if data[i] &lt; data[i-1]:
+        print "failure at index:", i
+    i = i + 1
+<hr/>
+<span class="out">failure at index: 0
+failure at index: 8</span>
+</pre>
+
+  <p class="continue">
+    Whoops&mdash;why is it telling us that there's a failure at index 0?
+    Take a close look at the third line:
+    when <code>i</code> is 0,
+    it compares <code>data[0]</code> to <code>data[-1]</code>,
+    but as we said earlier,
+    index -1 means the last element of the list.
+    We need to make sure that we only compare the <em>second</em> and higher elements
+    to the ones before them:
+  </p>
+
+<pre>
+data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
+for i in <span class="highlight">range(1, len(data))</span>:
+    if data[i] &lt; data[i-1]:
+        print "failure at index:", i
+    i = i + 1
+<hr/>
+<span class="out">failure at index: 8</span>
+</pre>
+
+  <p class="continue">
+    This program uses the fact that <code>range(low, high)</code>
+    generates the values from <code>low</code> to <code>high-1</code>.
+    We can also use <code>range(low, high, stride)</code>
+    to generate values that are spaced <code>stride</code> apart,
+    so that <code>range(5, 20, 3)</code> produces
+    <code>[5, 8, 11, 14, 17]</code>.
+    (Remember,
+    <code>range</code> goes up to but not including the top value.)
+  </p>
+
+  <p>
+    Now suppose that Aurora needs to add up successive triples of her data
+    to time-average the scores.
+    Our first try steps through the indices three at a time:
+  </p>
+
+<pre>
+data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
+result = []
+for i in range(0, len(data), 3):
+    sum = data[i] + data[i+1] + data[i+2]
+    result.append(sum)
+print "grouped data:", result
+<hr/>
+<span class="err">Traceback (most recent call last):
+  File "group-by-threes-fails.py", line 6, in &lt;module&gt;
+    sum = data[i] + data[i+1] + data[i+2]
+IndexError: list index out of range</span>
+</pre>
+
+  <p class="continue">
+    It's not immediately obvious what's wrong,
+    but a bit of experimenting with shorter lists turns up the problem.
+    If the number of elements in the list isn't exactly divisible by 3,
+    our program is going to try to reach past the end of the list.
+    For example,
+    if we have a 4-element list,
+    we will add up the values at locations 0, 1, and 2,
+    then try to add up the values at locations 3, 4, and 5,
+    but locations 4 and 5 aren't valid
+    (<a href="#f:a_step_too_far">Figure 20</a>).
+  </p>
+
+  <figure id="f:a_step_too_far">
+    <img src="python/a_step_too_far.png" alt="A Step Too Far" />
+    <figcaption>Figure 20: A Step Too Far</figcaption>
+  </figure>
+
+  <p>
+    How we should fix this is a question for a scientist
+    (or at least a statistician):
+    should we throw away the top few values if there aren't enough to make another triple,
+    or add up as many as there are and hope for the best?
+    Let's assume the latter for now:
+  </p>
+
+<pre>
+data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
+result = []
+for i in range(0, len(data), 3):
+    sum = data[i]
+    if (i+1) &lt; len(data):
+        sum += data[i+1]
+    if (i+2) &lt; len(data):
+        sum += data[i+2]
+    result.append(sum)
+print "grouped data:", result
+<hr/>
+<span class="out">grouped data: [5, 11, 16, 20, 8]</span>
+</pre>
+
+  <p>
+    This works,
+    but it feels clumsy:
+    if we were adding up in groups of ten,
+    we'd have a lot of <code>if</code> statements.
+    We need a better way.
+  </p>
+
+  <p>
+    Our first step toward that better way looks like this:
+  </p>
+
+<pre>
+vowels = "ae"
+consonants = "dnx"
+for v in vowels:
+    for c in consonants:
+        print v + c
+<hr/>
+<span class="out">ad
+an
+ax
+ed
+en
+ex</span>
+</pre>
+
+  <p>
+    <a href="#f:nested_flowchart">Figure 21</a> shows
+    what's going on in this <a href="glossary.html#nested-loop">nested loop</a>.
+    Each time the <a href="glossary.html#outer-loop">outer loop</a> executes,
+    Python runs the entire <a href="glossary.html#inner-loop">inner loop</a>.
+    The innermost <code>print</code> statement therefore executes six times,
+    because the outer loop runs twice,
+    and the inner loop runs three times for each of those iterations.
+  </p>
+
+  <figure id="f:nested_flowchart">
+    <img src="python/nested_flowchart.png" alt="Nested Loops" />
+    <figcaption>Figure 21: Nested Loops</figcaption>
+  </figure>
+
+  <p>
+    In this case,
+    both loops execute a fixed number of times,
+    but that doesn't have to be the case.
+    It's common,
+    for example,
+    to set the number of times an inner loop runs
+    based on the current value of the outer loop's counter:
+  </p>
+
+<pre>
+for i in range(4):
+    for j in range(i):
+        print i, j
+<hr/>
+<span class="out">1 0
+2 0
+2 1
+3 0
+3 1
+3 2</span>
+</pre>
+
+  <figure id="f:triangle_nested_loop">
+    <img src="python/triangle_nested_loop.png" alt="Nested Loop Execution" />
+    <figcaption>Figure 22: Nested Loop Execution</figcaption>
+  </figure>
+
+  <p>
+    <a href="#f:triangle_nested_loop">Figure 22</a> traces
+    this little program's execution.
+    The first time through,
+    <code>i</code> is 0.
+    Since <code>range(0)</code> is the empty list <code>[]</code>,
+    the inner loop is effectively:
+  </p>
+
+<pre>
+    for j in []:
+        print i, j
+</pre>
+
+  <p class="continue">
+    so it doesn't execute at all.
+    The next time,
+    though,
+    when <code>i</code> is 1,
+    the inner loop is effectively:
+  </p>
+
+<pre>
+    for j in [0]:
+        print i, j
+</pre>
+
+  <p class="continue">
+    so the innermost <code>print</code> statement is executed once
+    with <code>i</code> equal to 1 and <code>j</code> equal to 0.
+    The third time around the outer loop,
+    <code>i</code> is 2,
+    so <code>range(i)</code> is <code>[0, 1]</code>.
+    This makes the inner loop execute twice,
+    and so on.
+  </p>
+
+  <p>
+    Now let's go back to Aurora's data smoothing.
+    We can step through the data in threes like this:
+  </p>
+
+<pre>
+for i in range(0, len(data), 3):
+    ...body of loop...
+</pre>
+
+  <p>
+    If we know that the length of a list is an exact multiple of three,
+    we can always loop from index <code>i</code>
+    up to (but not including) <code>i+3</code>:
+  </p>
+
+<pre>
+for i in range(0, len(data), 3):
+    for j in range(i, i+3):
+        ...body of loop...
+</pre>
+
+  <p>
+    If the list isn't long enough for us to do this,
+    we want to go as high as
+    the least of <code>i+3</code> and <code>len(data)</code>.
+    Using Python's built-in <code>min</code> function,
+    this is:
+  </p>
+
+<pre>
+min(i+3, len(data))
+</pre>
+
+  <p class="continue">
+    so we can write our inner loop as:
+  </p>
+
+<pre>
+for i in range(0, len(data), 3):
+    upper_bound = min(i+3, len(data))
+    for j in range(i, upper_bound):
+        ...smooth data...
+</pre>
+
+  <p>
+    Here's the completed data smoothing program:
+  </p>
+
+<pre>
+data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
+result = []
+for i in range(0, len(data), 3):
+    upper_bound = min(i+3, len(data))
+    sum = 0
+    for j in range(i, upper_bound):
+        sum += data[j]
+    result.append(sum)
+print "grouped data:", result
+<hr/>
+<span class="out">grouped data: [5, 11, 16, 20, 8]</span>
+</pre>
+
+  <p>
+    This program works,
+    but there's room for improvement.
+    If we ever want to change the smoothing interval,
+    we have to replace the number 3 in two places.
+    Let's put that value in a variable <code>width</code>
+    to reduce the odds of us updating it one place
+    and not the other:
+  </p>
+
+<pre>
+data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
+<span class="highlight">width = 3</span>
+result = []
+for i in range(0, len(data), <span class="highlight">width</span>):
+    upper_bound = min(i+<span class="highlight">width</span>, len(data))
+    sum = 0
+    for j in range(i, upper_bound):
+        sum += data[j]
+    result.append(sum)
+print "grouped data:", result
+<hr/>
+<span class="out">grouped data: [5, 11, 16, 20, 8]</span>
+</pre>
+
+  <p>
+    This change also tells readers
+    (including our future selves)
+    that the stride in the outer loop,
+    and the offset used to calculate <code>upper_bound</code>,
+    are always supposed to be the same.
+    That's yet another reason to use variables with meaningful names:
+    it tells people when values are intentionally the same,
+    as opposed to accidentally the same.
+  </p>
+
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li><code>range(<em>start</em>, <em>end</em>)</code> creates the list of numbers from <code><em>start</em></code> up to, but not including, <code><em>end</em></code>.</li>
+      <li><code>range(<em>start</em>, <em>end</em>, <em>stride</em>)</code> creates the list of numbers from <code><em>start</em></code> up to <code><em>end</em></code> in steps of <code><em>stride</em></code>.</li>
+      <li>Use nested loops to do things for combinations of things.</li>
+      <li>Make the range of the inner loop depend on the state of the outer loop to automatically adjust how much data is processed.</li>
+      <li>Use <code>min(...)</code> and <code>max(...)</code> to find the minimum and maximum of any number of values.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <ol>
+
+      <li>
+        What is the final value of <code>total</code> in this program?
+<pre>
+total = 0
+for i in range(2):
+    for j in range(-i):
+        total += j
+print total
+</pre>
+      </li>
+
+      <li>
+        How many different numbers can be put in the blank below so that the value of the expression is 12?
+<pre>
+sum(range(1, ____, 3))
+</pre>
+        <ol class="choices">
+          <li>Only 1</li>
+          <li>2 different values</li>
+          <li>3 different values</li>
+          <li>The expression's value can never be 12</li>
+        </ol>
+      </li>
+
+      <li>
+        How many different numbers can be put in the blank below so that the value of the expression is 12?
+<pre>
+sum(range(1, 3, ____))
+</pre>
+        <ol class="choices">
+          <li>Only 1</li>
+          <li>2 different values</li>
+          <li>3 different values</li>
+          <li>The expression's value can never be 12</li>
+        </ol>
+      </li>
+
+      <li>
+        Fill in the blanks so that this accurately describes
+        the fragment of code given below.
+        <blockquote>
+          <code>final_mass</code> starts at 0,
+          which is less than any of the values in ________,
+          so <code>________(final_mass, inner)</code> is always 0,
+          so <code>max(outer, min(...))</code> is always just ________,
+          so the final value is just the last value of <code>outer_masses</code>.
+        </blockquote>
+<pre>
+outer_masses = [10, 20, 30]
+inner_masses = [1, 2, 3]
+final = 0
+for outer in outer_masses:
+    for inner in inner_masses:
+        final = max(outer, min(final, inner))
+print final
+</pre>
+      </li>
+
+    </ol>
+
+  </div>
+
+</section>
+
+<section id="s:nestlist">
+  <h2>Nesting Lists</h2>
+
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Explain what nested lists are, and their relationship to nested loops.</li>
+      <li>Draw data structure diagrams corresponding to nested lists, and write nested lists that correspond to given diagrams.</li>
+      <li>Explain what happens when an expression like "<code>table[3][2]</code>" is evaluated.</li>
+    </ul>
+  </div>
+
+  <p>
+    One of the hearing tests Aurora uses
+    asks people to point out where a sound is coming from.
+    The data files contain lists of XY coordinates:
+  </p>
+
+<pre>
+4.2 1.7
+3.1 5.0
+0.8 6.1
+... ...
+</pre>
+
+  <p>
+    She has roughly 100 such files,
+    and one more file (in the same format)
+    that holds the actual location of each sound.
+    She wants to calculate the average distance between
+    each actual and reported location.
+  </p>
+
+  <p>
+    The first step is to read a file
+    and extract the XY values on each line:
+  </p>
+
+<pre>
+x_values = []
+y_values = []
+reader = file('data.txt', 'r')
+for line in reader:
+    x, y = line.split()
+    x = float(x)
+    x_values.append(x)
+    y = float(y)
+    y_values.append(y)
+reader.close()
+</pre>
+
+  <p>
+    We can make this a bit more readable
+    by combining the calls to <code>float</code> and <code>append</code>:
+  </p>
+
+<pre>
+x_values = []
+y_values = []
+reader = file('data.txt', 'r')
+for line in reader:
+    x, y = line.split()
+    x_values.append(float(x))
+    y_values.append(float(y))
+reader.close()
+</pre>
+
+  <p class="continue">
+    but the basic approach is still unwieldy.
+    What we really want is a list of XY coordinates,
+    not two parallel lists of X and Y coordinates.
+    We can easily create what we want
+    using <a id="g:nested-list" href="glossary.html#nested-list">nested list</a>.
+    <a href="#f:simple_nested_list">Figure 23</a> shows
+    what we're going to do,
+    and the code below shows
+    how we would create a nested list by hand
+    for specific XY values:
+  </p>
+
+<pre>
+&gt;&gt;&gt; <span class="in">coordinates = [ [4.2, 1.7], [3.1, 5.0], [0.8, 6.1] ]</span>
+&gt;&gt;&gt; <span class="in">print coordinates[0]</span>
+<span class="out">[4.2, 1.7]</span>
+&gt;&gt;&gt; <span class="in">print coordinates[0][1]</span>
+<span class="out">1.7</span>
+</pre>
+
+    <figure id="f:simple_nested_list">
+      <img src="python/simple_nested_list.py" alt="A Simple Nested List" />
+      <figcaption>Figure 23: A Simple Nested List</figcaption>
+    </figure>
+
+  <p>
+    This isn't as complicated as it first looks.
+    Just as a variable can point at any object,
+    so too can any entry in a list.
+    And since a list is just an object in memory,
+    one list can contain a <a href="glossary.html#reference">reference</a> to another.
+    This is why <code>coordinates[0]</code> is <code>[4.2, 1.7]</code>:
+    the first entry of the outer list is
+    a reference to an entire sublist.
+    We could just as easily write:
+  </p>
+
+<pre>
+&gt;&gt;&gt; <span class="in">temp = coordinates[0]</span>
+&gt;&gt;&gt; <span class="in">print temp</span>
+<span class="out">[4.2, 1.7]</span>
+</pre>
+
+  <p class="continue">
+    And since <code>x[1]</code> is 4.2,
+    so too is <code>coordinates[0][1]</code>:
+    the first subscript select the sublist,
+    while the second selects an element from that sublist
+    (<a href="#f:indexing_nested_lists">Figure 24</a>).
+  </p>
+
+  <figure id="f:indexing_nested_lists">
+    <img src="python/indexing_nested_lists.png" alt="Indexing Nested Lists" />
+    <figcaption>Figure 24: Indexing Nested Lists</figcaption>
+  </figure>
+
+  <p>
+    It's important to understand that the inner list isn't "in" the outer list:
+    what the outer list contains is a reference to the inner one.
+    We'll return to this <a href="#s:alias">later</a>.
+  </p>
+
+  <p>
+    With nested lists in hand,
+    it's straightforward to create a list of coordinate pairs:
+  </p>
+
+<pre>
+values = []
+reader = file('data.txt', 'r')
+for line in reader:
+    x, y = line.split()
+    coord = [float(x), float(y)]
+    values.append(coord)
+reader.close()
+</pre>
+
+  <p class="continue">
+    Each time the loop executes,
+    this program splits the line into two strings,
+    creates a new two-element list containing the corresponding numbers,
+    and then appends that list to <code>values</code>.
+    <a href="#f:growing_nested_list">Figure 25</a> shows how
+    the <code>values</code> list grows as successive pairs of numbers are read.
+  </p>
+
+  <figure id="f:growing_nested_list">
+    <img src="python/growing_nested_list.png" alt="Growing a Nested List" />
+    <figcaption>Figure 25: Growing a Nested List</figcaption>
+  </figure>
+
+  <p>
+    Now suppose that we have two lists of coordinates,
+    and we want to find the average distance between corresponding coordinates.
+    For the moment,
+    we'll just create two representative lists in memory
+    and find their average difference:
+  </p>
+
+<pre>
+expected = [ [4.0, 2.0], [3.0, 5.0], [1.0, 6.0] ]
+actual   = [ [4.2, 1.7], [3.1, 5.0], [0.8, 6.1] ]
+x_diff, y_diff = 0.0,  0.0
+for i in range(len(actual)):
+    e = expected[i]
+    a = actual[i]
+    x_diff += abs(e[0] - a[0])
+    y_diff += abs(e[1] - a[1])
+print "average errors:", x_diff / len(actual), y_diff / len(actual)
+<hr/>
+<span class="out">average errors: 0.166666666667 0.133333333333</span>
+</pre>
+
+  <p class="continue">
+    The first two lines set up our data:
+    in a real program,
+    we'd read values from files.
+    The next line initializes <code>x_diff</code> and <code>y_diff</code>,
+    which will hold the errors in X and Y respectively.
+    Each iteration of the loop
+    sets <code>a</code> and <code>e</code> to point at
+    corresponding elements of the vectors.
+    <code>a[0]</code> is then the X coordinate of an actual point,
+    while <code>e[0]</code> is the X coordinate of the corresponding expected point,
+    so <code>abs(e[0] - a[0])</code> is the difference,
+    which we add to <code>x_diff</code> using <code>+=</code>.
+  </p>
+
+  <div class="box">
+    <h3>Choosing Better Test Cases</h3>
+
+    <p>
+      How can we be sure that the code shown above is working correctly?
+      Putting it another way,
+      what test data should we use so that we can tell
+      if the answer is right or not?
+      One better set of inputs would be:
+    </p>
+<pre>
+expected = [ [0.0, 0.0], [0.0, 0.0], [0.0, 0.0] ]
+actual   = [ [1.0, 2.0], [1.0, 4.0], [1.0, 6.0] ]
+</pre>
+    <p>
+      It's clear in this case that the right answers are
+      1.0 and 4.0 for X and Y.
+      We'll discuss the choice of test cases in more detail
+      in a <a href="quality.html">later lesson</a>.
+    </p>
+  </div>
+
+  <p>
+    Nested lists have a close relationship to nested loops.
+    For example,
+    suppose that Aurora has a list with one entry for each test subject,
+    and that each of those entries contains several test scores:
+  </p>
+
+<pre>
+scores = [ [1.5, 2.2, 1.7, 1.6],
+           [2.8, 3.5, 3.6, 1.6],
+           [1.3, 1.1, 1.7, 1.4] ]
+</pre>
+
+  <p>
+    To calculate the average of all these scores,
+    she needs to loop over the outer list
+    (to cover each test subject),
+    and also to loop over every element of each entry
+    (to cover each subject's scores):
+  </p>
+
+<pre>
+total = 0.0
+number = 0
+for entry in scores:
+    for value in entry:
+        total += value
+        number += 1
+average = total / number
+print average
+<hr/>
+<span class="out">2.0</span>
+</pre>
+
+  <p>
+    Since the data structure is a list of lists,
+    we need to use a loop within a loop.
+    If we want to average the scores per subject,
+    we would only need to make a small change to this code:
+  </p>
+
+<pre>
+for entry in scores:
+<span class="highlight">    total = 0.0
+    number = 0</span>
+    for value in entry:
+        total += value
+        number += 1
+<span class="highlight">    average = total / number
+    print average</span>
+<hr/>
+<span class="out">1.75
+2.875
+1.375</span>
+</pre>
+
+  <p class="continue">
+    The important change here is that
+    <code>total</code> and <code>number</code> are re-initialized
+    and then reported
+    <em>inside</em> the main loop,
+    so that each subject's scores are calculated and printed separately.
+  </p>
+
+  <p>
+    If we want to average corresponding scores for each subject,
+    i.e.,
+    get the average of each subject's zeroth score,
+    then the average of their first score,
+    and so on,
+    the code suddenly becomes more complex.
+    The reason is that
+    while <code>scores[1]</code> is "all the scores associated with subject 1",
+    there is no equally simple expression meaning
+    "the first score associated with all subjects".
+    (We will see a structure that allows us to do this <a href="numpy.html">later</a>.)
+  </p>
+
+  <p>
+    Here's the code that averages corresponding scores across subjects:
+  </p>
+
+<pre id="a:average_scores">
+scores = [ [1.5, 2.2, 1.7, 1.6],
+           [2.8, 3.5, 3.6, 1.6],
+           [1.3, 1.1, 1.7, 1.4] ]
+for loc in range(len(scores[0])):
+    total = 0.0
+    number = 0
+    for entry in scores:
+        total += entry[loc]
+        number += 1
+    average = total / number
+    print average
+<hr/>
+<span class="out">1.86666666667
+2.26666666667
+2.33333333333
+1.53333333333</span>
+</pre>
+
+  <p class="continue">
+    We will take a closer look at how and why it works in the challenges below.
+  </p>
+
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Use nested lists to store multi-dimensional data or values that have regular internal structure (such as XYZ coordinates).</li>
+      <li>Use <code><em>list_of_lists</em>[<em>first</em>]</code> to access an entire sub-list.</li>
+      <li>Use <code><em>list_of_lists</em>[<em>first</em>][<em>second</em>]</code> to access a particular element of a sub-list.</li>
+      <li>Use nested loops to process nested lists.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <ol>
+
+      <li>
+        Trace the values of <code>loc</code>, <code>total</code>,
+        <code>number</code>, <code>entry</code>, and <code>average</code>
+        for each iteration of the loop in the 
+        <a href="#a:average_scores">final code sample</a>
+        in above.
+        Why does the loop use the expression <code>range(len(scores[0]))</code>?
+      </li>
+
+      <li>
+        A colleague has defined a 3&times;3 matrix like this:
+<pre>
+tensor = [ [0, 1, 2],
+           [3, 4, 5],
+           [6, 7, 8] ]
+</pre>
+        She then tries to transpose it like this:
+<pre>
+transpose = []
+for i in [-1, -2, -3]:
+    transpose.append(tensor[i])
+</pre>
+        What is the actual result?
+      </li>
+
+      <li>
+        Fill in the blanks so that this program produces the output shown.
+<pre>
+final = []
+for i in range(______):
+    final.append(range(______))
+print final
+<hr/>
+<span class="out">[[], [0], [0, 1]]</span>
+</pre>
+      </li>
+
+      <li>
+        What does this program do?
+<pre>
+alpha = [ [1, 2], [3, 4] ]
+beta = [ [10, 20], [30, 40] ]
+result = [ [0, 0], [0, 0] ]
+for i in range(2):
+    for j in range(2):
+        for k in range(2):
+            result[i][j] += alpha[i][k] * beta[k][j]
+</pre>
+        <ol>
+          <li>Calculate the sums of the rows and columns of <code>alpha</code> and <code>beta</code>.</li>
+          <li>Calculate the products of the elements the rows and columns of <code>alpha</code> and <code>beta</code>.</li>
+          <li>Calculate the matrix product <code>alpha</code>&times;<code>beta</code></li>
+          <li>Calculate the matrix product <code>beta</code>&times;<code>alpha</code></li>
+        </ol>
+      </li>
+
+    </ol>
+
+  </div>
+
+</section>
+
+<section id="s:alias">
+  <h2>Aliasing</h2>
+
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Explain what an "alias" is.</li>
+      <li>Explain why aliases are useful.</li>
+      <li>Explain why aliases can make programs harder to understand.</li>
+      <li>Identify examples in which aliasing does and does not occur.</li>
+      <li>Construct programs which create aliases for data.</li>
+      <li>Trace changes to data in programs that contain aliases.</li>
+    </ul>
+  </div>
+
+  <p>
+    At this point,
+    we need to take a small side trip to explore something which is very useful,
+    but which can also be the source of some hard-to-find bugs.
+    Consider the following snippet of Python:
+  </p>
+
+<pre>
+outer = [ [10, 20, 30], [40, 50, 60] ]
+inner = outer[0]
+</pre>
+
+  <p class="continue">
+    After these two lines have been executed,
+    the program's memory is as shown in <a href="#f:aliasing_a">Figure 26</a>:
+    <code>outer</code> refers to a two-element list
+    containing references to a couple of three-element lists,
+    while <code>inner</code> refers to the first of those three-element lists.
+  </p>
+  
+  <figure id="f:aliasing_a">
+    <img src="src/python/aliasing_a.png" alt="First Step of Aliasing Example" />
+    <figcaption>Figure 26: First Step of Aliasing Example</figcaption>
+  </figure>
+
+  <p>
+    Now let's change the last value of the list that <code>inner</code> refers to:
+  </p>
+
+<pre>
+inner[2] = 99
+</pre>
+
+  <p class="continue">
+    This changes memory as shown in <a href="#f:aliasing_b">Figure 27</a>,
+    which means that the values of both <code>inner</code> <em>and</em> <code>outer</code>
+    have changed:
+  </p>
+
+<pre>
+&gt;&gt;&gt; <span class="in">print inner</span>
+<span class="out">[10, 20, 99]</span>
+&gt;&gt;&gt; <span class="in">print outer</span>
+<span class="out">[[10, 20, 99], [40, 50, 60]]</span>
+</pre>
+
+  <figure id="f:aliasing_b">
+    <img src="src/python/aliasing_b.png" alt="Second Step of Aliasing Example" />
+    <figcaption>Figure 27: Second Step of Aliasing Example</figcaption>
+  </figure>
+
+  <p>
+    This is called <a href="glossary.html#alias">aliasing</a>.
+    It is not a bug:
+    the program is supposed to work this way.
+    It doesn't have to, though;
+    Python's creator could have decided that:
+  </p>
+
+<pre>
+inner = outer[0]
+</pre>
+
+  <p class="continue">
+    would create a copy of <code>outer[0]</code>
+    and assign that to <code>inner</code>
+    rather than aliasing the first element of <code>outer</code>
+    (<a href="#f:aliasing_copy">Figure 28</a>).
+    That would be easier to understand&mdash;there would be no chance that
+    assigning to one variable would cause another variable's value to change&mdash;but
+    it would also be less efficient.
+    If our sublists contain a million elements each,
+    and we're assigning them to temporary variables
+    simply to make our program more readable,
+    copying would cause unnecessary slow-down.
+  </p>
+
+  <figure id="f:aliasing_copy">
+    <img src="src/python/aliasing_copy.png" alt="Copying Instead of Aliasing" />
+    <figcaption>Figure 28: Copying Instead of Aliasing</figcaption>
+  </figure>
+
+  <p>
+    When a programming language copies data,
+    and when it creates aliases instead,
+    is one of the most important things a programmer must know about it.
+    As we'll see <a href="web.html">later</a>,
+    it's also one of the most important things to know about large systems of any kind.
+    If we query a database,
+    is the result a copy of the data as it was when we made the query,
+    or a reference to the master copy?
+    In the first case,
+    we can now change the data however we want without affecting other people,
+    but we won't see any updates they make.
+    In the second case,
+    we will automatically see updates to the data,
+    but that means our program has to cope with changes at unpredictable times
+    (and also has to re-fetch the data each time it needs it,
+    which will reduce performance).
+    Neither approach is right or wrong:
+    there are simply engineering tradeoffs that we have to be aware of.
+  </p>
+
+  <div class="box">
+    <h3>Copying When You Want To</h3>
+
+    <p>
+      Python has a library called (naturally enough) <code>copy</code>
+      that knows how to copy complex data structures.
+      We will take a look at it <a href="#a:copy_library">later</a>
+      once we have looked at how Python manages libraries in general.
+    </p>
+  </div>
+
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Several variables can alias the same data.</li>
+      <li>If that data is mutable (e.g., a list), a change made through one variable is visible through all other aliases.</li>
+    </ul>
+  </div>
+
+  <div id="c:alias">
+    <h3>Challenges</h3>
+
+    <ol>
+
+      <li>
+        Draw a diagram to show the state of memory
+        after the two lines below have been executed.
+<pre>
+base = [1]
+base.append(base)
+</pre>
+      </li>
+
+      <li>
+        Which program creates the memory layout shown in
+        <a href="#f:memory_layout_challenge">Figure 29</a>?
+
+        <figure id="f:memory_layout_challenge">
+          <img src="python/memory_layout_challenge.png" alt="Memory Layout Challenge" />
+          <figcaption>Figure 29: Memory Layout Challenge</figcaption>
+        </figure>
+
+        <table>
+          <tr>
+            <td valign="top">A</td>
+            <td valign="top">
+<pre>
+alpha = [beta]
+beta = [alpha]
+</pre>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">B</td>
+            <td valign="top">
+<pre>
+alpha = []
+beta = []
+alpha[0] = beta
+beta[0] = alpha
+</pre>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">C</td>
+            <td valign="top">
+<pre>
+alpha = [beta] + alpha
+</pre>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">D</td>
+            <td valign="top">
+<pre>
+alpha = []
+beta = []
+alpha.append(beta)
+beta.append(alpha)
+</pre>
+            </td>
+          </tr>
+        </table>
+      </li>
+
+      <li>
+        Modify this program so that it prints
+        <code>[[100, 200], [300, 400]]</code>.
+<pre>
+vector = [100, 200]
+matrix = []
+matrix.append(vector)
+vector[0] = 300
+vector[1] = 400
+matrix.append(vector)
+print matrix
+</pre>
+      </li>
+
+      <li>
+        These lines produce the output shown:
+<pre>
+readings = [0] * 3
+readings[-1] = 'zero'
+print readings
+<hr/>
+<span class="out">[0, 0, 'zero']</span>
+</pre>
+        By analogy,
+        the author of these lines wanted to create a 3&times;3 matrix of zeroes
+        with a single value set to the string <code>'zero'</code>.
+        What has she actually produced,
+        why does it work that way,
+        and how can she change her code to get what she wants?
+<pre>
+vec = [0] * 3
+mat = [vec] * 3
+mat[-1][-1] = 'zero'
+print mat
+</pre>
+      </li>
+
+        </ol>
+
+      </div>
+
+    </section>
+
+    <section id="s:funcalias">
+
+      <h2>Aliasing in Functions</h2>
+
+      <div class="understand" id="u:aliasing">
+        <h3>Understand:</h3>
+        <ul>
+          <li>How and when aliasing will occur during function calls.</li>
+        </ul>
+      </div>
+
+      <p>
+        We said <a href="#a:call-stack">earlier</a> that
+        values are copied into parameters whenever a function is called.
+        But as we explained in the <a href="python.html#s:alias">previous chapter</a>,
+        variables don't actually store values:
+        they are actually just names that refer to values.
+        To see what this means for our programs,
+        here's a function that takes a string and a list as parameters,
+        and appends something to both:
+      </p>
+
+<pre src="src/funclib/appender.py">
+def appender(a_string, a_list):
+    a_string = a_string + 'turing'
+    a_list.append('turing')
+</pre>
+
+      <p class="continue">
+        And here is some code to set up a pair of variables and call that function:
+      </p>
+
+<pre src="src/funclib/appender.py">
+string_val = 'alan'
+list_val = ['alan']
+appender(string_val, list_val)
+print 'string', string_val
+print 'list', list_val
+<span class="out">string alan
+list ['alan', 'turing']</span>
+</pre>
+
+      <p>
+        Why did the list change when the string didn't?
+        To find out,
+        let's trace the function's execution.
+        Just before the call,
+        the global frame has two variables
+        that refer to a string and a list:
+      </p>
+
+      <figure id="f:append_before_call">
+        <img src="python/append_before_call.png" alt="Before Appending" />
+      </figure>
+
+      <p class="continue">
+        The call creates a new stack frame with aliases for those values:
+      </p>
+
+      <figure id="f:append_during_call">
+        <img src="python/append_during_call.png" alt="While Appending" />
+      </figure>
+
+      <p>
+        The <code>a_string&nbsp;+&nbsp;'turing'</code> creates a new string <code>'alanturing'</code>;
+        assigning this to the variable <code>a_string</code>
+        changes what that local variable refers to,
+        but doesn't change what the global variable <code>string_val</code> refers to:
+      </p>
+
+      <figure id="f:append_new_string">
+        <img src="python/append_new_string.png" alt="A New String" />
+      </figure>
+
+      <p>
+        The statement <code>a_list.append('turing')</code>,
+        however,
+        actually modifies the list that <code>a_list</code> is pointing to:
+      </p>
+
+      <figure id="f:append_same_list">
+        <img src="python/append_same_list.png" alt="But the Same List" />
+      </figure>
+
+      <p>
+        But this is the same thing that the variable <code>list_val</code> in the caller is pointing to.
+        When the function returns and the call frame is thrown away,
+        the new string <code>'alanturing'</code> is therefore lost,
+        because the only reference to it was in the function call's stack frame.
+        The change to the list,
+        on the other hand,
+        is kept,
+        because the function actually modified the list in place:
+      </p>
+
+      <figure id="f:append_final_state">
+        <img src="python/append_final_state.png" alt="The Final State of Memory" />
+      </figure>
+
+      <p>
+        Let's change one line in the function:
+      </p>
+
+<pre src="src/funclib/appender_2.py">
+def appender(a_string, a_list):
+    a_string = a_string + 'turing'
+    <span class="highlight">a_list = a_list + ['turing']</span>
+</pre>
+
+      <p class="continue">
+        and see what happens when we run the same experiment:
+      </p>
+
+<pre src="src/funclib/appender_2.py">
+string_val = 'alan'
+list_val = ['alan']
+appender(string_val, list_val)
+print 'string', string_val
+print 'list', list_val
+<span class="out">string alan
+list ['alan']</span>
+</pre>
+
+      <p>
+        The answer is different because
+        concatenating (adding) two lists creates a new list,
+        rather than modifying either of the lists being concatenated.
+        As a result,
+        the local variable <code>a_list</code> is the only thing that refers to the list
+        <code>['alan', 'turing']</code>,
+        so that value is discarded when the function finishes
+        and <code>list_val</code>'s value is undisturbed.
+      </p>
+
+      <div class="box">
+        <h3>Memory Models</h3>
+
+        <p>
+          Python's treatment of lists
+          (and other mutable data that we'll see <a href="setdict.html">later</a>)
+          isn't the only way to handle things.
+          For example,
+          MATLAB functions
+          use a rule called <a href="glossary.html#copy-on-write">copy on write</a>.
+          Initially,
+          it creates aliases for arrays that are passed into functions.
+          The first time a function assigns to an array,
+          though,
+          MATLAB clones the array
+          and changes the clone rather than the original
+          (<a href="#f:copy_on_write">Figure XXX</a>).
+          This saves it from copying data when it doesn't need to,
+          while guaranteeing that functions don't have side effects
+          (which makes them easier to think about).
+        </p>
+
+        <figure id="f:copy_on_write">
+          <img src="python/copy_on_write.png" alt="Copy on Write" />
+        </figure>
+
+        <p>
+          Other languages have slightly different rules about scoping and aliasing.
+          Together,
+          those rules make up the language's
+          <a href="glossary.html#memory-model">memory model</a>.
+          Understanding that model is perhaps the most important step
+          in understanding how programs written in the language actually work,
+          and more importantly,
+          how to debug them when they don't.
+        </p>
+      </div>
+
+      <div class="keypoints" id="k:aliasing">
+        <h3>Summary</h3>
+        <ul>
+          <li>Values are actually passed into functions by reference, which means that they are aliased.</li>
+          <li>Aliasing means that changes made to a mutable object like a list inside a function are visible after the function call completes.</li>
+        </ul>
+      </div>
+
+    </section>
+
     <section id="s:python:provenance">
       <h3>Provenance Revisited</h3>
 

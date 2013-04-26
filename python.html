@@ -17,12 +17,9 @@
   <li><a href="#s:flag">Flags</a></li>
   <li><a href="#s:parse">Reading Data Files</a></li>
   <li><a href="#s:lists">Lists</a></li>
-  <li><a href="#s:nestloop">Nesting Loops</a></li>
-  <li><a href="#s:nestlist">Nesting Lists</a></li>
-  <li><a href="#s:alias">Aliasing</a></li>
   <li><a href="#s:func">How Functions Work</a></li>
   <li><a href="#s:global">Global Variables</a></li>
-  <li><a href="#s:args">Multiple Arguments</a></li>
+  <li><a href="#s:params">Multiple Parameters</a></li>
   <li><a href="#s:return">Returning Values</a></li>
   <li><a href="#s:funcalias">Aliasing in Functions</a></li>
   <li><a href="#s:libraries">Libraries</a></li>
@@ -3209,10 +3206,11 @@ remainder is 2</span>
 </pre>
 
     <p>
-      The <code>enumerate</code> function takes as its argument
-      anything that a <code>for</code> loop can loop over,
-      and returns pairs,
-      where each pair contains an index and the value at that index:
+      The <code>enumerate</code> function takes
+      anything that a <code>for</code> loop can loop over
+      as its parameter.
+      It returns pairs,
+      each of which contains an index and the value at that index:
     </p>
 
 <pre>
@@ -3348,1175 +3346,117 @@ for char in values:
 
 </section>
 
-<section id="s:nestloop">
-  <h2>Nesting Loops</h2>
+<section id="s:func">
+  <h2>How Functions Work</h2>
 
   <div class="understand">
     <h3>Learning Objectives</h3>
     <ul>
-      <li>Trace the execution of a nested loop.</li>
-      <li>Give examples of the kinds of problems that nested loops should be used to solve.</li>
-      <li>Construct nested loops with independent ranges.</li>
-      <li>Construct nested loops in which the range of the inner loop depends on the state of the outer loop, and give an example showing when this is useful.</li>
+      <li>Explain the benefits of breaking a program up into functions.</li>
+      <li>Define a function of a single parameter.</li>
+      <li>Explain what a call stack is, what a variable's scope is, and how the two concepts are related.</li>
+      <li>Trace values as they are passed into and returned by functions.</li>
+      <li>Compose function calls.</li>
     </ul>
   </div>
 
   <p>
-    Going back to Aurora's data cleanup problem,
-    suppose that the scores in each data set
-    are always supposed to ramp upward:
-    if we ever see a value that's less than the value before it,
-    something's gong wrong.
-    Here's a program that tries to check that
-    (again, using inline data instead of reading from a file
-    to make the sample code clearer):
-  </p>
-
-<pre>
-data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
-for i in range(len(data)):
-    if data[i] &lt; data[i-1]:
-        print "failure at index:", i
-    i = i + 1
-<hr/>
-<span class="out">failure at index: 0
-failure at index: 8</span>
-</pre>
-
-  <p class="continue">
-    Whoops&mdash;why is it telling us that there's a failure at index 0?
-    Take a close look at the third line:
-    when <code>i</code> is 0,
-    it compares <code>data[0]</code> to <code>data[-1]</code>,
-    but as we said earlier,
-    index -1 means the last element of the list.
-    We need to make sure that we only compare the <em>second</em> and higher elements
-    to the ones before them:
-  </p>
-
-<pre>
-data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
-for i in <span class="highlight">range(1, len(data))</span>:
-    if data[i] &lt; data[i-1]:
-        print "failure at index:", i
-    i = i + 1
-<hr/>
-<span class="out">failure at index: 8</span>
-</pre>
-
-  <p class="continue">
-    This program uses the fact that <code>range(low, high)</code>
-    generates the values from <code>low</code> to <code>high-1</code>.
-    We can also use <code>range(low, high, stride)</code>
-    to generate values that are spaced <code>stride</code> apart,
-    so that <code>range(5, 20, 3)</code> produces
-    <code>[5, 8, 11, 14, 17]</code>.
-    (Remember,
-    <code>range</code> goes up to but not including the top value.)
-  </p>
-
-  <p>
-    Now suppose that Aurora needs to add up successive triples of her data
-    to time-average the scores.
-    Our first try steps through the indices three at a time:
-  </p>
-
-<pre>
-data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
-result = []
-for i in range(0, len(data), 3):
-    sum = data[i] + data[i+1] + data[i+2]
-    result.append(sum)
-print "grouped data:", result
-<hr/>
-<span class="err">Traceback (most recent call last):
-  File "group-by-threes-fails.py", line 6, in &lt;module&gt;
-    sum = data[i] + data[i+1] + data[i+2]
-IndexError: list index out of range</span>
-</pre>
-
-  <p class="continue">
-    It's not immediately obvious what's wrong,
-    but a bit of experimenting with shorter lists turns up the problem.
-    If the number of elements in the list isn't exactly divisible by 3,
-    our program is going to try to reach past the end of the list.
-    For example,
-    if we have a 4-element list,
-    we will add up the values at locations 0, 1, and 2,
-    then try to add up the values at locations 3, 4, and 5,
-    but locations 4 and 5 aren't valid
-    (<a href="#f:a_step_too_far">Figure 20</a>).
-  </p>
-
-  <figure id="f:a_step_too_far">
-    <img src="python/a_step_too_far.png" alt="A Step Too Far" />
-    <figcaption>Figure 20: A Step Too Far</figcaption>
-  </figure>
-
-  <p>
-    How we should fix this is a question for a scientist
-    (or at least a statistician):
-    should we throw away the top few values if there aren't enough to make another triple,
-    or add up as many as there are and hope for the best?
-    Let's assume the latter for now:
-  </p>
-
-<pre>
-data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
-result = []
-for i in range(0, len(data), 3):
-    sum = data[i]
-    if (i+1) &lt; len(data):
-        sum += data[i+1]
-    if (i+2) &lt; len(data):
-        sum += data[i+2]
-    result.append(sum)
-print "grouped data:", result
-<hr/>
-<span class="out">grouped data: [5, 11, 16, 20, 8]</span>
-</pre>
-
-  <p>
-    This works,
-    but it feels clumsy:
-    if we were adding up in groups of ten,
-    we'd have a lot of <code>if</code> statements.
-    We need a better way.
-  </p>
-
-  <p>
-    Our first step toward that better way looks like this:
-  </p>
-
-<pre>
-vowels = "ae"
-consonants = "dnx"
-for v in vowels:
-    for c in consonants:
-        print v + c
-<hr/>
-<span class="out">ad
-an
-ax
-ed
-en
-ex</span>
-</pre>
-
-  <p>
-    <a href="#f:nested_flowchart">Figure 21</a> shows
-    what's going on in this <a href="glossary.html#nested-loop">nested loop</a>.
-    Each time the <a href="glossary.html#outer-loop">outer loop</a> executes,
-    Python runs the entire <a href="glossary.html#inner-loop">inner loop</a>.
-    The innermost <code>print</code> statement therefore executes six times,
-    because the outer loop runs twice,
-    and the inner loop runs three times for each of those iterations.
-  </p>
-
-  <figure id="f:nested_flowchart">
-    <img src="python/nested_flowchart.png" alt="Nested Loops" />
-    <figcaption>Figure 21: Nested Loops</figcaption>
-  </figure>
-
-  <p>
-    In this case,
-    both loops execute a fixed number of times,
-    but that doesn't have to be the case.
-    It's common,
-    for example,
-    to set the number of times an inner loop runs
-    based on the current value of the outer loop's counter:
-  </p>
-
-<pre>
-for i in range(4):
-    for j in range(i):
-        print i, j
-<hr/>
-<span class="out">1 0
-2 0
-2 1
-3 0
-3 1
-3 2</span>
-</pre>
-
-  <figure id="f:triangle_nested_loop">
-    <img src="python/triangle_nested_loop.png" alt="Nested Loop Execution" />
-    <figcaption>Figure 22: Nested Loop Execution</figcaption>
-  </figure>
-
-  <p>
-    <a href="#f:triangle_nested_loop">Figure 22</a> traces
-    this little program's execution.
-    The first time through,
-    <code>i</code> is 0.
-    Since <code>range(0)</code> is the empty list <code>[]</code>,
-    the inner loop is effectively:
-  </p>
-
-<pre>
-    for j in []:
-        print i, j
-</pre>
-
-  <p class="continue">
-    so it doesn't execute at all.
-    The next time,
-    though,
-    when <code>i</code> is 1,
-    the inner loop is effectively:
-  </p>
-
-<pre>
-    for j in [0]:
-        print i, j
-</pre>
-
-  <p class="continue">
-    so the innermost <code>print</code> statement is executed once
-    with <code>i</code> equal to 1 and <code>j</code> equal to 0.
-    The third time around the outer loop,
-    <code>i</code> is 2,
-    so <code>range(i)</code> is <code>[0, 1]</code>.
-    This makes the inner loop execute twice,
-    and so on.
-  </p>
-
-  <p>
-    Now let's go back to Aurora's data smoothing.
-    We can step through the data in threes like this:
-  </p>
-
-<pre>
-for i in range(0, len(data), 3):
-    ...body of loop...
-</pre>
-
-  <p>
-    If we know that the length of a list is an exact multiple of three,
-    we can always loop from index <code>i</code>
-    up to (but not including) <code>i+3</code>:
-  </p>
-
-<pre>
-for i in range(0, len(data), 3):
-    for j in range(i, i+3):
-        ...body of loop...
-</pre>
-
-  <p>
-    If the list isn't long enough for us to do this,
-    we want to go as high as
-    the least of <code>i+3</code> and <code>len(data)</code>.
-    Using Python's built-in <code>min</code> function,
-    this is:
-  </p>
-
-<pre>
-min(i+3, len(data))
-</pre>
-
-  <p class="continue">
-    so we can write our inner loop as:
-  </p>
-
-<pre>
-for i in range(0, len(data), 3):
-    upper_bound = min(i+3, len(data))
-    for j in range(i, upper_bound):
-        ...smooth data...
-</pre>
-
-  <p>
-    Here's the completed data smoothing program:
-  </p>
-
-<pre>
-data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
-result = []
-for i in range(0, len(data), 3):
-    upper_bound = min(i+3, len(data))
-    sum = 0
-    for j in range(i, upper_bound):
-        sum += data[j]
-    result.append(sum)
-print "grouped data:", result
-<hr/>
-<span class="out">grouped data: [5, 11, 16, 20, 8]</span>
-</pre>
-
-  <p>
-    This program works,
-    but there's room for improvement.
-    If we ever want to change the smoothing interval,
-    we have to replace the number 3 in two places.
-    Let's put that value in a variable <code>width</code>
-    to reduce the odds of us updating it one place
-    and not the other:
-  </p>
-
-<pre>
-data = [1, 2, 2, 3, 4, 4, 5, 6, 5, 6, 7, 7, 8]
-<span class="highlight">width = 3</span>
-result = []
-for i in range(0, len(data), <span class="highlight">width</span>):
-    upper_bound = min(i+<span class="highlight">width</span>, len(data))
-    sum = 0
-    for j in range(i, upper_bound):
-        sum += data[j]
-    result.append(sum)
-print "grouped data:", result
-<hr/>
-<span class="out">grouped data: [5, 11, 16, 20, 8]</span>
-</pre>
-
-  <p>
-    This change also tells readers
-    (including our future selves)
-    that the stride in the outer loop,
-    and the offset used to calculate <code>upper_bound</code>,
-    are always supposed to be the same.
-    That's yet another reason to use variables with meaningful names:
-    it tells people when values are intentionally the same,
-    as opposed to accidentally the same.
-  </p>
-
-  <div class="keypoints">
-    <h3>Summary</h3>
-    <ul>
-      <li><code>range(<em>start</em>, <em>end</em>)</code> creates the list of numbers from <code><em>start</em></code> up to, but not including, <code><em>end</em></code>.</li>
-      <li><code>range(<em>start</em>, <em>end</em>, <em>stride</em>)</code> creates the list of numbers from <code><em>start</em></code> up to <code><em>end</em></code> in steps of <code><em>stride</em></code>.</li>
-      <li>Use nested loops to do things for combinations of things.</li>
-      <li>Make the range of the inner loop depend on the state of the outer loop to automatically adjust how much data is processed.</li>
-      <li>Use <code>min(...)</code> and <code>max(...)</code> to find the minimum and maximum of any number of values.</li>
-    </ul>
-  </div>
-
-  <div class="challenges">
-    <h3>Challenges</h3>
-
-    <ol>
-
-      <li>
-        What is the final value of <code>total</code> in this program?
-<pre>
-total = 0
-for i in range(2):
-    for j in range(-i):
-        total += j
-print total
-</pre>
-      </li>
-
-      <li>
-        How many different numbers can be put in the blank below so that the value of the expression is 12?
-<pre>
-sum(range(1, ____, 3))
-</pre>
-        <ol class="choices">
-          <li>Only 1</li>
-          <li>2 different values</li>
-          <li>3 different values</li>
-          <li>The expression's value can never be 12</li>
-        </ol>
-      </li>
-
-      <li>
-        How many different numbers can be put in the blank below so that the value of the expression is 12?
-<pre>
-sum(range(1, 3, ____))
-</pre>
-        <ol class="choices">
-          <li>Only 1</li>
-          <li>2 different values</li>
-          <li>3 different values</li>
-          <li>The expression's value can never be 12</li>
-        </ol>
-      </li>
-
-      <li>
-        Fill in the blanks so that this accurately describes
-        the fragment of code given below.
-        <blockquote>
-          <code>final_mass</code> starts at 0,
-          which is less than any of the values in ________,
-          so <code>________(final_mass, inner)</code> is always 0,
-          so <code>max(outer, min(...))</code> is always just ________,
-          so the final value is just the last value of <code>outer_masses</code>.
-        </blockquote>
-<pre>
-outer_masses = [10, 20, 30]
-inner_masses = [1, 2, 3]
-final = 0
-for outer in outer_masses:
-    for inner in inner_masses:
-        final = max(outer, min(final, inner))
-print final
-</pre>
-      </li>
-
-    </ol>
-
-  </div>
-
-</section>
-
-<section id="s:nestlist">
-  <h2>Nesting Lists</h2>
-
-  <div class="understand">
-    <h3>Learning Objectives</h3>
-    <ul>
-      <li>Explain what nested lists are, and their relationship to nested loops.</li>
-      <li>Draw data structure diagrams corresponding to nested lists, and write nested lists that correspond to given diagrams.</li>
-      <li>Explain what happens when an expression like "<code>table[3][2]</code>" is evaluated.</li>
-    </ul>
-  </div>
-
-  <p>
-    One of the hearing tests Aurora uses
-    asks people to point out where a sound is coming from.
-    The data files contain lists of XY coordinates:
-  </p>
-
-<pre>
-4.2 1.7
-3.1 5.0
-0.8 6.1
-... ...
-</pre>
-
-  <p>
-    She has roughly 100 such files,
-    and one more file (in the same format)
-    that holds the actual location of each sound.
-    She wants to calculate the average distance between
-    each actual and reported location.
-  </p>
-
-  <p>
-    The first step is to read a file
-    and extract the XY values on each line:
-  </p>
-
-<pre>
-x_values = []
-y_values = []
-reader = file('data.txt', 'r')
-for line in reader:
-    x, y = line.split()
-    x = float(x)
-    x_values.append(x)
-    y = float(y)
-    y_values.append(y)
-reader.close()
-</pre>
-
-  <p>
-    We can make this a bit more readable
-    by combining the calls to <code>float</code> and <code>append</code>:
-  </p>
-
-<pre>
-x_values = []
-y_values = []
-reader = file('data.txt', 'r')
-for line in reader:
-    x, y = line.split()
-    x_values.append(float(x))
-    y_values.append(float(y))
-reader.close()
-</pre>
-
-  <p class="continue">
-    but the basic approach is still unwieldy.
-    What we really want is a list of XY coordinates,
-    not two parallel lists of X and Y coordinates.
-    We can easily create what we want
-    using <a id="g:nested-list" href="glossary.html#nested-list">nested list</a>.
-    <a href="#f:simple_nested_list">Figure 23</a> shows
-    what we're going to do,
-    and the code below shows
-    how we would create a nested list by hand
-    for specific XY values:
-  </p>
-
-<pre>
-&gt;&gt;&gt; <span class="in">coordinates = [ [4.2, 1.7], [3.1, 5.0], [0.8, 6.1] ]</span>
-&gt;&gt;&gt; <span class="in">print coordinates[0]</span>
-<span class="out">[4.2, 1.7]</span>
-&gt;&gt;&gt; <span class="in">print coordinates[0][1]</span>
-<span class="out">1.7</span>
-</pre>
-
-    <figure id="f:simple_nested_list">
-      <img src="python/simple_nested_list.py" alt="A Simple Nested List" />
-      <figcaption>Figure 23: A Simple Nested List</figcaption>
-    </figure>
-
-  <p>
-    This isn't as complicated as it first looks.
-    Just as a variable can point at any object,
-    so too can any entry in a list.
-    And since a list is just an object in memory,
-    one list can contain a <a href="glossary.html#reference">reference</a> to another.
-    This is why <code>coordinates[0]</code> is <code>[4.2, 1.7]</code>:
-    the first entry of the outer list is
-    a reference to an entire sublist.
-    We could just as easily write:
-  </p>
-
-<pre>
-&gt;&gt;&gt; <span class="in">temp = coordinates[0]</span>
-&gt;&gt;&gt; <span class="in">print temp</span>
-<span class="out">[4.2, 1.7]</span>
-</pre>
-
-  <p class="continue">
-    And since <code>x[1]</code> is 4.2,
-    so too is <code>coordinates[0][1]</code>:
-    the first subscript select the sublist,
-    while the second selects an element from that sublist
-    (<a href="#f:indexing_nested_lists">Figure 24</a>).
-  </p>
-
-  <figure id="f:indexing_nested_lists">
-    <img src="python/indexing_nested_lists.png" alt="Indexing Nested Lists" />
-    <figcaption>Figure 24: Indexing Nested Lists</figcaption>
-  </figure>
-
-  <p>
-    It's important to understand that the inner list isn't "in" the outer list:
-    what the outer list contains is a reference to the inner one.
-    We'll return to this <a href="#s:alias">later</a>.
-  </p>
-
-  <p>
-    With nested lists in hand,
-    it's straightforward to create a list of coordinate pairs:
-  </p>
-
-<pre>
-values = []
-reader = file('data.txt', 'r')
-for line in reader:
-    x, y = line.split()
-    coord = [float(x), float(y)]
-    values.append(coord)
-reader.close()
-</pre>
-
-  <p class="continue">
-    Each time the loop executes,
-    this program splits the line into two strings,
-    creates a new two-element list containing the corresponding numbers,
-    and then appends that list to <code>values</code>.
-    <a href="#f:growing_nested_list">Figure 25</a> shows how
-    the <code>values</code> list grows as successive pairs of numbers are read.
-  </p>
-
-  <figure id="f:growing_nested_list">
-    <img src="python/growing_nested_list.png" alt="Growing a Nested List" />
-    <figcaption>Figure 25: Growing a Nested List</figcaption>
-  </figure>
-
-  <p>
-    Now suppose that we have two lists of coordinates,
-    and we want to find the average distance between corresponding coordinates.
-    For the moment,
-    we'll just create two representative lists in memory
-    and find their average difference:
-  </p>
-
-<pre>
-expected = [ [4.0, 2.0], [3.0, 5.0], [1.0, 6.0] ]
-actual   = [ [4.2, 1.7], [3.1, 5.0], [0.8, 6.1] ]
-x_diff, y_diff = 0.0,  0.0
-for i in range(len(actual)):
-    e = expected[i]
-    a = actual[i]
-    x_diff += abs(e[0] - a[0])
-    y_diff += abs(e[1] - a[1])
-print "average errors:", x_diff / len(actual), y_diff / len(actual)
-<hr/>
-<span class="out">average errors: 0.166666666667 0.133333333333</span>
-</pre>
-
-  <p class="continue">
-    The first two lines set up our data:
-    in a real program,
-    we'd read values from files.
-    The next line initializes <code>x_diff</code> and <code>y_diff</code>,
-    which will hold the errors in X and Y respectively.
-    Each iteration of the loop
-    sets <code>a</code> and <code>e</code> to point at
-    corresponding elements of the vectors.
-    <code>a[0]</code> is then the X coordinate of an actual point,
-    while <code>e[0]</code> is the X coordinate of the corresponding expected point,
-    so <code>abs(e[0] - a[0])</code> is the difference,
-    which we add to <code>x_diff</code> using <code>+=</code>.
-  </p>
-
-  <div class="box">
-    <h3>Choosing Better Test Cases</h3>
-
-    <p>
-      How can we be sure that the code shown above is working correctly?
-      Putting it another way,
-      what test data should we use so that we can tell
-      if the answer is right or not?
-      One better set of inputs would be:
-    </p>
-<pre>
-expected = [ [0.0, 0.0], [0.0, 0.0], [0.0, 0.0] ]
-actual   = [ [1.0, 2.0], [1.0, 4.0], [1.0, 6.0] ]
-</pre>
-    <p>
-      It's clear in this case that the right answers are
-      1.0 and 4.0 for X and Y.
-      We'll discuss the choice of test cases in more detail
-      in a <a href="quality.html">later lesson</a>.
-    </p>
-  </div>
-
-  <p>
-    Nested lists have a close relationship to nested loops.
-    For example,
-    suppose that Aurora has a list with one entry for each test subject,
-    and that each of those entries contains several test scores:
-  </p>
-
-<pre>
-scores = [ [1.5, 2.2, 1.7, 1.6],
-           [2.8, 3.5, 3.6, 1.6],
-           [1.3, 1.1, 1.7, 1.4] ]
-</pre>
-
-  <p>
-    To calculate the average of all these scores,
-    she needs to loop over the outer list
-    (to cover each test subject),
-    and also to loop over every element of each entry
-    (to cover each subject's scores):
-  </p>
-
-<pre>
-total = 0.0
-number = 0
-for entry in scores:
-    for value in entry:
-        total += value
-        number += 1
-average = total / number
-print average
-<hr/>
-<span class="out">2.0</span>
-</pre>
-
-  <p>
-    Since the data structure is a list of lists,
-    we need to use a loop within a loop.
-    If we want to average the scores per subject,
-    we would only need to make a small change to this code:
-  </p>
-
-<pre>
-for entry in scores:
-<span class="highlight">    total = 0.0
-    number = 0</span>
-    for value in entry:
-        total += value
-        number += 1
-<span class="highlight">    average = total / number
-    print average</span>
-<hr/>
-<span class="out">1.75
-2.875
-1.375</span>
-</pre>
-
-  <p class="continue">
-    The important change here is that
-    <code>total</code> and <code>number</code> are re-initialized
-    and then reported
-    <em>inside</em> the main loop,
-    so that each subject's scores are calculated and printed separately.
-  </p>
-
-  <p>
-    If we want to average corresponding scores for each subject,
-    i.e.,
-    get the average of each subject's zeroth score,
-    then the average of their first score,
-    and so on,
-    the code suddenly becomes more complex.
-    The reason is that
-    while <code>scores[1]</code> is "all the scores associated with subject 1",
-    there is no equally simple expression meaning
-    "the first score associated with all subjects".
-    (We will see a structure that allows us to do this <a href="numpy.html">later</a>.)
-  </p>
-
-  <p>
-    Here's the code that averages corresponding scores across subjects:
-  </p>
-
-<pre id="a:average_scores">
-scores = [ [1.5, 2.2, 1.7, 1.6],
-           [2.8, 3.5, 3.6, 1.6],
-           [1.3, 1.1, 1.7, 1.4] ]
-for loc in range(len(scores[0])):
-    total = 0.0
-    number = 0
-    for entry in scores:
-        total += entry[loc]
-        number += 1
-    average = total / number
-    print average
-<hr/>
-<span class="out">1.86666666667
-2.26666666667
-2.33333333333
-1.53333333333</span>
-</pre>
-
-  <p class="continue">
-    We will take a closer look at how and why it works in the challenges below.
-  </p>
-
-  <div class="keypoints">
-    <h3>Summary</h3>
-    <ul>
-      <li>Use nested lists to store multi-dimensional data or values that have regular internal structure (such as XYZ coordinates).</li>
-      <li>Use <code><em>list_of_lists</em>[<em>first</em>]</code> to access an entire sub-list.</li>
-      <li>Use <code><em>list_of_lists</em>[<em>first</em>][<em>second</em>]</code> to access a particular element of a sub-list.</li>
-      <li>Use nested loops to process nested lists.</li>
-    </ul>
-  </div>
-
-  <div class="challenges">
-    <h3>Challenges</h3>
-
-    <ol>
-
-      <li>
-        Trace the values of <code>loc</code>, <code>total</code>,
-        <code>number</code>, <code>entry</code>, and <code>average</code>
-        for each iteration of the loop in the 
-        <a href="#a:average_scores">final code sample</a>
-        in above.
-        Why does the loop use the expression <code>range(len(scores[0]))</code>?
-      </li>
-
-      <li>
-        A colleague has defined a 3&times;3 matrix like this:
-<pre>
-tensor = [ [0, 1, 2],
-           [3, 4, 5],
-           [6, 7, 8] ]
-</pre>
-        She then tries to transpose it like this:
-<pre>
-transpose = []
-for i in [-1, -2, -3]:
-    transpose.append(tensor[i])
-</pre>
-        What is the actual result?
-      </li>
-
-      <li>
-        Fill in the blanks so that this program produces the output shown.
-<pre>
-final = []
-for i in range(______):
-    final.append(range(______))
-print final
-<hr/>
-<span class="out">[[], [0], [0, 1]]</span>
-</pre>
-      </li>
-
-      <li>
-        What does this program do?
-<pre>
-alpha = [ [1, 2], [3, 4] ]
-beta = [ [10, 20], [30, 40] ]
-result = [ [0, 0], [0, 0] ]
-for i in range(2):
-    for j in range(2):
-        for k in range(2):
-            result[i][j] += alpha[i][k] * beta[k][j]
-</pre>
-        <ol>
-          <li>Calculate the sums of the rows and columns of <code>alpha</code> and <code>beta</code>.</li>
-          <li>Calculate the products of the elements the rows and columns of <code>alpha</code> and <code>beta</code>.</li>
-          <li>Calculate the matrix product <code>alpha</code>&times;<code>beta</code></li>
-          <li>Calculate the matrix product <code>beta</code>&times;<code>alpha</code></li>
-        </ol>
-      </li>
-
-    </ol>
-
-  </div>
-
-</section>
-
-<section id="s:alias">
-  <h2>Aliasing</h2>
-
-  <div class="understand">
-    <h3>Learning Objectives</h3>
-    <ul>
-      <li>Explain what an "alias" is.</li>
-      <li>Explain why aliases are useful.</li>
-      <li>Explain why aliases can make programs harder to understand.</li>
-      <li>Identify examples in which aliasing does and does not occur.</li>
-      <li>Construct programs which create aliases for data.</li>
-      <li>Trace changes to data in programs that contain aliases.</li>
-    </ul>
-  </div>
-
-  <p>
-    At this point,
-    we need to take a small side trip to explore something which is very useful,
-    but which can also be the source of some hard-to-find bugs.
-    Consider the following snippet of Python:
-  </p>
-
-<pre>
-outer = [ [10, 20, 30], [40, 50, 60] ]
-inner = outer[0]
-</pre>
-
-  <p class="continue">
-    After these two lines have been executed,
-    the program's memory is as shown in <a href="#f:aliasing_a">Figure 26</a>:
-    <code>outer</code> refers to a two-element list
-    containing references to a couple of three-element lists,
-    while <code>inner</code> refers to the first of those three-element lists.
+    We have used functions several times in this lesson.
+    It is now time to see how to create new functions ourselves.
+    A function's job is to bundle several steps together
+    so that they can be used as if they were a single command.
+    The simplest possible function is one that
+    produces the same value over and over again:
   </p>
   
-  <figure id="f:aliasing_a">
-    <img src="src/python/aliasing_a.png" alt="First Step of Aliasing Example" />
-    <figcaption>Figure 26: First Step of Aliasing Example</figcaption>
-  </figure>
-
-  <p>
-    Now let's change the last value of the list that <code>inner</code> refers to:
-  </p>
-
 <pre>
-inner[2] = 99
-</pre>
-
-  <p class="continue">
-    This changes memory as shown in <a href="#f:aliasing_b">Figure 27</a>,
-    which means that the values of both <code>inner</code> <em>and</em> <code>outer</code>
-    have changed:
-  </p>
-
-<pre>
-&gt;&gt;&gt; <span class="in">print inner</span>
-<span class="out">[10, 20, 99]</span>
-&gt;&gt;&gt; <span class="in">print outer</span>
-<span class="out">[[10, 20, 99], [40, 50, 60]]</span>
-</pre>
-
-  <figure id="f:aliasing_b">
-    <img src="src/python/aliasing_b.png" alt="Second Step of Aliasing Example" />
-    <figcaption>Figure 27: Second Step of Aliasing Example</figcaption>
-  </figure>
-
-  <p>
-    This is called <a href="glossary.html#alias">aliasing</a>.
-    It is not a bug:
-    the program is supposed to work this way.
-    It doesn't have to, though;
-    Python's creator could have decided that:
-  </p>
-
-<pre>
-inner = outer[0]
-</pre>
-
-  <p class="continue">
-    would create a copy of <code>outer[0]</code>
-    and assign that to <code>inner</code>
-    rather than aliasing the first element of <code>outer</code>
-    (<a href="#f:aliasing_copy">Figure 28</a>).
-    That would be easier to understand&mdash;there would be no chance that
-    assigning to one variable would cause another variable's value to change&mdash;but
-    it would also be less efficient.
-    If our sublists contain a million elements each,
-    and we're assigning them to temporary variables
-    simply to make our program more readable,
-    copying would cause unnecessary slow-down.
-  </p>
-
-  <figure id="f:aliasing_copy">
-    <img src="src/python/aliasing_copy.png" alt="Copying Instead of Aliasing" />
-    <figcaption>Figure 28: Copying Instead of Aliasing</figcaption>
-  </figure>
-
-  <p>
-    When a programming language copies data,
-    and when it creates aliases instead,
-    is one of the most important things a programmer must know about it.
-    As we'll see <a href="web.html">later</a>,
-    it's also one of the most important things to know about large systems of any kind.
-    If we query a database,
-    is the result a copy of the data as it was when we made the query,
-    or a reference to the master copy?
-    In the first case,
-    we can now change the data however we want without affecting other people,
-    but we won't see any updates they make.
-    In the second case,
-    we will automatically see updates to the data,
-    but that means our program has to cope with changes at unpredictable times
-    (and also has to re-fetch the data each time it needs it,
-    which will reduce performance).
-    Neither approach is right or wrong:
-    there are simply engineering tradeoffs that we have to be aware of.
-  </p>
-
-  <div class="box">
-    <h3>Copying When You Want To</h3>
-
-    <p>
-      Python has a library called (naturally enough) <code>copy</code>
-      that knows how to copy complex data structures.
-      We will take a look at it <a href="#a:copy_library">later</a>
-      once we have looked at how Python manages libraries in general.
-    </p>
-  </div>
-
-  <div class="keypoints">
-    <h3>Summary</h3>
-    <ul>
-      <li>Several variables can alias the same data.</li>
-      <li>If that data is mutable (e.g., a list), a change made through one variable is visible through all other aliases.</li>
-    </ul>
-  </div>
-
-  <div id="c:alias">
-    <h3>Challenges</h3>
-
-    <ol>
-
-      <li>
-        Draw a diagram to show the state of memory
-        after the two lines below have been executed.
-<pre>
-base = [1]
-base.append(base)
-</pre>
-      </li>
-
-      <li>
-        Which program creates the memory layout shown in
-        <a href="#f:memory_layout_challenge">Figure 29</a>?
-
-        <figure id="f:memory_layout_challenge">
-          <img src="python/memory_layout_challenge.png" alt="Memory Layout Challenge" />
-          <figcaption>Figure 29: Memory Layout Challenge</figcaption>
-        </figure>
-
-        <table>
-          <tr>
-            <td valign="top">A</td>
-            <td valign="top">
-<pre>
-alpha = [beta]
-beta = [alpha]
-</pre>
-            </td>
-          </tr>
-          <tr>
-            <td valign="top">B</td>
-            <td valign="top">
-<pre>
-alpha = []
-beta = []
-alpha[0] = beta
-beta[0] = alpha
-</pre>
-            </td>
-          </tr>
-          <tr>
-            <td valign="top">C</td>
-            <td valign="top">
-<pre>
-alpha = [beta] + alpha
-</pre>
-            </td>
-          </tr>
-          <tr>
-            <td valign="top">D</td>
-            <td valign="top">
-<pre>
-alpha = []
-beta = []
-alpha.append(beta)
-beta.append(alpha)
-</pre>
-            </td>
-          </tr>
-        </table>
-      </li>
-
-      <li>
-        Modify this program so that it prints
-        <code>[[100, 200], [300, 400]]</code>.
-<pre>
-vector = [100, 200]
-matrix = []
-matrix.append(vector)
-vector[0] = 300
-vector[1] = 400
-matrix.append(vector)
-print matrix
-</pre>
-      </li>
-
-      <li>
-        These lines produce the output shown:
-<pre>
-readings = [0] * 3
-readings[-1] = 'zero'
-print readings
-<hr/>
-<span class="out">[0, 0, 'zero']</span>
-</pre>
-        By analogy,
-        the author of these lines wanted to create a 3&times;3 matrix of zeroes
-        with a single value set to the string <code>'zero'</code>.
-        What has she actually produced,
-        why does it work that way,
-        and how can she change her code to get what she wants?
-<pre>
-vec = [0] * 3
-mat = [vec] * 3
-mat[-1][-1] = 'zero'
-print mat
-</pre>
-      </li>
-
-        </ol>
-
-      </div>
-
-    </section>
-
-    <section id="s:func">
-
-      <h2>How Functions Work</h2>
-
-      <div class="understand" id="u:basics">
-        <h3>Understand:</h3>
-        <ul>
-          <li>Why to break a program up into functions.</li>
-          <li>How to define a new function.</li>
-          <li>How to pass values into a function.</li>
-          <li>How to combine functions.</li>
-          <li>What a call stack is.</li>
-          <li>What a variable's scope is.</li>
-        </ul>
-      </div>
-
-      <p>
-        As we said above,
-        a function's job is to bundle several steps together
-        so that they can be used as if they were a single command.
-        The simplest possible function is one that just produces the same value over and over again:
-      </p>
-
-<pre src="src/funclib/zero.py">
 def zero():
     return 0
+</pre>
 
+  <p class="continue">
+    We create functions in Python using the keyword <code>def</code>,
+    followed by the function's name.
+    The empty parentheses signal that the function doesn't take any inputs&mdash;we'll
+    see functions that do in a moment&mdash;and the colon signals
+    the start of a new block of code.
+    The body of the function is then indented,
+    just like the body of a loop.
+    The keyword <code>return</code> then specifies
+    the value that the function produces.
+  </p>
+
+  <p>
+    Defining a function tells the computer how to do something,
+    but doesn't actually do whatever that "something" is.
+    To do that,
+    we need to call the function:
+  </p>
+
+<pre>
 result = zero()
 print "zero produces", result
+<hr/>
 <span class="out">zero produces 0</span>
 </pre>
 
-      <p class="continue">
-        This function is pretty pointless,
-        but it does illustrate a few things.
-        First, we create functions in Python using the keyword <code>def</code>,
-        followed by the function's name.
-        The empty parentheses signal that the function doesn't take any inputs&mdash;we'll
-        see functions that do in a moment&mdash;and the colon signals
-        the start of a new block of code.
-        The body of the function is then indented,
-        just like the body of a loop.
-        The keyword <code>return</code> then specifies
-        the value that the function produces.
-      </p>
+  <p>
+    When Python sees the call <code>zero()</code>
+    it sets aside whatever it was doing,
+    goes and does whatever the function <code>zero</code> tells it to do,
+    and then continues with its original calculation using the function's result.
+    In this case,
+    the overall effect is to assign 0 to <code>result</code>,
+    which is then printed.
+  </p>
 
-      <p>
-        We have seen lots of examples already of calling functions,
-        so the third line of code should look familiar:
-        when Python sees the statement <code>result&nbsp;=&nbsp;zero()</code>
-        it sets aside whatever it was doing,
-        goes and does whatever the function <code>zero</code> tells it to do,
-        and then continues with its original calculation using the function's result.
-        In this case,
-        the overall effect is to assign 0 to <code>result</code>,
-        which is then printed.
-      </p>
+  <p>
+    Functions that always produce the same value aren't particularly useful,
+    so most functions take input values,
+    or <a href="glossary.html#parameter">parameters</a>,
+    and use them in their calculations.
+    A parameter is a variable that is given a new value
+    each time the function is called.
+    For example,
+    the function <code>fahr_to_kelvin</code> defined below
+    has a single parameter <code>temp</code>,
+    which is assigned the value 32 the first time it is called,
+    and the value 212 the second time:
+  </p>
 
-      <p>
-        Functions that always produce the same value aren't particularly useful,
-        so most functions take input values,
-        or <a href="glossary.html#parameter">parameters</a>,
-        and use them in their calculations.
-        For example,
-        the function <code>fahr_to_kelvin</code> takes a temperature in Fahrenheit
-        (as recorded by rock drills in the 1970s)
-        and returns the corresponding temperature in Kelvin:
-      </p>
-
-<pre src="src/funclib/f2k.py">
+<pre>
 def fahr_to_kelvin(temp):
     return ((temp - 32.0) * 5.0/9.0) + 273.15
 
 print 'water freezes at', fahr_to_kelvin(32)
 print 'water boils at', fahr_to_kelvin(212)
+<hr/>
 <span class="out">water freezes at 273.15
 water boils at 373.15</span>
 </pre>
 
-      <p class="continue">
-        When we call <code>fahr_to_kelvin</code>,
-        the value we pass in (such as <code>32</code> or <code>212</code>)
-        is assigned to the variable <code>temp</code>,
-        which is the function's only parameter.
-        The function uses that value in its calculations,
-        and returns a result as before.
-      </p>
+  <p>
+    If one function is good,
+    two must be better.
+    Let's write a function to convert Kelvin to Celsius:
+  </p>
 
-      <p>
-        If one function is good,
-        two must be better.
-        Let's write a function to convert Kelvin to Celsius:
-      </p>
-
-<pre src="src/funclib/k2c.py">
+<pre>
 def kelvin_to_celsius(temp):
     return temp - 273.15
 
 print 'absolute zero is', kelvin_to_celsius(0)
+<hr/>
 <span class="out">absolute zero is -273.15</span>
 </pre>
 
-      <p class="continue">
-        Instead of writing a third equation to translate Fahrenheit into Celsius,
-        we can now combine the two functions we have
-        to do the required calculation:
-      </p>
+  <p class="continue">
+    Instead of writing a third equation to translate Fahrenheit into Celsius,
+    we can now combine the two functions we have
+    to do the required calculation:
+  </p>
 
-<pre src="src/funclib/f2c.py">
+<pre>
 def fahr_to_celsius(temp):
     degrees_k = fahr_to_kelvin(temp)
     return kelvin_to_celsius(degrees_k)
@@ -4524,17 +3464,17 @@ def fahr_to_celsius(temp):
 temp_f = 32.0
 temp_c = fahr_to_celsius(temp_f)
 print 'water freezes at', temp_c
+<hr/>
 <span class="out">water freezes at 0.0</span>
 </pre>
 
-      <p id="a:call-stack">
-        To really understand what happens when we combine functions this way,
-        we need to understand the <a href="glossary.html#call-stack">function call stack</a>,
-        or "stack" for short.
-        Here are the function definitions once again:
-      </p>
+  <p id="a:call-stack">
+    To really understand what happens when we combine functions this way,
+    we need to understand the <a href="glossary.html#call-stack">function call stack</a>.
+    Here are the function definitions once again:
+  </p>
 
-<pre src="src/funclib/f2c.py">
+<pre>
 def fahr_to_kelvin(temp):
     return ((temp - 32.0) * 5.0/9.0) + 273.15
 
@@ -4546,19 +3486,21 @@ def fahr_to_celsius(temp):
     return kelvin_to_celsius(degrees_k)
 </pre>
 
-      <p class="continue">
-        All three functions have a parameter called <code>temp</code>.
-        Let's try calling one of the functions,
-        and then printing <code>temp</code>'s value <em>after</em> the function call:
-      </p>
+  <p class="continue">
+    All three functions have a parameter called <code>temp</code>;
+    how does Python keep them straight?
+    Let's call one of the functions
+    and print <code>temp</code>'s value after the call:
+  </p>
 
-<pre src="src/funclib/print_temp.py">
+<pre>
 def kelvin_to_celsius(temp):
     return temp - 273.15
 
 absolute_zero = 0.0
-not_used = kelvin_to_celsius(absolute_zero)
+result = kelvin_to_celsius(absolute_zero)
 print 'temp after function call is', temp
+<hr/>
 <span class="out">temp after function call is</span>
 <span class="err">Traceback (most recent call last):
   File "src/funclib/print-temp.py", line 5, in &lt;module&gt;
@@ -4566,94 +3508,102 @@ print 'temp after function call is', temp
 NameError: name 'temp' is not defined</span>
 </pre>
 
-      <p class="continue">
-        Why isn't <code>temp</code> defined?
-        And if it isn't,
-        why did we get an error for the last line of our program,
-        rather than when we used <code>temp</code> inside <code>kelvin_to_celsius</code>?
-      </p>
+  <p class="continue">
+    Why isn't <code>temp</code> defined?
+    And if it isn't,
+    why did we get an error for the last line of our program,
+    rather than when we used <code>temp</code> inside <code>kelvin_to_celsius</code>?
+  </p>
 
-      <p>
-        The answer is that
-        Python doesn't actually create a variable called <code>temp</code>
-        when the function is defined.
-        Instead,
-        it makes a note that it is supposed to create such a variable
-        when <code>kelvin_to_celsius</code> is called,
-        and then throw it away when the function finishes executing.
-      </p>
+  <p>
+    The answer is that
+    Python doesn't actually create a variable called <code>temp</code>
+    when the function is defined.
+    Instead,
+    it makes a note that it is supposed to create such a variable
+    when <code>kelvin_to_celsius</code> is called,
+    and then throw it away when the function finishes executing.
+  </p>
 
-      <p>
-        This is easier to explain with pictures.
-        After executing line 4 of our program,
-        Python knows that <code>kelvin_to_celsius</code> refers to a function,
-        and that <code>absolute_zero</code> refers to the value 0.0:
-      </p>
+  <p>
+    This is easier to explain with pictures.
+    After executing line 4 of our program,
+    Python knows that <code>kelvin_to_celsius</code> refers to a function,
+    and that <code>absolute_zero</code> refers to the value 0.0
+    (<a href="#f:func_call_step_1">Figure 20</a>):
+  </p>
 
-      <figure id="f:func_call_step_1">
-        <img src="img/funclib/func_call_step_1.png" alt="First Step of Function Call" />
-      </figure>
+  <figure id="f:func_call_step_1">
+    <img src="python/func_call_step_1.png" alt="First Step of Function Call" />
+    <figcaption>Figure 20: First Step of Function Call</figcaption>
+  </figure>
 
-      <p>
-        The first thing it does when it executes line 5 is call <code>kelvin_to_celsius</code>.
-        To do this,
-        it creates a new storage area for variables
-        and puts it on top of the one that holds
-        <code>kelvin_to_celsius</code> and <code>absolute_zero</code>.
-        Since the function has one parameter, <code>temp</code>,
-        Python creates a variable with that name in the new storage area,
-        and gives it the value 0.0
-        (since that's what we passed in when we called the function):
-      </p>
+  <p>
+    The first thing it does when it executes line 5 is call <code>kelvin_to_celsius</code>.
+    To do this,
+    it creates a new storage area for variables
+    and puts it on top of the one that holds
+    <code>kelvin_to_celsius</code> and <code>absolute_zero</code>.
+    Since the function has one parameter,
+    <code>temp</code>,
+    Python creates a variable with that name in the new storage area
+    and gives it the value 0.0
+    (since that's what we passed in when we called the function).
+    The program's memory is now in the state shown in
+    <a href="#f:func_call_step_2">Figure 21</a>:
+  </p>
 
-      <figure id="f:func_call_step_2">
-        <img src="img/funclib/func_call_step_2.png" alt="Second Step of Function Call" />
-      </figure>
+  <figure id="f:func_call_step_2">
+    <img src="python/func_call_step_2.png" alt="Second Step of Function Call" />
+    <figcaption>Figure 21: Second Step of Function Call</figcaption>
+  </figure>
 
-      <p>
-        This variable storage area is called
-        a <a href="glossary.html#stack-frame">stack frame</a>:
-        stack, because it is stacked on top of the previous area,
-        and frame, because&hellip;well, just because.
-        Every time a function is called&mdash;any function&mdash;Python
-        creates a new frame to holds the function's variables
-        and puts it on top of the stack.
-        While it is executing that function's code,
-        Python looks in the top stack frame to find variables;
-        when the function returns,
-        Python discards the top stack frame
-        and starts using the one underneath it again.
-      </p>
+  <p>
+    This variable storage area is called
+    a <a href="glossary.html#stack-frame">stack frame</a>:
+    stack, because it is stacked on top of the previous area,
+    and frame, because&hellip;well, just because.
+    Every time a function is called&mdash;any function&mdash;Python
+    creates a new frame to holds the function's variables
+    and puts it on top of the stack.
+    While it is executing that function's code,
+    Python looks in the top stack frame to find variables;
+    when the function returns,
+    Python discards the top stack frame
+    and starts using the one underneath it again.
+  </p>
 
-      <p>
-        Since the rest of the statement on line 5
-        (the line containing the function call)
-        assigns the function's value to <code>not_used</code>,
-        memory looks something like this after line 5 is finished:
-      </p>
+  <p>
+    Since the rest of the statement on line 5
+    (the line containing the function call)
+    assigns the function's value to <code>not_used</code>,
+    memory looks something like <a href="#f:func_call_step_3">Figure 22</a>
+    after line 5 is finished:
+  </p>
 
-      <figure id="f:func_call_step_3">
-        <img src="img/funclib/func_call_step_3.png" alt="Third Step of Function Call" />
-      </figure>
+  <figure id="f:func_call_step_3">
+    <img src="python/func_call_step_3.png" alt="Third Step of Function Call" />
+    <figcaption>Figure 22: Third Step of Function Call</figcaption>
+  </figure>
 
-      <p>
-        It should now be clear why we got the error we did,
-        and why we got it <em>where</em> we did.
-        When Python executes line 6,
-        the uppermost frame of the stack doesn't contain a variable called <code>temp</code>.
-        The frame that <em>did</em> contain that variable
-        was discarded when the call to <code>kelvin_to_celsius</code> finished.
-      </p>
+  <p>
+    It should now be clear why we got the error we did,
+    and why we got it <em>where</em> we did.
+    When Python executes line 6,
+    the uppermost frame of the stack doesn't contain a variable called <code>temp</code>.
+    The frame that <em>did</em> contain that variable
+    was discarded when the call to <code>kelvin_to_celsius</code> finished.
+  </p>
 
-      <p>
-        To understand why Python (and other languages) do all of this,
-        let's go back to <code>fahr_to_celsius</code> again.
-        Its definition,
-        and the definitions of the functions it calls,
-        are:
-      </p>
+  <p>
+    To understand why Python (and other languages) do all of this,
+    let's go back to <code>fahr_to_celsius</code> again.
+    Its definition,
+    and the definitions of the functions it calls,
+    are:
+  </p>
 
-<pre src="src/funclib/f2c.py">
+<pre>
 def fahr_to_kelvin(temp):
     return ((temp - 32.0) * 5.0/9.0) + 273.15
 
@@ -4665,133 +3615,147 @@ def fahr_to_celsius(temp):
     return kelvin_to_celsius(degrees_k)
 </pre>
 
-      <p class="continue">
-        These nine lines of code define the variable <code>temp</code> three times&mdash;once
-        in each function&mdash;but those three <code>temp</code>s are <em>not</em> the same variable.
-        The first <code>temp</code>,
-        defined on line 1,
-        is created each time <code>fahr_to_kelvin</code> is called,
-        and only lasts as long as that call is in progress.
-        In computer science jargon,
-        it is <a href="glossary.html#local-scope">local</a> to the function.
-        Similarly,
-        the second <code>temp</code> (on line 4) is local to <code>kelvin_to_celsius</code>,
-        and the third (on line 7) to <code>fahr_to_celsius</code>.
-        They only exist while the functions that own them are being executed,
-        and can only be "seen" inside those functions.
-      </p>
+  <p class="continue">
+    These nine lines of code define the variable <code>temp</code> three times&mdash;once
+    in each function&mdash;but those three <code>temp</code>s are <em>not</em> the same variable.
+    The first <code>temp</code>,
+    defined on line 1,
+    is created each time <code>fahr_to_kelvin</code> is called,
+    and only lasts as long as that call is in progress.
+    In computer science jargon,
+    it is <a href="glossary.html#local-scope">local</a> to the function.
+    Similarly,
+    the second <code>temp</code> (on line 4) is local to <code>kelvin_to_celsius</code>,
+    and the third (on line 7) to <code>fahr_to_celsius</code>.
+    They only exist while the functions that own them are being executed,
+    and can only be "seen" inside those functions.
+  </p>
 
-      <p>
-        Again, some pictures will make this clearer
-        (and it does need to be clear,
-        since everything else about functions depends on this idea).
-        Let's call <code>fahr_to_celsius</code> as before:
-      </p>
+  <p>
+    Again, some pictures will make this clearer
+    (and it does need to be clear,
+    since everything else about functions depends on this idea).
+    Let's call <code>fahr_to_celsius</code> as before:
+  </p>
 
-<pre src="src/funclib/f2c.py">
+<pre>
 temp_f = 32.0
 temp_c = fahr_to_celsius(temp_f)
 print 'water freezes at', temp_c
 </pre>
 
-      <p>
-        Just before line 9 runs,
-        the stack consists of a single frame,
-        which contains the three functions
-        and the variable <code>temp_f</code>:
-      </p>
+  <p>
+    Just before line 9 runs,
+    the stack consists of a single frame,
+    which contains the three functions
+    and the variable <code>temp_f</code>
+    (<a href="#f:stack_single_frame">Figure 23</a>):
+  </p>
 
-      <figure id="f:stack_single_frame">
-        <img src="img/funclib/stack_single_frame.png" alt="A Call Stack With a Single Frame" />
-      </figure>
+  <figure id="f:stack_single_frame">
+    <img src="python/stack_single_frame.png" alt="A Call Stack With a Single Frame" />
+    <figcaption>Figure 23: A Call Stack With a Single Frame</figcaption>
+  </figure>
 
-      <p>
-        When we call <code>fahr_to_celsius</code>,
-        Python creates a new stack frame containing the variable <code>temp</code>,
-        and assigns it the value 32.0
-        (which it got from <code>temp_f</code>):
-      </p>
+  <p>
+    When we call <code>fahr_to_celsius</code>,
+    Python creates a new stack frame containing the variable <code>temp</code>
+    and assigns it the value 32.0
+    (which it got from <code>temp_f</code>).
+    Memory is now as shown in <a href="#f:stack_double_frame">Figure 24</a>.
+  </p>
 
-      <figure id="f:stack_double_frame">
-        <img src="img/funclib/stack_double_frame.png" alt="A New Stack Frame" />
-      </figure>
+  <figure id="f:stack_double_frame">
+    <img src="python/stack_double_frame.png" alt="A New Stack Frame" />
+    <figcaption>Figure 24: A New Stack Frame</figcaption>
+  </figure>
 
-      <p>
-        <code>fahr_to_celsius</code> immediately calls <code>fahr_to_kelvin</code>,
-        so Python creates another stack frame
-        to hold <code>fahr_to_kelvin</code>'s local variables.
-        This frame also contains a variable called <code>temp</code>,
-        but since it's in a different frame,
-        it's a different variable than <code>fahr_to_celsius</code>'s <code>temp</code>:
-      </p>
+  <p>
+    <code>fahr_to_celsius</code> immediately calls <code>fahr_to_kelvin</code>,
+    so Python creates another stack frame
+    to hold <code>fahr_to_kelvin</code>'s local variables.
+    This frame also contains a variable called <code>temp</code>,
+    but since it's in a different frame,
+    it's a different variable than <code>fahr_to_celsius</code>'s <code>temp</code>
+    (<a href="#f:stack_triple_frame">Figure 25</a>).
+  </p>
 
-      <figure id="f:stack_triple_frame">
-        <img src="img/funclib/stack_triple_frame.png" alt="Yet Another Stack Frame" />
-      </figure>
+  <figure id="f:stack_triple_frame">
+    <img src="python/stack_triple_frame.png" alt="Yet Another Stack Frame" />
+    <figcaption>Figure 25: Yet Another Stack Frame</figcaption>
+  </figure>
 
-      <p>
-        Using its <code>temp</code>,
-        <code>fahr_to_kelvin</code> calculates a result of 273.15.
-        When it returns that value,
-        Python discards <code>fahr_to_kelvin</code>'s stack frame:
-      </p>
+  <p>
+    Using its <code>temp</code>,
+    <code>fahr_to_kelvin</code> calculates a result of 273.15.
+    When it returns that value,
+    Python discards <code>fahr_to_kelvin</code>'s stack frame
+    (<a href="#f:stack_back_to_double_frame">Figure 26</a>):
+  </p>
 
-      <figure id="f:stack_back_to_double_frame">
-        <img src="img/funclib/stack_back_to_double_frame.png" alt="Back to a Double Frame" />
-      </figure>
+  <figure id="f:stack_back_to_double_frame">
+    <img src="python/stack_back_to_double_frame.png" alt="Back to a Double Frame" />
+    <figcaption>Figure 26: Back to a Double Frame</figcaption>
+  </figure>
 
-      <p class="continue">
-        and creates a new variable <code>degrees_k</code> to hold that value
-        in what is now the top frame&mdash;the one belonging to <code>fahr_to_celsius</code>:
-      </p>
+  <p class="continue">
+    and creates a new variable <code>degrees_k</code> to hold that value
+    in what is now the top frame&mdash;the one belonging to <code>fahr_to_celsius</code>
+    (<a href="#f:new_variable_in_double_frame">Figure 27</a>):
+  </p>
 
-      <figure id="f:new_variable_in_double_frame">
-        <img src="img/funclib/new_variable_in_double_frame.png" alt="A New Variable in the Second Frame" />
-      </figure>
+  <figure id="f:new_variable_in_double_frame">
+    <img src="python/new_variable_in_double_frame.png" alt="A New Variable in the Second Frame" />
+    <figcaption>Figure 27: A New Variable in the Second Frame</figcaption>
+  </figure>
 
-      <p class="continue">
-        Python then goes through the same steps for the call to <code>kelvin_to_celsius</code>.
-        It creates a stack frame with a variable <code>temp</code>,
-        which it assigns the value 273.15:
-      </p>
+  <p class="continue">
+    Python then goes through the same steps for the call to <code>kelvin_to_celsius</code>.
+    It creates a stack frame with a variable <code>temp</code>,
+    which it assigns the value 273.15
+    (<a href="#f:repeat_stack_frame">Figure 28</a>):
+  </p>
 
-      <figure id="f:repeat_stack_frame">
-        <img src="img/funclib/repeat_stack_frame.png" alt="Repeating the Process" />
-      </figure>
+  <figure id="f:repeat_stack_frame">
+    <img src="python/repeat_stack_frame.png" alt="Repeating the Process" />
+    <figcaption>Figure 28: Repeating the Process</figcaption>
+  </figure>
 
-      <p class="continue">
-        does its calculations,
-        and then discards the stack frame when the function is finished.
-        Since <code>fahr_to_celsius</code> is also now done,
-        Python discards its stack frame,
-        creates a variable called <code>temp_c</code> in the original (bottom) frame,
-        and assigns it the value 0.0:
-      </p>
+  <p class="continue">
+    does its calculations,
+    and then discards the stack frame when the function is finished.
+    Since <code>fahr_to_celsius</code> is also now done,
+    Python discards its stack frame,
+    creates a variable called <code>temp_c</code> in the original (bottom) frame,
+    and assigns it the value 0.0
+    (<a href="#f:final_state_of_frames">Figure 27</a>):
+  </p>
 
-      <figure id="f:final_state_of_frames">
-        <img src="img/funclib/final_state_of_frames.png" alt="The Final State" />
-      </figure>
+  <figure id="f:final_state_of_frames">
+    <img src="python/final_state_of_frames.png" alt="The Final State" />
+    <figcaption>Figure 29: The Final State</figcaption>
+  </figure>
 
-      <p>
-        Every modern programming language uses this model to manage calculations.
-        Each function call creates a new stack frame with its own variables.
-        While the function is running,
-        it uses the variables in its own frame,
-        and when the function call is finished,
-        the stack frame is discarded.
-      </p>
+  <p>
+    Every modern programming language uses this model to manage calculations.
+    Each function call creates a new stack frame with its own variables.
+    While the function is running,
+    it uses the variables in its own frame,
+    and when the function call is finished,
+    the stack frame is discarded.
+  </p>
 
-      <p>
-        The area of the program in which a particular variable is visible
-        is called its <a href="glossary.html#scope">scope</a>.
-        As a rule,
-        programming languages do not let functions access variables in other functions' scopes
-        because doing so would make large programs almost impossible to write.
-        For example,
-        imagine we used two functions to sum the squares of the values in a list:
-      </p>
+  <p>
+    The area of the program in which a particular variable is visible
+    is called its <a href="glossary.html#scope">scope</a>.
+    As a rule,
+    programming languages do not let functions access variables in other functions' scopes
+    because doing so would make large programs almost impossible to write.
+    For example,
+    imagine we used two functions to sum the squares of the values in a list:
+  </p>
 
-<pre src="src/funclib/sum_squares.py">
+<pre>
 def sum(numbers):                       <span class="comment">#  1</span>
     result = 0                          <span class="comment">#  2</span>
     for x in numbers:                   <span class="comment">#  3</span>
@@ -4805,223 +3769,230 @@ def square(val):                        <span class="comment">#  7</span>
 print sum([1, 2])                       <span class="comment"># 11</span>
 </pre>
 
-      <p class="continue">
-        We expect to get 1<sup>2</sup>+2<sup>2</sup> = 5
-        via the following steps:
-      </p>
+  <p class="continue">
+    We expect to get 1<sup>2</sup>+2<sup>2</sup> = 5
+    via the following steps:
+  </p>
 
-      <table border="1">
-        <tr>
-          <th></th>
-          <th><code>sum</code></th>
-          <th><code>sum</code></th>
-          <th><code>square</code></th>
-          <th><code>square</code></th>
-        </tr>
-        <tr>
-          <th>Line</th>
-          <th><code>result</code></th>
-          <th><code>x</code></th>
-          <th><code>val</code></th>
-          <th><code>result</code></th>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>0</td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>0</td>
-          <td>1</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td>0</td>
-          <td>1</td>
-          <td>1</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>8</td>
-          <td>0</td>
-          <td>1</td>
-          <td>1</td>
-          <td>1</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>1</td>
-          <td>1</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>1</td>
-          <td>2</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td>1</td>
-          <td>2</td>
-          <td>2</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>8</td>
-          <td>1</td>
-          <td>2</td>
-          <td>2</td>
-          <td>4</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>1</td>
-          <td>5</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td>1</td>
-          <td>5</td>
-          <td></td>
-          <td></td>
-        </tr>
-      </table>
+  <table border="1">
+    <tr>
+      <th></th>
+      <th><code>sum</code></th>
+      <th><code>sum</code></th>
+      <th><code>square</code></th>
+      <th><code>square</code></th>
+    </tr>
+    <tr>
+      <th>Line</th>
+      <th><code>result</code></th>
+      <th><code>x</code></th>
+      <th><code>val</code></th>
+      <th><code>result</code></th>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0</td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0</td>
+      <td>1</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>1</td>
+      <td>1</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>1</td>
+      <td>2</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>1</td>
+      <td>2</td>
+      <td>2</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>1</td>
+      <td>2</td>
+      <td>2</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>1</td>
+      <td>5</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>1</td>
+      <td>5</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </table>
 
-      <p>
-        If <code>sum</code>'s <code>result</code> and <code>square</code>'s <code>result</code>
-        were the same variable, though,
-        we would get 8 instead:
-      </p>
+  <p>
+    If <code>sum</code>'s <code>result</code> and <code>square</code>'s <code>result</code>
+    were the same variable, though,
+    we would get 8 instead:
+  </p>
 
-      <table border="1">
-        <tr>
-          <th>Line</th>
-          <th><code>result</code></th>
-          <th><code>x</code></th>
-          <th><code>val</code></th>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>0</td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>0</td>
-          <td>1</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td>0</td>
-          <td>1</td>
-          <td>1</td>
-        </tr>
-        <tr>
-          <td>8</td>
-          <td>1</td>
-          <td>1</td>
-          <td>1</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>2</td>
-          <td>1</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>2</td>
-          <td>2</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td>2</td>
-          <td>2</td>
-          <td>2</td>
-        </tr>
-        <tr>
-          <td>8</td>
-          <td>4</td>
-          <td>2</td>
-          <td>2</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>8</td>
-          <td>2</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td>8</td>
-          <td>2</td>
-          <td></td>
-        </tr>
-      </table>
+  <table border="1">
+    <tr>
+      <th>Line</th>
+      <th><code>result</code></th>
+      <th><code>x</code></th>
+      <th><code>val</code></th>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>0</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>0</td>
+      <td>1</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>2</td>
+      <td>1</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>2</td>
+      <td>2</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>4</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>8</td>
+      <td>2</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>8</td>
+      <td>2</td>
+      <td></td>
+    </tr>
+  </table>
 
-      <p class="continue">
-        What's worse,
-        if we changed the name of the variable in <code>square</code>
-        from <code>result</code> to <code>y</code>,
-        the final answer would be 5 again.
-        Changing the name of a variable shouldn't matter:
-        <em>f(x)=x<sup>2</sup></em> and <em>f(y)=y<sup>2</sup></em>
-        ought to calculate the same value,
-        and if changing a variable name in one part of our program
-        can change the result calculated by another,
-        we will have to keep the entire program in our head
-        in order to make any change safely.
-      </p>
+  <p class="continue">
+    What's worse,
+    if we changed the name of the variable in <code>square</code>
+    from <code>result</code> to <code>y</code>,
+    the final answer would be 5 again.
+    Changing the name of a variable shouldn't matter:
+    <em>f(x)=x<sup>2</sup></em> and <em>f(y)=y<sup>2</sup></em>
+    ought to calculate the same value,
+    and if changing a variable name in one part of our program
+    can change the result calculated by another,
+    we will have to keep the entire program in our head
+    in order to make any change safely.
+  </p>
 
-      <p>
-        The fundamental issue here is one of evolution rather than one of technology.
-        Human short-term memory can only hold a few items at a time;
-        the value is sometimes given as "seven plus or minus two",
-        and while that is an over-simplification,
-        it's a good guideline.
-        If we need to remember more unrelated bits of information than that for more than a few seconds,
-        they become jumbled and we start making mistakes.
-      </p>
+  <p>
+    The fundamental issue here is one of evolution rather than one of technology.
+    Human short-term memory can only hold a few items at a time;
+    the value is sometimes given as "seven plus or minus two",
+    and while that is an over-simplification,
+    it's a good guideline.
+    If we need to remember more unrelated bits of information than that for more than a few seconds,
+    they become jumbled and we start making mistakes.
+  </p>
 
-      <p>
-        If we have to keep more than half a dozen things straight in our mind
-        in order to understand or change a piece of code,
-        we will therefore start making mistakes.
-        Most programming languages therefore enforce a "local scope only" rule
-        so that programmers can ignore what's inside the functions they are calling,
-        or what's outside the functions they are writing,
-        and use their short-term memory for the task at hand instead.
-      </p>
+  <p>
+    If we have to keep more than half a dozen things straight in our mind
+    in order to understand or change a piece of code,
+    we will therefore start making mistakes.
+    Most programming languages therefore enforce a "local scope only" rule
+    so that programmers can ignore what's inside the functions they are calling,
+    or what's outside the functions they are writing,
+    and use their short-term memory for the task at hand instead.
+  </p>
 
-      <div class="keypoints" id="k:basics">
-        <h3>Summary</h3>
-        <ul>
-          <li>Define a function using <code>def <em>name</em>(...)</code></li>
-          <li>The body of a function must be indented.</li>
-          <li>Use <code><em>name</em>(...)</code> to call a function.</li>
-          <li>Use <code>return</code> to return a value from a function.</li>
-          <li>The values passed into a function are assigned to its parameters in left-to-right order.</li>
-          <li>Function calls are recorded on a call stack.</li>
-          <li>Every function call creates a new stack frame.</li>
-          <li>The variables in a stack frame are discarded when the function call completes.</li>
-          <li idea="perf">Grouping operations in functions makes code easier to understand and re-use.</li>
-        </ul>
-      </div>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Define a function using <code>def <em>name</em>(...)</code></li>
+      <li>The body of a function must be indented.</li>
+      <li>Use <code><em>name</em>(...)</code> to call a function.</li>
+      <li>Use <code>return</code> to return a value from a function.</li>
+      <li>The values passed into a function are assigned to its parameters in left-to-right order.</li>
+      <li>Function calls are recorded on a call stack.</li>
+      <li>Every function call creates a new stack frame.</li>
+      <li>The variables in a stack frame are discarded when the function call completes.</li>
+      <li>Grouping operations in functions makes code easier to understand and re-use.</li>
+    </ul>
+  </div>
 
-    </section>
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <p class="fixme">Write some challenges</p>
+
+  </div>
+
+</section>
 
     <section id="s:global">
 
@@ -5084,7 +4055,7 @@ def scale_down(x):
       </p>
 
       <figure id="f:searching_scopes">
-        <img src="img/funclib/searching_scopes.png" alt="Searching Scopes" />
+        <img src="python/searching_scopes.png" alt="Searching Scopes" />
       </figure>
 
       <p>
@@ -5208,9 +4179,9 @@ print columns
 
     </section>
 
-    <section id="s:args">
+    <section id="s:params">
 
-      <h2>Multiple Arguments</h2>
+      <h2>Multiple Parameters</h2>
 
       <div class="understand" id="u:args">
         <h3>Understand:</h3>
@@ -5255,7 +4226,7 @@ print average3(x, y, z)
       </p>
 
       <figure id="f:memory_before_return">
-        <img src="img/funclib/memory_before_return.png" alt="State of Memory Before Function Return" />
+        <img src="python/memory_before_return.png" alt="State of Memory Before Function Return" />
       </figure>
 
       <p>
@@ -5426,7 +4397,7 @@ print '(', numbers, 1, 2, ') =&gt;', average_list(numbers, 1, 2)
 </pre>
 
       <figure id="f:calls_with_defaults">
-        <img src="img/funclib/calls_with_defaults.png" alt="Calls With Defaults" />
+        <img src="python/calls_with_defaults.png" alt="Calls With Defaults" />
       </figure>
 
       <div class="box">
@@ -5739,7 +4710,7 @@ def average_list(values):
       </p>
 
       <figure id="f:five_spots">
-        <img src="img/funclib/five_spots.png" alt="Five Spots" />
+        <img src="python/five_spots.png" alt="Five Spots" />
       </figure>
 
       <p class="continue">
@@ -5850,188 +4821,6 @@ print 241, '=&gt;', sign(241)
           <li>A function should have zero or more <code>return</code> statements at its start to handle special cases, and then one at the end to handle the general case.</li>
           <li>"Accidentally" correct behavior is hard to understand.</li>
           <li>If a function ends without an explicit <code>return</code>, it returns <code>None</code>.</li>
-        </ul>
-      </div>
-
-    </section>
-
-    <section id="s:funcalias">
-
-      <h2>Aliasing in Functions</h2>
-
-      <div class="understand" id="u:aliasing">
-        <h3>Understand:</h3>
-        <ul>
-          <li>How and when aliasing will occur during function calls.</li>
-        </ul>
-      </div>
-
-      <p>
-        We said <a href="#a:call-stack">earlier</a> that
-        values are copied into parameters whenever a function is called.
-        But as we explained in the <a href="python.html#s:alias">previous chapter</a>,
-        variables don't actually store values:
-        they are actually just names that refer to values.
-        To see what this means for our programs,
-        here's a function that takes a string and a list as parameters,
-        and appends something to both:
-      </p>
-
-<pre src="src/funclib/appender.py">
-def appender(a_string, a_list):
-    a_string = a_string + 'turing'
-    a_list.append('turing')
-</pre>
-
-      <p class="continue">
-        And here is some code to set up a pair of variables and call that function:
-      </p>
-
-<pre src="src/funclib/appender.py">
-string_val = 'alan'
-list_val = ['alan']
-appender(string_val, list_val)
-print 'string', string_val
-print 'list', list_val
-<span class="out">string alan
-list ['alan', 'turing']</span>
-</pre>
-
-      <p>
-        Why did the list change when the string didn't?
-        To find out,
-        let's trace the function's execution.
-        Just before the call,
-        the global frame has two variables
-        that refer to a string and a list:
-      </p>
-
-      <figure id="f:append_before_call">
-        <img src="img/funclib/append_before_call.png" alt="Before Appending" />
-      </figure>
-
-      <p class="continue">
-        The call creates a new stack frame with aliases for those values:
-      </p>
-
-      <figure id="f:append_during_call">
-        <img src="img/funclib/append_during_call.png" alt="While Appending" />
-      </figure>
-
-      <p>
-        The <code>a_string&nbsp;+&nbsp;'turing'</code> creates a new string <code>'alanturing'</code>;
-        assigning this to the variable <code>a_string</code>
-        changes what that local variable refers to,
-        but doesn't change what the global variable <code>string_val</code> refers to:
-      </p>
-
-      <figure id="f:append_new_string">
-        <img src="img/funclib/append_new_string.png" alt="A New String" />
-      </figure>
-
-      <p>
-        The statement <code>a_list.append('turing')</code>,
-        however,
-        actually modifies the list that <code>a_list</code> is pointing to:
-      </p>
-
-      <figure id="f:append_same_list">
-        <img src="img/funclib/append_same_list.png" alt="But the Same List" />
-      </figure>
-
-      <p>
-        But this is the same thing that the variable <code>list_val</code> in the caller is pointing to.
-        When the function returns and the call frame is thrown away,
-        the new string <code>'alanturing'</code> is therefore lost,
-        because the only reference to it was in the function call's stack frame.
-        The change to the list,
-        on the other hand,
-        is kept,
-        because the function actually modified the list in place:
-      </p>
-
-      <figure id="f:append_final_state">
-        <img src="img/funclib/append_final_state.png" alt="The Final State of Memory" />
-      </figure>
-
-      <p>
-        Let's change one line in the function:
-      </p>
-
-<pre src="src/funclib/appender_2.py">
-def appender(a_string, a_list):
-    a_string = a_string + 'turing'
-    <span class="highlight">a_list = a_list + ['turing']</span>
-</pre>
-
-      <p class="continue">
-        and see what happens when we run the same experiment:
-      </p>
-
-<pre src="src/funclib/appender_2.py">
-string_val = 'alan'
-list_val = ['alan']
-appender(string_val, list_val)
-print 'string', string_val
-print 'list', list_val
-<span class="out">string alan
-list ['alan']</span>
-</pre>
-
-      <p>
-        The answer is different because
-        concatenating (adding) two lists creates a new list,
-        rather than modifying either of the lists being concatenated.
-        As a result,
-        the local variable <code>a_list</code> is the only thing that refers to the list
-        <code>['alan', 'turing']</code>,
-        so that value is discarded when the function finishes
-        and <code>list_val</code>'s value is undisturbed.
-      </p>
-
-      <div class="box">
-        <h3>Memory Models</h3>
-
-        <p>
-          Python's treatment of lists
-          (and other mutable data that we'll see <a href="setdict.html">later</a>)
-          isn't the only way to handle things.
-          For example,
-          MATLAB functions
-          use a rule called <a href="glossary.html#copy-on-write">copy on write</a>.
-          Initially,
-          it creates aliases for arrays that are passed into functions.
-          The first time a function assigns to an array,
-          though,
-          MATLAB clones the array
-          and changes the clone rather than the original
-          (<a href="#f:copy_on_write">Figure XXX</a>).
-          This saves it from copying data when it doesn't need to,
-          while guaranteeing that functions don't have side effects
-          (which makes them easier to think about).
-        </p>
-
-        <figure id="f:copy_on_write">
-          <img src="img/funclib/copy_on_write.png" alt="Copy on Write" />
-        </figure>
-
-        <p>
-          Other languages have slightly different rules about scoping and aliasing.
-          Together,
-          those rules make up the language's
-          <a href="glossary.html#memory-model">memory model</a>.
-          Understanding that model is perhaps the most important step
-          in understanding how programs written in the language actually work,
-          and more importantly,
-          how to debug them when they don't.
-        </p>
-      </div>
-
-      <div class="keypoints" id="k:aliasing">
-        <h3>Summary</h3>
-        <ul>
-          <li>Values are actually passed into functions by reference, which means that they are aliased.</li>
-          <li>Aliasing means that changes made to a mutable object like a list inside a function are visible after the function call completes.</li>
         </ul>
       </div>
 
@@ -6153,7 +4942,7 @@ NOISE_LEVEL = 1./3.
       </p>
 
       <figure id="f:name_resolution">
-        <img src="img/funclib/name_resolution.png" alt="Name Resolution" />
+        <img src="python/name_resolution.png" alt="Name Resolution" />
       </figure>
 
       <p>
@@ -6232,7 +5021,7 @@ def func(arg):
         </p>
 
         <figure id="f:compiling_vs_interpreting">
-          <img src="img/funclib/compiling_vs_interpreting.png" alt="Compiling vs. Interpreting" />
+          <img src="python/compiling_vs_interpreting.png" alt="Compiling vs. Interpreting" />
         </figure>
 
       </div>
