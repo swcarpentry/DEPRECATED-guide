@@ -769,7 +769,41 @@ print str(2) + "3"
   <div class="box">
     <h3>Values Have Types, Variables Don't</h3>
 
-    <p class="fixme">explain</p>
+    <p>
+      One important difference between "dynamic" languages
+      like Python, Perl, and R,
+      and compiled languages like C++, Java, and Fortran,
+      is the relationship between variables and types.
+      In a Java program,
+      any particular variable can only store values of a particular type:
+      if a variable has the type "integer",
+      it can not hold a string,
+      and vice versa.
+      In Python,
+      on the other hand,
+      a variable is just a name,
+      and can refer to anything at all.
+      For example,
+      the following is perfectly legal in Python:
+    </p>
+
+<pre>
+age = 35 <span class="comment"># 'age' refers to an integer
+age = 'young' <span class="comment"># 'age' now refers to a string
+</pre>
+
+    <p>
+      Programmers disagree about whether this is good style or bad.
+      On the one hand,
+      the meaning of <code>age</code> is always the age of the current test subject;
+      we're just representing it in different coordinate systems
+      (years and then age bracket).
+      On the other hand,
+      switching types imposes an extra cognitive burden on readers:
+      multiplying <code>age</code> by two makes makes sense when
+      the value is an integer,
+      but not when it's a string.
+    </p>
   </div>
 
   <div class="keypoints">
@@ -1767,7 +1801,39 @@ print num_outliers, "values out of range"
   <div class="box">
     <h3>Why Isn't It An Error?</h3>
 
-    <p class="fixme">explain</p>
+    <p>
+      Take a closer look at the original verison of the outlier counter,
+      which produced the wrong answer:
+    </p>
+
+<pre>
+for value in sys.stdin:
+    if value &lt; 0:
+        num_outliers = num_outliers + 1
+    ...
+</pre>
+
+    <p>
+      Why did this produce the wrong answer
+      rather than an error message?
+      If <code>value</code> contains a string
+      and 0 is an integer,
+      <code>value+0</code> is an error&mdash;why
+      isn't <code>value&lt;0</code> also an error?
+    </p>
+
+    <p>
+      The answer is that Python always lets us compare things,
+      no matter what the types of those things are.
+      We can't add a string and a number,
+      but we can ask which is greater,
+      whether they're equal,
+      and so on.
+      Python does this so that it can always sort things,
+      even if those things have different types,
+      and sorting only works if we can compare things.
+      We'll revisit sorting <a href="#a:sorting">later</a>.
+    </p>
   </div>
 
   <p>
@@ -1847,7 +1913,40 @@ print num_valid, "in range and", num_outliers, "outliers"
 
   <div class="box">
     <h3>Alternatives</h3>
-    <p class="fixme">Introduce elif</p>
+
+    <p>
+      <code>if</code> lets us check a particular condition,
+      and <code>else</code> does something when the <code>if</code> failed.
+      Python has a third keyword <code>elif</code> that combines the two:
+      it tests a condition,
+      but only when all preceding tests have failed.
+      For example,
+      we can categorize test subjects as follows:
+    </p>
+
+<pre>
+if age &lt; 12:
+    category = 'child'
+elif age &lt; 20:
+    category = 'teen'
+elif age &lt; 40:
+    category = 'young adult'
+elif age &lt; 65:
+    category = 'middle-aged'
+else:
+    category = 'senior'
+</pre>
+
+    <p>
+      As <a href="#f:elif">Figure 13</a> shows,
+      at most one path is taken through this conditional.
+    </p>
+
+    <figure id="f:elif">
+      <img src="python/elif.png" alt="If/Elif/Else" />
+      <figcaption>Figure 13: If/Elif/Else</figcaption>
+    </figure>
+
   </div>
 
   <p>
@@ -2084,7 +2183,7 @@ print 'Number of data lines:', number
 
   <figure id="f:set_and_increment">
     <img src="python/set_and_increment.png" alt="Flagging and Incrementing" />
-    <figcaption>Figure 13: Flagging and Incrementing</figcaption>
+    <figcaption>Figure 14: Flagging and Incrementing</figcaption>
   </figure>
 
   <p>
@@ -2096,7 +2195,7 @@ print 'Number of data lines:', number
     then immediately check its value,
     see that it's true,
     and increment <code>number</code>
-    (<a href="#f:set_and_increment">Figure 13</a>).
+    (<a href="#f:set_and_increment">Figure 14</a>).
     What we want to do is <em>either</em> set the flag
     (so that we'll start incrementing on the next iteration),
     <em>or</em> add one to <code>number</code>.
@@ -2489,6 +2588,8 @@ for line in sys.stdin:
 <section id="s:lists">
   <h2>Lists</h2>
 
+  <p id="a:sorting" class="fixme">explain sorting</p>
+
   <div class="understand">
     <h3>Learning Objectives</h3>
     <ul>
@@ -2527,7 +2628,7 @@ for value in data:
   <p>
     <code>[1, 3, 5]</code> is a <a href="glossary.html#list">list</a>:
     a single object that stores multiple values
-    (<a href="#f:simple_list">Figure 14</a>).
+    (<a href="#f:simple_list">Figure 15</a>).
     Just as a <code>for</code> loop over an open file
     reads lines from that file one by one
     and assigns them to the loop variable,
@@ -2537,7 +2638,7 @@ for value in data:
 
   <figure id="f:simple_list">
     <img src="python/simple_list.png" alt="A Simple List" />
-    <figcaption>Figure 14: A Simple List</figcaption>
+    <figcaption>Figure 15: A Simple List</figcaption>
   </figure>
 
   <p>
@@ -2695,7 +2796,7 @@ print "running total:", result
   <p class="continue">
     <code>result</code> starts off as an <a href="glossary.html#empty-list">empty list</a>,
     and <code>current</code> starts off as zero
-    (<a href="#f:running_total">Figure 15</a>).
+    (<a href="#f:running_total">Figure 16</a>).
     Each time the loop executes&mdash;i.e.,
     for each number in <code>values</code>&mdash;Python
     adds the next value in the list to <code>current</code>
@@ -2707,7 +2808,7 @@ print "running total:", result
 
   <figure id="f:running_total">
     <img src="python/running_total.png" alt="Running Total" />
-    <figcaption>Figure 15: Running Total</figcaption>
+    <figcaption>Figure 16: Running Total</figcaption>
   </figure>
 
   <p>
@@ -4212,412 +4313,19 @@ def scale(values):
 
 </section>
 
-    <section id="s:params">
+<section id="s:return">
+  <h2>Returning Values</h2>
 
-      <h2>Multiple Parameters</h2>
+  <div class="understand">
+    <h3>Understand:</h3>
+    <ul>
+      <li>How to return values from a function at any time.</li>
+      <li>Why functions shouldn't return values at arbitrary points.</li>
+      <li>What a function returns if it doesn't return anything explicitly.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:args">
-        <h3>Understand:</h3>
-        <ul>
-          <li>How to pass multiple values into a function.</li>
-          <li>How and why to specify default values for parameters.</li>
-        </ul>
-      </div>
-
-      <p>
-        The functions we have seen so far have had only one parameter.
-        When we define a function,
-        however,
-        we can give it any number of parameters.
-        When the function is called and a new stack frame is created,
-        a new variable is defined for each of those parameters,
-        and the actual values given by the caller are assigned to the parameters in order from left to right.
-        For example,
-        if we define <code>average3</code> to calculate the average of three numbers:
-      </p>
-
-<pre src="src/funclib/average_3.py">
-def average3(a, b, c):
-    return (a + b + c) / 3.0
-</pre>
-
-      <p class="continue">
-        and call it like this:
-      </p>
-
-<pre src="src/funclib/average_3.py">
-x = 2
-y = 2
-z = 5
-print average3(x, y, z)
-<span class="out">3.0</span>
-</pre>
-
-      <p class="continue">
-        then just before the function returns,
-        the program's memory looks like this:
-      </p>
-
-      <figure id="f:memory_before_return">
-        <img src="python/memory_before_return.png" alt="State of Memory Before Function Return" />
-      </figure>
-
-      <p>
-        Calling a function with the wrong number of values is an error:
-      </p>
-
-<pre src="src/funclib/average_3_wrong.py">
-print average3(1, 5)
-<span class="err">Traceback (most recent call last):
-  File "src/funclib/average-3-wrong.py", line 4, in &lt;module&gt;
-    print 1, 5, '=&gt;', average3(1, 5)
-TypeError: average3() takes exactly 3 arguments (2 given)</span>
-</pre>
-
-      <p class="continue">
-        This is only sensible:
-        if we pass two values to <code>average3</code>,
-        Python has no way of knowing what third value to use.
-        We can tell it what we want
-        by specifying <a href="glossary.html#default-value">default values</a> for parameters:
-      </p>
-
-<pre src="src/funclib/average_3_default.py">
-def average3(a=0.0, b=0.0, c=0.0):
-    return (a + b + c) / 3.0
-</pre>
-
-      <p>
-        The meaning is straightforward:
-        if the caller doesn't tell the function what value to use for <code>a</code>,
-        the function should use 0.0,
-        and similarly for the other parameters.
-        We can now call our function in four different ways:
-      </p>
-
-<pre src="src/funclib/average_3_default.py">
-print '()', average3()
-print '(1.0)', average3(1.0)
-print '(1.0, 2.0)', average3(1.0, 2.0)
-print '(1.0, 2.0, 5.0)', average3(1.0, 2.0, 5.0)
-<span class="out">() 0.0
-(1.0) 0.333333333333
-(1.0, 2.0) 1.0
-(1.0, 2.0, 5.0) 2.66666666667</span>
-</pre>
-
-      <p class="continue">
-        We still can't call this function with more than three parameters,
-        though,
-        since once again Python wouldn't know where to put the fourth and higher.
-      </p>
-
-      <p>
-        Allowing people to call <code>average3</code> with fewer than three values
-        isn't actually very useful.
-        What <em>is</em> useful is using sensible defaults to save ourselves
-        from writing several slightly-different versions of a function.
-        For example,
-        suppose we need a function that averages a list of numbers.
-        The obvious solution is:
-      </p>
-
-<pre src="src/funclib/average_list_simple.py">
-def average_list(values):
-    result = 0.0
-    for v in values:
-        result += v
-    return result / len(values)
-
-for test in [[1.0], [1.0, 2.0], [1.0, 2.0, 5.0]]:
-    print test, '=&gt;', average_list(test)
-<span class="out">[1.0] =&gt; 1.0
-[1.0, 2.0] =&gt; 1.5
-[1.0, 2.0, 5.0] =&gt; 2.66666666667</span>
-</pre>
-
-      <p class="continue">
-        Before we go on, notice that there is a bug in this function:
-        if it is called for an empty list,
-        the expression <code>result&nbsp;/&nbsp;len(values)</code> try to divide by zero.
-        We will look at how to handle this case <a href="#p:average-none">below</a>.
-      </p>
-
-      <p>
-        Now suppose that we want to be able to calculate averages for parts of our data
-        instead of always calculating the average for the whole data set.
-        One way would be to require the caller to slice the list:
-        <span class="fixme">has slicing been introduced?</span>
-      </p>
-
-<pre>
-a = average_list(values[20:90])
-</pre>
-
-      <p class="continue">
-        but another would be to allow them to tell <code>average_list</code> what range to use.
-        This is what most list and string methods do:
-        if they are passed one value,
-        they work from that index to the end of the data,
-        while if they are passed two,
-        they work on the range those indices delimit.
-        For example,
-        the string method <code>str.count</code> can be called three ways:
-      </p>
-
-      <table id="a:string-count">
-        <tr>
-          <td>Call</td>
-          <td>Result</td>
-        </tr>
-        <tr>
-          <td><code>'This is his DNA.'.count('is')</code></td>
-          <td>3</td>
-        </tr>
-        <tr>
-          <td><code>'This is his DNA.'.count('is', 4)</code></td>
-          <td>2</td>
-        </tr>
-        <tr>
-          <td><code>'This is his DNA.'.count('is', 4, 8)</code></td>
-          <td>1</td>
-        </tr>
-      </table>
-
-      <p>
-        Here's how to do this ourselves:
-      </p>
-
-<pre src="src/funclib/average_with_defaults.py">
-def average_list(values, start=0, end=None):
-    if end is None:
-        end = len(values)
-    result = 0.0
-    i = start
-    while i &lt; end:
-        result += values[i]
-        i += 1
-    return result / (end - start)
-</pre>
-
-      <p class="continue">
-        If <code>average_list</code> is called with three values,
-        they will be assigned to <code>values</code>, <code>start</code>, and <code>end</code>,
-        which gives the caller complete control over the function's behavior.
-        If it is called with just two parameters,
-        then <code>end</code> will have the value <code>None</code>.
-        The initial <code>if</code> statement will spot this case
-        and re-set <code>end</code> to the length of <code>values</code>
-        so that the loop that does the averaging will run correctly.
-        And if <code>average_list</code> is called with just one value,
-        <code>start</code> will have the value 0,
-        which is what we want it to be
-        to start the loop with the first element of the list.
-        (In this case,
-        <code>end</code> will again be <code>None</code>,
-        so it will be re-set as before.)
-        Here's what our function looks like in action:
-      </p>
-
-<pre src="src/funclib/average_with_defaults.py">
-numbers = [1.0, 2.0, 5.0]
-print '(', numbers, ') =&gt;', average_list(numbers)
-print '(', numbers, 1, ') =&gt;', average_list(numbers, 1)
-print '(', numbers, 1, 2, ') =&gt;', average_list(numbers, 1, 2)
-<span class="out">( [1.0, 2.0, 5.0] ) =&gt; 2.66666666667
-( [1.0, 2.0, 5.0] 1 ) =&gt; 3.5
-( [1.0, 2.0, 5.0] 1 2 ) =&gt; 2.0</span>
-</pre>
-
-      <figure id="f:calls_with_defaults">
-        <img src="python/calls_with_defaults.png" alt="Calls With Defaults" />
-      </figure>
-
-      <div class="box">
-        <h3>How Older Languages Do It</h3>
-
-        <p>
-          If the language we are using doesn't let us define default parameter values,
-          we could turn our function into three:
-        </p>
-
-<pre src="src/funclib/average_without_defaults.py">
-def average_list_range(values, start, end):
-    result = 0.0
-    i = start
-    while i &lt; end:
-        result += values[i]
-        i += 1
-    return result / (end - start)
-
-def average_list_from(values, start):
-    return average_list_range(values, start, len(values))
-
-def average_list_all(values):
-    return average_list_range(values, 0, len(values))
-</pre>
-
-        <p class="continue">
-          This is a very common <a href="glossary.html#design-pattern">design pattern</a>
-          in many programming languages.
-          We start by defining the most general function we can think of&mdash;in
-          this case, one that work on a fully-specified range&mdash;and
-          then write <a href="glossary.html#wrapper-function">wrapper functions</a>
-          as easy-to-use shortcuts for common cases.
-          These wrapper functions do <em>not</em> duplicate what's in the general function;
-          instead, they call it,
-          filling in some or all of the parameters it requires with sensible defaults.
-        </p>
-
-        <p>
-          The problem with this approach is that
-          we have to come up with names for all those little functions.
-          Default parameters were invented to solve this problem:
-          instead of writing lots of functions,
-          we write one,
-          and provide default values for some or all of its parameters.
-        </p>
-      </div>
-
-      <p>
-        One restriction on functions with default values
-        is that all of the parameters that have default values must come <em>after</em>
-        all of the parameters that don't.
-        To see why,
-        imagine we were allowed to mix defaulting and non-defaulting parameters like this:
-      </p>
-
-<pre src="src/funclib/average_with_defaults_wrong.py">
-def average_list(<span class="highlight">start=None, values, end=None</span>):
-    if start is None:
-        start = 0
-    if end is None:
-        end = len(values)
-    result = 0.0
-    i = start
-    while i &lt; end:
-        result += values[i]
-        i += 1
-    return result / (end - start)
-</pre>
-
-      <p>
-        If we call the function with just one parameter,
-        it's pretty clear that its value has to be assigned to <code>values</code>.
-        But what should Python do if the function is called with two parameters,
-        like <code>average_list([1.0, 2.0, 5.0], 1)</code>?
-        Should it use the provided values for the first and second parameters,
-        and the default for the third?
-        Or should it use the first parameter's default,
-        and assign the given values to the second and third?
-        We know what we want,
-        but Python doesn't:
-        remember, it can't infer anything from variables' names.
-        We could define some sort of rule to tell it what to do in this case,
-        but it's simpler and safer to disallow the problem in the first place.
-        This is why methods like <code>str.count</code> take parameters
-        in <a href="#a:string-count">the order they do</a>:
-        the more likely a parameter is to be changed,
-        the closer to the front of the parameter list it should be.
-      </p>
-
-      <p id="p:average-none">
-        Now let's go back and figure out what the average of an empty list should be.
-        Broadly speaking, there are three possibilities:
-      </p>
-
-      <ol>
-
-        <li>
-          Return 0.0 or some other number.
-        </li>
-
-        <li>
-          Return some other value, such as <code>None</code>.
-        </li>
-
-        <li>
-          Treat this as an error,
-          i.e.,
-          let the divide-by-zero error happen.
-        </li>
-
-      </ol>
-
-      <p>
-        Many people pick the first option
-        (some even arguing that since zero is the average of all possible numbers,
-        it's the only sensible choice).
-        The danger of doing this is that it might mask errors in code.
-        For example,
-        if a file-reading function has a bug in it,
-        and returns an empty list instead of a list of numbers,
-        we'd really like our program to report an error
-        <a href="quality.html#s:defensive">as soon as possible</a>.
-        If <code>average_list</code> absorbs an error instead of failing,
-        the user may not realize something has gone wrong
-        until millions of instructions later,
-        which makes debugging harder.
-      </p>
-
-      <p>
-        The second option&mdash;returning a non-numerical value&mdash;is almost always a worse choice,
-        because it complicates the calling code.
-        People want to be able to write:
-      </p>
-
-<pre>
-&hellip;    &hellip;    &hellip;
-scaling_factor = average_list(neighbors) / 3.0
-center_cell = scaling_factor * center_cell
-&hellip;    &hellip;    &hellip;
-</pre>
-
-      <p class="continue">
-        but if <code>average_list</code> might return <code>None</code>,
-        their code will only be safe if they write:
-      </p>
-
-<pre>
-&hellip;    &hellip;    &hellip;
-scaling_factor = average_list(neighbors) / 3.0
-if temp is not None:
-    center_cell = scaling_factor * center_cell
-&hellip;    &hellip;    &hellip;
-</pre>
-
-      <p>
-        Given what we have seen so far,
-        and allowing the divide-by-zero error to occur,
-        is actually the safest choice:
-        if our program ever does try to calculate the average of an empty list,
-        it will fail right away.
-        We will see a better way to handle this situation <a href="quality.html#s:except">later</a>.
-      </p>
-
-      <div class="keypoints" id="k:args">
-        <h3>Summary</h3>
-        <ul>
-          <li>A function may take any number of arguments.</li>
-          <li idea="perf">Define default values for parameters to make functions more convenient to use.</li>
-          <li>Defining default values only makes sense when there are sensible defaults.</li>
-        </ul>
-      </div>
-
-    </section>
-
-    <section id="s:return">
-
-      <h2>Returning Values</h2>
-
-      <div class="understand" id="u:return">
-        <h3>Understand:</h3>
-        <ul>
-          <li>How to return values from a function at any time.</li>
-          <li>Why functions shouldn't return values at arbitrary points.</li>
-          <li>What a function returns if it doesn't return anything explicitly.</li>
-        </ul>
-      </div>
+<!-- HERE -->
 
       <p>
         All of our functions so far have ended with a <code>return</code> statement,
@@ -4671,7 +4379,7 @@ print 241, '=&gt;', sign(241)
       </p>
 
 <pre src="src/funclib/average_empty.py">
-def average_list(values):
+def average(values):
 
     <span class="comment"># The average of no values is 0.0.</span>
     if len(values) == 0:
@@ -4694,7 +4402,7 @@ def average_list(values):
         </p>
 
 <pre src="src/funclib/average_empty.py">
-def average_list(values):
+def average(values):
 
     <span class="comment"># The average of no values is 0.0.</span>
     if len(values) == 0:
@@ -4777,7 +4485,7 @@ def average_list(values):
       </p>
 
 <pre src="src/funclib/average_empty.py">
-def average_list(values):
+def average(values):
     result = 0.0
     if len(values) &gt; 0:
         for v in values:
@@ -4858,6 +4566,306 @@ print 241, '=&gt;', sign(241)
       </div>
 
     </section>
+
+<section id="s:params">
+  <h2>Multiple Parameters</h2>
+
+  <div class="understand">
+    <h3>Understand:</h3>
+    <ul>
+      <li>Draw a diagram to show what happens when multiple values are passed into a function.</li>
+      <li>Define a function whose parameters have default values, and call it correctly.</li>
+    </ul>
+  </div>
+
+  <p>
+    The functions we have seen so far have had only one parameter.
+    When we define a function,
+    however,
+    we can give it any number of parameters.
+    When the function is called and a new stack frame is created,
+    a new variable is defined for each of those parameters,
+    and the actual values given by the caller are assigned to the parameters in order from left to right.
+    For example,
+    if we define <code>average3</code> to calculate the average of three numbers:
+  </p>
+
+<pre>
+def average3(a, b, c):
+    return (a + b + c) / 3.0
+</pre>
+
+  <p class="continue">
+    and call it like this:
+  </p>
+
+<pre>
+x = 2
+y = 2
+z = 5
+print average3(x, y, z)
+<hr/>
+<span class="out">3.0</span>
+</pre>
+
+  <p class="continue">
+    then just before the function returns,
+    the program's memory is as shown in <a href="#f:memory_before_return">Figure 31</a>.
+  </p>
+
+  <figure id="f:memory_before_return">
+    <img src="python/memory_before_return.png" alt="State of Memory Before Function Return" />
+    <figcaption>Figure 31: State of Memory Before Function Return</figcaption>
+  </figure>
+
+  <p>
+    Calling this function with the wrong number of values is an error:
+  </p>
+
+<pre>
+print average3(1, 5)
+<hr/>
+<span class="err">Traceback (most recent call last):
+  File "src/funclib/average-3-wrong.py", line 4, in &lt;module&gt;
+    print 1, 5, '=&gt;', average3(1, 5)
+TypeError: average3() takes exactly 3 arguments (2 given)</span>
+</pre>
+
+  <p class="continue">
+    This is only sensible:
+    if we pass two values to <code>average3</code>,
+    Python has no way of knowing what third value to use.
+    We can create functions that have
+    <a href="glossary.html#default-value">default values</a> for parameters
+    simply by providing those values when the function is defined:
+  </p>
+
+<pre>
+def average3(a=0.0, b=0.0, c=0.0):
+    return (a + b + c) / 3.0
+</pre>
+
+  <p>
+    The meaning is straightforward:
+    if the caller doesn't tell the function what value to use for <code>a</code>,
+    the function should use 0.0,
+    and similarly for the other parameters.
+    We can now call our function in four different ways:
+  </p>
+
+  <table>
+    <tr>
+      <th>Call</th>
+      <th><code>a</code></th>
+      <th><code>b</code></th>
+      <th><code>c</code></th>
+      <th>Result</th>
+    </tr>
+    <tr>
+      <td><code>average3()</code></td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td><code>average3(3.0)</code></td>
+      <td>3.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td><code>average3(3.0, 6.0)</code></td>
+      <td>3.0</td>
+      <td>6.0</td>
+      <td>0.0</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <td><code>average3(3.0, 6.0, 9.0)</code></td>
+      <td>3.0</td>
+      <td>6.0</td>
+      <td>9.0</td>
+      <td>6.0</td>
+    </tr>
+  </table>
+
+  <p class="continue">
+    We still can't call this function with more than three parameters,
+    though,
+    since once again Python wouldn't know where to put the fourth and higher.
+  </p>
+
+  <div class="box">
+    <h3>How Older Languages Do It</h3>
+
+    <p>
+      If the language we are using doesn't let us define default parameter values,
+      we could turn our function into three:
+    </p>
+
+<pre>
+def average_range(values, start, end):
+    result = 0.0
+    i = start
+    while i &lt; end:
+        result += values[i]
+        i += 1
+    return result / (end - start)
+
+def average_from(values, start):
+    return average_range(values, start, len(values))
+
+def average_all(values):
+    return average_range(values, 0, len(values))
+</pre>
+
+    <p class="continue">
+      This is a very common <a href="glossary.html#design-pattern">design pattern</a>
+      in many programming languages.
+      We start by defining the most general function we can think of&mdash;in
+      this case, one that work on a fully-specified range&mdash;and
+      then write <a href="glossary.html#wrapper-function">wrapper functions</a>
+      as easy-to-use shortcuts for common cases.
+      These wrapper functions do <em>not</em> duplicate what's in the general function;
+      instead, they call it,
+      filling in some or all of the parameters it requires with sensible defaults.
+    </p>
+
+    <p>
+      The problem with this approach is that
+      we have to come up with names for all those little functions.
+      Default parameters were invented to solve this problem:
+      instead of writing lots of functions,
+      we write one,
+      and provide default values for some or all of its parameters.
+    </p>
+  </div>
+
+  <p>
+    One restriction on functions with default values
+    is that all of the parameters that have default values must come <em>after</em>
+    all of the parameters that don't.
+    To see why,
+    imagine we were allowed to mix defaulting and non-defaulting parameters like this:
+  </p>
+
+<pre>
+def average(<span class="highlight">start=None, values, end=None</span>):
+    if start is None:
+        start = 0
+    if end is None:
+        end = len(values)
+    result = 0.0
+    i = start
+    while i &lt; end:
+        result += values[i]
+        i += 1
+    return result / (end - start)
+</pre>
+
+  <p>
+    If we call the function with just one parameter,
+    it's pretty clear that its value has to be assigned to <code>values</code>.
+    But what should Python do if the function is called with two parameters,
+    like <code>average([1.0, 2.0, 5.0], 1)</code>?
+    Should it use the provided values for the first and second parameters,
+    and the default for the third?
+    Or should it use the first parameter's default,
+    and assign the given values to the second and third?
+    We know what we want,
+    but Python doesn't:
+    remember, it can't infer anything from variables' names.
+    We could define some sort of rule to tell it what to do in this case,
+    but it's simpler and safer to disallow the problem in the first place.
+  </p>
+
+  <p class="fixme">
+    Now let's go back and figure out what the average of an empty list should be.
+    Broadly speaking, there are three possibilities:
+  </p>
+
+  <ol>
+
+    <li>
+      Return 0.0 or some other number.
+    </li>
+
+    <li>
+      Return some other value, such as <code>None</code>.
+    </li>
+
+    <li>
+      Treat this as an error,
+      i.e.,
+      let the divide-by-zero error happen.
+    </li>
+
+  </ol>
+
+  <p>
+    Many people pick the first option
+    (some even arguing that since zero is the average of all possible numbers,
+    it's the only sensible choice).
+    The danger of doing this is that it might mask errors in code.
+    For example,
+    if a file-reading function has a bug in it,
+    and returns an empty list instead of a list of numbers,
+    we'd really like our program to report an error
+    <a href="quality.html#s:defensive">as soon as possible</a>.
+    If <code>average</code> absorbs an error instead of failing,
+    the user may not realize something has gone wrong
+    until millions of instructions later,
+    which makes debugging harder.
+  </p>
+
+  <p>
+    The second option&mdash;returning a non-numerical value&mdash;is almost always a worse choice,
+    because it complicates the calling code.
+    People want to be able to write:
+  </p>
+
+<pre>
+scaling_factor = average(neighbors) / 3.0
+center_cell = scaling_factor * center_cell
+</pre>
+
+  <p class="continue">
+    but if <code>average</code> might return <code>None</code>,
+    their code will only be safe if they write:
+  </p>
+
+<pre>
+scaling_factor = average(neighbors) / 3.0
+if temp is not None:
+    center_cell = scaling_factor * center_cell
+</pre>
+
+  <p>
+    Given what we have seen so far,
+    and allowing the divide-by-zero error to occur,
+    is actually the safest choice:
+    if our program ever does try to calculate the average of an empty list,
+    it will fail right away.
+    We will see a better way to handle this situation <a href="quality.html#s:except">later</a>.
+  </p>
+
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>A function may take any number of arguments.</li>
+      <li idea="perf">Define default values for parameters to make functions more convenient to use.</li>
+      <li>Defining default values only makes sense when there are sensible defaults.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <p class="fixme">write some</p>
+  </div>
+
+</section>
 
     <section id="s:libraries">
 
