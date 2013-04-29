@@ -1,8 +1,4 @@
-"""
-Number figures.  Sucks to do this with regular expressions, but trying
-to read and write XML with character entities using ElementTree while
-preserving comments is just too hard.
-"""
+#!/usr/bin/env python
 
 import sys
 import re
@@ -11,7 +7,7 @@ DEF_P = re.compile(r'<figure\s+id="(f:[^"]+)"[^>]*>')
 REF_P = re.compile(r'<a\s+href="#(f:[^"]+)">.*?</a>')
 FIG_P = re.compile(r'<figure\s+id="(f:[^"]+)"[^>]*>(\s+)<img\s+src="([^"]+)"\s+alt="([^"]+)"\s*/>(\s+)</figure>',
                    re.MULTILINE)
-FORMATTED_FIG = '<figure id="%(id)s">%(ws_1)s<img src="%(img)s" alt="%(cap)s" />%(ws_1)s<figcaption>Figure %(chap_num)d.%(fig_num)d: %(cap)s</figcaption>%(ws_2)s</figure>'
+FORMATTED_FIG = '<figure id="%(id)s">%(ws_1)s<img src="%(img)s" alt="%(cap)s" />%(ws_1)s<figcaption>Figure %(fig_num)d: %(cap)s</figcaption>%(ws_2)s</figure>'
 
 #-------------------------------------------------------------------------------
 
@@ -29,8 +25,8 @@ def update_refs(data, file_num, refs):
     Update references, returning new data.
     """
     def repl(m):
-        return '<a class="figref" href="#%s">Figure %d.%d</a>' % \
-               (m.group(1), file_num, refs[m.group(1)])
+        return '<a class="figref" href="#%s">Figure %d</a>' % \
+               (m.group(1), refs[m.group(1)])
 
     return REF_P.sub(repl, data)
 
@@ -66,6 +62,7 @@ def main(filenames):
         with open(f, 'r') as reader:
             data = reader.read()
         refs = extract_defs(data)
+        print 'refs are', refs
         data = update_refs(data, file_num, refs)
         data = update_figs(data, file_num, refs)
         with open(f, 'w') as writer:
