@@ -3623,7 +3623,97 @@ def is_close_default(left, right):
   <div class="challenges">
     <h3>Challenges</h3>
 
-    <p class="fixme">Write some challenges</p>
+    <ol>
+
+      <li>
+        Draw memory diagrams showing what is on the call stack
+        each time it changes in the program below:
+<pre>
+def double(x):
+    return 2 * x
+
+def trim(lower, value, upper):
+    if value &lt; lower:
+        result = lower
+    elif value &gt; upper:
+        result = upper
+    else:
+        result = value
+    return value
+
+print double(trim(0, 15, double(5)))
+</pre>
+      </li>
+
+      <li>
+        A colleague of yours wants to apply <code>double</code> and <code>trim</code>
+        to every value in a list.
+        Her function <code>squish</code> is shown below:
+<pre>
+def squish(numbers, lower, upper):
+    result = []
+    for n in numbers:
+        result.append(double(trim(lower, n, upper)))
+    return result
+
+print squish([-3, 5], 0, 10)
+</pre>
+        You notice that while <code>trim</code> takes
+        the lower bound, the value to be trimmed, and the upper bound as parameters,
+        this function takes the values to be trimmed first,
+        followed by the lower and upper bounds.
+        Explain why this is bad style,
+        and what you would do to fix it.
+      </li>
+
+      <li>
+        Python insists that all parameters that have default values
+        come after all parameters that don't.
+        For example,
+        this is illegal:
+<pre>
+def tumble(left, factor=1.0, right):
+    return left + factor * right
+</pre>
+        Why?
+        (Hint: think about how many different ways Python could interpret the call
+        <code>tumble(5.0, 3.0)</code>.)
+      </li>
+
+      <li>
+        This program reads files that contain comments (starting with '#'),
+        blank lines (containing only whitespace),
+        and words (separated by spaces),
+        and prints the longest word found:
+<pre>
+import sys
+
+longest = ''
+for line in sys.stdin:
+    line = line.strip().split('#')[0]
+    if line:
+        words = line.split()
+        for w in words:
+            if len(w) &gt; len(longest):
+                longest = w
+print longest
+</pre>
+        Rewrite it to use two functions call
+        <code>get_words</code> and <code>keep_longest</code>
+        so that the main program looks like:
+<pre>
+import sys
+
+longest = ''
+for line in sys.stdin:
+    words = get_words(line)
+    for w in words:
+        longest = keep_longest(longest, w)
+print longest
+</pre>
+      </li>
+
+    </ol>
 
   </div>
 
