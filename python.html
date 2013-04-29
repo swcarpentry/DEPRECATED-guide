@@ -21,7 +21,6 @@
   <li><a href="#s:scope">Scope</a></li>
   <li><a href="#s:return">Returning Values</a></li>
   <li><a href="#s:libraries">Libraries</a></li>
-  <li><a href="#s:stdlib">Standard Libraries</a></li>
   <li><a href="#s:filter">Building Filters</a></li>
   <li><a href="#s:summary">Summing Up</a></li>
 </ol>
@@ -1560,6 +1559,57 @@ for value in data {
 
   </div>
 
+  <p>
+    Python has another, more general, kind of loop called a <code>while</code> loop.
+    It repeats a block of code as long as a condition is true:
+  </p>
+
+<pre>
+counter = 3
+while counter &gt; 0:
+    print 'in loop', counter
+    counter = counter - 1
+print 'final value', counter
+<span class="out">in loop 3
+in loop 2
+in loop 1
+final value 0</span>
+</pre>
+
+  <p>
+    <code>for</code> and <code>while</code> loops are sometimes called
+    "definite" and "indefinite" loops
+    because we know in advance how often the former will run,
+    while we don't know for the latter:
+    it depends on how the loop changes the values of variables.
+    Another difference between the two kinds of loop is that
+    if we <em>don't</em> change anything inside a <code>while</code> loop,
+    it could run forever.
+    For example,
+    if we forget to subtract 1 from <code>counter</code> in the example above,
+    it will print:
+  </p>
+
+<pre>
+counter = 3
+while counter &gt; 0:
+    print 'in loop', counter
+print 'final value', counter
+<span class="out">in loop 3
+in loop 3
+in loop 3
+...</span>
+</pre>
+
+  <p class="continue">
+    until we get bored and interrupt it.
+    If a program ever seems to hang up&mdash;i.e.,
+    it's running,
+    but not producing any results&mdash;the cause is often
+    an <a href="glossary.html#infinite-loop">infinite loop</a>
+    like this.
+  </p>
+
   <div class="keypoints">
     <h3>Summary</h3>
     <ul>
@@ -1616,6 +1666,28 @@ text = 'abc'
 for char in text:
     text = text + char
 print text
+</pre>
+      </li>
+
+      <li>
+        Suppose that the file <code>data.txt</code> contains:
+<pre>
+1
+3
+5
+7
+9
+11
+13
+</pre>
+        What does this program print?
+<pre>
+reader = open('data.txt', 'r')
+total = 0
+while total &lt; 10:
+    total = total + int(reader.readline())
+reader.close()
+print total
 </pre>
       </li>
 
@@ -2562,8 +2634,6 @@ for line in sys.stdin:
 <section id="s:lists">
   <h2>Lists</h2>
 
-  <p class="fixme">explain slicing</p>
-
   <div class="understand">
     <h3>Learning Objectives</h3>
     <ul>
@@ -3293,6 +3363,111 @@ for (loc, val) in enumerate(data):
 
   </div>
 
+  <p>
+    We often want to work on sub-ranges of lists,
+    such as the first five values
+    or everything in the interior
+    (i.e.,
+    everything except the first and last value).
+    Like many other languages,
+    Python lets us specify ranges using <a href="glossary.html#slice">slices</a>.
+    For example,
+    if the variable <code>name</code> holds the string <code>'Darwin'</code>,
+    then:
+  </p>
+
+  <table>
+    <tr>
+      <th>Expression</th>
+      <th>Value</th>
+      <th>Explanation</th>
+    </tr>
+    <tr>
+      <td><code>name[0]</code></td>
+      <td><code>'D'</code></td>
+      <td>a single element</td>
+    </tr>
+    <tr>
+      <td><code>name[0:3]</code></td>
+      <td><code>'Dar'</code></td>
+      <td>from index 0 up to (but not including) index 3</td>
+    </tr>
+    <tr>
+      <td><code>name[1:3]</code></td>
+      <td><code>'ar'</code></td>
+      <td>from index 1 up to (but not including) index 3</td>
+    </tr>
+    <tr>
+      <td><code>name[1:-1]</code></td>
+      <td><code>'arwi'</code></td>
+      <td>from index 1 up to (but not including) the last character</td>
+    </tr>
+    <tr>
+      <td><code>name[:3]</code></td>
+      <td><code>'Dar'</code></td>
+      <td>missing start index defaults to the beginning</td>
+    </tr>
+    <tr>
+      <td><code>name[3:]</code></td>
+      <td><code>'win'</code></td>
+      <td>missing end index defaults to the end</td>
+    </tr>
+    <tr>
+      <td><code>name[:]</code></td>
+      <td><code>'Darwin'</code></td>
+      <td>combining the two rules above</td>
+    </tr>
+  </table>
+
+  <div class="box">
+    <h3>Up To, But Not Including</h3>
+
+    <p>
+      Newcomers often trip over the fact that
+      <code>thing[lower:upper]</code> includes the element <code>thing[lower]</code>,
+      but not the element <code>thing[upper]</code>.
+      There are several reasons for this:
+    </p>
+
+    <ol>
+
+      <li>
+        We want <code>thing[0:len(thing)]</code> to be all of <code>thing</code>.
+      </li>
+
+      <li>
+        We want <code>upper-lower</code> to be the number of elements in the slide.
+      </li>
+
+      <li>
+        We want an easy way to select empty sections,
+        which is what <code>thing[index:index]</code> does.
+      </li>
+
+    </ol>
+
+  </div>
+
+  <p>
+    All the same slicing rules work for lists,
+    and for other things that have subscripts.
+    Keep in mind that taking a slice creates a new object&mdash;changes
+    to the result of slicing do <em>not</em> affect the original:
+  </p>
+
+<pre>
+vowels = ['a', 'e', 'i', 'o', 'u']
+front = vowels[:3] <span class="comment"># front is ['a', 'e', 'i']</span>
+print 'vowels is', vowels, 'and front is', front
+<span class="out">vowels is ['a', 'e', 'i', 'o', 'u'] and front is ['a', 'e', 'i']</span>
+vowels[0] = 'y'
+print 'vowels is now', vowels, 'and front is', front
+<span class="out">vowels is now ['y', 'e', 'i', 'o', 'u'] and front is ['a', 'e', 'i']</span>
+front[0] = 'z'
+print 'vowels is still', vowels, 'and front is now', front
+<span class="out">vowels is still ['y', 'e', 'i', 'o', 'u'] and front is now ['z', 'e', 'i']</span>
+</pre>
+
   <div class="keypoints">
     <h3>Summary</h3>
     <ul>
@@ -3422,6 +3597,17 @@ values.sort().reverse()
         Why not?
         What actually happens,
         and why does Python do that?
+      </li>
+
+      <li>
+        What do these lines of code leave in the variables
+        <code>first</code> and <code>names</code>
+        each time through the loop?
+<pre>
+names = ['Newton', 'Darwin', 'Turing']
+while names:
+    first, names = names[0], names[1:]
+</pre>
       </li>
 
     </ol>
@@ -3688,7 +3874,7 @@ def is_close_default(left, right):
     return is_close_diff(left, right, 1.0e-6)
 </pre>
 
-    <p class="continue">
+    <p class="continue" id="a:wrapper">
       This is a common <a href="glossary.html#design-pattern">design pattern</a>
       in many programming languages.
       We start by defining the most general function we can think of&mdash;in
@@ -4907,134 +5093,135 @@ print count_to_limit([1, 2, 3, 5, 7], 8)
 
 </section>
 
-    <section id="s:libraries">
+<section id="s:libraries">
+  <h2>Libraries</h2>
 
-      <h2>Libraries</h2>
+  <div class="understand" id="u:libraries">
+    <h3>Understand:</h3>
+    <ul>
+      <li>How to import code in one Python module for use in another.</li>
+      <li>That code is executed as it's imported.</li>
+      <li>That each module corresponds to a variable scope.</li>
+      <li>What is in the standard math library.</li>
+      <li>What is in the system library.</li>
+      <li>Several ways to import things from libraries.</li>
+    </ul>
+  </div>
 
-      <p id="a:copy_library" class="fixme">introduce the copy library</p>
+  <p>
+    A function is a way to turn a bunch of related statements into a single chunk that can be re-used.
+    A <a href="glossary.html#module">module</a>
+    or <a href="glossary.html#library">library</a>
+    (for our purposes, the terms mean the same thing)
+    does for functions what functions do for statements:
+    group them together to create more usable chunks.
+    This hierarchical organization is similar in spirit to that used in biology:
+    instead of family, genus, and species, we have module, function, and statement.
+  </p>
 
-      <div class="understand" id="u:libraries">
-        <h3>Understand:</h3>
-        <ul>
-          <li>How to import code in one Python module for use in another.</li>
-          <li>That code is executed as it's imported.</li>
-          <li>That each module corresponds to a variable scope.</li>
-        </ul>
-      </div>
+  <p>
+    As we saw <a href="#s:stdio">earlier</a>,
+    we can load a library into a Python program using the <code>import</code> statement.
+    What we didn't see then is that
+    every Python file can be used as a module by other programs.
+    For example,
+    suppose we have created a Python file called <code>halman.py</code>
+    that defines a single function called <code>threshold</code>:
+  </p>
 
-      <p>
-        A function is a way to turn a bunch of related statements into a single chunk that can be re-used.
-        A <a href="glossary.html#module">module</a>
-        or <a href="glossary.html#library">library</a>
-        (for our purposes, the terms mean the same thing)
-        does for functions what functions do for statements:
-        group them together to create more usable chunks.
-        This hierarchical organization is similar in spirit to that used in biology:
-        instead of family, genus, and species, we have module, function, and statement.
-      </p>
-
-      <p>
-        Every Python file can be used as a module by other programs.
-        <span class="fixme">import has already been introduced</span>
-        To load a module into a program,
-        we use the <code>import</code> statement.
-        For example,
-        suppose we have created a Python file called <code>halman.py</code>
-        that defines a single function called <code>threshold</code>:
-      </p>
-
-<pre src="python/halman.py">
+<pre>
 <span class="comment"># halman.py</span>
 def threshold(signal):
   return 1.0 / sum(signal)
 </pre>
 
-      <p class="continue">
-        If we want to call this function in a program stored in another file,
-        we use <code>import halman</code> to load the contents of <code>halman.py</code>,
-        and then call the function as <code>halman.threshold</code>:
-      </p>
+  <p class="continue">
+    If we want to call this function in a program stored in another file,
+    we use <code>import halman</code> to load the contents of <code>halman.py</code>,
+    and then call the function as <code>halman.threshold</code>:
+  </p>
 
-<pre src="python/use_halman.py">
+<pre>
 import halman
 readings = [0.1, 0.4, 0.2]
 print 'signal threshold is', halman.threshold(readings)
 </pre>
 
-      <p class="continue">
-        We can then run the program that does the <code>import</code>
-        and calls the function:
-      </p>
+  <p class="continue">
+    We can then run the program that does the <code>import</code>
+    and calls the function:
+  </p>
 
 <pre>
 $ <span class="in">python use_halman.py</span>
 <span class="out">signal threshold is 1.42857</span>
 </pre>
 
-      <p>
-        When a module is imported,
-        Python executes the statements it contains
-        (which are usually function definitions).
-        It then creates an object to store references to all the items defined in that module
-        and assigns it to a variable with the same name as the module.
-        For example,
-        let's create a file called <code>noisy.py</code> that prints out a message
-        and then defines <code>NOISE_LEVEL</code> to be 1/3:
-      </p>
+  <p>
+    When a module is imported,
+    Python executes the statements it contains
+    (which are usually function definitions).
+    It then creates an object to store references to all the items defined in that module
+    and assigns it to a variable with the same name as the module.
+    For example,
+    let's create a file called <code>noisy.py</code> that prints out a message
+    and then defines <code>NOISE_LEVEL</code> to be 1/3:
+  </p>
 
-<pre src="python/noisy.py">
+<pre>
 <span class="comment"># noisy.py</span>
 print 'Is this module being loaded?'
 NOISE_LEVEL = 1./3.
 </pre>
 
-      <p class="continue">
-        When it imports <code>noisy</code>
-        Python executes the first statement&mdash;the <code>print</code>&mdash;and
-        displays a message on the screen:
-      </p>
+  <p class="continue">
+    When it imports <code>noisy</code>
+    Python executes the first statement&mdash;the <code>print</code>&mdash;and
+    displays a message on the screen:
+  </p>
 
 <pre>
 &gt;&gt;&gt; <span class="in">import noisy</span>
 <span class="out">Is this module being loaded?</span>
 </pre>
 
-      <p class="continue">
-        Importing the module also defines the variable <code>NOISE_LEVEL</code>.
-        Inside the main program,
-        we can access as <code>noisy.NOISE_LEVEL</code>:
-      </p>
+  <p class="continue">
+    Importing the module also defines the variable <code>NOISE_LEVEL</code>.
+    Inside the main program,
+    we can access as <code>noisy.NOISE_LEVEL</code>:
+  </p>
 
 <pre>
 &gt;&gt;&gt; <span class="in">print noisy.NOISE_LEVEL</span>
 <span class="out">0.33333333</span>
 </pre>
 
-      <p>
-        Just like a function,
-        each module is a separate scope,
-        so that variable names defined inside a module belong to that module
-        and don't collide with variable names defined elsewhere.
-        When a function wants to a find a variable,
-        it actually looks in its own scope,
-        then in its module.
-        Our earlier rule "function then global" is just a special case of this,
-        since the global scope is just the module scope of our main program.
-      </p>
+  <p>
+    Just like a function,
+    each module is a separate scope,
+    so that variable names defined inside a module belong to that module
+    and don't collide with variable names defined elsewhere.
+    When a function wants to a find a variable,
+    it actually looks in its own scope,
+    then in its module.
+    Our earlier rule "function then global" is just a special case of this,
+    since the global scope is just the module scope of our main program
+    (<a href="#f:name_resolution">Figure 34</a>).
+  </p>
 
-      <figure id="f:name_resolution">
-        <img src="python/name_resolution.png" alt="Name Resolution" />
-        <figcaption>Figure 34: Name Resolution</figcaption>
-      </figure>
+  <figure id="f:name_resolution">
+    <img src="python/name_resolution.png" alt="Name Resolution" />
+    <figcaption>Figure 34: Name Resolution</figcaption>
+  </figure>
 
-      <p>
-        To see how this works,
-        let's create a file called <code>module.py</code>
-        that defines both a variable called <code>NAME</code>
-        and a function called <code>func</code> that prints it out:
-      </p>
+  <p>
+    To see how this works,
+    let's create a file called <code>module.py</code>
+    that defines both a variable called <code>NAME</code>
+    and a function called <code>func</code> that prints it out:
+  </p>
 
-<pre src="python/module.py">
+<pre>
 <span class="comment"># module.py</span>
 NAME = 'Transylvania'
 
@@ -5042,186 +5229,158 @@ def func(arg):
   return NAME + ' ' + arg
 </pre>
 
-      <p class="continue">
-        In our main program,
-        we also define a variable called <code>NAME</code>,
-        then import our module.
-        When we call <code>module.func</code>
-        it sees the <code>NAME</code> variable that was defined inside the module,
-        not the one that was defined globally:
-      </p>
+  <p class="continue">
+    In our main program,
+    we also define a variable called <code>NAME</code>,
+    then import our module.
+    When we call <code>module.func</code>
+    it sees the <code>NAME</code> variable that was defined inside the module,
+    not the one that was defined globally:
+  </p>
 
-<pre src="python/use_module.py">
+<pre>
 &gt;&gt;&gt; <span class="in">NAME = 'Hamunaptra'</span>
 &gt;&gt;&gt; <span class="in">import module</span>
 &gt;&gt;&gt; <span class="in">print module.func('!!!')</span>
 <span class="out">Transylvania !!!</span>
 </pre>
 
-      <p>
-        Once again,
-        rules about where and how to look things up might seem arcane,
-        but it would be practically impossible to write large programs
-        without some kind of scoping them.
-        Restricting lookup to the current function,
-        its module,
-        and the top level of the program makes it easier for people to understand code,
-        since there are only three places where the variables used on a particular line might be,
-        two of which (the containing function and the file it's in)
-        are guaranteed to be nearby.
-      </p>
+  <p>
+    Once again,
+    rules about where and how to look things up might seem arcane,
+    but it would be practically impossible to write large programs
+    without some kind of scoping them.
+    Restricting lookup to the current function,
+    its module,
+    and the top level of the program makes it easier for people to understand code,
+    since there are only three places where the variables used on a particular line might be,
+    two of which (the containing function and the file it's in)
+    are guaranteed to be nearby.
+  </p>
 
-      <div class="box">
-        <h3>How Other Languages Do It</h3>
+  <div class="box">
+    <h3>How Other Languages Do It</h3>
 
-        <p>
-          When a dynamic language like Python (or MATLAB, R, Ruby, or Perl) loads a program,
-          it actually does two things:
-        </p>
+    <p>
+      When a dynamic language like Python (or MATLAB, R, Ruby, or Perl) loads a program,
+      it actually does two things:
+    </p>
 
-        <ol>
-          <li>
-            translate the statements into instructions the computer can execute,
-            and
-          </li>
-          <li>
-            execute those instructions.
-          </li>
-        </ol>
+    <ol>
+      <li>
+        translate the statements into instructions the computer can execute,
+        and
+      </li>
+      <li>
+        execute those instructions.
+      </li>
+    </ol>
 
-        <p>
-          Compiled languages like Fortran, C++, and Java do these things separately:
-          a <a href="glossary.html#compiler">compiler</a> does the translation,
-          saving the instructions in a file on disk,
-          which a separate <a href="glossary.html#loader">loader</a>
-          copies into memory for execution some time later
-          (<a class="figref" href="#f:compiling_vs_interpreting">Figure 35</a>).
-          In general,
-          compiled languages therefore don't execute instructions while loading;
-          instead,
-          they wait until everything is in memory before running any of it.
-        </p>
+    <p>
+      Compiled languages like Fortran, C++, and Java do these things separately:
+      a <a href="glossary.html#compiler">compiler</a> does the translation,
+      saving the instructions in a file on disk,
+      which a separate <a href="glossary.html#loader">loader</a>
+      copies into memory for execution some time later
+      (<a class="figref" href="#f:compiling_vs_interpreting">Figure 35</a>).
+      In general,
+      compiled languages therefore don't execute instructions while loading;
+      instead,
+      they wait until everything is in memory before running any of it.
+    </p>
 
-        <figure id="f:compiling_vs_interpreting">
-          <img src="python/compiling_vs_interpreting.png" alt="Compiling vs. Interpreting" />
-          <figcaption>Figure 35: Compiling vs. Interpreting</figcaption>
-        </figure>
+    <figure id="f:compiling_vs_interpreting">
+      <img src="python/compiling_vs_interpreting.png" alt="Compiling vs. Interpreting" />
+      <figcaption>Figure 35: Compiling vs. Interpreting</figcaption>
+    </figure>
 
-      </div>
+  </div>
 
-      <div class="keypoints" id="k:libraries">
-        <h3>Summary</h3>
-        <ul>
-          <li idea="turing">Any Python file can be imported as a library.</li>
-          <li>The code in a file is executed when it is imported.</li>
-          <li>Every Python file is a scope, just like every function.</li>
-        </ul>
-      </div>
-
-    </section>
-
-    <section id="s:stdlib">
-
-      <h2>Standard Libraries</h2>
-
-      <div class="understand" id="u:stdlib">
-        <h3>Understand:</h3>
-        <ul>
-          <li>What is in the standard math library.</li>
-          <li>What is in the system library.</li>
-          <li>Several ways to import things from libraries.</li>
-        </ul>
-      </div>
-
-      <p>
-        The real power of a language is in its libraries:
-        they are the distilled wisdom and effort
-        of all the programmers who have come before us.
-        Python's standard library contains over a hundred modules,
-        and the fastest way to become a more productive programmer
-        is to become familiar with them.
-        One of the most useful is <code>math</code>,
-        which defines <code>sqrt</code> for square roots,
-        <code>hypot</code> for calculating x<sup>2</sup>+y<sup>2</sup>,
-        and values for <em>e</em> and &pi; that are as accurate as the machine can make them.
-      </p>
+  <p>
+    Python's standard library contains over a hundred modules.
+    One of the most useful is <code>math</code>,
+    which defines <code>sqrt</code> for square roots,
+    <code>hypot</code> for calculating x<sup>2</sup>+y<sup>2</sup>,
+    and values for <em>e</em> and &pi; that are as accurate as the machine can make them.
+  </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">import math</span>
-&gt;&gt;&gt; <span class="in">print math.sqrt(2)</span>
+import math
+print math.sqrt(2)
 <span class="out">1.4142135623730951</span>
-&gt;&gt;&gt; <span class="in">print math.hypot(2, 3)</span>  <span class="comment"># sqrt(x**2 + y**2)</span>
+print math.hypot(2, 3) <span class="comment"># sqrt(x**2 + y**2)</span>
 <span class="out">3.6055512754639891</span>
-&gt;&gt;&gt; <span class="in">print math.e, math.pi</span>   <span class="comment"># as accurate as possible</span>
+print math.e, math.pi <span class="comment"># as accurate as possible</span>
 <span class="out">2.7182818284590451 3.1415926535897931</span>
 </pre>
 
-      <p>
-        Since <code>math.sqrt</code> is a handful to type,
-        and <code>sqrt</code> is probably not ambiguous,
-        Python provides several ways to import things.
-        For example,
-        we can import specific functions from a library and then call them directly,
-        rather than using the <code>modulename.functionname</code> syntax:
-      </p>
+  <p>
+    Since <code>math.sqrt</code> is a handful to type,
+    and <code>sqrt</code> is probably not ambiguous,
+    Python provides several ways to import things.
+    For example,
+    we can import specific functions from a library and then call them directly,
+    rather than using the <code>modulename.functionname</code> syntax:
+  </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">from math import sqrt</span>
-&gt;&gt;&gt; <span class="in">sqrt(3)</span>
+from math import sqrt
+sqrt(3)
 <span class="out">1.7320508075688772</span>
 </pre>
 
-      <p class="continue">
-        We can also import a function under a different name,
-        so that if two modules define functions with the same name,
-        we can give one or the other a different name when we want to use them together:
-      </p>
+  <p class="continue">
+    We can also import a function under a different name,
+    so that if two modules define functions with the same name,
+    we can give one or the other a different name when we want to use them together:
+  </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">from math import hypot as euclid</span>
-&gt;&gt;&gt; <span class="in">euclid(3, 4)</span>
+from math import hypot as euclid
+euclid(3, 4)
 <span class="out">5.0</span>
 </pre>
 
-      <p>
-        We can also use <code>import *</code>
-        to bring everything in the module into the current scope at once.
-        This has the same effect as using <code>from module import a</code>,
-        <code>from module import b</code>,
-        and so on for every name in the module:
-      </p>
+  <p>
+    Finally,
+    we can use <code>import *</code>
+    to bring everything in the module into the current scope at once.
+    This has the same effect as using <code>from module import a</code>,
+    <code>from module import b</code>,
+    and so on for every name in the module:
+  </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">from math import *</span>
-&gt;&gt;&gt; <span class="in">sin(pi)</span>
+from math import *
+sin(pi)
 <span class="out">1.2246063538223773e-16</span>
 </pre>
 
-      <p class="continue">
-        <code>import *</code> is usually a bad idea:
-        if someone adds a new function or variable to the next version of the module,
-        your <code>import *</code> could silently overwrite something that you have written,
-        or are importing from somewhere else.
-        Bugs like this can be extremely hard to find,
-        since nothing seemed to change in your program.
-      </p>
+  <p class="continue">
+    <code>import *</code> is usually a bad idea:
+    if someone adds a new function or variable to the next version of the module,
+    your <code>import *</code> could silently overwrite something that you have written,
+    or are importing from somewhere else.
+    Bugs like this can be extremely hard to find,
+    since nothing seemed to change in your program.
+  </p>
 
-      <p>
-        Another useful library is <code>sys</code> (short for "system").
-        It defines constants to tell us what version of Python we're using,
-        what operating system we're running on,
-        and how large integers are:
-      </p>
+  <p>
+    Another useful library is <code>sys</code> (short for "system").
+    It defines constants to tell us what version of Python we're using,
+    what operating system we're running on,
+    and how large integers are:
+  </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">import sys</span>
-&gt;&gt;&gt; <span class="in">print sys.version</span>
+import sys
+print sys.version
 <span class="out">2.7 (r27:82525, Jul  4 2010, 09:01:59) [MSC v.1500 32 bit (Intel)]</span>
-&gt;&gt;&gt; <span class="in">print sys.platform</span>
+print sys.platform
 <span class="out">win32</span>
-&gt;&gt;&gt; <span class="in">print sys.maxint</span>
+print sys.maxint
 <span class="out">2147483647</span>
-&gt;&gt;&gt; <span class="in">print sys.path</span>
+print sys.path
 <span class="out">['',
  'C:\\WINDOWS\\system32\\python27.zip',
  'C:\\Python27\\DLLs', 'C:\\Python27\\lib',
@@ -5229,14 +5388,14 @@ def func(arg):
  'C:\\Python27', 'C:\\Python27\\lib\\site-packages']</span>
 </pre>
 
-      <p>
-        The most commonly-used element of <code>sys</code>, though, is <code>sys.argv</code>,
-        which holds a list of the <a href="glossary.html#command-line-arguments">command-line arguments</a>
-        used to run the program.
-        The name of the script itself is in <code>sys.argv[0]</code>;
-        all the other arguments are put in <code>sys.argv[1]</code>, <code>sys.argv[2]</code>, and so on.
-        For example, here's a program that does nothing except print out its command-line arguments:
-      </p>
+  <p>
+    The most commonly-used element of <code>sys</code>, though, is <code>sys.argv</code>,
+    which holds a list of the <a href="glossary.html#command-line-arguments">command-line arguments</a>
+    used to run the program.
+    The name of the script itself is in <code>sys.argv[0]</code>;
+    all the other arguments are put in <code>sys.argv[1]</code>, <code>sys.argv[2]</code>, and so on.
+    For example, here's a program that does nothing except print out its command-line arguments:
+  </p>
 
 <pre src="python/echo.py">
 <span class="comment"># echo.py</span>
@@ -5245,19 +5404,19 @@ for i in range(len(sys.argv)):
   print i, '"' + sys.argv[i] + '"'
 </pre>
 
-      <p class="continue">
-        If it is run without any arguments,
-        it reports that <code>sys.argv[0]</code> is <code>echo.py</code>:
-      </p>
+  <p class="continue">
+    If it is run without any arguments,
+    it reports that <code>sys.argv[0]</code> is <code>echo.py</code>:
+  </p>
 
 <pre>
 $ <span class="in">python echo.py</span>
 <span class="out">0 echo.py</span>
 </pre>
 
-      <p class="continue">
-        When it is run with arguments, though, it displays those as well:
-      </p>
+  <p class="continue">
+    When it is run with arguments, though, it displays those as well:
+  </p>
 
 <pre>
 $ <span class="in">python echo.py first second</span>
@@ -5266,11 +5425,11 @@ $ <span class="in">python echo.py first second</span>
 <span class="out">2 second</span>
 </pre>
 
-      <p>
-        We can use this to write command-line tools like a simple calculator:
-      </p>
+  <p>
+    We can use this to write the world's simplest calculator:
+  </p>
 
-<pre src="python/calculator.py">
+<pre>
 import sys
 
 total = 0
@@ -5281,27 +5440,27 @@ $ <span class="in">python calculator.py 1 2 3</span>
 <span class="out">6.0</span>
 </pre>
 
-      <p class="continue">
-        Notice that we loop over <code>sys.argv[1:]</code>,
-        i.e.,
-        over everything except the first element of <code>sys.argv</code>.
-        That first element is always the name of our program
-        (in this case, <code>calculator.py</code>),
-        which we definitely don't want to try to add to our running total.
-      </p>
+  <p class="continue">
+    Notice that we loop over <code>sys.argv[1:]</code>,
+    i.e.,
+    over everything except the first element of <code>sys.argv</code>.
+    That first element is always the name of our program
+    (in this case, <code>calculator.py</code>),
+    which we definitely don't want to try to add to our running total.
+  </p>
 
-      <p>
-        A more common use of <code>sys.argv</code> is
-        to pass the names of a bunch of files into our program.
-        Suppose,
-        for example,
-        that we have a function called <code>summarize</code>
-        that opens a file,
-        reads the values in it,
-        and returns the minimum, average, and maximum:
-      </p>
+  <p>
+    A more common use of <code>sys.argv</code> is
+    to pass the names of a bunch of files into our program.
+    Suppose,
+    for example,
+    that we have a function called <code>summarize</code>
+    that opens a file,
+    reads the values in it,
+    and returns the minimum, average, and maximum:
+  </p>
 
-<pre src="summarize.py">
+<pre>
 def summarize(filename):
     reader = open(filename, 'r')
     least, greatest, total, count = 0.0, 0.0, 0.0
@@ -5315,41 +5474,156 @@ def summarize(filename):
     return least, total / count, greatest
 </pre>
 
-      <p class="continue">
-        If we want to display summaries for several files at once,
-        we can require the user to give them as command-line arguments:
-      </p>
+  <p class="continue">
+    If we want to display summaries for several files at once,
+    we can require the user to give them as command-line arguments:
+  </p>
 
 <pre>
 $ python summarize.py july.dat august.dat september.dat
 </pre>
 
-      <p class="continue">
-        and connect the command line with the program's internals using <code>sys.argv</code>:
-      </p>
+  <p class="continue">
+    and connect the command line with the program's internals using <code>sys.argv</code>:
+  </p>
 
-<pre src="summarize.py">
+<pre>
 all_filenames = sys.argv[1:]  <span class="comment"># Again, don't include the program name</span>
 for filename in all_filenames:
     low, ave, high = summarize(filename)
     print filename, low, ave, high
 </pre>
 
-      <div class="keypoints" id="k:stdlib">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use <code>from <em>library</em> import <em>something</em></code> to import something under its own name.</li>
-          <li>Use <code>from <em>library</em> import <em>something</em> as <em>alias</em></code> to import something under the name <code><em>alias</em></code>.</li>
-          <li><code>from <em>library</em> import *</code> imports everything in <code><em>library</em></code> under its own name, which is usually a bad idea.</li>
-          <li>The <code>math</code> library defines common mathematical constants and functions.</li>
-          <li>The system library <code>sys</code> defines constants and functions used in the interpreter itself.</li>
-          <li><code>sys.argv</code> is a list of all the command-line arguments used to run the program.</li>
-          <li><code>sys.argv[0]</code> is the program's name.</li>
-          <li><code>sys.argv[1:]</code> is everything except the program's name.</li>
-        </ul>
-      </div>
+  <p>
+    Here are just a few of Python's many other useful libraries:
+  </p>
 
-    </section>
+  <ul>
+
+    <li>
+      The <code>glob</code> module does pattern-matching on filenames
+      using the same <a href="shell.html#a:wildcard">wildcard syntax</a>
+      as the shell:
+<pre>
+$ <span class="input">ls</span>
+<span class="out">alpha.txt   beta.txt   helium.dat  hydrogen.dat  zeta.txt</span>
+$ <span class="input">python</span>
+&gt;&gt;&gt; <span class="input">import glob</span>
+&gt;&gt;&gt; <span class="input">print glob.glob('*.dat')</span>
+<span class="out">['helium.dat', 'hydrogen.dat']</span>
+</pre>
+    </li>
+
+    <li id="a:copy_library">
+      The <code>copy</code> library makes copies of arbitrary data structures.
+      These can be <a href="glossary.html#shallow-copy">shallow</a>
+      (only the top-level structure is copied)
+      or <a href="glossary.html#deep-copy">deep</a>
+      (everything is copied all the way down):
+<pre>
+import copy
+names = [['Charles', 'Darwin'], ['Isaac', 'Newton']]
+dup = copy.deepcopy(names)
+print dup
+<span class="out">[['Charles', 'Darwin'], ['Isaac', 'Newton']]</span>
+</pre>
+    </li>
+
+    <li>
+      The <code>time</code> library manipulates times.
+      It contains many functions
+      (as do the related <code>datetime</code> and <code>calendar</code> modules&mdash;time
+      is more complicated than most people realize).
+      One of the most useful functions in <code>time</code> reports the current time in seconds
+      according to the system clock;
+      the difference between two such calls can be used
+      to find out how long a piece of code took to run:
+<pre>
+import time
+
+start = time.clock()
+temp = 0
+for i in range(1000000):
+    temp += i
+end = time.clock()
+print 'one million additions took', end - start, 'seconds'
+<span class="out">one million additions took 0.13155 seconds</span>
+</pre>
+    </li>
+
+  </ul>
+
+  <p>
+    The real power of a language is in its libraries:
+    they are the distilled wisdom and effort
+    of all the programmers who have come before us.
+    The fastest way to become a more productive programmer
+    is to become familiar with them.
+  </p>
+
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Any Python file can be imported as a library.</li>
+      <li>The code in a file is executed when it is imported.</li>
+      <li>Every Python file is a scope, just like every function.</li>
+      <li>Use <code>from <em>library</em> import <em>something</em></code> to import something under its own name.</li>
+      <li>Use <code>from <em>library</em> import <em>something</em> as <em>alias</em></code> to import something under the name <code><em>alias</em></code>.</li>
+      <li><code>from <em>library</em> import *</code> imports everything in <code><em>library</em></code> under its own name, which is usually a bad idea.</li>
+      <li>The <code>math</code> library defines common mathematical constants and functions.</li>
+      <li>The system library <code>sys</code> defines constants and functions used in the interpreter itself.</li>
+      <li><code>sys.argv</code> is a list of all the command-line arguments used to run the program.</li>
+      <li><code>sys.argv[0]</code> is the program's name.</li>
+      <li><code>sys.argv[1:]</code> is everything except the program's name.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+
+    <ol>
+
+      <li>
+        What does this program print?
+<pre>
+import itertools
+
+for val in itertools.chain('abc', [0, 1, 2]):
+    print val
+</pre>
+      </li>
+
+      <li>
+        Some libraries provide <a href="#a:wrapper">wrapper functions</a>
+        that add functionality to other functions.
+        For example,
+        the <code>csv</code> module's <code>reader</code> function
+        reads values from a file of comma-separated values:
+<pre>
+import csv
+
+raw = open('data.csv', 'r')
+wrapper = csv.reader(raw)
+for row in wrapper:
+    total = 0.0
+    for value in row:
+        total += value
+    print total
+</pre>
+        What does <code>csv.reader</code> do
+        that simply splitting a string on commas doesn't do?
+      </li>
+
+      <li>
+        What shell command does the same thing as <code>shutil.copytree</code>?
+        What about <code>shutil.rmtree</code>?
+      </li>
+
+    </ol>
+
+  </div>
+
+</section>
 
     <section id="s:filter">
 
@@ -5529,8 +5803,8 @@ if __name__ == '__main__':
       </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">import math</span>
-&gt;&gt;&gt; <span class="in">help(math)</span>
+import math
+help(math)
 <span class="out">Help on module math:
 NAME
     math
@@ -5577,8 +5851,8 @@ def add(a, b):
       </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">import adder</span>
-&gt;&gt;&gt; <span class="in">help(adder)</span>
+import adder
+help(adder)
 <span class="out">NAME
     adder - Addition utilities.
 FUNCTIONS
@@ -5637,7 +5911,7 @@ $ <span class="in">python my_name.py</span>
 
 <pre>
 $ <span class="in">python</span>
-&gt;&gt;&gt; <span class="in">import my_name</span>
+&gt;&gt;&gt; import my_name
 <span class="out">my_name</span>
 </pre>
 
@@ -5697,8 +5971,8 @@ if __name__ == '__main__':
       </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">import stats</span>
-&gt;&gt;&gt; <span class="in">print stats.__name__</span>
+import stats
+print stats.__name__
 <span class="out">stats</span>
 </pre>
 
