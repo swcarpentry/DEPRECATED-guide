@@ -19,7 +19,6 @@
   <li><a href="#s:lists">Lists</a></li>
   <li><a href="#s:func">Functions</a></li>
   <li><a href="#s:scope">Scope</a></li>
-  <li><a href="#s:params">Multiple Parameters</a></li>
   <li><a href="#s:return">Returning Values</a></li>
   <li><a href="#s:libraries">Libraries</a></li>
   <li><a href="#s:stdlib">Standard Libraries</a></li>
@@ -2563,6 +2562,8 @@ for line in sys.stdin:
 <section id="s:lists">
   <h2>Lists</h2>
 
+  <p class="fixme">explain slicing</p>
+
   <div class="understand">
     <h3>Learning Objectives</h3>
     <ul>
@@ -3517,54 +3518,158 @@ water boils at 373.15</span>
 </pre>
 
   <p>
-    Functions can take any number of parameters:
+    The functions we have seen so far have had only one parameter.
+    When we define a function,
+    however,
+    we can give it any number of parameters.
+    When the function is called and a new stack frame is created,
+    a new variable is defined for each of those parameters,
+    and the actual values given by the caller are assigned to the parameters in order from left to right.
+    For example,
+    if we define <code>average3</code> to calculate the average of three numbers:
   </p>
 
 <pre>
-def middle(a, b, c):
-    temp = [a, b, c]
-    temp.sort()
-    return temp[1]
-
-print middle(5, 2, 11)
-5
+def average3(a, b, c):
+    return (a + b + c) / 3.0
 </pre>
 
   <p class="continue">
-    When the function is called,
-    the actual values are matched with the parameters from left to right.
-    We must usually provide exactly as many values to the function as it expects:
+    and call it like this:
   </p>
 
 <pre>
-print middle(2)
-<span class="err">TypeError: middle() takes exactly 3 arguments (1 given)</span>
+x = 2
+y = 2
+z = 5
+print average3(x, y, z)
+<span class="out">3.0</span>
 </pre>
 
   <p class="continue">
-    However,
-    Python lets us define defaults for parameters
-    so that we can call the function with fewer values than required:
+    then just before the function returns,
+    the program's memory is as shown in <a class="figref" href="#f:memory_before_return">Figure 33</a>.
+  </p>
+
+  <figure id="f:memory_before_return">
+    <img src="python/memory_before_return.png" alt="State of Memory Before Function Return" />
+    <figcaption>Figure 31: State of Memory Before Function Return</figcaption>
+  </figure>
+
+  <p>
+    Calling this function with the wrong number of values is an error:
   </p>
 
 <pre>
-def is_close(left, right, difference=1.0e-6):
-    return abs(left - right) &lt; difference
+print average3(1, 5)
+<span class="err">Traceback (most recent call last):
+  File "python/average-3-wrong.py", line 4, in &lt;module&gt;
+    print 1, 5, '=&gt;', average3(1, 5)
+TypeError: average3() takes exactly 3 arguments (2 given)</span>
+</pre>
 
-print is_close(1, 1.5)
-<span class="out">False</span>
-print is_close(1, 1.5, 0.75)
-<span class="out">True</span>
+  <p class="continue">
+    This is only sensible:
+    if we pass two values to <code>average3</code>,
+    Python has no way of knowing what third value to use.
+    We can create functions that have
+    <a href="glossary.html#default-value">default values</a> for parameters
+    simply by providing those values when the function is defined:
+  </p>
+
+<pre>
+def average3(a=0.0, b=0.0, c=0.0):
+    return (a + b + c) / 3.0
 </pre>
 
   <p>
-    When we call <code>is_close</code> with three values,
-    they are assigned to <code>left</code>, <code>right</code>, and <code>difference</code>
-    as usual.
-    When we call it with only two,
+    The meaning is straightforward:
+    if the caller doesn't tell the function what value to use for <code>a</code>,
+    the function should use 0.0,
+    and similarly for the other parameters.
+    We can now call our function in four different ways:
+  </p>
+
+  <table>
+    <tr>
+      <th>Call</th>
+      <th><code>a</code></th>
+      <th><code>b</code></th>
+      <th><code>c</code></th>
+      <th>Result</th>
+    </tr>
+    <tr>
+      <td><code>average3()</code></td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <td><code>average3(3.0)</code></td>
+      <td>3.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td><code>average3(3.0, 6.0)</code></td>
+      <td>3.0</td>
+      <td>6.0</td>
+      <td>0.0</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <td><code>average3(3.0, 6.0, 9.0)</code></td>
+      <td>3.0</td>
+      <td>6.0</td>
+      <td>9.0</td>
+      <td>6.0</td>
+    </tr>
+  </table>
+
+  <p class="continue">
+    We still can't call this function with more than three parameters,
     though,
-    they are assigned to <code>left</code> and <code>right</code>,
-    and <code>1.0e-6</code> is assigned to <code>difference</code>.
+    since once again Python wouldn't know where to put the fourth and higher.
+  </p>
+
+  <p>
+    One restriction on functions with default values
+    is that all of the parameters that have default values must come <em>after</em>
+    all of the parameters that don't.
+    To see why,
+    imagine we were allowed to mix defaulting and non-defaulting parameters like this:
+  </p>
+
+<pre>
+def average(<span class="highlight">start=None, values, end=None</span>):
+    if start is None:
+        start = 0
+    if end is None:
+        end = len(values)
+    result = 0.0
+    i = start
+    while i &lt; end:
+        result += values[i]
+        i += 1
+    return result / (end - start)
+</pre>
+
+  <p>
+    If we call the function with just one parameter,
+    it's pretty clear that its value has to be assigned to <code>values</code>.
+    But what should Python do if the function is called with two parameters,
+    like <code>average([1.0, 2.0, 5.0], 1)</code>?
+    Should it use the provided values for the first and second parameters,
+    and the default for the third?
+    Or should it use the first parameter's default,
+    and assign the given values to the second and third?
+    We know what we want,
+    but Python doesn't:
+    remember, it can't infer anything from variables' names.
+    We could define some sort of rule to tell it what to do in this case,
+    but it's simpler and safer to disallow the problem in the first place.
   </p>
 
   <div class="box">
@@ -3664,20 +3769,6 @@ print squish([-3, 5], 0, 10)
         followed by the lower and upper bounds.
         Explain why this is bad style,
         and what you would do to fix it.
-      </li>
-
-      <li>
-        Python insists that all parameters that have default values
-        come after all parameters that don't.
-        For example,
-        this is illegal:
-<pre>
-def tumble(left, factor=1.0, right):
-    return left + factor * right
-</pre>
-        Why?
-        (Hint: think about how many different ways Python could interpret the call
-        <code>tumble(5.0, 3.0)</code>.)
       </li>
 
       <li>
@@ -4461,7 +4552,54 @@ def scale(values):
   <div class="challenges">
     <h3>Challenges</h3>
 
-    <p class="fixme">write</p>
+    <ol>
+
+      <li>
+        Identify the global variables in this program,
+        and rewrite it
+        so that the two functions do not share information
+        through global variables.
+<pre>
+def increase(floor):
+    for (i, n) in enumerate(values):
+        if n &lt; floor:
+            values[i] = floor
+
+def scale(amount):
+    for i in range(bound):
+        values[i] *= amount
+
+values = [4.0, 4.3, 4.7, 5.1]
+bound = 2
+increase(4.5)
+scale(10.0)
+</pre>
+      </li>
+
+      <li>
+        Python allows programmers to define functions inside other functions:
+<pre>
+def scale_all(values, amount):
+
+    def scale_one(v):
+        return 1.0 + v * amount
+
+    for (i, v) in enumerate(values):
+        values[i] = scale_one(v)
+    return values
+
+scale_all([1.0, 2.0, 3.0], 10.0)
+<span class="out">[11.0, 21.0, 31.0]</span>
+</pre>
+        Draw a memory diagram showing what's on the stack
+        when Python is calculating
+        <code>1.0 + 2.0 * 10.0</code>
+        (the second iteration of the loop in <code>scale_all</code>).
+        What happens if we try to call <code>scale_one(7.0)</code>
+        after the call to <code>scale_all</code> has completed?
+      </li>
+
+    </ol>
 
   </div>
 
@@ -4479,22 +4617,20 @@ def scale(values):
     </ul>
   </div>
 
-<!-- HERE -->
+  <p>
+    All of our functions so far have ended with a <code>return</code> statement,
+    and that has been the only <code>return</code> statement they've contained.
+    Once again,
+    this doesn't have to be the case:
+    it is often easier to write functions that return from several places,
+    though this can also make them harder to read.
+  </p>
 
-      <p>
-        All of our functions so far have ended with a <code>return</code> statement,
-        and that has been the only <code>return</code> statement they've contained.
-        Once again,
-        this doesn't have to be the case:
-        it is often easier to write functions that return from several places,
-        though this can also make them harder to read.
-      </p>
+  <p>
+    Let's start with a function that calculates the sign of a number:
+  </p>
 
-      <p>
-        Let's start with a function that calculates the sign of a number:
-      </p>
-
-<pre src="python/sign.py">
+<pre>
 def sign(num):
     if num &lt; 0:
         return -1
@@ -4503,18 +4639,18 @@ def sign(num):
     return 1
 </pre>
 
-      <p class="continue">
-        If we call it with a negative number,
-        the first branch of the <code>if</code> returns -1.
-        If we call it with 0,
-        the <code>return</code> in the second <code>if</code> is executed,
-        and if we call it with a positive number,
-        neither of the <code>if</code> branches is taken,
-        so we <a href="glossary.html#fall-through">fall through</a> to the final <code>return</code>,
-        which produces the value 1:
-      </p>
+  <p class="continue">
+    If we call it with a negative number,
+    the first branch of the <code>if</code> returns -1.
+    If we call it with 0,
+    the <code>return</code> in the second <code>if</code> is executed,
+    and if we call it with a positive number,
+    neither of the <code>if</code> branches is taken,
+    so we <a href="glossary.html#fall-through">fall through</a> to the final <code>return</code>,
+    which produces the value 1:
+  </p>
 
-<pre src="python/sign.py">
+<pre>
 print -5, '=&gt;', sign(-5)
 print 0, '=&gt;', sign(0)
 print 241, '=&gt;', sign(241)
@@ -4523,16 +4659,16 @@ print 241, '=&gt;', sign(241)
 241 =&gt; 1</span>
 </pre>
 
-      <p>
-        One common use of multiple return statements
-        is to handle special cases at the start of a function.
-        For example,
-        suppose we decide that we want the average of an empty list to be zero after all.
-        We could modify our averaging function to check for this case
-        before doing anything else:
-      </p>
+  <p>
+    One common use of multiple return statements
+    is to handle special cases at the start of a function.
+    For example,
+    suppose we decide that we want the average of an empty list to be zero after all.
+    We could modify our averaging function to check for this case
+    before doing anything else:
+  </p>
 
-<pre src="python/average_empty.py">
+<pre>
 def average(values):
 
     <span class="comment"># The average of no values is 0.0.</span>
@@ -4546,16 +4682,16 @@ def average(values):
     return result / len(values)
 </pre>
 
-        <p class="continue">
-          The early <code>return</code> statement (plus a comment)
-          makes it very clear to whoever is reading this code
-          that we are handling an empty list in a special way.
-          Compare this to an implementation that uses <code>if</code> and <code>else</code>
-          to separate the two cases
-          while keeping a single <code>return</code> statement at the end of the function:
-        </p>
+  <p class="continue">
+    The early <code>return</code> statement (plus a comment)
+    makes it very clear to whoever is reading this code
+    that we are handling an empty list in a special way.
+    Compare this to an implementation that uses <code>if</code> and <code>else</code>
+    to separate the two cases
+    while keeping a single <code>return</code> statement at the end of the function:
+  </p>
 
-<pre src="python/average_empty.py">
+<pre>
 def average(values):
 
     <span class="comment"># The average of no values is 0.0.</span>
@@ -4573,73 +4709,73 @@ def average(values):
     return result
 </pre>
 
-      <p class="continue">
-        This version is easier to understand in one way,
-        but harder in another.
-        What makes it harder is our limited short-term memory:
-        the body of the <code>else</code> is only four lines long,
-        but reading and understanding those lines
-        may push the special handling of the empty list out of our mind.
-        In this case,
-        the code is short enough that
-        we will probably be able to retain the special case,
-        but if the calculation was more complex,
-        we would lose sight of the big picture.
-      </p>
+  <p class="continue">
+    This version is easier to understand in one way,
+    but harder in another.
+    What makes it harder is our limited short-term memory:
+    the body of the <code>else</code> is only four lines long,
+    but reading and understanding those lines
+    may push the special handling of the empty list out of our mind.
+    In this case,
+    the code is short enough that
+    we will probably be able to retain the special case,
+    but if the calculation was more complex,
+    we would lose sight of the big picture.
+  </p>
 
-      <p>
-        What makes it easier is its regularity:
-        each possible case of input (empty or non-empty) is handled in a conditional branch,
-        and each branch's job is to assign a value to <code>result</code>
-        for the function to return.
-        If there were six or seven special cases,
-        this pattern would help us keep track of what what going on&mdash;provided
-        we knew (or recognized) the pattern.
-      </p>
+  <p>
+    What makes it easier is its regularity:
+    each possible case of input (empty or non-empty) is handled in a conditional branch,
+    and each branch's job is to assign a value to <code>result</code>
+    for the function to return.
+    If there were six or seven special cases,
+    this pattern would help us keep track of what what going on&mdash;provided
+    we knew (or recognized) the pattern.
+  </p>
 
-      <p>
-        The psychological term for what's going on here is
-        <a href="glossary.html#chunk">chunking</a>,
-        which refers to the way people group items together in memory.
-        For example, when you look at the five dots on a dice:
-      </p>
+  <p>
+    The psychological term for what's going on here is
+    <a href="glossary.html#chunk">chunking</a>,
+    which refers to the way people group items together in memory.
+    For example, when you look at the five dots on a dice:
+  </p>
 
-      <figure id="f:five_spots">
-        <img src="python/five_spots.png" alt="Five Spots" />
-        <figcaption>Figure 32: Five Spots</figcaption>
-      </figure>
+  <figure id="f:five_spots">
+    <img src="python/five_spots.png" alt="Five Spots" />
+    <figcaption>Figure 32: Five Spots</figcaption>
+  </figure>
 
-      <p class="continue">
-        what you actually "see" is the X pattern,
-        and what you remember is that pattern rather than five individual dots.
-        rather than remembering five individual dots.
-        Similarly,
-        you remember common words such as "common" as words,
-        not as sequences of letters,
-        and so on.
-      </p>
+  <p class="continue">
+    what you actually "see" is the X pattern,
+    and what you remember is that pattern rather than five individual dots.
+    rather than remembering five individual dots.
+    Similarly,
+    you remember common words such as "common" as words,
+    not as sequences of letters,
+    and so on.
+  </p>
 
-      <p>
-        One of the key differences between experts and novices is that
-        experts are better at chunking:
-        they don't actually have larger short-term memories,
-        but since they recognize a broader repertoire of patterns,
-        they are able to manage more information.
-        Turning that over,
-        the more recognizable patterns are used in a program,
-        the easier it is for people to keep it in their heads.
-        And as Chase and Simon discuss in their classic paper
-        "<a href="bib.html#chase-simon-chess">Perception in chess</a>",
-        things that <em>don't</em> conform to patterns can actually be <em>harder</em> for experts to recognize,
-        since their brains will mis-match and "correct" what's actually there.
-      </p>
+  <p>
+    One of the key differences between experts and novices is that
+    experts are better at chunking:
+    they don't actually have larger short-term memories,
+    but since they recognize a broader repertoire of patterns,
+    they are able to manage more information.
+    Turning that over,
+    the more recognizable patterns are used in a program,
+    the easier it is for people to keep it in their heads.
+    And as Chase and Simon discuss in their classic paper
+    "<a href="bib.html#chase-simon-chess">Perception in chess</a>",
+    things that <em>don't</em> conform to patterns can actually be <em>harder</em> for experts to recognize,
+    since their brains will mis-match and "correct" what's actually there.
+  </p>
 
-      <p>
-        Here's a third version of our function that doesn't use an early return.
-        and only has one conditional branch:
-      </p>
+  <p>
+    Here's a third version of our function that doesn't use an early return.
+    and only has one conditional branch:
+  </p>
 
-<pre src="python/average_empty.py">
+<pre>
 def average(values):
     result = 0.0
     if len(values) &gt; 0:
@@ -4649,33 +4785,33 @@ def average(values):
     return result
 </pre>
 
-      <p class="continue">
-        Many people find this version harder to understand than either of the previous two,
-        even though it is shorter.
-        The reason is that the special case isn't handled explicitly.
-        Instead,
-        this function returns 0 for the empty list
-        because of the code that <em>isn't</em> executed:
-        if the list is empty,
-        the loop doesn't run,
-        so the initial value of <code>result</code>
-        becomes the function's final value by default.
-        Spotting this,
-        and keeping track of what the function isn't doing as well as what it is,
-        is difficult enough that
-        many people won't realize there is a special case at all.
-      </p>
+  <p class="continue">
+    Many people find this version harder to understand than either of the previous two,
+    even though it is shorter.
+    The reason is that the special case isn't handled explicitly.
+    Instead,
+    this function returns 0 for the empty list
+    because of the code that <em>isn't</em> executed:
+    if the list is empty,
+    the loop doesn't run,
+    so the initial value of <code>result</code>
+    becomes the function's final value by default.
+    Spotting this,
+    and keeping track of what the function isn't doing as well as what it is,
+    is difficult enough that
+    many people won't realize there is a special case at all.
+  </p>
 
-      <p>
-        One last thing to note about functions in Python is that
-        every function returns something:
-        if there isn't an explicit <code>return</code> statement,
-        the value returned is <code>None</code>.
-        For example,
-        let's comment out the last line of our sign function:
-      </p>
+  <p>
+    One last thing to note about functions in Python is that
+    every function returns something:
+    if there isn't an explicit <code>return</code> statement,
+    the value returned is <code>None</code>.
+    For example,
+    let's comment out the last line of our sign function:
+  </p>
 
-<pre src="python/sign_commented.py">
+<pre>
 def sign(num):
     if num &lt; 0:
         return -1
@@ -4691,285 +4827,82 @@ print 241, '=&gt;', sign(241)
 241 =&gt; None</span>
 </pre>
 
-      <p class="continue">
-        The sign of 241 is now <code>None</code> instead of 1,
-        because when the function is called with a positive value,
-        neither of the <code>if</code> branches is taken,
-        and execution "falls off" the end of the function.
-      </p>
-
-      <p>
-        Other languages do this differently.
-        In C,
-        for example,
-        trying to use the "result" of a function that doesn't explicitly return something
-        is a compilation error&mdash;the program can't even be run.
-        No matter what the language,
-        this is one reason why commenting out blocks of code is a bad idea:
-        it's all too easy to accidentally disable a <code>return</code> statement
-        buried inside the code that's no longer being executed.
-      </p>
-
-      <div class="keypoints" id="k:return">
-        <h3>Summary</h3>
-        <ul>
-          <li>A function may return values at any point.</li>
-          <li>A function should have zero or more <code>return</code> statements at its start to handle special cases, and then one at the end to handle the general case.</li>
-          <li>"Accidentally" correct behavior is hard to understand.</li>
-          <li>If a function ends without an explicit <code>return</code>, it returns <code>None</code>.</li>
-        </ul>
-      </div>
-
-    </section>
-
-<section id="s:params">
-  <h2>Multiple Parameters</h2>
-
-  <div class="understand">
-    <h3>Understand:</h3>
-    <ul>
-      <li>Draw a diagram to show what happens when multiple values are passed into a function.</li>
-      <li>Define a function whose parameters have default values, and call it correctly.</li>
-    </ul>
-  </div>
-
-  <p>
-    The functions we have seen so far have had only one parameter.
-    When we define a function,
-    however,
-    we can give it any number of parameters.
-    When the function is called and a new stack frame is created,
-    a new variable is defined for each of those parameters,
-    and the actual values given by the caller are assigned to the parameters in order from left to right.
-    For example,
-    if we define <code>average3</code> to calculate the average of three numbers:
-  </p>
-
-<pre>
-def average3(a, b, c):
-    return (a + b + c) / 3.0
-</pre>
-
   <p class="continue">
-    and call it like this:
-  </p>
-
-<pre>
-x = 2
-y = 2
-z = 5
-print average3(x, y, z)
-<span class="out">3.0</span>
-</pre>
-
-  <p class="continue">
-    then just before the function returns,
-    the program's memory is as shown in <a class="figref" href="#f:memory_before_return">Figure 33</a>.
-  </p>
-
-  <figure id="f:memory_before_return">
-    <img src="python/memory_before_return.png" alt="State of Memory Before Function Return" />
-    <figcaption>Figure 31: State of Memory Before Function Return</figcaption>
-  </figure>
-
-  <p>
-    Calling this function with the wrong number of values is an error:
-  </p>
-
-<pre>
-print average3(1, 5)
-<span class="err">Traceback (most recent call last):
-  File "python/average-3-wrong.py", line 4, in &lt;module&gt;
-    print 1, 5, '=&gt;', average3(1, 5)
-TypeError: average3() takes exactly 3 arguments (2 given)</span>
-</pre>
-
-  <p class="continue">
-    This is only sensible:
-    if we pass two values to <code>average3</code>,
-    Python has no way of knowing what third value to use.
-    We can create functions that have
-    <a href="glossary.html#default-value">default values</a> for parameters
-    simply by providing those values when the function is defined:
-  </p>
-
-<pre>
-def average3(a=0.0, b=0.0, c=0.0):
-    return (a + b + c) / 3.0
-</pre>
-
-  <p>
-    The meaning is straightforward:
-    if the caller doesn't tell the function what value to use for <code>a</code>,
-    the function should use 0.0,
-    and similarly for the other parameters.
-    We can now call our function in four different ways:
-  </p>
-
-  <table>
-    <tr>
-      <th>Call</th>
-      <th><code>a</code></th>
-      <th><code>b</code></th>
-      <th><code>c</code></th>
-      <th>Result</th>
-    </tr>
-    <tr>
-      <td><code>average3()</code></td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <td><code>average3(3.0)</code></td>
-      <td>3.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <td><code>average3(3.0, 6.0)</code></td>
-      <td>3.0</td>
-      <td>6.0</td>
-      <td>0.0</td>
-      <td>3.0</td>
-    </tr>
-    <tr>
-      <td><code>average3(3.0, 6.0, 9.0)</code></td>
-      <td>3.0</td>
-      <td>6.0</td>
-      <td>9.0</td>
-      <td>6.0</td>
-    </tr>
-  </table>
-
-  <p class="continue">
-    We still can't call this function with more than three parameters,
-    though,
-    since once again Python wouldn't know where to put the fourth and higher.
+    The sign of 241 is now <code>None</code> instead of 1,
+    because when the function is called with a positive value,
+    neither of the <code>if</code> branches is taken,
+    and execution "falls off" the end of the function.
   </p>
 
   <p>
-    One restriction on functions with default values
-    is that all of the parameters that have default values must come <em>after</em>
-    all of the parameters that don't.
-    To see why,
-    imagine we were allowed to mix defaulting and non-defaulting parameters like this:
-  </p>
-
-<pre>
-def average(<span class="highlight">start=None, values, end=None</span>):
-    if start is None:
-        start = 0
-    if end is None:
-        end = len(values)
-    result = 0.0
-    i = start
-    while i &lt; end:
-        result += values[i]
-        i += 1
-    return result / (end - start)
-</pre>
-
-  <p>
-    If we call the function with just one parameter,
-    it's pretty clear that its value has to be assigned to <code>values</code>.
-    But what should Python do if the function is called with two parameters,
-    like <code>average([1.0, 2.0, 5.0], 1)</code>?
-    Should it use the provided values for the first and second parameters,
-    and the default for the third?
-    Or should it use the first parameter's default,
-    and assign the given values to the second and third?
-    We know what we want,
-    but Python doesn't:
-    remember, it can't infer anything from variables' names.
-    We could define some sort of rule to tell it what to do in this case,
-    but it's simpler and safer to disallow the problem in the first place.
-  </p>
-
-  <p class="fixme">
-    Now let's go back and figure out what the average of an empty list should be.
-    Broadly speaking, there are three possibilities:
-  </p>
-
-  <ol>
-
-    <li>
-      Return 0.0 or some other number.
-    </li>
-
-    <li>
-      Return some other value, such as <code>None</code>.
-    </li>
-
-    <li>
-      Treat this as an error,
-      i.e.,
-      let the divide-by-zero error happen.
-    </li>
-
-  </ol>
-
-  <p>
-    Many people pick the first option
-    (some even arguing that since zero is the average of all possible numbers,
-    it's the only sensible choice).
-    The danger of doing this is that it might mask errors in code.
-    For example,
-    if a file-reading function has a bug in it,
-    and returns an empty list instead of a list of numbers,
-    we'd really like our program to report an error
-    <a href="quality.html#s:defensive">as soon as possible</a>.
-    If <code>average</code> absorbs an error instead of failing,
-    the user may not realize something has gone wrong
-    until millions of instructions later,
-    which makes debugging harder.
-  </p>
-
-  <p>
-    The second option&mdash;returning a non-numerical value&mdash;is almost always a worse choice,
-    because it complicates the calling code.
-    People want to be able to write:
-  </p>
-
-<pre>
-scaling_factor = average(neighbors) / 3.0
-center_cell = scaling_factor * center_cell
-</pre>
-
-  <p class="continue">
-    but if <code>average</code> might return <code>None</code>,
-    their code will only be safe if they write:
-  </p>
-
-<pre>
-scaling_factor = average(neighbors) / 3.0
-if temp is not None:
-    center_cell = scaling_factor * center_cell
-</pre>
-
-  <p>
-    Given what we have seen so far,
-    and allowing the divide-by-zero error to occur,
-    is actually the safest choice:
-    if our program ever does try to calculate the average of an empty list,
-    it will fail right away.
-    We will see a better way to handle this situation <a href="quality.html#s:except">later</a>.
+    Other languages do this differently.
+    In C,
+    for example,
+    trying to use the "result" of a function that doesn't explicitly return something
+    is a compilation error&mdash;the program can't even be run.
+    No matter what the language,
+    this is one reason why commenting out blocks of code is a bad idea:
+    it's all too easy to accidentally disable a <code>return</code> statement
+    buried inside the code that's no longer being executed.
   </p>
 
   <div class="keypoints">
     <h3>Summary</h3>
     <ul>
-      <li>A function may take any number of arguments.</li>
-      <li idea="perf">Define default values for parameters to make functions more convenient to use.</li>
-      <li>Defining default values only makes sense when there are sensible defaults.</li>
+      <li>A function may return values at any point.</li>
+      <li>A function should have zero or more <code>return</code> statements at its start to handle special cases, and then one at the end to handle the general case.</li>
+      <li>"Accidentally" correct behavior is hard to understand.</li>
+      <li>If a function ends without an explicit <code>return</code>, it returns <code>None</code>.</li>
     </ul>
   </div>
 
   <div class="challenges">
     <h3>Challenges</h3>
-    <p class="fixme">write some</p>
+
+    <ol>
+
+      <li>
+        One alternative to returning from inside a loop
+        is to use the <code>break</code> statement
+        to end the loop immediately:
+<pre>
+def first_negative(values):
+    for v in values:
+        if v &lt; 0:
+            break
+    return v
+print first_negative([1, 3, -1, 2])
+<span class="out">-1</span>
+</pre>
+        When can this approach result in an error,
+        and what kind of error does it produce?
+      </li>
+
+      <li>
+        This functions counts
+        how many values from a list must be summed
+        in order to reach some limit:
+<pre>
+def count_to_limit(values, limit):
+    current = 0
+    number = 0
+    for v in values:
+        current += v
+        number += 1
+        if current &gt;= limit:
+            return number
+
+print count_to_limit([1, 2, 3, 5, 7], 8)
+<span class="out">4</span>
+</pre>
+        Fix it so that it returns the right answer
+        when <code>limit</code> is negative,
+        and when the sum of the values in the list
+        never reaches <code>limit</code>.
+      </li>
+
+    </ol>
+
   </div>
 
 </section>
