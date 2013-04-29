@@ -62,7 +62,6 @@ def main(filenames):
         with open(f, 'r') as reader:
             data = reader.read()
         refs = extract_defs(data)
-        print 'refs are', refs
         data = update_refs(data, file_num, refs)
         data = update_figs(data, file_num, refs)
         with open(f, 'w') as writer:
