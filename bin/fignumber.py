@@ -22,10 +22,12 @@ def extract_defs(data):
 
 def update_refs(data, file_num, refs):
     """
-    Update references, returning new data.
+    Update references, returning new document text.
     """
     def repl(m):
-        return '<a class="figref" href="#%s">Figure %d</a>' % \
+        assert m.group(1) in refs, \
+               'Reference "%s" not defined in update_refs' % m.group(1)
+        return '<a href="#%s">Figure %d</a>' % \
                (m.group(1), refs[m.group(1)])
 
     return REF_P.sub(repl, data)
@@ -37,6 +39,8 @@ def update_figs(data, file_num, refs):
     Update figures, returning new data.
     """
     def repl(m):
+        assert m.group(1) in refs, \
+               'Reference "%s" not defined in update_figs' % m.group(1)
         vals = {
             'id'       : m.group(1),
             'ws_1'     : m.group(2),
@@ -49,7 +53,7 @@ def update_figs(data, file_num, refs):
         id_stem = vals['id'].split(':')[1]
         file_stem = vals['img'].split('/')[-1].split('.')[0]
         assert id_stem == file_stem, \
-               '%s != %s' % (vals['id'], vals['img'])
+               'ID stem %s != file stem %s' % (vals['id'], vals['img'])
         return FORMATTED_FIG % vals
 
     return FIG_P.sub(repl, data)
