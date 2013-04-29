@@ -4000,7 +4000,7 @@ print longest
   <h2>Scope</h2>
 
   <div class="understand">
-    <h3>Understand:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Explain what global scope is, and how it differs from local scope.</li>
       <li>Explain why functions shouldn't pass information through global variables.</li>
@@ -4795,11 +4795,11 @@ scale_all([1.0, 2.0, 3.0], 10.0)
   <h2>Returning Values</h2>
 
   <div class="understand">
-    <h3>Understand:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
-      <li>How to return values from a function at any time.</li>
-      <li>Why functions shouldn't return values at arbitrary points.</li>
-      <li>What a function returns if it doesn't return anything explicitly.</li>
+      <li>Write functions that return values from arbitrary points.</li>
+      <li>Explain why functions <em>shouldn't</em> return values at arbitrary points.</li>
+      <li>Identify functions that implicitly return <code>None</code>.</li>
     </ul>
   </div>
 
@@ -5096,15 +5096,14 @@ print count_to_limit([1, 2, 3, 5, 7], 8)
 <section id="s:libraries">
   <h2>Libraries</h2>
 
-  <div class="understand" id="u:libraries">
-    <h3>Understand:</h3>
+  <div class="understand">
+    <h3>Learning Objectives</h3>
     <ul>
-      <li>How to import code in one Python module for use in another.</li>
-      <li>That code is executed as it's imported.</li>
-      <li>That each module corresponds to a variable scope.</li>
-      <li>What is in the standard math library.</li>
-      <li>What is in the system library.</li>
-      <li>Several ways to import things from libraries.</li>
+      <li>Import code from one Python module in three different ways and use it in another.</li>
+      <li>Predict what code will be executed as it is imported.</li>
+      <li>Correctly identify module-scoped variables.</li>
+      <li>Explain why every module is a scope, and how that scope relates to the global and local scopes.</li>
+      <li>Write programs that use the major elements of the <code>sys</code> and <code>math</code> libraries.</li>
     </ul>
   </div>
 
@@ -5625,31 +5624,30 @@ for row in wrapper:
 
 </section>
 
-    <section id="s:filter">
+<section id="s:filter">
+  <h2>Building Filters</h2>
 
-      <h2>Building Filters</h2>
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Build a program that behaves like a Unix filter.</li>
+      <li>Present and explain some heuristics for what should be done in a function and what should be done by its caller.</li>
+      <li>Get help interactively in the Python interpreter.</li>
+      <li>Provide information to the interactive help system.</li>
+      <li>Explain how a file can tell if it's being used as the main program or being loaded as a library.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:filter">
-        <h3>Understand:</h3>
-        <ul>
-          <li>How to build a program that behaves like a Unix filter.</li>
-          <li>How to decide what should be done in a function and what should be done by its caller.</li>
-          <li>How to get help interactively.</li>
-          <li>How to provide interactive help.</li>
-          <li>How a file can tell if it's being used as the main program or being loaded as a library.</li>
-        </ul>
-      </div>
+  <p>
+    As well as creating a list of a program's command-line arguments,
+    <code>sys</code> also connects the program to standard input,
+    standard output,
+    and standard error
+    (which were introduced in the chapter on <a href="shell.html#s:pipefilter">the Unix shell</a>).
+    Here's a typical example of how these variables are used together:
+  </p>
 
-      <p>
-        As well as creating a list of a program's command-line arguments,
-        <code>sys</code> also connects the program to standard input,
-        standard output,
-        and standard error
-        (which were introduced in the chapter on <a href="shell.html#s:pipefilter">the Unix shell</a>).
-        Here's a typical example of how these variables are used together:
-      </p>
-
-<pre src="python/count.py">
+<pre>
 import sys
 
 def count_lines(reader):
@@ -5667,26 +5665,26 @@ else:
         rd.close()
 </pre>
 
-      <p class="continue">
-        This program looks at <code>sys.argv</code> to see if it was called with any filenames as arguments or not.
-        If there were no arguments,
-        then <code>sys.argv</code> will only hold the name of the program,
-        and its length will be 1.
-        In that case, the program reads data from standard input:
-      </p>
+  <p class="continue">
+    This program looks at <code>sys.argv</code> to see if it was called with any filenames as arguments or not.
+    If there were no arguments,
+    then <code>sys.argv</code> will only hold the name of the program,
+    and its length will be 1.
+    In that case, the program reads data from standard input:
+  </p>
 
 <pre>
 $ <span class="in">python count.py &lt; a.txt</span>
 <span class="out">48</span>
 </pre>
 
-      <p class="continue">
-        Otherwise,
-        the program assumes its command-line arguments are the names of files.
-        It opens each one in turn,
-        counts how many lines are in it,
-        and then closes it:
-      </p>
+  <p class="continue">
+    Otherwise,
+    the program assumes its command-line arguments are the names of files.
+    It opens each one in turn,
+    counts how many lines are in it,
+    and then closes it:
+  </p>
 
 <pre>
 $ <span class="in">python count.py a.txt b.txt</span>
@@ -5694,38 +5692,38 @@ $ <span class="in">python count.py a.txt b.txt</span>
 227</span>
 </pre>
 
-      <div class="box">
-        <h3>Who Opens?</h3>
+<div class="box">
+  <h3>Who Opens?</h3>
 
-        <p>
-          There's a subtle but important difference between <code>count_lines</code>
-          and the <code>summarize</code> function we wrote earlier.
-          <code>summarize</code> expects a filename as its sole parameter,
-          and opens and closes that file itself.
-          <code>count_lines</code>,
-          on the other hand,
-          expects to be given a handle to an already-open file,
-          i.e.,
-          it expects whoever is calling it to take care of the opening and closing.
-        </p>
+  <p>
+    There's a subtle but important difference between <code>count_lines</code>
+    and the <code>summarize</code> function we wrote earlier.
+    <code>summarize</code> expects a filename as its sole parameter,
+    and opens and closes that file itself.
+    <code>count_lines</code>,
+    on the other hand,
+    expects to be given a handle to an already-open file,
+    i.e.,
+    it expects whoever is calling it to take care of the opening and closing.
+  </p>
 
-        <p>
-          Why the difference?
-          Because we want to use the same <code>count_lines</code> function
-          for both the files whose names we're given on the command line,
-          and for <code>sys.stdin</code>.
-          Putting it another way,
-          we can't call <code>open</code> with <code>sys.stdin</code> as a parameter&mdash;it's
-          already an open file, not a string&mdash;so
-          we have to do our opening before we call the function.
-        </p>
+  <p>
+    Why the difference?
+    Because we want to use the same <code>count_lines</code> function
+    for both the files whose names we're given on the command line,
+    and for <code>sys.stdin</code>.
+    Putting it another way,
+    we can't call <code>open</code> with <code>sys.stdin</code> as a parameter&mdash;it's
+    already an open file, not a string&mdash;so
+    we have to do our opening before we call the function.
+  </p>
 
-        <p>
-          We <em>could</em> push responsibility for opening down into the function if we really wanted to,
-          so that our main program was just:
-        </p>
+  <p>
+    We <em>could</em> push responsibility for opening down into the function if we really wanted to,
+    so that our main program was just:
+  </p>
 
-<pre src="python/count_2.py">
+<pre>
 if len(sys.argv) == 1:
     count_lines(sys.stdin)
 else:
@@ -5733,18 +5731,18 @@ else:
         count(filename)
 </pre>
 
-        <p class="continue">
-          If we do this,
-          though,
-          the function has to check whether its parameter is a string
-          (which we interpret to mean "the name of a file")
-          or something else
-          (which we hope is an open file we can read from).
-          We have to do the same check at the end of the function as well
-          to close the file if we opened it:
-        </p>
+  <p class="continue">
+    If we do this,
+    though,
+    the function has to check whether its parameter is a string
+    (which we interpret to mean "the name of a file")
+    or something else
+    (which we hope is an open file we can read from).
+    We have to do the same check at the end of the function as well
+    to close the file if we opened it:
+  </p>
 
-<pre src="python/count_2.py">
+<pre>
 def count_lines(source):
 <span class="highlight">    if type(source) == str:
         reader = open(source, 'r')</span>
@@ -5756,20 +5754,20 @@ def count_lines(source):
     return result
 </pre>
 
-        <p class="continue">
-          Most people find the original easier to understand,
-          since it does a better job of separating
-          the calculation from the file management.
-        </p>
+  <p class="continue">
+    Most people find the original easier to understand,
+    since it does a better job of separating
+    the calculation from the file management.
+  </p>
 
-      </div>
+</div>
 
-      <p>
-        Let's go back to our original program
-        and write it a little more politely:
-      </p>
+  <p>
+    Let's go back to our original program
+    and write it a little more politely:
+  </p>
 
-<pre src="src/polite_count.py">
+<pre>
 '''Count lines in files.  If no filename arguments given,
 read from standard input.'''
 
@@ -5788,19 +5786,19 @@ if __name__ == '__main__':
     r.close()
 </pre>
 
-      <p class="continue">
-        The two significant changes are
-        the strings at the start of the module and of the function <code>count_lines</code>,
-        and the funny-looking line that compares <code>__name__</code> to <code>'__main__'</code>.
-        Let's look at them in that order.
-      </p>
+  <p class="continue">
+    The two significant changes are
+    the strings at the start of the module and of the function <code>count_lines</code>,
+    and the funny-looking line that compares <code>__name__</code> to <code>'__main__'</code>.
+    Let's look at them in that order.
+  </p>
 
-      <p>
-        To help us find our way around libraries,
-        Python provides a <code>help</code> function.
-        If <code>math</code> has been imported,
-        the call <code>help(math)</code> prints out the documentation embedded in the math library:
-      </p>
+  <p>
+    To help us find our way around libraries,
+    Python provides a <code>help</code> function.
+    If <code>math</code> has been imported,
+    the call <code>help(math)</code> prints out the documentation embedded in the math library:
+  </p>
 
 <pre>
 import math
@@ -5822,18 +5820,18 @@ FUNCTIONS
     &hellip;        &hellip;        &hellip;</span>
 </pre>
 
-      <p>
-        Here's how this works.
-        If the first thing in a module or function other than blank lines or comments is a string,
-        and that string isn't assigned to a variable,
-        Python saves it as the documentation string,
-        or <a href="glossary.html#docstring">docstring</a>,
-        for that module or function.
-        These docstrings are what online (and offline) help display.
-        For example,
-        let's create a file <code>adder.py</code> with a single function <code>add</code>,
-        and write docstrings for both the module and the function:
-      </p>
+  <p>
+    Here's how this works.
+    If the first thing in a module or function other than blank lines or comments is a string,
+    and that string isn't assigned to a variable,
+    Python saves it as the documentation string,
+    or <a href="glossary.html#docstring">docstring</a>,
+    for that module or function.
+    These docstrings are what online (and offline) help display.
+    For example,
+    let's create a file <code>adder.py</code> with a single function <code>add</code>,
+    and write docstrings for both the module and the function:
+  </p>
 
 <pre src="python/adder.py">
 <span class="comment"># adder.py</span>
@@ -5844,11 +5842,11 @@ def add(a, b):
   return a+b
 </pre>
 
-      <p class="continue">
-        If we import <code>adder</code>,
-        <code>help(adder)</code> prints out all of its docstrings,
-        i.e., the documentation for the module itself and for all of its functions:
-      </p>
+  <p class="continue">
+    If we import <code>adder</code>,
+    <code>help(adder)</code> prints out all of its docstrings,
+    i.e., the documentation for the module itself and for all of its functions:
+  </p>
 
 <pre>
 import adder
@@ -5860,10 +5858,10 @@ FUNCTIONS
         Add arguments.</span>
 </pre>
 
-      <p class="continue">
-        We can also be more selective,
-        and only display the help for a particular function instead:
-      </p>
+  <p class="continue">
+    We can also be more selective,
+    and only display the help for a particular function instead:
+  </p>
 
 <pre>
 &gt;&gt;&gt; help(adder.add)
@@ -5871,43 +5869,43 @@ FUNCTIONS
        Add arguments.</span>
 </pre>
 
-      <p>
-        The second part of our more polite program was that odd-looking <code>if</code> statement.
-        It depends on a trick to do something useful,
-        and that trick needs a bit of explaining.
-        When Python reads in a file,
-        it assigns a value to a special variable called <code>__name__</code>
-        (with two underscores before and after).
-        If the file is being run as the main program,
-        <code>__name__</code> is assigned the string <code>'__main__'</code>
-        (again with two underscores before and after).
-        If the file is being loaded as a module by some other program,
-        though,
-        Python assigns the module's name to <code>__name__</code> instead.
-        To show this in action,
-        let's create a Python file called <code>my_name.py</code>
-        that does nothing but print out the value of <code>__main__</code>:
-      </p>
+  <p>
+    The second part of our more polite program was that odd-looking <code>if</code> statement.
+    It depends on a trick to do something useful,
+    and that trick needs a bit of explaining.
+    When Python reads in a file,
+    it assigns a value to a special variable called <code>__name__</code>
+    (with two underscores before and after).
+    If the file is being run as the main program,
+    <code>__name__</code> is assigned the string <code>'__main__'</code>
+    (again with two underscores before and after).
+    If the file is being loaded as a module by some other program,
+    though,
+    Python assigns the module's name to <code>__name__</code> instead.
+    To show this in action,
+    let's create a Python file called <code>my_name.py</code>
+    that does nothing but print out the value of <code>__main__</code>:
+  </p>
 
-<pre src="my_name.py">
+<pre>
 print __name__
 </pre>
 
-      <p class="continue">
-        If we run it directly from the command line,
-        it tells us that <code>__name__</code> has the value <code>'__main__'</code>:
-      </p>
+  <p class="continue">
+    If we run it directly from the command line,
+    it tells us that <code>__name__</code> has the value <code>'__main__'</code>:
+  </p>
 
 <pre>
 $ <span class="in">python my_name.py</span>
 <span class="out">__name__</span>
 </pre>
 
-      <p class="continue">
-        If we import this file into an interactive Python session,
-        though,
-        what's printed out during the import is different:
-      </p>
+  <p class="continue">
+    If we import this file into an interactive Python session,
+    though,
+    what's printed out during the import is different:
+  </p>
 
 <pre>
 $ <span class="in">python</span>
@@ -5915,9 +5913,9 @@ $ <span class="in">python</span>
 <span class="out">my_name</span>
 </pre>
 
-      <p class="continue">
-        We get the same behavior if we import <code>my_name</code> into another program:
-      </p>
+  <p class="continue">
+    We get the same behavior if we import <code>my_name</code> into another program:
+  </p>
 
 <pre>
 $ <span class="in">cat test_import.py</span>
@@ -5926,28 +5924,28 @@ $ <span class="in">python test_import.py</span>
 <span class="out">my_name</span>
 </pre>
 
-      <p>
-        Now,
-        suppose that a file contains the conditional statement
-        <code>if __name__ == '__main__'</code>.
-        The code inside the <code>if</code> will only run if the file is the main program,
-        because that's the only situation in which <code>__name__</code> will be <code>'__main__'</code>.
-        Put another way,
-        the statements inside the conditional will <em>not</em> be run
-        if the file is being loaded as a library by some other program.
-        This makes it easy to write modules
-        that can be used as both programs in their own right,
-        and as libraries by other pieces of code.
-      </p>
+  <p>
+    Now,
+    suppose that a file contains the conditional statement
+    <code>if __name__ == '__main__'</code>.
+    The code inside the <code>if</code> will only run if the file is the main program,
+    because that's the only situation in which <code>__name__</code> will be <code>'__main__'</code>.
+    Put another way,
+    the statements inside the conditional will <em>not</em> be run
+    if the file is being loaded as a library by some other program.
+    This makes it easy to write modules
+    that can be used as both programs in their own right,
+    and as libraries by other pieces of code.
+  </p>
 
-      <p>
-        For example,
-        the file <code>stats.py</code> defines a function <code>average</code>,
-        and then runs three simple tests&mdash;but
-        only if <code>__name__</code> has the value <code>'__main__'</code>:
-      </p>
+  <p>
+    For example,
+    the file <code>stats.py</code> defines a function <code>average</code>,
+    and then runs three simple tests&mdash;but
+    only if <code>__name__</code> has the value <code>'__main__'</code>:
+  </p>
 
-<pre src="src/stats.py">
+<pre>
 # stats.py
 '''Useful statistical tools.'''
 
@@ -5964,11 +5962,11 @@ if __name__ == '__main__':
   print 'test 3 should be 2:', average([1, 2, 3])
 </pre>
 
-      <p class="continue">
-        If we import this file into an interactive session,
-        it doesn't produce any output,
-        because <code>stats.__name__</code> has been assigned the value <code>'stats'</code>:
-      </p>
+  <p class="continue">
+    If we import this file into an interactive session,
+    it doesn't produce any output,
+    because <code>stats.__name__</code> has been assigned the value <code>'stats'</code>:
+  </p>
 
 <pre>
 import stats
@@ -5976,11 +5974,11 @@ print stats.__name__
 <span class="out">stats</span>
 </pre>
 
-      <p class="continue">
-        If we run this file directly, though,
-        that same <code>__name__</code> variable will be assigned the value <code>'__main__'</code>,
-        so the test <em>will</em> be run:
-      </p>
+  <p class="continue">
+    If we run this file directly, though,
+    that same <code>__name__</code> variable will be assigned the value <code>'__main__'</code>,
+    so the test <em>will</em> be run:
+  </p>
 
 <pre>
 $ <span class="in">python stats.py</span>
@@ -5989,105 +5987,154 @@ test 2 should be 1: 1
 test 3 should be 2: 2</span>
 </pre>
 
-      <p class="continue">
-        This is another common design pattern in Python:
-        group related functions into a module,
-        then put some tests for those functions in the same module
-        under <code>if __name__ == '__main__'</code>,
-        so that if the module is run as the main program,
-        it will check itself.
-      </p>
+  <p class="continue">
+    This is another common design pattern in Python:
+    group related functions into a module,
+    then put some tests for those functions in the same module
+    under <code>if __name__ == '__main__'</code>,
+    so that if the module is run as the main program,
+    it will check itself.
+  </p>
 
-      <div class="box">
-        <h3>How Other Languages Do It</h3>
+  <div class="box">
+    <h3>How Other Languages Do It</h3>
 
-        <p>          
-          The <code>__name__ == 'main'</code> idiom is
-          one of the few things that Python got wrong:
-          it's economical,
-          in that it doesn't introduce any special-purpose machinery that doesn't have to be there anyway,
-          but novices have to master several difficult concepts
-          before they can understand how it works.
-        </p>
+    <p>          
+      The <code>__name__ == 'main'</code> idiom is
+      one of the few things that Python got wrong:
+      it's economical,
+      in that it doesn't introduce any special-purpose machinery that doesn't have to be there anyway,
+      but novices have to master several difficult concepts
+      before they can understand how it works.
+    </p>
 
-        <p>
-          Other languages handle the "where do I start?" problem differently.
-          C,
-          for example,
-          expects programs to have a function called <code>main</code>,
-          which is automatically invoked to start the program running.
-        </p>
+    <p>
+      Other languages handle the "where do I start?" problem differently.
+      C,
+      for example,
+      expects programs to have a function called <code>main</code>,
+      which is automatically invoked to start the program running.
+    </p>
 
-      </div>
+  </div>
 
-      <div class="keypoints" id="k:filter">
-        <h3>Summary</h3>
-        <ul>
-          <li>If a program isn't told what files to process, it should process standard input.</li>
-          <li idea="paranoia">Programs that explicitly test values' types are more brittle than ones that rely on those values' common properties.</li>
-          <li>The variable <code>__name__</code> is assigned the string <code>'__main__'</code> in a module when that module is the main program, and the module's name when it is imported by something else.</li>
-          <li>If the first thing in a module or function is a string that isn't assigned to a variable, that string is used as the module or function's documentation.</li>
-          <li>Use <code>help(<em>name</em>)</code> to display the documentation for something.</li>
-        </ul>
-      </div>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>If a program isn't told what files to process, it should process standard input.</li>
+      <li>Programs that explicitly test values' types are more brittle than ones that rely on those values' common properties.</li>
+      <li>The variable <code>__name__</code> is assigned the string <code>'__main__'</code> in a module when that module is the main program, and the module's name when it is imported by something else.</li>
+      <li>If the first thing in a module or function is a string that isn't assigned to a variable, that string is used as the module or function's documentation.</li>
+      <li>Use <code>help(<em>name</em>)</code> to display the documentation for something.</li>
+    </ul>
+  </div>
 
-    </section>
+  <div class="challenges">
+    <h3>Challenges</h3>
 
-    <section id="s:summary">
+    <p>
+      Write <code>head</code> in Python.
+      Your program should behave as follows:
+    </p>
 
-      <h2>Summing Up</h2>
+    <ul>
+      <li>
+        If it is run with no arguments at all,
+        it displays the first 10 lines read from standard input
+        (or as many as it can read if there are fewer than 10).
+      </li>
+      <li>
+        If it is run with a single numeric argument N beginning with a '-',
+        such as <code>head.py -6</code>,
+        it displays the first N lines of input
+        (or as many as it can read if there aren't that many).
+      </li>
+      <li>
+        If it is run with one or more filenames as arguments,
+        it displays the first 10 lines of each
+        (or as many as it can).
+      </li>
+      <li>
+        If it is run with both '-N' and one or more filenames,
+        it displays the first N lines of each file.
+      </li>
+    </ul>
 
-      <p>
-        Novices (and people looking for an argument) often ask,
-        "What's the best programming language?"
-        The answer depends on what we want to do.
-        If we want to write small programs quickly,
-        and be able to manage the complexity of larger ones,
-        then dynamic languages like Python, Ruby, R, and MATLAB are good choices:
-        they optimize programming time over execution time.
-        If we want to squeeze the last ounce of performance out of our hardware,
-        then compiled languages like C++, C#, and modern dialects of Fortran
-        are currently better options.
-        And if we want a user interface that runs (almost) everywhere,
-        Javascript has become a surprisingly strong contender.
-      </p>
+    <p>
+      Think carefully about how to break this problem into functions.
+      As a bonus,
+      make it possible for someone to do this:
+    </p>
 
-      <p>
-        Functions are a way to divide code up into more comprehensible pieces:
-        essentially,
-        to replace several pieces of information with one to make the whole easier to understand.
-        Functions are therefore not just about eliminating redundancy:
-        they are worth writing even if they're only called once.
-      </p>
+<pre>
+from head import head
+reader = open('somefile.txt', 'r')
+lines = head.head(reader, 22)
+reader.close()
+</pre>
 
-      <p>
-        In fact,
-        functions are such a powerful idea that
-        many people regard programming as the art of defining a mini-language
-        in which the solution to the original problem is trivial.
-        To close off this chapter,
-        let's try to answer a frequently-asked question:
-        when should we write functions?
-        And what should we put in them?
-      </p>
+    <p class="continue">
+      to get the first 22 lines from <code>somefile.txt</code>.
+    </p>
 
-      <p>
-        The answers to these questions depend on the fact that
-        human short-term memory can only hold a few things at a time.
-        If we try to remember more than a double handful of unrelated bits of information
-        for more than a few seconds,
-        they become jumbled and we start making mistakes.
-        In particular,
-        if someone has to keep several dozen things straight in their mind
-        in order to understand a piece of code,
-        that code is too long.
-      </p>
+  </div>
 
-      <p>
-        Let's consider an example:
-      </p>
+</section>
 
-<pre src="python/cognitive_limits_initial.py">
+<section id="s:summary">
+  <h2>Summing Up</h2>
+
+  <p>
+    Novices (and people looking for an argument) often ask,
+    "What's the best programming language?"
+    The answer depends on what we want to do.
+    If we want to write small programs quickly,
+    and be able to manage the complexity of larger ones,
+    then dynamic languages like Python, Ruby, R, and MATLAB are good choices:
+    they optimize programming time over execution time.
+    If we want to squeeze the last ounce of performance out of our hardware,
+    then compiled languages like C++, C#, and modern dialects of Fortran
+    are currently better options.
+    And if we want a user interface that runs (almost) everywhere,
+    Javascript has become a surprisingly strong contender.
+  </p>
+
+  <p>
+    Functions are a way to divide code up into more comprehensible pieces:
+    essentially,
+    to replace several pieces of information with one to make the whole easier to understand.
+    Functions are therefore not just about eliminating redundancy:
+    they are worth writing even if they're only called once.
+  </p>
+
+  <p>
+    In fact,
+    functions are such a powerful idea that
+    many people regard programming as the art of defining a mini-language
+    in which the solution to the original problem is trivial.
+    To close off this chapter,
+    let's try to answer a frequently-asked question:
+    when should we write functions?
+    And what should we put in them?
+  </p>
+
+  <p>
+    The answers to these questions depend on the fact that
+    human short-term memory can only hold a few things at a time.
+    If we try to remember more than a double handful of unrelated bits of information
+    for more than a few seconds,
+    they become jumbled and we start making mistakes.
+    In particular,
+    if someone has to keep several dozen things straight in their mind
+    in order to understand a piece of code,
+    that code is too long.
+  </p>
+
+  <p>
+    Let's consider an example:
+  </p>
+
+<pre>
 for x in range(1, GRID_WIDTH-1):
   for y in range(1, GRID_HEIGHT-1):
     if (density[x-1][y] &gt; density_threshold) or \
@@ -6099,15 +6146,15 @@ for x in range(1, GRID_WIDTH-1):
           density[x][y] = temp
 </pre>
 
-      <p class="continue">
-        This code uses meaningful variable names,
-        and is well structured,
-        but it's still a lot to digest in one go.
-        Let's replace the loop bounds with function calls
-        that give us a bit more context:
-      </p>
+  <p class="continue">
+    This code uses meaningful variable names,
+    and is well structured,
+    but it's still a lot to digest in one go.
+    Let's replace the loop bounds with function calls
+    that give us a bit more context:
+  </p>
 
-<pre src="python/cognitive_limits_bounds.py">
+<pre>
 for x in grid_interior(GRID_WIDTH):
   for y in grid_interior(GRID_HEIGHT):
     if (density[x-1][y] &gt; density_threshold) or \
@@ -6119,18 +6166,18 @@ for x in grid_interior(GRID_WIDTH):
           density[x][y] = temp
 </pre>
 
-      <p class="continue">
-        <code>grid_interior(num)</code> might just return <code>range(1, num-1)</code>,
-        but try reading the first two lines of this code aloud,
-        and then the first two lines of what it replaced,
-        and see which is easier to understand.
-      </p>
+  <p class="continue">
+    <code>grid_interior(num)</code> might just return <code>range(1, num-1)</code>,
+    but try reading the first two lines of this code aloud,
+    and then the first two lines of what it replaced,
+    and see which is easier to understand.
+  </p>
 
-      <p>
-        Now let's replace those two <code>if</code> statements with function calls as well:
-      </p>
+  <p>
+    Now let's replace those two <code>if</code> statements with function calls as well:
+  </p>
 
-<pre src="python/cognitive_limits_threshold.py">
+<pre>
 for x in grid_interior(GRID_WIDTH):
   for y in grid_interior(GRID_HEIGHT):
     if density_exceeds(density, x, y, density_threshold):
@@ -6140,13 +6187,13 @@ for x in grid_interior(GRID_WIDTH):
           density[x][y] = temp
 </pre>
 
-      <p class="continue">
-        Again, we've provided more information about what we're actually doing.
-        Finally, let's create and call a function
-        to handle updates to our data structure:
-      </p>
+  <p class="continue">
+    Again, we've provided more information about what we're actually doing.
+    Finally, let's create and call a function
+    to handle updates to our data structure:
+  </p>
 
-<pre src="python/cognitive_limits_final.py">
+<pre>
 for x in grid_interior(GRID_WIDTH):
   for y in grid_interior(GRID_HEIGHT):
     if density_exceeds(density, x, y, density_threshold):
@@ -6154,32 +6201,32 @@ for x in grid_interior(GRID_WIDTH):
         update_on_tolerance(density, x, y, tolerance)
 </pre>
 
-      <p class="continue">
-        Our original nine lines have become five,
-        and those five are all at the same mental level.
-        It's hard to pin down exactly what that phrase means,
-        but most programmers would agree that
-        the first version mixed high-level ideas about boundaries and update conditions
-        with low-level details of grid access and cell value comparisons.
-        In contrast,
-        this version only has the high-level stuff;
-        the low-level implementation details are hidden in those functions.
-      </p>
+  <p class="continue">
+    Our original nine lines have become five,
+    and those five are all at the same mental level.
+    It's hard to pin down exactly what that phrase means,
+    but most programmers would agree that
+    the first version mixed high-level ideas about boundaries and update conditions
+    with low-level details of grid access and cell value comparisons.
+    In contrast,
+    this version only has the high-level stuff;
+    the low-level implementation details are hidden in those functions.
+  </p>
 
-      <p>
-        A conscientious programmer who wrote the code we started with
-        would go back and <a href="glossary.html#refactor">refactor</a> it
-        to turn it into something like our final version
-        before committing it to <a href="svn.html">version control</a>.
-        If she did this often enough,
-        she would eventually find herself writing the final version first,
-        just as mathematicians find themselves skipping more and more "obvious" steps
-        as they do more proofs.
-        When we see someone "just writing" something elegant,
-        the odds are good that they have spent time rewriting their own poor code,
-        and in doing so,
-        turned conscious decision into unconscious action.
-      </p>
+  <p>
+    A conscientious programmer who wrote the code we started with
+    would go back and <a href="glossary.html#refactor">refactor</a> it
+    to turn it into something like our final version
+    before committing it to <a href="svn.html">version control</a>.
+    If she did this often enough,
+    she would eventually find herself writing the final version first,
+    just as mathematicians find themselves skipping more and more "obvious" steps
+    as they do more proofs.
+    When we see someone "just writing" something elegant,
+    the odds are good that they have spent time rewriting their own poor code,
+    and in doing so,
+    turned conscious decision into unconscious action.
+  </p>
 
-    </section>
+</section>
 {% endblock content %}
