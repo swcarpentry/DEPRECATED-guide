@@ -73,47 +73,157 @@
     This lesson is written as an introduction to Python,
     but its real purpose is to introduce
     the single most important idea in programming:
-    how to break a problem into a collection of functions,
-    each of which is small enough (and coherent enough)
-    to fit in a programmer's working memory.
+    how to solve problems by building functions,
+    each of which can fit in a programmer's working memory.
     In order to teach that,
-    we must teach people about the mechanics of manipulating data
+    we must teach people a little about the mechanics of manipulating data
     with lists and file I/O
     so that their functions can do things they actually care about.
-    The challenge is that
-    most of these mechanical operations
-    (e.g., list slicing)
-    aren't immediately useful in their own right,
-    and learners are only willing to spend a few minutes
-    on synthetic tasks
-    to master things they've been promised will be useful later.
+    Our teaching order tries to show practical uses of every idea
+    as soon as it is introduced;
+    instructors should resist the temptation
+    to explain the "other 90%" of the language as they go along.
   </p>
 
   <p>
     The secondary goal of this lesson is
-    to show people how to build tools that fit into
+    to give them a usable mental model of how programs run&mdash;what
+    computer science educators call a <a href="glossary.html#notional-machine">notional machine</a>&mdash;so
+    that they can debug things when they go wrong.
+    In particular,
+    they must understand what types, references, and aliasing are,
+    and how call stacks and scopes work;
+    again,
+    the mechanics of programming only make sense once these ideas are understood,
+    but these ideas are easier to absorb
+    in the context of practical use.
+  </p>
+
+  <p>
+    Finally,
+    the capstone example in this chapter is
+    building something that fits into
     the Unix pipe-and-filter model.
-    We do this both because it is immediately useful,
-    and because it helps them see that
-    things they download and install on their computers aren't magical.
+    We do this both because it is a well-motivated medium-sized example,
+    and because it helps learners see that
+    the software they use isn't magical.
     Tools like <code>grep</code> might be more sophisticated
-    than the things our learners are capable of writing
+    than the programs our learners can write
     at this point in their careers,
-    but it's a difference of scale,
-    not of kind.
+    but it's crucial they realize
+    this is a difference of scale rather than kind.
+  </p>
+
+  <p>
+    The greatest challenges in teaching this material are
+    the diversity of learners' prior knowledge
+    and a general lack of time.
+    People who have programmed before can absorb this lesson
+    several times faster than people who haven't,
+    and even they find it hard to get through this
+    in less than four or five hours
+    if hands-on work is included.
+    If time runs short,
+    the topics to cut are:
+  </p>
+
+  <ul>
+    <li><a href="#s:flag">Flags</a></li>
+    <li><a href="#s:parse">Reading Data Files</a></li>
+    <li><a href="#s:nesting">Nesting</a></li>
+    <li><a href="#s:alias">Aliasing</a></li>
+    <li><a href="#s:filter">Building Filters</a></li>
+  </ul>
+
+  <p>
+    This material can be covered in <span class="duration">four hours</span>
+    if the topics listed above are taken out,
+    and in five to six if they are kept in.
+    If the audience is able to keep up,
+    or if extra time is available,
+    two bonus topics can be brought in:
+  </p>
+
+  <ul>
+    <li><a href="extras.html#s:python:funcobj">Functions as Objects</a></li>
+    <li><a href="extras.html#s:python:provenance">Provenance</a></li>
+  </ul>
+
+  <p>
+    The first is always an "ah ha!" moment for people who get it:
+    they can immediately see how storing functions in lists
+    and passing them to other functions
+    can eliminate redundancy in their code,
+    and it shows them how the numerical and image processing libraries they use
+    actually work.
+    However,
+    only about half of learners
+    (even in advanced classes)
+    have that "ah ha!"
+    The second,
+    which extends
+    <a href="svn.html#s:provenance">the provenance example in the Subversion lesson</a>,
+    connects this lesson to earlier material
+    in the same way as the <a href="#s:filter">filter example</a>.
   </p>
 
   <div class="prereq">
     <h3>Prerequisites</h3>
     <p>
-      Some 
+      The discussion of <a href="#s:stdio">standard I/O</a>
+      and <a href="#s:filter">building filters</a>
+      depends on concepts introducing during
+      discussion of <a href="shell.html">the shell</a>.
+      The rest of this lesson is designed to stand on its own.
     </p>
   </div>
 
   <div class="notes">
     <h3>Teaching Notes</h3>
     <ul>
-      <li class="fixme">write</li>
+      <li>
+        Examples in this lesson show use of a command-line interpreter (CLI),
+        but work equally well with the IPython Notebook.
+        If you use a CLI,
+        make sure learners can edit text files
+        and save them in the right directories
+        at the start of the lesson.
+        (And if you have Windows users in your class,
+        make sure their files can be run by whatever version of Python they have&mdash;we
+        have occasionally had line-ending issues.)
+      </li>
+      <li>
+        Learners often report that
+        watching the instructor grow a program in front of them
+        is as useful in its own right
+        as anything to do with Python.
+        In particular,
+        the <a href="#s:parse">file-parsing example</a> works best if
+        the instructor writes the first version as a single block of code,
+        and then extracts functions from it
+        as new features are added:
+        it's the best way to show learners
+        when and why something ought to be put in a function of its own.
+        After the instructor has done this a couple of times,
+        it's natural for her to say,
+        "We know we're going to put this in its own function eventually,
+        so why don't we just go ahead and do that right from the start?"
+      </li>
+      <li>
+        This lesson cheats a bit
+        by introducing some non-core concepts in challenges.
+        These may take longer to work through
+        than challenges in other lessons,
+        so expect to have to give more hints
+        and partial solutions along the way.
+      </li>
+      <li>
+        Python uses tuples in many places,
+        but we don't introduce them until we discuss
+        <a href="setdict.html#a:tuple">sets and dictionaries</a>,
+        mostly because learners find the existence of two list-like structures confusing.
+        We therefore try to avoid explaining them except in passing.
+      </li>
     </ul>
   </div>
 </div>
@@ -131,6 +241,9 @@
       <li>Explain what happens when one variable is assigned to another.</li>
       <li>Trace the effect of several consecutive assignment statements.</li>
     </ul>
+    <p>
+      <span class="duration">15 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -489,6 +602,9 @@ print original + adjusted
       <li>Store Python commands in a file.</li>
       <li>Use the interpreter to run a file containing Python commands.</li>
     </ul>
+    <p>
+      <span class="duration">15 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -615,6 +731,9 @@ print mass
       <li>Explain what "type conversion" is, and give an example.</li>
       <li>Explain (with an example) why programs shouldn't guess what people want to do.</li>
     </ul>
+    <p>
+      <span class="duration">10 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -874,6 +993,9 @@ molecule = carbon + oxygen * 2
       <li>Call a pre-defined method of a built-in type.</li>
       <li>Write programs that write data to files.</li>
     </ul>
+    <p>
+      <span class="duration">20 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -1269,6 +1391,9 @@ writer.close()
       <li>Write programs that read from standard input.</li>
       <li>Write programs that write to standard output.</li>
     </ul>
+    <p>
+      <span class="duration">25 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -1437,6 +1562,9 @@ ________.________(line)
       <li>Trace the values taken on by a loop variable during execution of the loop.</li>
       <li>Explain what the "body" of a loop is, and correctly identify the bodies of loops.</li>
     </ul>
+    <p>
+      <span class="duration">15 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -1744,6 +1872,9 @@ print total
       <li>Use logical operators to combine tests in conditional statements.</li>
       <li>Explain what "in-place operators" are, and correctly write statements using them.</li>
     </ul>
+    <p>
+      <span class="duration">15 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -2203,6 +2334,9 @@ else:
       <li>Write statements that create and store Boolean values, and use them correctly in conditional statements.</li>
       <li>Write examples showing how to keep track of events using flag variables.</li>
     </ul>
+    <p>
+      <span class="duration">20 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -2436,6 +2570,9 @@ print current
     <ul>
       <li>Read a simple columnar data file and operate on its values.</li>
     </ul>
+    <p>
+      <span class="duration">30 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -2685,6 +2822,9 @@ for line in sys.stdin:
       <li>Show how to generate all the valid indices for a list's elements.</li>
       <li>Explain when it is appropriate to use short or long variable names, and why.</li>
     </ul>
+    <p>
+      <span class="duration">20 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -3665,6 +3805,9 @@ while names:
       <li>Draw data structure diagrams corresponding to nested lists, and write nested lists that correspond to given diagrams.</li>
       <li>Explain what happens when an expression like "<code>table[3][2]</code>" is evaluated.</li>
     </ul>
+    <p>
+      <span class="duration">30 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -4440,6 +4583,9 @@ for i in range(2):
       <li>Trace values as they are passed into and returned by functions.</li>
       <li>Compose function calls.</li>
     </ul>
+    <p>
+      <span class="duration">20 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -4817,6 +4963,9 @@ print longest
       <li>Explain what global scope is, and how it differs from local scope.</li>
       <li>Explain why functions shouldn't pass information through global variables.</li>
     </ul>
+    <p>
+      <span class="duration">20 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -5613,6 +5762,9 @@ scale_all([1.0, 2.0, 3.0], 10.0)
       <li>Explain why functions <em>shouldn't</em> return values at arbitrary points.</li>
       <li>Identify functions that implicitly return <code>None</code>.</li>
     </ul>
+    <p>
+      <span class="duration">15 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -5919,6 +6071,9 @@ print count_to_limit([1, 2, 3, 5, 7], 8)
       <li>Construct programs which create aliases for data.</li>
       <li>Trace changes to data in programs that contain aliases.</li>
     </ul>
+    <p>
+      <span class="duration">30 minutes</span>.
+    </p>
   </div>
     
   <p>
@@ -6338,6 +6493,9 @@ print mat
       <li>Explain why every module is a scope, and how that scope relates to the global and local scopes.</li>
       <li>Write programs that use the major elements of the <code>sys</code> and <code>math</code> libraries.</li>
     </ul>
+    <p>
+      <span class="duration">30 minutes</span>.
+    </p>
   </div>
 
   <p>
@@ -6869,6 +7027,9 @@ for row in wrapper:
       <li>Provide information to the interactive help system.</li>
       <li>Explain how a file can tell if it's being used as the main program or being loaded as a library.</li>
     </ul>
+    <p>
+      <span class="duration">30 minutes</span>.
+    </p>
   </div>
 
   <p>

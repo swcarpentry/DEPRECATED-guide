@@ -6,694 +6,747 @@
 {% endblock file_metadata %}
 
 {% block content %}
-    <p>Here's the dream:</p>
+<p>Here's the dream:</p>
 
-    <blockquote>
-      Computers have revolutionized research, and that revolution is only beginning.
-      Every day,
-      scientists and engineers all over the world use them
-      to study things that are too big, too small, too fast, too slow, too expensive, too dangerous,
-      or just too hard to study any other way.
-    </blockquote>
+<blockquote>
+  Computers have revolutionized research, and that revolution is only beginning.
+  Every day,
+  scientists and engineers all over the world use them
+  to study things that are too big, too small, too fast, too slow, too expensive, too dangerous,
+  or just too hard to study any other way.
+</blockquote>
 
-    <p>
-      Now here's the reality:
-    </p>
+<p>
+  Now here's the reality:
+</p>
 
-    <blockquote>
-      Every day,
-      scientists and engineers all over the world waste time wrestling with computers.
-      Tasks that should take a few moments take hours or days,
-      and many things never work at all.
-      And even when things <em>do</em> work,
-      most scientists have no idea how reliable their results are.
-    </blockquote>
+<blockquote>
+  Every day,
+  scientists and engineers all over the world waste time wrestling with computers.
+  Tasks that should take a few moments take hours or days,
+  and many things never work at all.
+  And even when things <em>do</em> work,
+  most scientists have no idea how reliable their results are.
+</blockquote>
 
-    <p>
-      Most of the pain that researchers feel stems from not knowing
-      how to develop software systematically,
-      how to tell if their programs are working correctly,
-      how to share their work with others
-      (except by mailing files to one another),
-      or how to keep track of what they've done.
-      This sorry state of affairs persists for four reasons:
-    </p>
+<p>
+  Most of the pain that researchers feel stems from not knowing
+  how to develop software systematically,
+  how to tell if their programs are working correctly,
+  how to share their work with others
+  (except by mailing files to one another),
+  or how to keep track of what they've done.
+  This sorry state of affairs persists for four reasons:
+</p>
 
-    <dl>
-      <dt>
-        No room, no time.
-      </dt>
-      <dd>
-        Everybody's curriculum is full&mdash;there's simply not space to add more about computing
-        without dropping something else.
-        Or as a scientist once asked me,
-        "What should we cut from our physics degree to make room for this stuff:
-        thermodynamics or quantum mechanics?"
-        (And taking five minutes out of each lecture to talk about computing doesn't work:
-        that still adds up to four courses over a four-year degree,
-        and anyway,
-        it'll be the first thing cut when the lecturer is running late.)
-      </dd>
+<dl>
+  <dt>
+    No room, no time.
+  </dt>
+  <dd>
+    Everybody's curriculum is full&mdash;there's simply not space to add more about computing
+    without dropping something else.
+    Or as a scientist once asked me,
+    "What should we cut from our physics degree to make room for this stuff:
+    thermodynamics or quantum mechanics?"
+    (And taking five minutes out of each lecture to talk about computing doesn't work:
+    that still adds up to four courses over a four-year degree,
+    and anyway,
+    it'll be the first thing cut when the lecturer is running late.)
+  </dd>
 
-      <dt>
-        No standards.
-      </dt>
-      <dd>
-        Reviewers and granting agencies don't expect computational work
-        to meet the same standards as other experimental work,
-        much less require it to,
-        so there's no incentive for scientists to learn how to do so.
-      </dd>
+  <dt>
+    No standards.
+  </dt>
+  <dd>
+    Reviewers and granting agencies don't expect computational work
+    to meet the same standards as other experimental work,
+    much less require it to,
+    so there's no incentive for scientists to learn how to do so.
+  </dd>
 
-      <dt>
-        The blind leading the blind.
-      </dt>
-      <dd>
-        Senior researchers can't teach the next generation how to do things
-        that they don't know how to do themselves.
-      </dd>
+  <dt>
+    The blind leading the blind.
+  </dt>
+  <dd>
+    Senior researchers can't teach the next generation how to do things
+    that they don't know how to do themselves.
+  </dd>
 
-      <dt>
-        The cult of big iron.
-      </dt>
-      <dd>
-        While most scientists and engineers work on desktop-scale machines,
-        most attention and money goes to supercomputers
-        that senators and university presidents can stand beside on opening day.
-        As a result,
-        basic skills are neglected,
-        just as nurses' salaries and basic public health initiatives are often sacrificed
-        to fund the construction of a new wing at the hospital.
-      </dd>
+  <dt>
+    The cult of big iron.
+  </dt>
+  <dd>
+    While most scientists and engineers work on desktop-scale machines,
+    most attention and money goes to supercomputers
+    that senators and university presidents can stand beside on opening day.
+    As a result,
+    basic skills are neglected,
+    just as nurses' salaries and basic public health initiatives are often sacrificed
+    to fund the construction of a new wing at the hospital.
+  </dd>
 
-    </dl>
+</dl>
 
-    <p>
-      Our goal is to break this vicious cycle by showing scientists and engineers
-      how to do more in less time and with less pain.
-      To do this,
-      we combine half a dozen tools with
-      an equal number of working practices
-      borrowed from open source software developers.
-      Both can be learned in under thirty hours;
-      together,
-      they can save most researchers up to a day a week
-      for the rest of their careers,
-      and make whole new areas of research feasible.
-    </p>
+<p>
+  Our goal is to break this vicious cycle by showing scientists and engineers
+  how to do more in less time and with less pain.
+  To do this,
+  we combine half a dozen tools with
+  an equal number of working practices
+  borrowed from open source software developers.
+  Both can be learned in under thirty hours;
+  together,
+  they can save most researchers up to a day a week
+  for the rest of their careers,
+  and make whole new areas of research feasible.
+</p>
 
-    <p>
-      More specifically,
-      we address these questions:
-    </p>
+<p>
+  More specifically,
+  we address these questions:
+</p>
 
-    <ol>
-      <li>
-        How can I manage this data?
-      </li>
-      <li>
-        How can I process it?
-      </li>
-      <li>
-        How can I tell if I've processed it correctly?
-      </li>
-      <li>
-        How can I find and fix bugs when I haven't?
-      </li>
-      <li>
-        How can I keep track of what I've done?
-      </li>
-      <li>
-        How can I find and use other people's work?
-      </li>
-      <li>
-        How can other people find and use mine?
-      </li>
-      <li>
-        How can I do all these things faster?
-      </li>
-    </ol>
+<ol>
+  <li>
+    How can I manage this data?
+  </li>
+  <li>
+    How can I process it?
+  </li>
+  <li>
+    How can I tell if I've processed it correctly?
+  </li>
+  <li>
+    How can I find and fix bugs when I haven't?
+  </li>
+  <li>
+    How can I keep track of what I've done?
+  </li>
+  <li>
+    How can I find and use other people's work?
+  </li>
+  <li>
+    How can other people find and use mine?
+  </li>
+  <li>
+    How can I do all these things faster?
+  </li>
+</ol>
 
-    <p>
-      Our answers rest on four big ideas:
-    </p>
+<p>
+  Our answers rest on four big ideas:
+</p>
 
-    <dl>
+<dl>
 
-      <dt>
-        Software is just another kind of experimental apparatus.
-      </dt>
-      <dd>
-        A program is no different from a telescope or oscilloscope.
-        Like them,
-        programs need to be assembled,
-        checked,
-        and documented well enough for other people
-        (including our future selves)
-        to repeat experiments if desired.
-      </dd>
+  <dt>
+    Software is just another kind of experimental apparatus.
+  </dt>
+  <dd>
+    A program is no different from a telescope or oscilloscope.
+    Like them,
+    programs need to be assembled,
+    checked,
+    and documented well enough for other people
+    (including our future selves)
+    to repeat experiments if desired.
+  </dd>
 
-      <dt>
-        Programming is a human activity.
-      </dt>
-      <dd>
-        The most important constraints on software are not what machines can do,
-        but what <em>people</em> can do.
-        In particular,
-        many of the tools and methods we'll meet in coming chapters exist
-        because people can only fit a small number of things into short term memory at once,
-        because predictability (and paranoia) make us more productive,
-        or because getting the program to work often takes longer than actually running it.
-      </dd>
+  <dt>
+    Programming is a human activity.
+  </dt>
+  <dd>
+    The most important constraints on software are not what machines can do,
+    but what <em>people</em> can do.
+    In particular,
+    many of the tools and methods we'll meet in coming chapters exist
+    because people can only fit a small number of things into short term memory at once,
+    because predictability (and paranoia) make us more productive,
+    or because getting the program to work often takes longer than actually running it.
+  </dd>
 
-      <dt>
-        Programs are just another kind of data.
-      </dt>
-      <dd>
-        A file full of code sitting on a hard drive is just text,
-        and can be processed like any other kind of text.
-        Equally,
-        a program running in memory is just another data structure,
-        albeit one that describes the actions we want a CPU to take
-        rather than the density of interstellar gas in the galactic core.
-        Thinking of programs this way is the single most powerful idea in programming.
-      </dd>
+  <dt>
+    Programs are just another kind of data.
+  </dt>
+  <dd>
+    A file full of code sitting on a hard drive is just text,
+    and can be processed like any other kind of text.
+    Equally,
+    a program running in memory is just another data structure,
+    albeit one that describes the actions we want a CPU to take
+    rather than the density of interstellar gas in the galactic core.
+    Thinking of programs this way is the single most powerful idea in programming.
+  </dd>
 
-      <dt>
-        Better algorithms are better than better hardware.
-      </dt>
-      <dd>
-        A supercomputer can reduce your program's running time from months to days;
-        a better algorithm (and data structure) can reduce it to minutes.
-        The problem is knowing which is best in any particular situation,
-        but a handful are good enough for ninety percent of real-world situations.
-      </dd>
+  <dt>
+    Better algorithms are better than better hardware.
+  </dt>
+  <dd>
+    A supercomputer can reduce your program's running time from months to days;
+    a better algorithm (and data structure) can reduce it to minutes.
+    The problem is knowing which is best in any particular situation,
+    but a handful are good enough for ninety percent of real-world situations.
+  </dd>
 
-    </dl>
+</dl>
 
-    <p>
-      These might not make sense right now,
-      but we hope they will start to soon.
-      We also hope that by the time you are done with this course
-      you will think of programming as something more than
-      a tax you have to pay in order to do the research that you love.
-    </p>
+<p>
+  These might not make sense right now,
+  but we hope they will start to soon.
+  We also hope that by the time you are done with this course
+  you will think of programming as something more than
+  a tax you have to pay in order to do the research that you love.
+</p>
 
-    <section id="s:audience">
-      <h2>Our Audience</h2>
+<section id="s:audience">
+  <h2>Our Audience</h2>
 
-      <section>
-        <h3>Bhadra Basepair</h3>
-        <div class="media">
-          <img class="media-object pull-left" src="{{root_path}}/img/bhadra_basepair_179x237.png" alt="Bhadra Basepair" />
-          <div class="media-body">
-            <p>
-              Bhadra Basepair received a B.Sc. in biochemistry five years ago.
-              She has worked since then for Genes'R'Us,
-              a biotech firm with labs in four countries.
-              She did a Java programming course as a freshman,
-              and a bioinformatics course using R as a senior,
-              but has no other training in programming.
-            </p>
-            <p>
-              Bhadra and her colleagues are developing fuzzy pattern-matching algorithms
-              for finding similarities between DNA records in standard databases.
-              To help other Genes'R'Us researchers,
-              and to test her group's heuristics,
-              Bhadra runs queries that people send her by email.
-              These queries arrive as the subject lines of messages,
-              in their bodies,
-              as attachments,
-              or as links to pages on the company's firewalled file-sharing site.
-              URLs to pages behind the company firewall, etc.).
-              Bhadra saves them in files called <code>search/a.in</code>,
-              <code>search/b.in</code>, and so on,
-              then edits them to add query parameters.
-              (She almost never accidentally overwrites one query with another&hellip;)
-            </p>
-            <p>
-              Once a week,
-              Bhadra runs all of the queries that have piled up
-              to create output files with matching names like <code>search/a.out</code>,
-              then emails those back to whoever sent the original query.
-              (She almost never sends someone the wrong file&hellip;)
-              Once every couple of months
-              she creates another directory called something like <code>may2013</code>
-              and copies the input and output files she has accumulated into it.
-              She would eventually like to do some statistical analysis on these,
-              but hasn't been able to find time.
-            </p>
-            <p>
-              Software Carpentry will teach Bhadra how to automate this task
-              by writing simple scripts to retrieve, process, and reply to email queries.
-              Those scripts will automatically record inputs and outputs
-              and update a web page every day
-              to show her and her colleagues
-              how their algorithms are doing.
-            </p>
-          </div>
-        </div>
-      </section>
+  <section>
+    <h3>Bhadra Basepair</h3>
+    <div class="media">
+      <img class="media-object pull-left" src="{{root_path}}/img/bhadra_basepair_179x237.png" alt="Bhadra Basepair" />
+      <div class="media-body">
+        <p>
+          Bhadra Basepair received a B.Sc. in biochemistry five years ago.
+          She has worked since then for Genes'R'Us,
+          a biotech firm with labs in four countries.
+          She did a Java programming course as a freshman,
+          and a bioinformatics course using R as a senior,
+          but has no other training in programming.
+        </p>
+        <p>
+          Bhadra and her colleagues are developing fuzzy pattern-matching algorithms
+          for finding similarities between DNA records in standard databases.
+          To help other Genes'R'Us researchers,
+          and to test her group's heuristics,
+          Bhadra runs queries that people send her by email.
+          These queries arrive as the subject lines of messages,
+          in their bodies,
+          as attachments,
+          or as links to pages on the company's firewalled file-sharing site.
+          URLs to pages behind the company firewall, etc.).
+          Bhadra saves them in files called <code>search/a.in</code>,
+          <code>search/b.in</code>, and so on,
+          then edits them to add query parameters.
+          (She almost never accidentally overwrites one query with another&hellip;)
+        </p>
+        <p>
+          Once a week,
+          Bhadra runs all of the queries that have piled up
+          to create output files with matching names like <code>search/a.out</code>,
+          then emails those back to whoever sent the original query.
+          (She almost never sends someone the wrong file&hellip;)
+          Once every couple of months
+          she creates another directory called something like <code>may2013</code>
+          and copies the input and output files she has accumulated into it.
+          She would eventually like to do some statistical analysis on these,
+          but hasn't been able to find time.
+        </p>
+        <p>
+          Software Carpentry will teach Bhadra how to automate this task
+          by writing simple scripts to retrieve, process, and reply to email queries.
+          Those scripts will automatically record inputs and outputs
+          and update a web page every day
+          to show her and her colleagues
+          how their algorithms are doing.
+        </p>
+      </div>
+    </div>
+  </section>
 
-      <section>
-        <h3>Fan Fullerene</h3>
-        <div class="media">
-          <img class="media-object pull-left" src="{{root_path}}/img/fan_fullerene_182x254.png" alt="Fan Fullerene" />
-          <div class="media-body">
-            <p>
-              Fan Fullerene is a graduate student in chemistry
-              who is working as a lab technician to help cover his costs.
-              His only programming experience is a general first-year introduction to computational science
-              using Python.
-            </p>
-            <p>
-              Fan's supervisor is studying the production of fullerenes
-              (also known as "buckyballs").
-              Each set of experiments involves testing a sample
-              at 20 different temperatures and 15 different pressures.
-              Using a machine borrowed from a collaborating lab,
-              Fan can run all temperature and pressure combinations in one job,
-              but must upload a parameter file to the machine to do this.
-              The temperatures and pressures to be used vary from sample to sample,
-              so Fan now has two dozen different parameter files,
-              each containing 300 lines of control information
-              that he fervently hopes is correct.
-            </p>
-            <p>
-              The machine sends these files to Fan
-              once the experiment is completed.
-              Fan analyzes them by opening Excel,
-              copying and pasting the data into a spreadsheet,
-              then creating a chart using the chart wizard.
-              He then saves the chart as a PNG file on the group's web site,
-              along with the original data file.
-            </p>
-            <p>
-              Software Carpentry will teach Fan how to write programs
-              to generate parameter files and analyze experimental results,
-              and how to track the provenance of the data he is working with
-              so that scientists can trace backward from the final charts
-              to the raw data they represent.
-              It will also teach him how to create a blog
-              that is automatically updated each time a new set of results appears,
-              and how to make his experimental results easier to search through.
-            </p>
-          </div>
-        </div>
-      </section>
+  <section>
+    <h3>Fan Fullerene</h3>
+    <div class="media">
+      <img class="media-object pull-left" src="{{root_path}}/img/fan_fullerene_182x254.png" alt="Fan Fullerene" />
+      <div class="media-body">
+        <p>
+          Fan Fullerene is a graduate student in chemistry
+          who is working as a lab technician to help cover his costs.
+          His only programming experience is a general first-year introduction to computational science
+          using Python.
+        </p>
+        <p>
+          Fan's supervisor is studying the production of fullerenes
+          (also known as "buckyballs").
+          Each set of experiments involves testing a sample
+          at 20 different temperatures and 15 different pressures.
+          Using a machine borrowed from a collaborating lab,
+          Fan can run all temperature and pressure combinations in one job,
+          but must upload a parameter file to the machine to do this.
+          The temperatures and pressures to be used vary from sample to sample,
+          so Fan now has two dozen different parameter files,
+          each containing 300 lines of control information
+          that he fervently hopes is correct.
+        </p>
+        <p>
+          The machine sends these files to Fan
+          once the experiment is completed.
+          Fan analyzes them by opening Excel,
+          copying and pasting the data into a spreadsheet,
+          then creating a chart using the chart wizard.
+          He then saves the chart as a PNG file on the group's web site,
+          along with the original data file.
+        </p>
+        <p>
+          Software Carpentry will teach Fan how to write programs
+          to generate parameter files and analyze experimental results,
+          and how to track the provenance of the data he is working with
+          so that scientists can trace backward from the final charts
+          to the raw data they represent.
+          It will also teach him how to create a blog
+          that is automatically updated each time a new set of results appears,
+          and how to make his experimental results easier to search through.
+        </p>
+      </div>
+    </div>
+  </section>
 
-      <section>
-        <h3>Helen Helmet</h3>
-        <div class="media">
-          <img class="media-object pull-left" src="{{root_path}}/img/helen_helmet_156x217.png" alt="Helen Helmet" />
-          <div class="media-body">
-            <p>
-              Helen Helmet,
-              a Ph.D. student in mechanical engineering,
-              is currently doing a six-month internship at an engineering firm
-              that makes carbon-fiber helmets for firefighters and other emergency service personnel.
-              Her undergraduate courses included an introduction to scientific computing using MATLAB
-              and a robotics course that used C.
-              She learned some Python during a co-op placement between her junior and senior years,
-              and used it again in a graduate course on finite elements.
-            </p>
-            <p>
-              Helen's task is to model the non-combustive thermal degradation
-              (otherwise known as "melting")
-              of candidate materials.
-              Her starting point is a 4,000-line Python program
-              that her supervisor wrote six years ago.
-              She is currently trying to replace the mesh deformation functions
-              with new ones that can handle non-uniform meshes.
-              She sometimes writes, runs, and deletes sections of code
-              three or four times before she is satisfied.
-            </p>
-            <p>
-              Helen tests her program by writing
-              the total heat content of the mesh at each time step
-              to a file.
-              She then loads this data into a separate Python program
-              to graph the percentage differences between these values
-              and the ones produced by the original program for six sample problems.
-              Right now,
-              the difference is less than 5% for five test cases,
-              but 30% for the sixth.
-              Helen has added hundreds of <code>print</code> statements to the program
-              to try to track down the bug,
-              but still doesn't know where it is.
-            </p>
-            <p>
-              Software Carpentry will teach Helen
-              to develop and modify programs in a disciplined way,
-              to debug programs systematically,
-              to use tests to ensure that new code doesn't break old code,
-              and that version control systems are a better way to manage changes
-              than copying, pasting, and commenting out.
-            </p>
-          </div>
-        </div>
-      </section>
+  <section>
+    <h3>Helen Helmet</h3>
+    <div class="media">
+      <img class="media-object pull-left" src="{{root_path}}/img/helen_helmet_156x217.png" alt="Helen Helmet" />
+      <div class="media-body">
+        <p>
+          Helen Helmet,
+          a Ph.D. student in mechanical engineering,
+          is currently doing a six-month internship at an engineering firm
+          that makes carbon-fiber helmets for firefighters and other emergency service personnel.
+          Her undergraduate courses included an introduction to scientific computing using MATLAB
+          and a robotics course that used C.
+          She learned some Python during a co-op placement between her junior and senior years,
+          and used it again in a graduate course on finite elements.
+        </p>
+        <p>
+          Helen's task is to model the non-combustive thermal degradation
+          (otherwise known as "melting")
+          of candidate materials.
+          Her starting point is a 4,000-line Python program
+          that her supervisor wrote six years ago.
+          She is currently trying to replace the mesh deformation functions
+          with new ones that can handle non-uniform meshes.
+          She sometimes writes, runs, and deletes sections of code
+          three or four times before she is satisfied.
+        </p>
+        <p>
+          Helen tests her program by writing
+          the total heat content of the mesh at each time step
+          to a file.
+          She then loads this data into a separate Python program
+          to graph the percentage differences between these values
+          and the ones produced by the original program for six sample problems.
+          Right now,
+          the difference is less than 5% for five test cases,
+          but 30% for the sixth.
+          Helen has added hundreds of <code>print</code> statements to the program
+          to try to track down the bug,
+          but still doesn't know where it is.
+        </p>
+        <p>
+          Software Carpentry will teach Helen
+          to develop and modify programs in a disciplined way,
+          to debug programs systematically,
+          to use tests to ensure that new code doesn't break old code,
+          and that version control systems are a better way to manage changes
+          than copying, pasting, and commenting out.
+        </p>
+      </div>
+    </div>
+  </section>
 
-      <section>
-        <h3>Mehrdad Mapping</h3>
-        <div class="media">
-          <img class="media-object pull-left" src="{{root_path}}/img/mehrdad_mapping_187x242.png" alt="Mehrdad Mapping" />
-          <div class="media-body">
-            <p>
-              Mehrdad Mapping is a graduate student
-              studying bark beetle infestations in the Canadian taiga.
-              He has never taken a programming course,
-              but used SAS in an undergraduate statistics course.
-            </p>
-            <p>
-              For the last three years,
-              Mehrdad has spent six weeks every autumn
-              counting beetle bores in pine trees in the Yukon and Alaska.
-              He now has a spreadsheet with 5,000 entries,
-              each recording the location and time of a measurement,
-              the number of bores found,
-              the moisture and acidity of the soil,
-              and several other values.
-              He also has two hundred text files containing 7,000 measurements
-              that his supervisor made in the same regions in the 1970s and 1980s.
-              His task now is to put both sets of measurements on a map
-              so that he can start to correlate changes in bark beetle distribution
-              with changes in climate.
-            </p>
-            <p>
-              Software Carpentry will teach Mehrdad how to clean up and manage these data sets,
-              and how to use web services to generate and share maps with colleagues.
-              In addition,
-              it will show him how to produce the figures and tables he needs for his papers
-              with just a few lines of code.
-            </p>
-          </div>
-        </div>
-      </section>
-    </section>
+  <section>
+    <h3>Mehrdad Mapping</h3>
+    <div class="media">
+      <img class="media-object pull-left" src="{{root_path}}/img/mehrdad_mapping_187x242.png" alt="Mehrdad Mapping" />
+      <div class="media-body">
+        <p>
+          Mehrdad Mapping is a graduate student
+          studying bark beetle infestations in the Canadian taiga.
+          He has never taken a programming course,
+          but used SAS in an undergraduate statistics course.
+        </p>
+        <p>
+          For the last three years,
+          Mehrdad has spent six weeks every autumn
+          counting beetle bores in pine trees in the Yukon and Alaska.
+          He now has a spreadsheet with 5,000 entries,
+          each recording the location and time of a measurement,
+          the number of bores found,
+          the moisture and acidity of the soil,
+          and several other values.
+          He also has two hundred text files containing 7,000 measurements
+          that his supervisor made in the same regions in the 1970s and 1980s.
+          His task now is to put both sets of measurements on a map
+          so that he can start to correlate changes in bark beetle distribution
+          with changes in climate.
+        </p>
+        <p>
+          Software Carpentry will teach Mehrdad how to clean up and manage these data sets,
+          and how to use web services to generate and share maps with colleagues.
+          In addition,
+          it will show him how to produce the figures and tables he needs for his papers
+          with just a few lines of code.
+        </p>
+      </div>
+    </div>
+  </section>
+</section>
 
-    <section id="s:preassess">
-      <h2>Pre-Assessment</h2>
+<section id="s:preassess">
+  <h2>Pre-Assessment</h2>
 
-      <p>
-        Please answer the following questions to the best of your ability.
-        to help your instructors learn more about who they will be teaching
-        and what pace and level would be most useful.
-      </p>
+  <p>
+    Please answer the following questions to the best of your ability.
+    to help your instructors learn more about who they will be teaching
+    and what pace and level would be most useful.
+  </p>
 
-      <p>Your name: ________________________________________</p>
+  <p>Your name: ________________________________________</p>
 
-      <p>Email address: ________________________________________</p>
+  <p>Email address: ________________________________________</p>
 
-      <p>Do you plan to attend the workshop at [location]?</p>
+  <p>Do you plan to attend the workshop at [location]?</p>
+  <ul>
+    <li>Yes</li>
+    <li>No</li>
+    <li>Maybe: ________________________________________</li>
+  </ul>
+
+  <p>Are you currently registered for this workshop?</p>
+  <ul>
+    <li>Yes: registration confirmed</li>
+    <li>Yes: waitlist</li>
+    <li>No</li>
+    <li>Don't know</li>
+  </ul>
+
+  <p>What is your career stage?</p>
+  <table>
+    <tr>
+      <td valign="top">
+        <ul>
+          <li>Undergraduate</li>
+          <li>Graduate</li>
+        </ul>
+      </td>
+      <td valign="top">
+        <ul>
+          <li>Post-doc</li>
+          <li>Faculty</li>
+        </ul>
+      </td>
+      <td valign="top">
+        <ul>
+          <li>Industry</li>
+          <li>Support staff</li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+
+  <p>What is your primary field of work?</p>
+  <table>
+    <tr>
+      <td valign="top">
+        <ul>
+          <li>Mathematics</li>
+          <li>Astronomy</li>
+          <li>Physics</li>
+          <li>Chemistry</li>
+          <li>Medicine</li>
+        </ul>
+      </td>
+      <td valign="top">
+        <ul>
+          <li>Economics</li>
+          <li>Administration</li>
+          <li>Earth sciences</li>
+          <li>Ecology/zoology/botany</li>
+          <li>Biology/genetics</li>
+        </ul>
+      </td>
+      <td valign="top">
+        <ul>
+          <li>Engineering (civil, mechanical, chemical, etc.)</li>
+          <li>Computer science/electrical engineering</li>
+          <li>Humanities and social sciences</li>
+          <li>Tech support, lab technician, support programmer</li>
+          <li>Other: ____________________</li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+
+  <p>
+    Please describe your current field of work in a couple of sentences:
+    <br/>
+    ________________________________________
+    <br/>
+    ________________________________________
+  </p>
+
+  <p>
+    Please describe how you would like to use computers in your research:
+    <br/>
+    ________________________________________
+    <br/>
+    ________________________________________
+  </p>
+
+  <p>What operating system will you use on the laptop you bring to the boot camp?</p>
+  <ul>
+    <li>Linux</li>
+    <li>Mac OS X</li>
+    <li>Windows</li>
+  </ul>
+
+  <p>
+    What programming language(s) are you comfortable with (if any)?:
+    <br/>
+    ________________________________________
+  </p>
+
+  <p>
+    What best describes how you currently program?
+  </p>
+  <ul>
+    <li>I never have.</li>
+    <li>I have, but don't.</li>
+    <li>I write a couple of dozen lines every once in a while to analyze data for my own use.</li>
+    <li>I write a few hundred lines a month, which other people occasionally use.</li>
+    <li>I regularly work on large, complicated programs.</li>
+  </ul>
+
+  <p>
+    What three computing tools do you use most frequently in your research?
+    (Please do <em>not</em> include word processors, browsers, or music players.)
+  </p>
+  <ol>
+    <li>________________________________________</li>
+    <li>________________________________________</li>
+    <li>________________________________________</li>
+  </ol>
+
+  <p>
+    Please help us get a better sense of your current skills
+    by telling us how you'd do on the following tasks:
+  </p>
+
+  <ol>
+    <li>
+      <em>Programming:</em>
+      A tab-delimited file has two columns showing
+      the date and the highest temperature on that day.
+      Write a program to produce a graph showing the average highest temperature for each month.
       <ul>
-        <li>Yes</li>
-        <li>No</li>
-        <li>Maybe: ________________________________________</li>
+        <li>I wouldn't know where to start</li>
+        <li>I couldn't do it with a program, but I could do it with a spreadsheet</li>
+        <li>I could probably struggle through writing a program</li>
+        <li>I could do this task easily</li>
       </ul>
-      
-      <p>Are you currently registered for this workshop?</p>
+    </li>
+
+    <li>
+      <em>Shell:</em>
+      A directory contains 1000 text files.
+      Create a list of all files that contain the word "Drosophila"
+      and save the result to a file called <code>results.txt</code>.
       <ul>
-        <li>Yes: registration confirmed</li>
-        <li>Yes: waitlist</li>
-        <li>No</li>
-        <li>Don't know</li>
+        <li>I would use "Find in Files" and "copy and paste"</li>
+        <li>I could probably struggle through it using the shell</li>
+        <li>I could easily do this task in the shell using a pipeline of several commands</li>
       </ul>
-      
-      <p>What is your career stage?</p>
-      <table>
-        <tr>
-          <td valign="top">
-            <ul>
-              <li>Undergraduate</li>
-              <li>Graduate</li>
-            </ul>
-          </td>
-          <td valign="top">
-            <ul>
-              <li>Post-doc</li>
-              <li>Faculty</li>
-            </ul>
-          </td>
-          <td valign="top">
-            <ul>
-              <li>Industry</li>
-              <li>Support staff</li>
-            </ul>
-          </td>
-        </tr>
-      </table>
-      
-      <p>What is your primary field of work?</p>
-      <table>
-        <tr>
-          <td valign="top">
-            <ul>
-              <li>Mathematics</li>
-              <li>Astronomy</li>
-              <li>Physics</li>
-              <li>Chemistry</li>
-              <li>Medicine</li>
-            </ul>
-          </td>
-          <td valign="top">
-            <ul>
-              <li>Economics</li>
-              <li>Administration</li>
-              <li>Earth sciences</li>
-              <li>Ecology/zoology/botany</li>
-              <li>Biology/genetics</li>
-            </ul>
-          </td>
-          <td valign="top">
-            <ul>
-              <li>Engineering (civil, mechanical, chemical, etc.)</li>
-              <li>Computer science/electrical engineering</li>
-              <li>Humanities and social sciences</li>
-              <li>Tech support, lab technician, support programmer</li>
-              <li>Other: ____________________</li>
-            </ul>
-          </td>
-        </tr>
-      </table>
-      
-      <p>
-        Please describe your current field of work in a couple of sentences:
-        <br/>
-        ________________________________________
-        <br/>
-        ________________________________________
-      </p>
-      
-      <p>
-        Please describe how you would like to use computers in your research:
-        <br/>
-        ________________________________________
-        <br/>
-        ________________________________________
-      </p>
-      
-      <p>What operating system will you use on the laptop you bring to the boot camp?</p>
+    </li>
+
+    <li>
+      <em>Version Control:</em>
+      Given the URL for a project on GitHub,
+      check out a working copy of that project,
+      add a file called <code>notes.txt</code>,
+      and commit the change.
       <ul>
-        <li>Linux</li>
-        <li>Mac OS X</li>
-        <li>Windows</li>
+        <li>What's GitHub?</li>
+        <li>I wouldn't know where to start</li>
+        <li>I could struggle through it</li>
+        <li>I could do this task easily</li>
       </ul>
-      
-      <p>
-        What programming language(s) are you comfortable with (if any)?:
-        <br/>
-        ________________________________________
-      </p>
-      
-      <p>
-        What best describes how you currently program?
-      </p>
+    </li>
+
+    <li>
+      <em>Testing:</em>
+      Given a 200-line function to test,
+      write half a dozen tests using a unit testing framework
+      and use code coverage to check that they exercise
+      every line of the function.
       <ul>
-        <li>I never have.</li>
-        <li>I have, but don't.</li>
-        <li>I write a couple of dozen lines every once in a while to analyze data for my own use.</li>
-        <li>I write a few hundred lines a month, which other people occasionally use.</li>
-        <li>I regularly work on large, complicated programs.</li>
+        <li>What's a unit testing framework?  And what's code coverage?</li>
+        <li>I wouldn't know where to start</li>
+        <li>I could struggle through it</li>
+        <li>I could do this task easily</li>
       </ul>
-      
-      <p>
-        What three computing tools do you use most frequently in your research?
-        (Please do <em>not</em> include word processors, browsers, or music players.)
-      </p>
-      <ol>
-        <li>________________________________________</li>
-        <li>________________________________________</li>
-        <li>________________________________________</li>
-      </ol>
-      
-      <p>
-        Please help us get a better sense of your current skills
-        by telling us how you'd do on the following tasks:
-      </p>
-      
-      <ol>
-        <li>
-          <em>Programming:</em>
-          A tab-delimited file has two columns showing
-          the date and the highest temperature on that day.
-          Write a program to produce a graph showing the average highest temperature for each month.
-          <ul>
-            <li>I wouldn't know where to start</li>
-            <li>I couldn't do it with a program, but I could do it with a spreadsheet</li>
-            <li>I could probably struggle through writing a program</li>
-            <li>I could do this task easily</li>
-          </ul>
-        </li>
-        
-        <li>
-          <em>Shell:</em>
-          A directory contains 1000 text files.
-          Create a list of all files that contain the word "Drosophila"
-          and save the result to a file called <code>results.txt</code>.
-          <ul>
-            <li>I would use "Find in Files" and "copy and paste"</li>
-            <li>I could probably struggle through it using the shell</li>
-            <li>I could easily do this task in the shell using a pipeline of several commands</li>
-          </ul>
-        </li>
-        
-        <li>
-          <em>Version Control:</em>
-          Given the URL for a project on GitHub,
-          check out a working copy of that project,
-          add a file called <code>notes.txt</code>,
-          and commit the change.
-          <ul>
-            <li>What's GitHub?</li>
-            <li>I wouldn't know where to start</li>
-            <li>I could struggle through it</li>
-            <li>I could do this task easily</li>
-          </ul>
-        </li>
-        
-        <li>
-          <em>Testing:</em>
-          Given a 200-line function to test,
-          write half a dozen tests using a unit testing framework
-          and use code coverage to check that they exercise
-          every line of the function.
-          <ul>
-            <li>What's a unit testing framework?  And what's code coverage?</li>
-            <li>I wouldn't know where to start</li>
-            <li>I could struggle through it</li>
-            <li>I could do this task easily</li>
-          </ul>
-        </li>
-        
-        <li>
-          <em>Databases:</em>
-          A database has two tables <code>Scientist</code> and <code>Lab</code>.
-          <code>Scientist</code>'s columns are the scientist's user ID, name, and email address;
-          <code>Lab</code>'s columns are lab IDs, lab names, and scientist IDs.
-          Write an SQL statement that counts the number of scientists in each lab.
-          <ul>
-            <li>I wouldn't know where to start</li>
-            <li>I could struggle through it</li>
-            <li>I could do this task easily</li>
-          </ul>
-        </li>
-      </ol>
+    </li>
 
-    </section>
+    <li>
+      <em>Databases:</em>
+      A database has two tables <code>Scientist</code> and <code>Lab</code>.
+      <code>Scientist</code>'s columns are the scientist's user ID, name, and email address;
+      <code>Lab</code>'s columns are lab IDs, lab names, and scientist IDs.
+      Write an SQL statement that counts the number of scientists in each lab.
+      <ul>
+        <li>I wouldn't know where to start</li>
+        <li>I could struggle through it</li>
+        <li>I could do this task easily</li>
+      </ul>
+    </li>
+  </ol>
 
-    <section id="s:ack">
-      <h2>Acknowledgments</h2>
+</section>
 
-      <p>
-        Software Carpentry has been made possible by the generous support of:
-      </p>
+<section id="s:notes">
+  <h2>Instructors' Notes</h2>
 
-      <table>
-        <tr>
-          <td valign="top">
-            <ul>
-              <li>
-                <a href="http://www.indiana.edu">Indiana University</a>
-              </li>
-              <li>
-                <a href="http://www.lbl.gov">Lawrence Berkeley National Laboratory</a>
-              </li>
-              <li>
-                <a href="http://www.lanl.gov">Los Alamos National Laboratory</a>
-              </li>
-              <li>
-                <a href="http://www.mathworks.com">MathWorks</a>
-              </li>
-              <li>
-                <a href="http://www.msu.edu">Michigan State University</a>
-              </li>
-              <li>
-                <a href="http://www.microsoft.com">Microsoft</a>
-              </li>
-              <li>
-                <a href="http://www.mitacs.ca">MITACS</a>
-              </li>
-              <li>
-                <a href="http://mozillafoundation.org">The Mozilla Foundation</a>
-              </li>
-              <li>
-                <a href="http://www.python.org/psf/">The Python Software Foundation</a>
-              </li>
-              <li>
-                <a href="http://www.qmul.ac.uk">Queen Mary University of London</a>
-              </li>
-            </ul>
-          </td>
-          <td valign="top">
-            <ul>
-              <li>
-                <a href="http://www.scimatic.com">Scimatic Software</a>
-              </li>
-              <li>
-                <a href="http://www.scinet.utoronto.ca">SciNet</a>
-              </li>
-              <li>
-                <a href="http://www.sharcnet.ca">SHARCNET</a>
-              </li>
-              <li>
-                <a href="http://www.sloan.org">The Alfred P. Sloan Foundation</a>
-              </li>
-              <li>
-                <a href="http://www.stsci.edu">The Space Telescope Science Institute</a>
-              </li>
-              <li>
-                <a href="http://www.metoffice.gov.uk">The UK Meteorological Office</a>
-              </li>
-              <li>
-                <a href="http://www.ualberta.ca">The University of Alberta</a>
-              </li>
-              <li>
-                <a href="http://www.ucar.edu">The University Consortium for Atmospheric Research</a>
-              </li>
-              <li>
-                <a href="http://www.utoronto.ca">The University of Toronto</a>
-              </li>
-            </ul>
-          </td>
-        </tr>
-      </table>
+  <ul>
+    <li>
+      Live coding is by far the best way to teach people the shell.
+      However,
+      once the instructor enlarges the font in her window
+      so that people at the back of the room can read it,
+      she will typically only have 45 columns and 20 rows.
+      Previous commands and their output will therefore disappear quickly,
+      and the instructor may have to flip windows
+      back and forth between the shell and her editor,
+      which can confuse learners
+      (even when different background colors are used
+      for the different windows).
+      Other than using multiple screens,
+      there is no good solution for this problem.
+    </li>
+    <li>
+      Instructors are usually able to type faster than learners,
+      and even when they can't,
+      learners have the double burden of watching and then typing,
+      rather than simply typing.
+      Instructors must therefore be very careful not to race ahead.
+      They should also use Etherpad or some other collaborative real-time editor
+      to share commands and sample data files with learners.
+    </li>
+    <li>
+      Many people arrive knowing everything we're going to teach and more.
+      We can keep them engaged by having them help people beside them,
+      and by reiterating the philosophical parts of the presentation
+      (e.g., "save history and edit to create a shell script").
+    </li>
+    <li>
+      People learn more, and more quickly,
+      when they are pair programming.
+      Having learners work together is also a good way
+      to deal with installation and setup issues:
+      if someone can't get something running on their machine,
+      they can usually work with a partner,
+      and it's less awkward for them to do so
+      if everyone's already partnered anyway.
+      Theater seating makes pairing more difficult than restaurant seating,
+      so whenever possible,
+      try to get a space with a flat floor,
+      tables,
+      and room for helpers to wander around.
+    </li>
+  </ul>
 
-      <p>
-        We are grateful to everyone who has created or used our material.
-        Special thanks go to Brent Gorda,
-        who helped build and teach the first version of this course,
-        and to John Reynders,
-        who gave us the chance to show how we could help scientists get more done.
-      </p>
+</section>
 
-      <blockquote>
-        This book is dedicated to <a href="http://en.wikipedia.org/wiki/Charles_Darwin">Charles Darwin</a>,
-        <a href="http://en.wikipedia.org/wiki/John_Scopes">John Scopes</a>,
-        and everyone else who believes that the truth is more important than doctrine,
-        and to my sister,
-        who did not live to see it finished.
-      </blockquote>
+<section id="s:ack">
+  <h2>Acknowledgments</h2>
 
-    </section>
+  <p>
+    Software Carpentry has been made possible by the generous support of:
+  </p>
+
+  <table>
+    <tr>
+      <td valign="top">
+        <ul>
+          <li>
+            <a href="http://www.indiana.edu">Indiana University</a>
+          </li>
+          <li>
+            <a href="http://www.lbl.gov">Lawrence Berkeley National Laboratory</a>
+          </li>
+          <li>
+            <a href="http://www.lanl.gov">Los Alamos National Laboratory</a>
+          </li>
+          <li>
+            <a href="http://www.mathworks.com">MathWorks</a>
+          </li>
+          <li>
+            <a href="http://www.msu.edu">Michigan State University</a>
+          </li>
+          <li>
+            <a href="http://www.microsoft.com">Microsoft</a>
+          </li>
+          <li>
+            <a href="http://www.mitacs.ca">MITACS</a>
+          </li>
+          <li>
+            <a href="http://mozillafoundation.org">The Mozilla Foundation</a>
+          </li>
+          <li>
+            <a href="http://www.python.org/psf/">The Python Software Foundation</a>
+          </li>
+          <li>
+            <a href="http://www.qmul.ac.uk">Queen Mary University of London</a>
+          </li>
+        </ul>
+      </td>
+      <td valign="top">
+        <ul>
+          <li>
+            <a href="http://www.scimatic.com">Scimatic Software</a>
+          </li>
+          <li>
+            <a href="http://www.scinet.utoronto.ca">SciNet</a>
+          </li>
+          <li>
+            <a href="http://www.sharcnet.ca">SHARCNET</a>
+          </li>
+          <li>
+            <a href="http://www.sloan.org">The Alfred P. Sloan Foundation</a>
+          </li>
+          <li>
+            <a href="http://www.stsci.edu">The Space Telescope Science Institute</a>
+          </li>
+          <li>
+            <a href="http://www.metoffice.gov.uk">The UK Meteorological Office</a>
+          </li>
+          <li>
+            <a href="http://www.ualberta.ca">The University of Alberta</a>
+          </li>
+          <li>
+            <a href="http://www.ucar.edu">The University Consortium for Atmospheric Research</a>
+          </li>
+          <li>
+            <a href="http://www.utoronto.ca">The University of Toronto</a>
+          </li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+
+  <p>
+    We are grateful to everyone who has created or used our material.
+    Special thanks go to Brent Gorda,
+    who helped build and teach the first version of this course,
+    and to John Reynders,
+    who gave us the chance to show how we could help scientists get more done.
+  </p>
+
+  <blockquote>
+    This book is dedicated to <a href="http://en.wikipedia.org/wiki/Charles_Darwin">Charles Darwin</a>,
+    <a href="http://en.wikipedia.org/wiki/John_Scopes">John Scopes</a>,
+    and everyone else who believes that the truth is more important than doctrine,
+    and to my sister,
+    who did not live to see it finished.
+  </blockquote>
+
+</section>
 {% endblock content %}
