@@ -7,6 +7,19 @@
 
 {% block content %}
 <ol class="toc">
+  <li><a href="#s:grid">The Grid</a></li>
+  <li><a href="#s:alias">Aliasing</a></li>
+  <li><a href="#s:random">Randomness</a></li>
+  <li><a href="#s:neighbors">Neighbors</a></li>
+  <li><a href="#s:ties">Handling Ties</a></li>
+  <li><a href="#s:assembly">Putting It All Together</a></li>
+  <li><a href="#s:bugs">Bugs</a></li>
+  <li><a href="#s:refactor">Refactoring</a></li>
+  <li><a href="#s:test">Testing</a></li>
+  <li><a href="#s:performance">Performance</a></li>
+  <li><a href="#s:profile">Profiling</a></li>
+  <li><a href="#s:lazy">A New Beginning</a></li>
+  <li><a href="#s:summary">Summing Up</a></li>
 </ol>
 
 <p>
@@ -1753,7 +1766,7 @@ if __name__ == '__main__':
     (since the functions that handle other scenarios might have different error cases).
   </p>
 
-<pre src="src/dev/invperc_refactoring.py">
+<pre>
 def do_random(arguments):
     '''Run a random simulation.'''
 
@@ -1811,9 +1824,7 @@ if __name__ == '__main__':
     Now let's step back.
     We were supposed to be testing our program,
     but in order to make it more testable,
-    we had to reorganize it first.
-    The jargon term for this is "refactoring",
-    which means "changing a program's structure without modifying its behavior or functionality in order to improve its quality."
+    we had to refactor it first.
     Now that we've done this refactoring,
     we can write tests more easily.
     More importantly,
@@ -1838,27 +1849,27 @@ if __name__ == '__main__':
 
 </section>
 
-    <section id="s:test">
+<section id="s:test">
+  <h2>Testing</h2>
 
-      <h2>Testing</h2>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Build scaffolding to aid testing.</li>
+    </ul>
+  </div>
+  
+  <p>
+    We can finally start testing our program systematically.
+    To begin,
+    let's add another clause to the main body of the program
+    so that if the scenario is <code>"5x5_line"</code> we will create a 5&times;5 grid,
+    fill a line of cells from the center to the edge with lower values,
+    and then check that <code>fill_grid</code> does the right thing
+    (<a href="#f:5x5_line">Figure XXX</a>):
+  </p>
 
-      <div class="understand" id="u:test">
-        <h3>Understand:</h3>
-        <ul>
-          <li>How to build scaffolding to aid testing.</li>
-          <li>That building test scaffolding saves time in the long run.</li>
-        </ul>
-      </div>
-
-      <p>
-        Let's start by adding another clause to the main body of the program
-        so that if the scenario is <code>"5x5_line"</code> we will create a 5&times;5 grid,
-        fill a line of cells from the center to the edge with lower values,
-        and then check that <code>fill_grid</code> does the right thing
-        (<a href="#f:5x5_line">Figure XXX</a>):
-      </p>
-
-<pre src="src/dev/invperc_5x5.py">
+<pre>
 if __name__ == '__main__':
     scenario = sys.argv[1]
     if scenario == 'random':
@@ -1869,14 +1880,14 @@ if __name__ == '__main__':
         fail('Unknown scenario "%s"' % scenario)
 </pre>
 
-      <figure id="f:5x5_line">
-        <img src="dev/5x5_line.png" alt="Racing for the Border" />
-  <figcaption>Figure XXX: Racing for the Border</figcaption>
-      </figure>
+  <figure id="f:5x5_line">
+    <img src="dev/5x5_line.png" alt="Racing for the Border" />
+    <figcaption>Figure XXX: Racing for the Border</figcaption>
+  </figure>
 
-      <p>
-        The function <code>do_5x5_line</code> is pretty simple:
-      </p>
+  <p>
+    The function <code>do_5x5_line</code> is pretty simple:
+  </p>
 
 <pre src="src/dev/invperc_5x5.py">
 def do_5x5_line():
@@ -1888,18 +1899,18 @@ def do_5x5_line():
     check_grid_5x5_line(grid, num_filled_cells)
 </pre>
 
-      <p class="continue">
-        The functions <code>create_grid</code> and <code>fill_grid</code> already exist:
-        in fact,
-        the whole point of this exercise is that we're re-using <code>fill_grid</code>
-        in order to test it.
-        The new test-specific functions
-        are <code>init_grid_5x5_line</code> and <code>check_grid_5x5_line</code>.
-        We're going to have to write a similar pair of functions for each of our tests,
-        so we'll write the first pair,
-        then use that experience to guide some further refactoring.
-        Here's the first function
-      </p>
+  <p class="continue">
+    <code>create_grid</code> and <code>fill_grid</code> already exist:
+    in fact,
+    the whole point of our earlier refactoring was
+    to let us re-use <code>fill_grid</code> for testing purposes.
+    The new test-specific functions
+    are <code>init_grid_5x5_line</code> and <code>check_grid_5x5_line</code>.
+    (We will need a similar pair of functions for each of our tests,
+    so we will write these,
+    then use our experience to guide some further refactoring.)
+    Here's the first function:
+  </p>
 
 <pre src="src/dev/invperc_5x5.py">
 def init_grid_NxN_line(grid):
@@ -1914,32 +1925,32 @@ def init_grid_NxN_line(grid):
         grid[N/2][i] = 1
 </pre>
 
-      <p>
-        It's just as easy to write this function for the N&times;N case as for the 5&times;5 case,
-        so we generalize early.
-        The first part of the function is easy to understand:
-        find the value of N by looking at the grid,
-        then fill all of the cells with the integer 2.
-        The second part,
-        which fills the cells from the center to the edge in a straight line with the lower value 1,
-        isn't as easy to understand:
-        it's not immediately obvious that <code>i</code> should go in the range from 0 to N/2+1,
-        or that the X coordinate should be N/2 and the Y coordinate should be <code>i</code> for the cells that we want to fill.
-      </p>
+  <p>
+    It's just as easy to write this function for the N&times;N case as for the 5&times;5 case,
+    so we generalize early.
+    The first part of the function is easy to understand:
+    find the value of N by looking at the grid,
+    then fill all of the cells with the integer 2.
+    The second part,
+    which fills the cells from the center to the edge in a straight line with the lower value 1,
+    isn't as easy to understand:
+    it's not immediately obvious that <code>i</code> should go in the range from 0 to N/2+1,
+    or that the X coordinate should be N/2 and the Y coordinate should be <code>i</code> for the cells that we want to fill.
+  </p>
 
-      <p>
-        When we say "it's not obvious,"
-        what we mean is,
-        "There's the possibility that it will contain bugs."
-        If there are bugs in our test cases,
-        then we're just making more work for ourselves.
-        We'll refactor this code later so that it's easier for us to see that it's doing the right thing.
-      </p>
+  <p>
+    When we say "it's not obvious,"
+    what we mean is,
+    "There's the possibility that it will contain bugs."
+    If there are bugs in our test cases,
+    then we're just making more work for ourselves.
+    We'll refactor this code later so that it's easier for us to see that it's doing the right thing.
+  </p>
 
-      <p>
-        Here's the code that checks that an N&times;N grid
-        with a line of cells from the center to the edge has been filled correctly:
-      </p>
+  <p>
+    Here's the code that checks that an N&times;N grid
+    with a line of cells from the center to the edge has been filled correctly:
+  </p>
 
 <pre>
 def check_grid_NxN_line(grid, num_filled):
@@ -1956,39 +1967,38 @@ def check_grid_NxN_line(grid, num_filled):
                 assert grid[x][y] != FILLED, 'Wrongly filled!'
 </pre>
 
-      <p class="continue">
-        Again,
-        it's as easy to check for the N&times;N case as the 5&times;5 case,
-        so we've generalized the function.
-        But take a look at that <code>if</code>:
-        are we sure that the only cells that should be filled are
-        the ones with X coordinate equal to N/2 and Y coordinate from 0 to N/2?
-        Shouldn't that be N/2+1?
-        Or 1 to N/2,
-        or maybe the X coordinate should be N/2+1.
-      </p>
+  <p class="continue">
+    Again,
+    it's as easy to check for the N&times;N case as the 5&times;5 case,
+    so we've generalized the function.
+    But take a look at that <code>if</code>:
+    are we sure that the only cells that should be filled are
+    the ones with X coordinate equal to N/2 and Y coordinate from 0 to N/2?
+    Shouldn't that be N/2+1?
+    Or 1 to N/2,
+    or maybe the X coordinate should be N/2+1.
+  </p>
 
-      <p>
-        In fact,
-        these two functions <em>are</em> correct,
-        and when they're run,
-        they report that <code>fill_grid</code> behaves properly.
-        But writing and checking two functions like this for each test
-        won't actually increase our confidence in our program,
-        because the tests themselves might contain bugs.
-        We need a simpler way to create and check tests,
-        so that our testing is actually helping us create a correct program
-        rather than giving us more things to worry about.
-        How do we do that?
-      </p>
+  <p>
+    In fact,
+    these two functions <em>are</em> correct,
+    and when they're run,
+    they report that <code>fill_grid</code> behaves properly.
+    But writing and checking two functions like this for each test
+    won't actually increase our confidence in our program,
+    because the tests themselves might contain bugs.
+    We need a simpler way to create and check tests,
+    so that our testing is actually helping us create a correct program
+    rather than giving us more things to worry about.
+    How do we do that?
+  </p>
 
-      <p>
-        Let's go back to the example in <a href="#f:5x5_line">Figure XXX</a>.
-        Why don't we just "draw" our test cases exactly as shown?
-        The reason is that modern programming languages don't actually let you draw things,
-        but we can get close with a little bit of work.
-        Let's write our test fixture as a string:
-      </p>
+  <p>
+    Let's go back to the example in <a href="#f:5x5_line">Figure XXX</a>.
+    Why don't we just draw our test cases exactly as shown?
+    Today's programming languages don't actually let us include sketches in programs,
+    but we can get close using strings:
+  </p>
 
 <pre>
 fixture = '''2 2 2 2 2
@@ -1998,9 +2008,9 @@ fixture = '''2 2 2 2 2
              2 2 2 2 2'''
 </pre>
 
-      <p class="continue">
-        and write the result as a similar string:
-      </p>
+  <p class="continue">
+    We can write the result as a similar string:
+  </p>
 
 <pre>
 result = '''. . . . .
@@ -2010,14 +2020,14 @@ result = '''. . . . .
             . . . . .'''
 </pre>
 
-      <p class="continue">
-        As you can probably guess,
-        the '*' character means "this cell should be filled",
-        while the '.' means "this cell should hold whatever value it had at the start".
-        Here's how we want to use them:
-      </p>
+  <p class="continue">
+    As you can probably guess,
+    the '*' character means "this cell should be filled",
+    while the '.' means "this cell should hold whatever value it had at the start".
+    Here's how we want to use them:
+  </p>
 
-<pre src="src/dev/invperc_fixture.py">
+<pre>
 def do_5x5_line():
     '''Run a test on a 5x5 grid with a run to the border.'''
 
@@ -2038,29 +2048,31 @@ def do_5x5_line():
     check_result(expected, fixture, num_filled_cells)
 </pre>
 
-      <p>
-        Parsing a grid is pretty easy:
-      </p>
+  <p>
+    Parsing a grid of numbers is pretty easy:
+  </p>
 
-<pre src="src/dev/invperc_fixture.py">
+<pre>
 def parse_grid(fixture):
     '''Turn a string representation of a grid into a grid of numbers.'''
 
-    result = [x.strip().split() for x in fixture.split('\n')]
-    size = len(result)
-    for row in result:
-        if len(row) != size:
-            fail('Badly formed fixture')
-        for i in range(len(row)):
-            row[i] = int(row[i])
+    result = []
+    for row in fixture.split('\n'):
+        values = row.split()
+        assert (result == []) or (len(row) == len(result[0])), \
+               'Mis-match in row sizes'
+        temp = []
+        for v in values:
+            temp.append(int(v))
+        result.append(temp)
     return result
 </pre>
 
-      <p class="continue">
-        Checking cells is pretty easy too:
-      </p>
+  <p class="continue">
+    Checking cells is pretty easy too:
+  </p>
 
-<pre src="src/dev/invperc_fixture.py">
+<pre>
 def check_result(expected, grid, num_filled):
     '''Check the results of filling.'''
     expected, count = convert_grid(expected)
@@ -2083,30 +2095,32 @@ def check_result(expected, grid, num_filled):
     return result
 </pre>
 
-      <p>
-        We still have one function to write,
-        though&mdash;the one that parses a string of '*' and '.' characters
-        and produces a grid of trues and falses.
-        But this is almost exactly the same as what we do to parse a fixture.
-        The only difference is how we convert individual items.
-        Let's refactor:
-      </p>
+  <p>
+    We still have one function to write,
+    though&mdash;the one that parses a string of '*' and '.' characters
+    and produces a grid of trues and falses.
+    But this is almost exactly the same as what we do to parse a fixture.
+    The only difference is how we convert individual items.
+    Let's refactor:
+  </p>
 
-<pre src="src/dev/invperc_fixture.py">
-<span class="highlight">def is_star(x):
+<pre>
+<span class="highlight">def should_be_filled(x):
     '''Is this cell supposed to be filled?'''
     return x == '*'</span>
 
-def parse_general(fixture, <span class="highlight">converter</span>):
-    '''Turn a string representation of a grid into a grid of <span class="highlight">values</span>.'''
+def parse_general(fixture<span class="highlight">, converter</span>):
+    '''Turn a string representation of a grid into a grid of values.'''
 
-    result = [x.strip().split() for x in fixture.split('\n')]
-    size = len(result)
-    for row in result:
-        if len(row) != size:
-            fail('Badly formed fixture')
-        for i in range(len(row)):
-            row[i] = <span class="highlight">converter</span>(row[i])
+    result = []
+    for row in fixture.split('\n'):
+        values = row.split()
+        assert (result == []) or (len(row) == len(result[0])), \
+               'Mis-match in row sizes'
+        temp = []
+        for v in values:
+            temp.append(<span class="highlight">converter</span>(v))
+        result.append(temp)
     return result
 
 def do_5x5_line():
@@ -2116,128 +2130,132 @@ def do_5x5_line():
 
     fixture = <span class="highlight">parse_general</span>(fixture, <span class="highlight">int</span>)
     num_filled_cells = fill_grid(fixture)
-    expected = <span class="highlight">parse_general(fixture, is_star)</span>
+    expected = <span class="highlight">parse_general(fixture, should_be_filled)</span>
     check_result(expected, fixture, num_filled_cells)
 </pre>
 
-      <p>
-        Writing the functions to parse fixture strings might seem like a lot of work,
-        but what are you comparing it to?
-        Are you comparing the time to write those functions to
-        the time it would take to inspect printouts of real grids,
-        or step through the program over and over again in the debugger?
-        And did you think to include the time it would take to re-do this after every change to your program?
-        Or are you comparing it to the time it would take to retract a published paper
-        after you find a bug in your code?
-      </p>
+  <p>
+    Writing the functions to parse fixture strings might seem like a lot of work,
+    but what are you comparing it to?
+    The time it would take to inspect printouts of real grids,
+    or the time to step through the program over and over again in the debugger?
+    And did you think to include the time it would take
+    to re-do this after every change to your program?
+    Or are you comparing it to the time it would take to retract a published paper
+    after you find a bug in your code?
+  </p>
 
-      <p>
-        In real applications,
-        it's not unusual for test code to be anywhere from 20% to 200% of the size
-        of the actual application code
-        (and yes, 200% does mean more test code than application code).
-        But that's no different from physical experiments:
-        if you look at the size and cost of the machines used to create a space probe,
-        it's many times greater than the size and cost of the space probe itself.
-      </p>
+  <p>
+    In real applications,
+    it's not unusual for test code to be anywhere from 20% to 200% of the size
+    of the actual application code
+    (and yes, 200% does mean more test code than application code).
+    But that's no different from physical experiments:
+    if you look at the size and cost of the machines used to create a space probe,
+    it's many times greater than the size and cost of the space probe itself.
+  </p>
 
-      <p>
-        The good news is,
-        we're now in a position to replace our <code>fill_grid</code> function
-        with one that is harder to get right,
-        but which will run many times faster.
-        If our tests have been designed well,
-        they shouldn't have to be rewritten because they'll all continue to work the same way.
-        This is a common pattern in scientific programming:
-        create a simple version first,
-        check it,
-        then replace the parts one by one with more sophisticated parts that are harder to check
-        but give better performance.
-      </p>
+  <p>
+    The good news is,
+    we're now in a position to replace our <code>fill_grid</code> function
+    with one that is harder to get right,
+    but which will run many times faster.
+    If our tests have been designed well,
+    they shouldn't have to be rewritten because they'll all continue to work the same way.
+    This is a common pattern in scientific programming:
+    create a simple version first,
+    check it,
+    then replace the parts one by one with more sophisticated parts that are harder to check
+    but give better performance.
+  </p>
 
-      <div class="keypoints" id="k:test">
-        <h3>Summary</h3>
-        <ul>
-          <li>Write support code to make testing easier.</li>
-        </ul>
-      </div>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Write support code to make testing easier.</li>
+    </ul>
+  </div>
 
-    </section>
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <p class="fixme">write some</p>
+  </div>
 
-    <section id="s:performance">
+</section>
 
-      <h2>Performance</h2>
+<section id="s:performance">
+  <h2>Performance</h2>
 
-      <div class="understand" id="u:performance">
-        <h3>Understand:</h3>
-        <ul>
-          <li>That many programs aren't actually worth speeding up.</li>
-          <li>That we should make sure programs are correct before trying to improve their performance.</li>
-          <li>How to measure a program's running time.</li>
-          <li>How to estimate the way a program's running time grows with problem size.</li>
-        </ul>
-      </div>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Do a rough calculation to figure out whether it is cost-effective to speed a program up or not.</li>
+      <li>Measure a program's execution time.</li>
+      <li>Estimate how a program's execution time will grow with problem size.</li>
+    </ul>
+  </div>
 
-      <blockquote>
-        Machine-independent code has machine-independent performance.
-        <br/>
-        &mdash; anonymous
-      </blockquote>
+  <blockquote>
+    Machine-independent code has machine-independent performance.
+    <br/>
+    &mdash; anonymous
+  </blockquote>
 
-      <p>
-        Now that it's easy to write tests,
-        we can start worrying about our program's performance.
-        When people use that phrase,
-        they almost always mean the program's speed.
-        In fact, speed is why computers were invented:
-        until networks and fancy graphics came along,
-        the reason computers existed was
-        to do in minutes or hours what would take human beings weeks or years.
-      </p>
+  <p>
+    Now that it's easy to write tests,
+    we can start worrying about our program's performance.
+    When people use that phrase,
+    they almost always mean the program's speed.
+    In fact,
+    speed is why computers were invented:
+    until networks and fancy graphics came along,
+    the whole reason computers existed was
+    to do in minutes or hours what would take human beings weeks or years.
+  </p>
 
-      <p>
-        Scientists usually want programs to go faster for three reasons.
-        First, they want a solution to a single large problem,
-        such as, "What's the lift of this wing?"
-        Second, they have many problems to solve,
-        and need answers to all of them&mdash;a typical example is,
-        "Compare this DNA sequences to every one in the database and tell me what the closest matches are."
-        Finally, scientists may have a deadline and a fixed set of resources
-        and want to solve as big a problem as possible within the constraints.
-        Weather prediction falls into this category:
-        given more computing power,
-        scientists use more accurate (and more computationally demanding) models,
-        rather than solving the old models faster.
-      </p>
+  <p>
+    Scientists usually want programs to go faster for three reasons.
+    First, they want a solution to a single large problem,
+    such as, "What's the lift of this wing?"
+    Second, they have many problems to solve,
+    and need answers to all of them&mdash;a typical example is,
+    "Compare this DNA sequences to every one in the database and tell me what the closest matches are."
+    Finally, scientists may have a deadline and a fixed set of resources
+    and want to solve as big a problem as possible within the constraints.
+    Weather prediction falls into this category:
+    given more computing power,
+    scientists use more accurate (and more computationally demanding) models,
+    rather than solving the old models faster.
+  </p>
 
-      <p>
-        Before trying to make a program go faster,
-        there are two questions we should always ask ourselves.
-        First, does our program actually need to go faster?
-        If we only use it once a day,
-        and it only takes a minute to run,
-        speeding it up by a factor of 10 is probably not worth
-        a week of our time.
-      </p>
+  <p>
+    Before trying to make a program go faster,
+    there are two questions we should always ask ourselves.
+    First, does our program actually need to go faster?
+    If we only use it once a day,
+    and it only takes a minute to run,
+    speeding it up by a factor of 10 is probably not worth
+    a week of our time.
+  </p>
 
-      <p>
-        Second, is our program correct?
-        There's no point making a buggy program faster:
-        more wrong answers per unit time doesn't move science forward
-        (although it may help us track down a bug).
-        Just as importantly,
-        almost everything we do to make programs faster also makes them more complicated,
-        and therefore harder to debug.
-        If our starting point is correct,
-        we can use its output to check the output of our optimized version.
-        If it isn't, we've probably made our life more difficult.
-      </p>
+  <p>
+    Second, is our program correct?
+    There's no point making a buggy program faster:
+    more wrong answers per unit time doesn't move science forward
+    (although it may help us track down a bug).
+    Just as importantly,
+    almost everything we do to make programs faster also makes them more complicated,
+    and therefore harder to debug.
+    If our starting point is correct,
+    we can use its output to check the output of our optimized version.
+    If it isn't, we've probably made our life more difficult.
+  </p>
 
-      <p>
-        Let's go back to invasion percolation.
-        To find out how fast our program is,
-        let's add a few lines to the program's main body:
-      </p>
+  <p>
+    Let's go back to invasion percolation.
+    To find out how fast our program is,
+    let's add a few lines to the program's main body:
+  </p>
 
 <pre>
 if __name__ == '__main__':
@@ -2257,17 +2275,17 @@ if __name__ == '__main__':
         show_grid(grid)
 </pre>
 
-      <p class="continue">
-        The first new line records the time when the program starts running.
-        The other new lines use that to calculate how long the simulation took,
-        and then display the program's parameters and running time.
-      </p>
+  <p class="continue">
+    The first new line records the time when the program starts running.
+    The other new lines use that to calculate how long the simulation took,
+    and then display the program's parameters and running time.
+  </p>
 
-      <p>
-        We need to make one more change
-        before we start running lots of simulation.
-        We were seeding the random number generator using the computer's clock time:
-      </p>
+  <p>
+    We need to make one more change
+    before we start running lots of simulation.
+    We were seeding the random number generator using the computer's clock time:
+  </p>
 
 <pre>
     start_time = time.time()
@@ -2275,22 +2293,22 @@ if __name__ == '__main__':
     random_seed = int(start_time)
 </pre>
 
-      <p class="continue">
-        But what if a simulation runs very quickly?
-        <code>time.time()</code> returns a floating point number;
-        <code>int</code> truncates this by throwing away the fractional part,
-        so if our simulation runs in less than a second,
-        two (or more) might wind up with the same seed,
-        which in turn will mean they have the same "random" values in their grids.
-        (This isn't a theoretical problem&mdash;we actually tripped over it while writing this chapter.)
-      </p>
+  <p class="continue">
+    But what if a simulation runs very quickly?
+    <code>time.time()</code> returns a floating point number;
+    <code>int</code> truncates this by throwing away the fractional part,
+    so if our simulation runs in less than a second,
+    two (or more) might wind up with the same seed,
+    which in turn will mean they have the same "random" values in their grids.
+    (This isn't a theoretical problem&mdash;we actually tripped over it while writing this lesson.)
+  </p>
 
-      <p>
-        One way to fix this is to to shift those numbers up.
-        For now let's guess that every simulation will take at least a tenth of a millisecond to run,
-        so we'll multiply the start time by ten thousand,
-        then truncate it so that it is less than a million:
-      </p>
+  <p>
+    One way to fix this is to to shift those numbers up.
+    For now let's guess that every simulation will take at least a tenth of a millisecond to run,
+    so we'll multiply the start time by ten thousand,
+    then truncate it so that it is less than a million:
+  </p>
 
 <pre>
 RAND_SCALE = 10000    # Try to make sure random seeds are distinct.
@@ -2299,10 +2317,10 @@ RAND_RANGE = 1000000  # Range of random seeds.
     random_seed = int(start_time * RAND_SCALE) % RAND_RANGE
 </pre>
 
-      <p>
-        The final step is to write a shell script that runs the program multiple times
-        for various grid sizes:
-      </p>
+  <p>
+    The final step is to write a shell script that runs the program multiple times
+    for various grid sizes:
+  </p>
 
 <pre>
 for size in {11..81..10}
@@ -2314,119 +2332,124 @@ do
 done
 </pre>
 
-      <p class="continue">
-        (We could equally well have added a few more lines to the program itself
-        to run a specified number of simulations
-        instead of just one.)
-        If we average the 20 values for each grid size, we get the following:
-      </p>
+  <p class="continue">
+    (We could equally well have added a few more lines to the program itself
+    to run a specified number of simulations
+    instead of just one.)
+    If we average the 20 values for each grid size, we get the following:
+  </p>
 
-      <table class="outlined">
-        <tr> <td></td> <td>11</td> <td>21</td> <td>31</td> <td>41</td> <td>51</td> <td>61</td> </tr>
-        <tr> <td>cells&nbsp;filled</td> <td>16.60</td> <td>45.75</td> <td>95.85</td> <td>157.90</td> <td>270.50</td> <td>305.75</td> </tr>
-        <tr> <td>time&nbsp;taken</td> <td>0.003971</td> <td>0.035381</td> <td>0.155885</td> <td>0.444160</td> <td>1.157350</td> <td>1.909516</td> </tr>
-        <tr> <td>time/cell</td> <td>0.000239</td> <td>0.000773</td> <td>0.001626</td> <td>0.002813</td> <td>0.004279</td> <td>0.006245</td> </tr>
-      </table>
+  <table class="outlined">
+    <tr> <td></td> <td>11</td> <td>21</td> <td>31</td> <td>41</td> <td>51</td> <td>61</td> </tr>
+    <tr> <td>cells&nbsp;filled</td> <td>16.60</td> <td>45.75</td> <td>95.85</td> <td>157.90</td> <td>270.50</td> <td>305.75</td> </tr>
+    <tr> <td>time&nbsp;taken</td> <td>0.003971</td> <td>0.035381</td> <td>0.155885</td> <td>0.444160</td> <td>1.157350</td> <td>1.909516</td> </tr>
+    <tr> <td>time/cell</td> <td>0.000239</td> <td>0.000773</td> <td>0.001626</td> <td>0.002813</td> <td>0.004279</td> <td>0.006245</td> </tr>
+  </table>
 
-      <p>
-        Is that good enough?
-        Let's fit a couple of fourth-order polynomials to our data:
-      </p>
+  <p>
+    Is that good enough?
+    Let's fit a couple of fourth-order polynomials to our data:
+  </p>
 
-      <table class="outlined">
-        <tr> <td></td> <td><em> x<sup>4</sup> </em></td> <td><em> x<sup>3</sup> </em></td> <td><em> x<sup>2</sup> </em></td><td><em>x<sup>1</sup></em></td><td><em>x<sup>0</sup></em></td></tr>
-        <tr> <td>time&nbsp;taken</td> <td>2.678&times;10<sup> -07</sup></td> <td>-2.692&times;10<sup> -05</sup></td> <td>1.760&times;10<sup> -03</sup></td> <td>-3.983&times;10<sup> -02</sup></td> <td>2.681&times;10<sup>-01</sup></td></tr>
-        <tr> <td>time/cell</td> <td>-1.112&times;10<sup> -10</sup></td> <td>1.996&times;10<sup> -08</sup></td> <td>4.796&times;10<sup> -07</sup></td> <td>2.566&times;10<sup> -05</sup></td> <td>-1.295&times;10<sup>-04</sup></td></tr>
-      </table>
+  <table class="outlined">
+    <tr> <td></td> <td><em> x<sup>4</sup> </em></td> <td><em> x<sup>3</sup> </em></td> <td><em> x<sup>2</sup> </em></td><td><em>x<sup>1</sup></em></td><td><em>x<sup>0</sup></em></td></tr>
+    <tr> <td>time&nbsp;taken</td> <td>2.678&times;10<sup> -07</sup></td> <td>-2.692&times;10<sup> -05</sup></td> <td>1.760&times;10<sup> -03</sup></td> <td>-3.983&times;10<sup> -02</sup></td> <td>2.681&times;10<sup>-01</sup></td></tr>
+    <tr> <td>time/cell</td> <td>-1.112&times;10<sup> -10</sup></td> <td>1.996&times;10<sup> -08</sup></td> <td>4.796&times;10<sup> -07</sup></td> <td>2.566&times;10<sup> -05</sup></td> <td>-1.295&times;10<sup>-04</sup></td></tr>
+  </table>
 
-      <p>
-        According to the first polynomial,
-        a single run on a 1001&times;1001 grid will take almost 68 hours.
-        What can we do to make it faster?
-        The <em>wrong</em> answer is,
-        "Guess why it's slow, start tweaking the code, and hope for the best."
-        The right answer is to ask the computer where the time is going.
-      </p>
+  <p>
+    According to the first polynomial,
+    a single run on a 1001&times;1001 grid will take almost 68 hours.
+    What can we do to make it faster?
+    The <em>wrong</em> answer is,
+    "Guess why it's slow, start tweaking the code, and hope for the best."
+    The right answer is to ask the computer where the time is going.
+  </p>
 
-      <p>
-        Before we do that,
-        though,
-        we really ought to justify our decision to model the program's performance
-        using a fourth-order polynomial.
-        Suppose our grid is N&times;N.
-        Each time it wants to find the next cell to fill,
-        our program examines each of the N<sup>2</sup> cells.
-        In the best case,
-        it has to fill about N/2 cells to reach the boundary
-        (basically, by racing straight for the edge of the grid).
-        In the worst case,
-        it has to fill all of the interior cells
-        before "breaking out" to the boundary,
-        which means it has to fill (N-2)&times;(N-2) cells.
-        That worst case therefore has a runtime of N<sup>2</sup>(N-2)<sup>2</sup> steps,
-        which,
-        for large N,
-        is approximately N<sup>4</sup>.
-        (For example,
-        when N is 71,
-        the difference between the two values is only about 5%.)
-      </p>
+  <p>
+    Before we do that,
+    though,
+    we really ought to justify our decision to model the program's performance
+    using a fourth-order polynomial.
+    Suppose our grid is N&times;N.
+    Each time it wants to find the next cell to fill,
+    our program examines each of the N<sup>2</sup> cells.
+    In the best case,
+    it has to fill about N/2 cells to reach the boundary
+    (basically, by racing straight for the edge of the grid).
+    In the worst case,
+    it has to fill all of the interior cells
+    before "breaking out" to the boundary,
+    which means it has to fill (N-2)&times;(N-2) cells.
+    That worst case therefore has a runtime of N<sup>2</sup>(N-2)<sup>2</sup> steps,
+    which,
+    for large N,
+    is approximately N<sup>4</sup>.
+    (For example,
+    when N is 71,
+    the difference between the two values is only about 5%.)
+  </p>
 
-      <p>
-        This kind of analysis is computing's equivalent of engineers' back-of-the-envelope calculations.
-        In technical terms,
-        we would say that our algorithm is O(N<sup>4</sup>).
-        In reality,
-        because we're creating a fractal,
-        we're actually going to fill about N<sup>1.5</sup> cells on average,
-        so our running time is actually O(N<sup>3.5</sup>).
-        That's still too big for practical simulations,
-        though,
-        so it's time to figure out what we can do about it.
-      </p>
+  <p>
+    This kind of analysis is computing's equivalent of engineers' back-of-the-envelope calculations.
+    In technical terms,
+    we would say that our algorithm is O(N<sup>4</sup>).
+    In reality,
+    because we're creating a fractal,
+    we're actually going to fill about N<sup>1.5</sup> cells on average,
+    so our running time is actually O(N<sup>3.5</sup>).
+    That's still too big for practical simulations,
+    though,
+    so it's time to figure out what we can do about it.
+  </p>
 
-      <div class="keypoints" id="k:performance">
-        <h3>Summary</h3>
-        <ul>
-          <li>Scientists want faster programs both to handle bigger problems and to handle more problems with available resources.</li>
-          <li idea="perf">Before speeding a program up, ask, "Does it need to be faster?" and, "Is it correct?"</li>
-          <li>Recording start and end times is a simple way to measure performance.</li>
-          <li idea="algo">Analyze algorithms to predict how a program's performance will change with problem size.</li>
-        </ul>
-      </div>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Scientists want faster programs both to handle bigger problems and to handle more problems with available resources.</li>
+      <li>Before speeding a program up, ask, "Does it need to be faster?" and, "Is it correct?"</li>
+      <li>Recording start and end times is a simple way to measure performance.</li>
+      <li>A program's execution time varies depending on the size of its inputs in predictable ways.</li>
+    </ul>
+  </div>
 
-    </section>
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <p class="fixme">write some</p>
+  </div>
 
-    <section id="s:profile">
+</section>
 
-      <h2>Profiling</h2>
+<section id="s:profile">
+  <h2>Profiling</h2>
 
-      <div class="understand" id="u:profile">
-        <h3>Understand:</h3>
-        <ul>
-          <li>What an execution profiler is.</li>
-          <li>The difference between deterministic and statistical profilers.</li>
-          <li>How to interpret a profiler's output.</li>
-        </ul>
-      </div>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Explain what an execution profiler is, and the difference between deterministic and statistical profilers.</li>
+      <li>Interpret a profiler's output correctly to identify hot spots in code.</li>
+    </ul>
+  </div>
 
-      <p>
-        Timing an entire program is a good way to find out if we're making things better or not,
-        but some way to know where the time is going would be even better.
-        The tool that will do that for us is called a <a href="glossary.html#profiler">profiler</a>
-        because it creates a profile of a program's execution time,
-        i.e.,
-        it reports how much time is spent in each function in the program, or even on each line.
-      </p>
+  <p>
+    Timing an entire program is a good way to find out if we're making things better or not,
+    but some way to know where the time is going would be even better.
+    The tool that will do that for us is called a <a href="glossary.html#profiler">profiler</a>
+    because it creates a profile of a program's execution time,
+    i.e.,
+    it reports how much time is spent in each function in the program, or even on each line.
+  </p>
 
-      <p>
-        There are two kinds of profilers.
-        A <a href="glossary.html#deterministic-profiler">deterministic</a> profiler inserts instructions in a program
-        to record the clock time at the start and end of every function.
-        It doesn't actually modify the source code:
-        instead, it adds those instructions behind the scenes after the code has been translated into something the computer can actually run.
-        For example, suppose our program looks like this:
-      </p>
+  <p>
+    There are two kinds of profilers.
+    A <a href="glossary.html#deterministic-profiler">deterministic</a> profiler inserts instructions in a program
+    to record the clock time at the start and end of every function.
+    It doesn't actually modify the source code:
+    instead,
+    it adds those instructions behind the scenes
+    after the code has been translated into something the computer can actually run.
+    For example, suppose our program looks like this:
+  </p>
 
 <pre>
 def swap(values):
@@ -2441,9 +2464,9 @@ def upto(N):
 upto(100)
 </pre>
 
-      <p class="continue">
-        A deterministic profiler would insert timing calls that worked like this:
-      </p>
+  <p class="continue">
+    A deterministic profiler would insert timing calls that worked like this:
+  </p>
 
 <pre>
 def swap(values):
@@ -2468,42 +2491,42 @@ def upto(N):
 upto(100)
 </pre>
 
-      <p class="continue">
-        (Note that the profiler wouldn't actually change the source of our program;
-        these extra operations are inserted after the program has been loaded into memory.)
-      </p>
+  <p class="continue">
+    (Note that the profiler wouldn't actually change the source of our program;
+    these extra operations are inserted after the program has been loaded into memory.)
+  </p>
 
-      <p>
-        Once the program has been run,
-        the profiler can use the two dictionaries <code>_num_calls</code> and <code>_total_time</code>
-        to report the average running time per function call.
-        Going further,
-        the profiler can also keep track of which functions are calling which,
-        so that (for example) it can report times for calls to <code>swap</code> from <code>upto</code>
-        separately from calls to <code>swap</code> from some other function <code>downfrom</code>.
-      </p>
+  <p>
+    Once the program has been run,
+    the profiler can use the two dictionaries <code>_num_calls</code> and <code>_total_time</code>
+    to report the average running time per function call.
+    Going further,
+    the profiler can also keep track of which functions are calling which,
+    so that (for example) it can report times for calls to <code>swap</code> from <code>upto</code>
+    separately from calls to <code>swap</code> from some other function <code>downfrom</code>.
+  </p>
 
-      <p>
-        The problem with deterministic profiling is that
-        adding those timing calls changes the runtime of the functions being measured,
-        since reading the computer's clock and recording the result both take time.
-        The smaller the function's runtime, the larger the distortion.
-        This can be avoided by using a <a href="glossary.html#statistical-profiler">statistical</a> profiler.
-        Instead of adding timing calls to the code,
-        it freezes the program every millisecond or so and makes a note of what function is running.
-        Like any sampling procedure,
-        this produces become more accurate as more data is collected,
-        so statistical profilers work well on long-running programs,
-        but can produce misleading results for short ones.
-      </p>
+  <p>
+    The problem with deterministic profiling is that
+    adding those timing calls changes the runtime of the functions being measured,
+    since reading the computer's clock and recording the result both take time.
+    The smaller the function's runtime, the larger the distortion.
+    This can be avoided by using a <a href="glossary.html#statistical-profiler">statistical</a> profiler.
+    Instead of adding timing calls to the code,
+    it freezes the program every millisecond or so and makes a note of what function is running.
+    Like any sampling procedure,
+    this produces become more accurate as more data is collected,
+    so statistical profilers work well on long-running programs,
+    but can produce misleading results for short ones.
+  </p>
 
-      <p>
-        Python's <code>cProfile</code> module is a deterministic profiler.
-        It records times and call counts and saves data in a file for later analysis.
-        We can use it to see where time goes in our initial list-of-lists invasion percolation program:
-      </p>
+  <p>
+    Python's <code>cProfile</code> module is a deterministic profiler.
+    It records times and call counts and saves data in a file for later analysis.
+    We can use it to see where time goes in our initial list-of-lists invasion percolation program:
+  </p>
 
-<pre src="src/dev/profile_first.py">
+<pre>
 import cProfile, pstats
 from invperc import main
 
@@ -2512,47 +2535,47 @@ p = pstats.Stats('list.prof')
 p.strip_dirs().sort_stats('time').print_stats()
 </pre>
 
-      <p>
-        We start by importing <code>cProfile</code>, the actual profiling tool, on line 1.
-        We also import <code>pstats</code>,
-        a helper module for analyzing the data files <code>cProfile</code> produces.
-      </p>
+  <p>
+    We start by importing <code>cProfile</code>, the actual profiling tool, on line 1.
+    We also import <code>pstats</code>,
+    a helper module for analyzing the data files <code>cProfile</code> produces.
+  </p>
 
-      <p>
-        The second line imports the <code>main</code> function from our program.
-        We give that starting point to <code>cProfile.run</code> on line 3,
-        along with the name of the file we want the profiling results stored in.
-        Notice that the call is passed as a string:
-        <code>cProfile</code> uses Python's built-in <code>eval</code> function
-        to run the command in this string,
-        just as if we had typed it into the interpreter.
-        Notice also that the arguments are passed as strings,
-        since that's what <code>main</code> is expecting.
-      </p>
+  <p>
+    The second line imports the <code>main</code> function from our program.
+    We give that starting point to <code>cProfile.run</code> on line 3,
+    along with the name of the file we want the profiling results stored in.
+    Notice that the call is passed as a string:
+    <code>cProfile</code> uses Python's built-in <code>eval</code> function
+    to run the command in this string,
+    just as if we had typed it into the interpreter.
+    Notice also that the arguments are passed as strings,
+    since that's what <code>main</code> is expecting.
+  </p>
 
-      <p>
-        Line 4 reads the profiling data back into our program
-        and wraps it up in a <code>pstats.Stats</code> object.
-        It may seem silly to write the data out only to read it back in,
-        but the two activities are often completely separate:
-        we can accumulate profiling data across many different runs of a program,
-        then analyze it all at once.
-      </p>
+  <p>
+    Line 4 reads the profiling data back into our program
+    and wraps it up in a <code>pstats.Stats</code> object.
+    It may seem silly to write the data out only to read it back in,
+    but the two activities are often completely separate:
+    we can accumulate profiling data across many different runs of a program,
+    then analyze it all at once.
+  </p>
 
-      <p>
-        Finally, line 5 strips directory names off the accumulated data,
-        sorts them according to run time, and prints the result.
-        We strip directory names because all of the code we're profiling is in a single file;
-        in larger programs, we'll keep the directory information
-        (even though it makes the output a bit harder to read)
-        so that we can separate <code>fred.calculate</code>'s running time from <code>jane.calculate</code>'s.
-      </p>
+  <p>
+    Finally, line 5 strips directory names off the accumulated data,
+    sorts them according to run time, and prints the result.
+    We strip directory names because all of the code we're profiling is in a single file;
+    in larger programs, we'll keep the directory information
+    (even though it makes the output a bit harder to read)
+    so that we can separate <code>fred.calculate</code>'s running time from <code>jane.calculate</code>'s.
+  </p>
 
-      <p>
-        Here's what the output looks like:
-      </p>
+  <p>
+    Here's what the output looks like:
+  </p>
 
-<pre src="src/dev/profile_first.txt">
+<pre>
 135 cells filled
 Thu Jun 28 13:54:55 2012    list.prof
 
@@ -2583,79 +2606,81 @@ Thu Jun 28 13:54:55 2012    list.prof
         1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
 </pre>
 
-      <p>
-        The columns are the number of calls,
-        the total time spent in that function,
-        the time per call,
-        the total cumulative time (i.e., the total time for that function and everything it calls),
-        the cumulative time per call,
-        and then which function the stat is for.
-        As we can see,
-        <code>is_candidate</code> accounts for two thirds of our runtime:
-        if we want to make this program faster,
-        that's what we should speed up.
-      </p>
+  <p>
+    The columns are the number of calls,
+    the total time spent in that function,
+    the time per call,
+    the total cumulative time (i.e., the total time for that function and everything it calls),
+    the cumulative time per call,
+    and then which function the stat is for.
+    As we can see,
+    <code>is_candidate</code> accounts for two thirds of our runtime:
+    if we want to make this program faster,
+    that's what we should speed up.
+  </p>
 
-      <div class="box">
+  <div class="box">
+    <h3>Wall Clock Time vs. CPU Time</h3>
 
-        <h3>Wall Clock Time vs. CPU Time</h3>
+    <p>
+      When profiling programs,
+      particularly on machines that are running other applications at the same time,
+      it's important to remember the distinction between
+      <a href="glossary.html#cpu-time">CPU time</a>
+      and
+      <a href="glossary.html#wall-clock-time">wall-clock time</a>.
+      The first is how much time the computer's processor actually spent running the program;
+      the second is how long the program actually took to run.
+      The two are different because the CPU has a lot of things to do
+      besides running our program,
+      even on a machine that's supposedly otherwise idle.
+      The operating system itself needs time,
+      for example,
+      as do disk and network I/O.
+    </p>
 
-        <p>
-          When profiling programs,
-          particularly on machines that are running other applications at the same time,
-          it's important to remember the distinction between
-          <a href="glossary.html#cpu-time">CPU time</a>
-          and
-          <a href="glossary.html#wall-clock-time">wall-clock time</a>.
-          The first is how much time the computer's processor actually spent running the program;
-          the second is how long the program actually took to run.
-          The two are different because the CPU has a lot of things to do
-          besides running our program,
-          even on a machine that's supposedly otherwise idle.
-          The operating system itself needs time,
-          for example,
-          as do disk and network I/O.
-        </p>
+  </div>
 
-      </div>
+  <div class="keypoints" id="k:profile">
+    <h3>Summary</h3>
+    <ul>
+      <li>Use a profiler to determine which parts of a program are responsible for most of its running time.</li>
+    </ul>
+  </div>
 
-      <div class="keypoints" id="k:profile">
-        <h3>Summary</h3>
-        <ul>
-          <li idea="tools">Use a profiler to determine which parts of a program are responsible for most of its running time.</li>
-        </ul>
-      </div>
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <p class="fixme">write some</p>
+  </div>
 
-    </section>
+</section>
 
-    <section id="s:lazy">
+<section id="s:lazy">
+  <h2>A New Beginning</h2>
 
-      <h2>A New Beginning</h2>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Explain swhy using a more efficient algorithm is usually more effective than tuning an inefficient one.</li>
+      <li>Show exmaples of programs trading space (extra memory) for running time and vice versa.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:lazy">
-        <h3>Understand:</h3>
-        <ul>
-          <li>That using a more efficient algorithm is usually a better way to improve performance than tuning an inefficient algorithm.</li>
-          <li>That programs can usually trade space (extra memory) for running time.</li>
-          <li>The importance of building a simple, trustworthy version of a program before trying to build a faster but more complex version.</li>
-        </ul>
-      </div>
+  <p>
+    If checking whether cells are candidates is the slowest step,
+    let's try to reduce the number of times we have to do that.
+    Instead of re-examining every cell in the grid each time we want to fill one,
+    let's keep track of which cells are currently on the boundary in some kind of auxiliary data structure,
+    then choose randomly from all the cells in that set that share the current lowest value.
+    When we fill in a cell,
+    we add its neighbors to the "pool" of neighbors (unless they're already there).
+  </p>
 
-      <p>
-        If checking whether cells are candidates is the slowest step,
-        let's try to reduce the number of times we have to do that.
-        Instead of re-examining every cell in the grid each time we want to fill one,
-        let's keep track of which cells are currently on the boundary in some kind of auxiliary data structure,
-        then choose randomly from all the cells in that set that share the current lowest value.
-        When we fill in a cell,
-        we add its neighbors to the "pool" of neighbors (unless they're already there).
-      </p>
+  <p>
+    Here's the modified <code>fill_grid</code> function:
+  </p>
 
-      <p>
-        Here's the modified <code>fill_grid</code> function:
-      </p>
-
-<pre src="src/dev/invperc_pool.py">
+<pre>
 def fill_grid(grid):
     '''Fill an NxN grid until filled region hits boundary.'''
 
@@ -2672,29 +2697,33 @@ def fill_grid(grid):
         if (x == 0) or (x == grid.size-1) or (y == 0) or (y == grid.size-1):
             on_edge = True
         else:
-            if x &gt; 0:           make_candidate(grid, pool, x-1, y)
-            if x &lt; grid.size-1: make_candidate(grid, pool, x+1, y)
-            if y &gt; 0:           make_candidate(grid, pool, x,   y-1)
-            if y &lt; grid.size-1: make_candidate(grid, pool, x,   y+1)
+            if x &gt; 0:
+                make_candidate(grid, pool, x-1, y)
+            if x &lt; grid.size-1:
+                make_candidate(grid, pool, x+1, y)
+            if y &gt; 0:
+                make_candidate(grid, pool, x,   y-1)
+            if y &lt; grid.size-1:
+                make_candidate(grid, pool, x,   y+1)
 
     return num_filled
 </pre>
 
-      <p class="continue">
-        This function creates a set called <code>pool</code>
-        that keeps track of the cells currently on the edge of the filled region.
-        Each loop iteration gets the next cell out of this pool,
-        fills it in,
-        and (potentially) adds its neighbors to the set.
-      </p>
+  <p class="continue">
+    This function creates a set called <code>pool</code>
+    that keeps track of the cells currently on the edge of the filled region.
+    Each loop iteration gets the next cell out of this pool,
+    fills it in,
+    and (potentially) adds its neighbors to the set.
+  </p>
 
-      <p>
-        This function is 21 lines long,
-        compared to 15 for our original <code>fill_grid</code> function,
-        but four of those six lines are the calls to <code>make_candidate</code>,
-        which adds a neighbor to the pool if it isn't already there.
-        Let's have a look at <code>get_next</code> and <code>make_candidate</code>:
-      </p>
+  <p>
+    This function is 21 lines long,
+    compared to 15 for our original <code>fill_grid</code> function,
+    but four of those six lines are the calls to <code>make_candidate</code>,
+    which adds a neighbor to the pool if it isn't already there.
+    Let's have a look at <code>get_next</code> and <code>make_candidate</code>:
+  </p>
 
 <pre>
 def get_next(pool):
@@ -2720,61 +2749,65 @@ def make_candidate(grid, pool, x, y):
     pool.add((v, x, y))
 </pre>
 
-      <p>
-        This is definitely more complicated that what we started with:
-        we now have to keep a second data structure (the pool) up to date,
-        and in sync with the grid.
-        But look at the payoff:
-      </p>
+  <p>
+    This is definitely more complicated that what we started with:
+    we now have to keep a second data structure (the pool) up to date,
+    and in sync with the grid.
+    But look at the payoff:
+  </p>
 
-      <table class="outlined">
-        <tr> <td></td> <td>11</td> <td>21</td> <td>31</td> <td>41</td> <td>51</td> <td>61</td> </tr>
-        <tr> <td>list&nbsp;of&nbsp;lists</td> <td>0.000333</td> <td>0.025667</td> <td>0.088833</td> <td>0.227167</td> <td>0.455000</td> <td>1.362667</td> </tr>
-        <tr> <td>set&nbsp;pool</td> <td>0.000050</td> <td>0.003000</td> <td>0.009100</td> <td>0.016130</td> <td>0.012000</td> <td>0.027050</td> </tr>
-        <tr> <td>ratio</td> <td>6.66</td> <td>8.56</td> <td>9.76</td> <td>14.1</td> <td>37.9</td> <td>50.4</td> </tr>
-      </table>
+  <table class="outlined">
+    <tr> <td></td> <td>11</td> <td>21</td> <td>31</td> <td>41</td> <td>51</td> <td>61</td> </tr>
+    <tr> <td>list&nbsp;of&nbsp;lists</td> <td>0.000333</td> <td>0.025667</td> <td>0.088833</td> <td>0.227167</td> <td>0.455000</td> <td>1.362667</td> </tr>
+    <tr> <td>set&nbsp;pool</td> <td>0.000050</td> <td>0.003000</td> <td>0.009100</td> <td>0.016130</td> <td>0.012000</td> <td>0.027050</td> </tr>
+    <tr> <td>ratio</td> <td>6.66</td> <td>8.56</td> <td>9.76</td> <td>14.1</td> <td>37.9</td> <td>50.4</td> </tr>
+  </table>
 
-      <p>
-        Now <em>that</em> is a speedup.
-        If we assume that we fill about N<sup>1.5</sup> cells in an N&times;N grid,
-        the running time of our algorithm is about N<sup>1.5</sup> instead of N<sup>3.5</sup>,
-        because we only need to inspect four new cells in every iteration
-        instead of checking all N<sup>2</sup> each time.
-        As a result, the bigger our grids get, the bigger our savings are.
-      </p>
+  <p>
+    Now <em>that</em> is a speedup.
+    If we assume that we fill about N<sup>1.5</sup> cells in an N&times;N grid,
+    the running time of our algorithm is about N<sup>1.5</sup> instead of N<sup>3.5</sup>,
+    because we only need to inspect four new cells in every iteration
+    instead of checking all N<sup>2</sup> each time.
+    As a result, the bigger our grids get, the bigger our savings are.
+  </p>
 
-      <div class="keypoints" id="k:lazy">
-        <h3>Summary</h3>
-        <ul>
-          <li idea="algo">Better algorithms are better than better hardware.</li>
-        </ul>
-      </div>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>The best way to improve a program's performance is to find a better algorithm.</li>
+    </ul>
+  </div>
 
-    </section>
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <p class="fixme">write some</p>
+  </div>
 
-    <section id="s:summary">
+</section>
 
-      <h2>Summing Up</h2>
+<section id="s:summary">
+  <h2>Summing Up</h2>
 
-      <p>
-        There are two important lessons to take away from this exercise.
-        First, choosing the right algorithms and data structures can yield enormous speedups,
-        so we should always look there first for performance gains.
-        This is where a broad knowledge of computer science comes in handy:
-        any good book on data structures and algorithms describes dozens or hundreds of things
-        that are exactly what's needed to solve some obscure but vital performance problem.
-      </p>
+  <p>
+    There are two important lessons to take away from this exercise.
+    First, choosing the right algorithms and data structures can yield enormous speedups,
+    so we should always look there first for performance gains.
+    This is where a broad knowledge of computer science comes in handy:
+    any good book on data structures and algorithms describes dozens or hundreds of things
+    that are exactly what's needed to solve some obscure but vital performance problem.
+  </p>
 
-      <p>
-        Second,
-        well-structured programs are easier to optimize than poorly-structured ones.
-        If we build our program as a collection of functions,
-        we ought to be able to change those functions more or less independently of one another
-        to try out new ideas.
-        As is almost always the case,
-        improving the quality of our work improves our performance:
-        it is the opposite of an either/or tradeoff.
-      </p>
+  <p>
+    Second,
+    well-structured programs are easier to optimize than poorly-structured ones.
+    If we build our program as a collection of functions,
+    we ought to be able to change those functions more or less independently of one another
+    to try out new ideas.
+    As is almost always the case,
+    improving the quality of our work improves our performance:
+    it is the opposite of an either/or tradeoff.
+  </p>
 
-    </section>
+</section>
 {% endblock content %}
