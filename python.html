@@ -92,11 +92,10 @@
     that they can debug things when they go wrong.
     In particular,
     they must understand what types, references, and aliasing are,
-    and how call stacks and scopes work;
-    again,
-    the mechanics of programming only make sense once these ideas are understood,
-    but these ideas are easier to absorb
-    in the context of practical use.
+    and how function call stacks work.
+    Again,
+    how programs behave only makes sense on top of these ideas,
+    but they are easier to absorb when framed by examples.
   </p>
 
   <p>
@@ -117,13 +116,13 @@
   <p>
     The greatest challenges in teaching this material are
     the diversity of learners' prior knowledge
-    and a general lack of time.
+    and a shortage of time.
     People who have programmed before can absorb this lesson
     several times faster than people who haven't,
-    and even they find it hard to get through this
+    but even they find it hard to get through this
     in less than four or five hours
     if hands-on work is included.
-    If time runs short,
+    When time runs short (and it will),
     the topics to cut are:
   </p>
 
@@ -136,20 +135,14 @@
   </ul>
 
   <p>
-    This material can be covered in <span class="duration">four hours</span>
-    if the topics listed above are taken out,
-    and in five to six if they are kept in.
-    If the audience is able to keep up,
+    If these five sections are taken out,
+    this material can reliably be covered in <span class="duration">four hours</span>.
+    If the audience is more advanced,
     or if extra time is available,
-    two bonus topics can be brought in:
-  </p>
-
-  <ul>
-    <li><a href="extras.html#s:python:funcobj">Functions as Objects</a></li>
-    <li><a href="extras.html#s:python:provenance">Provenance</a></li>
-  </ul>
-
-  <p>
+    then the material on
+    <a href="extras.html#s:python:funcobj">functions as objects</a>
+    and <a href="extras.html#s:python:provenance">provenance</a>
+    should be used.
     The first is always an "ah ha!" moment for people who get it:
     they can immediately see how storing functions in lists
     and passing them to other functions
@@ -165,6 +158,17 @@
     <a href="svn.html#s:provenance">the provenance example in the Subversion lesson</a>,
     connects this lesson to earlier material
     in the same way as the <a href="#s:filter">filter example</a>.
+  </p>
+
+  <p>
+    The biggest idea this lesson <em>doesn't</em> cover is
+    the difference between interface and implementation.
+    It's crucial to writing maintainable code,
+    and to testing,
+    but our experience is that it only makes sense
+    in the context of a larger example.
+    For that reason,
+    we defer it to the discussion of <a href="dev.html">Program Development</a>.
   </p>
 
   <div class="prereq">
@@ -184,8 +188,10 @@
       <li>
         Examples in this lesson show use of a command-line interpreter (CLI),
         but work equally well with the IPython Notebook.
-        If you use a CLI,
-        make sure learners can edit text files
+        We strongly recommend that you use IPython:
+        its <code>%history</code> and <code>%run</code> commands
+        make live a lot simpler for everyone.
+        Make sure learners can edit text files
         and save them in the right directories
         at the start of the lesson.
         (And if you have Windows users in your class,
@@ -193,9 +199,8 @@
         have occasionally had line-ending issues.)
       </li>
       <li>
-        Learners often report that
-        watching the instructor grow a program in front of them
-        is as useful in its own right
+        Watching the instructor grow programs step by step
+        is as helpful to learners
         as anything to do with Python.
         In particular,
         the <a href="#s:parse">file-parsing example</a> works best if
@@ -214,8 +219,9 @@
         by introducing some non-core concepts in challenges.
         These may take longer to work through
         than challenges in other lessons,
-        so expect to have to give more hints
-        and partial solutions along the way.
+        so instructors should check them against learners' abilities
+        before diving in.
+        They should also expect to give more hints and partial solutions along the way.
       </li>
       <li>
         Python uses tuples in many places,
@@ -673,7 +679,17 @@ ZeroDivisionError: integer division or modulo by zero</span>
 
   <div class="box">
     <h3>Using the IPython Notebook</h3>
-    <p class="fixme">explain how to use the notebook instead</p>
+
+    <p>
+      Our examples are written using a command-line interpreter,
+      but you may use the <a href="http://ipython.org/notebook.html">IPython Notebook</a> instead.
+      Anything you write with one can be used with the other,
+      but as a general rule,
+      the Notebook is more useful for interactive or exploratory work,
+      while programs saved in files are better suited to running long-lived batches of jobs
+      in combination with other command-line tools.
+    </p>
+
   </div>
 
   <div class="keypoints">
@@ -1725,8 +1741,14 @@ for value in data {
 
   <p>
     Python has another, more general, kind of loop called a <code>while</code> loop.
-    It repeats a block of code as long as a condition is true:
+    It repeats a block of code as long as a condition is true
+    (<a href="#f:while_loop">Figure 11</a>):
   </p>
+
+  <figure id="f:while_loop">
+    <img src="python/while_loop.png" alt="While Loop" />
+    <figcaption>Figure 11: While Loop</figcaption>
+  </figure>
 
 <pre>
 counter = 3
@@ -1774,10 +1796,60 @@ in loop 3
     like this.
   </p>
 
+  <p>
+    One final important fact about <code>while</code> loops is that
+    the condition is only checked at the top of the loop,
+    not inside the loop:
+    the loop doesn't somehow "watch" variables
+    and exit as soon as the loop condition becomes false.
+    For example,
+    the first line inside the loop shown below makes the loop condition false,
+    but it still prints the counter the first time through:
+  </p>
+
+<pre>
+count = 3
+while count &gt; 0:
+    count = count - 100
+    print count
+<span class="out">-97</span>
+</pre>
+
+  <div>
+    <h3>Why Two Kinds of Loops?</h3>
+
+    <p>
+      Any <code>for</code> loop can easily be rewritten as a <code>while</code> loop
+      (though doing so requires <a href="#s:lists">some ideas</a> we haven't seen yet),
+      and with a bit more work,
+      any <code>while</code> loop can be rewritten as a <code>for</code> loop.
+      So why do Python and other languages have both kinds of loop?
+    </p>
+
+    <p>
+      Once again,
+      the answer is rooted in human information processing.
+      A <code>for</code> loop signals that the items in a collection
+      will be processed exactly once,
+      in order.
+      A <code>while</code> loop offers no such guarantee:
+      the loop's control condition can be anything at all,
+      so the loop could behave in an infinite number of ways.
+      Looking at the previous example once again,
+      it would be natural to assume that the <code>while</code> loop would run three times,
+      because most loops don't move in steps of 100.
+      If there were a dozen lines in the body of the loop,
+      and the subtraction was at the bottom of the loop instead of the top,
+      it would be easy for a reader to misunderstand this code.
+    </p>
+
+  </div>
+
   <div class="keypoints">
     <h3>Summary</h3>
     <ul>
       <li>Use <code>for <em>variable</em> in <em>something</em>:</code> to loop over the parts of something.</li>
+      <li>Use <code>while <em>condition</em>:</code> to loop while something is true.</li>
       <li>The body of a loop must be indented consistently.</li>
       <li>The parts of a string are its characters; the parts of a file are its lines.</li>
     </ul>
@@ -6985,7 +7057,7 @@ for val in itertools.chain('abc', [0, 1, 2]):
 
       <li>
         Some libraries provide <a href="#a:wrapper">wrapper functions</a>
-        that add functionality to other functions.
+        that add value to existing functions.
         For example,
         the <code>csv</code> module's <code>reader</code> function
         reads values from a file of comma-separated values:
