@@ -2041,12 +2041,12 @@ print num_outliers, "values out of range"
     If neither condition is satisfied,
     the value is clean,
     and <code>num_outliers</code> won't be changed in that loop
-    (<a href="#f:loop_cond_flow">Figure 11</a>).
+    (<a href="#f:loop_cond_flow">Figure 12</a>).
   </p>
 
   <figure id="f:loop_cond_flow">
     <img src="python/loop_cond_flow.png" alt="Conditional Execution" />
-    <figcaption>Figure 11: Conditional Execution</figcaption>
+    <figcaption>Figure 12: Conditional Execution</figcaption>
   </figure>
 
   <p>
@@ -2181,12 +2181,12 @@ print num_valid, "values in range"
     Its block of code is executed when
     the code in the <code>if</code> it's paired with
     <em>isn't</em> executed
-    (<a href="#f:else_flow">Figure 12</a>):
+    (<a href="#f:else_flow">Figure 13</a>):
   </p>
 
   <figure id="f:else_flow">
     <img src="python/else_flow.png" alt="If and Else" />
-    <figcaption>Figure 12: If and Else</figcaption>
+    <figcaption>Figure 13: If and Else</figcaption>
   </figure>
 
 <pre>
@@ -2229,13 +2229,13 @@ else:
 </pre>
 
     <p>
-      As <a href="#f:elif">Figure 13</a> shows,
+      As <a href="#f:elif">Figure 14</a> shows,
       at most one path is taken through this conditional.
     </p>
 
     <figure id="f:elif">
       <img src="python/elif.png" alt="If/Elif/Else" />
-      <figcaption>Figure 13: If/Elif/Else</figcaption>
+      <figcaption>Figure 14: If/Elif/Else</figcaption>
     </figure>
 
   </div>
@@ -2474,7 +2474,7 @@ print 'Number of data lines:', number
 
   <figure id="f:set_and_increment">
     <img src="python/set_and_increment.png" alt="Flagging and Incrementing" />
-    <figcaption>Figure 14: Flagging and Incrementing</figcaption>
+    <figcaption>Figure 15: Flagging and Incrementing</figcaption>
   </figure>
 
   <p>
@@ -2486,7 +2486,7 @@ print 'Number of data lines:', number
     then immediately check its value,
     see that it's true,
     and increment <code>number</code>
-    (<a href="#f:set_and_increment">Figure 14</a>).
+    (<a href="#f:set_and_increment">Figure 15</a>).
     What we want to do is <em>either</em> set the flag
     (so that we'll start incrementing on the next iteration),
     <em>or</em> add one to <code>number</code>.
@@ -2919,7 +2919,7 @@ for value in data:
   <p>
     <code>[1, 3, 5]</code> is a <a href="glossary.html#list">list</a>:
     a single object that stores multiple values
-    (<a href="#f:simple_list">Figure 15</a>).
+    (<a href="#f:simple_list">Figure 16</a>).
     Just as a <code>for</code> loop over an open file
     reads lines from that file one by one
     and assigns them to the loop variable,
@@ -2929,7 +2929,7 @@ for value in data:
 
   <figure id="f:simple_list">
     <img src="python/simple_list.png" alt="A Simple List" />
-    <figcaption>Figure 15: A Simple List</figcaption>
+    <figcaption>Figure 16: A Simple List</figcaption>
   </figure>
 
   <p>
@@ -3085,7 +3085,7 @@ print "running total:", result
   <p class="continue">
     <code>result</code> starts off as an <a href="glossary.html#empty-list">empty list</a>,
     and <code>current</code> starts off as zero
-    (<a href="#f:running_total">Figure 16</a>).
+    (<a href="#f:running_total">Figure 17</a>).
     Each time the loop executes&mdash;i.e.,
     for each number in <code>values</code>&mdash;Python
     adds the next value in the list to <code>current</code>
@@ -3097,7 +3097,7 @@ print "running total:", result
 
   <figure id="f:running_total">
     <img src="python/running_total.png" alt="Running Total" />
-    <figcaption>Figure 16: Running Total</figcaption>
+    <figcaption>Figure 17: Running Total</figcaption>
   </figure>
 
   <p>
@@ -3118,7 +3118,7 @@ print "doubled data is:", data
     it doesn't work.
     When Python calculates <code>2*n</code>,
     it creates a new value in memory
-    (<a href="#f:doubling_list">Figure 17</a>).
+    (<a href="#f:doubling_list">Figure 18</a>).
     It then makes the variable <code>n</code> point at the value for a few microseconds
     before going around the loop again
     and pointing <code>n</code> at the next value from the list instead.
@@ -3128,7 +3128,7 @@ print "doubled data is:", data
 
   <figure id="f:doubling_list">
     <img src="python/doubling_list.png" alt="Failed Attempt to Double Values in a List" />
-    <figcaption>Figure 17: Failed Attempt to Double Values in a List</figcaption>
+    <figcaption>Figure 18: Failed Attempt to Double Values in a List</figcaption>
   </figure>
 
   <p>
@@ -3177,7 +3177,7 @@ print scientists
 </pre>
 
   <p class="continue">
-    <a href="#f:update_list">Figure 18</a> shows
+    <a href="#f:update_list">Figure 19</a> shows
     the list before and after the change.
     Again,
     once we've made the update,
@@ -3187,7 +3187,7 @@ print scientists
 
   <figure id="f:update_list">
     <img src="python/update_list.png" alt="Successfully Doubling Values in a List" />
-    <figcaption>Figure 18: Successfully Doubling Values in a List</figcaption>
+    <figcaption>Figure 19: Successfully Doubling Values in a List</figcaption>
   </figure>
 
   <p>
@@ -3466,7 +3466,7 @@ print data
       Seeing the same expression,
       most programmers would say,
       "Right&mdash;you're doubling the value of <em>x</em>."
-      <a href="#f:double_in_place">Figure 19</a> shows
+      <a href="#f:double_in_place">Figure 20</a> shows
       how that actually works:
     </p>
 
@@ -3489,7 +3489,7 @@ print data
 
     <figure id="f:double_in_place">
       <img src="python/double_in_place.png" alt="Doubling in Place" />
-      <figcaption>Figure 19: Doubling in Place</figcaption>
+      <figcaption>Figure 20: Doubling in Place</figcaption>
     </figure>
 
     <p>
@@ -3507,7 +3507,7 @@ x = 2 * x
       <li>
         The variable <code>x</code> is created,
         and set to point at the value 5
-        (<a href="#f:new_values_for_variables">Figure 20</a>).
+        (<a href="#f:new_values_for_variables">Figure 21</a>).
       </li>
 
       <li>
@@ -3527,7 +3527,7 @@ x = 2 * x
 
     <figure id="f:new_values_for_variables">
       <img src="python/new_values_for_variables.png" alt="New Values for Variables" />
-      <figcaption>Figure 20: New Values for Variables</figcaption>
+      <figcaption>Figure 21: New Values for Variables</figcaption>
     </figure>
 
     <p>
@@ -3963,12 +3963,12 @@ IndexError: list index out of range</span>
     we will add up the values at locations 0, 1, and 2,
     then try to add up the values at locations 3, 4, and 5,
     but locations 4 and 5 aren't valid
-    (<a href="#f:a_step_too_far">Figure 21</a>).
+    (<a href="#f:a_step_too_far">Figure 22</a>).
   </p>
 
   <figure id="f:a_step_too_far">
     <img src="python/a_step_too_far.png" alt="A Step Too Far" />
-    <figcaption>Figure 21: A Step Too Far</figcaption>
+    <figcaption>Figure 22: A Step Too Far</figcaption>
   </figure>
 
   <p>
@@ -4020,7 +4020,7 @@ ex</span>
 </pre>
 
   <p>
-    <a href="#f:nested_flowchart">Figure 22</a> shows
+    <a href="#f:nested_flowchart">Figure 23</a> shows
     what's going on in this <a href="glossary.html#nested-loop">nested loop</a>.
     Each time the <a href="glossary.html#outer-loop">outer loop</a> executes,
     Python runs the entire <a href="glossary.html#inner-loop">inner loop</a>.
@@ -4031,7 +4031,7 @@ ex</span>
   
   <figure id="f:nested_flowchart">
     <img src="python/nested_flowchart.png" alt="Nested Loops" />
-    <figcaption>Figure 22: Nested Loops</figcaption>
+    <figcaption>Figure 23: Nested Loops</figcaption>
   </figure>
   
   <p>
@@ -4058,11 +4058,11 @@ for i in range(4):
 
   <figure id="f:triangle_nested_loop">
     <img src="python/triangle_nested_loop.png" alt="Nested Loop Execution" />
-    <figcaption>Figure 23: Nested Loop Execution</figcaption>
+    <figcaption>Figure 24: Nested Loop Execution</figcaption>
   </figure>
   
   <p>
-    <a href="#f:triangle_nested_loop">Figure 23</a> traces
+    <a href="#f:triangle_nested_loop">Figure 24</a> traces
     this little program's execution.
     The first time through,
     <code>i</code> is 0.
@@ -4256,7 +4256,7 @@ reader.close()
     not two parallel lists of X and Y coordinates.
     We can easily create what we want
     using <a id="g:nested-list" href="glossary.html#nested-list">nested list</a>.
-    <a href="#f:simple_nested_list">Figure 24</a> shows
+    <a href="#f:simple_nested_list">Figure 25</a> shows
     what we're going to do,
     and the code below shows
     how we would create a nested list by hand
@@ -4273,7 +4273,7 @@ reader.close()
 
   <figure id="f:simple_nested_list">
     <img src="python/simple_nested_list.py" alt="A Simple Nested List" />
-    <figcaption>Figure 24: A Simple Nested List</figcaption>
+    <figcaption>Figure 25: A Simple Nested List</figcaption>
   </figure>
 
   <p>
@@ -4299,12 +4299,12 @@ reader.close()
     so too is <code>coordinates[0][1]</code>:
     the first subscript select the sublist,
     while the second selects an element from that sublist
-    (<a href="#f:indexing_nested_lists">Figure 25</a>).
+    (<a href="#f:indexing_nested_lists">Figure 26</a>).
   </p>
   
   <figure id="f:indexing_nested_lists">
     <img src="python/indexing_nested_lists.png" alt="Indexing Nested Lists" />
-    <figcaption>Figure 25: Indexing Nested Lists</figcaption>
+    <figcaption>Figure 26: Indexing Nested Lists</figcaption>
   </figure>
   
   <p>
@@ -4333,13 +4333,13 @@ reader.close()
     this program splits the line into two strings,
     creates a new two-element list containing the corresponding numbers,
     and then appends that list to <code>values</code>.
-    <a href="#f:growing_nested_list">Figure 26</a> shows how
+    <a href="#f:growing_nested_list">Figure 27</a> shows how
     the <code>values</code> list grows as successive pairs of numbers are read.
   </p>
   
   <figure id="f:growing_nested_list">
     <img src="python/growing_nested_list.png" alt="Growing a Nested List" />
-    <figcaption>Figure 26: Growing a Nested List</figcaption>
+    <figcaption>Figure 27: Growing a Nested List</figcaption>
   </figure>
 
   <p>
@@ -4764,12 +4764,12 @@ print average3(x, y, z)
 
   <p class="continue">
     then just before the function returns,
-    the program's memory is as shown in <a href="#f:memory_before_return">Figure 27</a>.
+    the program's memory is as shown in <a href="#f:memory_before_return">Figure 28</a>.
   </p>
 
   <figure id="f:memory_before_return">
     <img src="python/memory_before_return.png" alt="State of Memory Before Function Return" />
-    <figcaption>Figure 27: State of Memory Before Function Return</figcaption>
+    <figcaption>Figure 28: State of Memory Before Function Return</figcaption>
   </figure>
 
   <p>
@@ -5132,12 +5132,12 @@ NameError: name 'temp' is not defined</span>
     After executing line 4 of our program,
     Python knows that <code>kelvin_to_celsius</code> refers to a function,
     and that <code>absolute_zero</code> refers to the value 0.0
-    (<a href="#f:func_call_step_1">Figure 28</a>):
+    (<a href="#f:func_call_step_1">Figure 29</a>):
   </p>
 
   <figure id="f:func_call_step_1">
     <img src="python/func_call_step_1.png" alt="First Step of Function Call" />
-    <figcaption>Figure 28: First Step of Function Call</figcaption>
+    <figcaption>Figure 29: First Step of Function Call</figcaption>
   </figure>
 
   <p>
@@ -5152,12 +5152,12 @@ NameError: name 'temp' is not defined</span>
     and gives it the value 0.0
     (since that's what we passed in when we called the function).
     The program's memory is now in the state shown in
-    <a href="#f:func_call_step_2">Figure 29</a>:
+    <a href="#f:func_call_step_2">Figure 30</a>:
   </p>
 
   <figure id="f:func_call_step_2">
     <img src="python/func_call_step_2.png" alt="Second Step of Function Call" />
-    <figcaption>Figure 29: Second Step of Function Call</figcaption>
+    <figcaption>Figure 30: Second Step of Function Call</figcaption>
   </figure>
 
   <p>
@@ -5179,13 +5179,13 @@ NameError: name 'temp' is not defined</span>
     Since the rest of the statement on line 5
     (the line containing the function call)
     assigns the function's value to <code>not_used</code>,
-    memory looks something like <a href="#f:func_call_step_3">Figure 30</a>
+    memory looks something like <a href="#f:func_call_step_3">Figure 31</a>
     after line 5 is finished:
   </p>
 
   <figure id="f:func_call_step_3">
     <img src="python/func_call_step_3.png" alt="Third Step of Function Call" />
-    <figcaption>Figure 30: Third Step of Function Call</figcaption>
+    <figcaption>Figure 31: Third Step of Function Call</figcaption>
   </figure>
 
   <p>
@@ -5251,12 +5251,12 @@ print 'water freezes at', temp_c
     the stack consists of a single frame,
     which contains the three functions
     and the variable <code>temp_f</code>
-    (<a href="#f:stack_single_frame">Figure 31</a>):
+    (<a href="#f:stack_single_frame">Figure 32</a>):
   </p>
 
   <figure id="f:stack_single_frame">
     <img src="python/stack_single_frame.png" alt="A Call Stack With a Single Frame" />
-    <figcaption>Figure 31: A Call Stack With a Single Frame</figcaption>
+    <figcaption>Figure 32: A Call Stack With a Single Frame</figcaption>
   </figure>
 
   <p>
@@ -5264,12 +5264,12 @@ print 'water freezes at', temp_c
     Python creates a new stack frame containing the variable <code>temp</code>
     and assigns it the value 32.0
     (which it got from <code>temp_f</code>).
-    Memory is now as shown in <a href="#f:stack_double_frame">Figure 32</a>.
+    Memory is now as shown in <a href="#f:stack_double_frame">Figure 33</a>.
   </p>
 
   <figure id="f:stack_double_frame">
     <img src="python/stack_double_frame.png" alt="A New Stack Frame" />
-    <figcaption>Figure 32: A New Stack Frame</figcaption>
+    <figcaption>Figure 33: A New Stack Frame</figcaption>
   </figure>
 
   <p>
@@ -5279,12 +5279,12 @@ print 'water freezes at', temp_c
     This frame also contains a variable called <code>temp</code>,
     but since it's in a different frame,
     it's a different variable than <code>fahr_to_celsius</code>'s <code>temp</code>
-    (<a href="#f:stack_triple_frame">Figure 33</a>).
+    (<a href="#f:stack_triple_frame">Figure 34</a>).
   </p>
 
   <figure id="f:stack_triple_frame">
     <img src="python/stack_triple_frame.png" alt="Yet Another Stack Frame" />
-    <figcaption>Figure 33: Yet Another Stack Frame</figcaption>
+    <figcaption>Figure 34: Yet Another Stack Frame</figcaption>
   </figure>
 
   <p>
@@ -5292,35 +5292,35 @@ print 'water freezes at', temp_c
     <code>fahr_to_kelvin</code> calculates a result of 273.15.
     When it returns that value,
     Python discards <code>fahr_to_kelvin</code>'s stack frame
-    (<a href="#f:stack_back_to_double_frame">Figure 34</a>):
+    (<a href="#f:stack_back_to_double_frame">Figure 35</a>):
   </p>
 
   <figure id="f:stack_back_to_double_frame">
     <img src="python/stack_back_to_double_frame.png" alt="Back to a Double Frame" />
-    <figcaption>Figure 34: Back to a Double Frame</figcaption>
+    <figcaption>Figure 35: Back to a Double Frame</figcaption>
   </figure>
 
   <p class="continue">
     and creates a new variable <code>degrees_k</code> to hold that value
     in what is now the top frame&mdash;the one belonging to <code>fahr_to_celsius</code>
-    (<a href="#f:new_variable_in_double_frame">Figure 35</a>):
+    (<a href="#f:new_variable_in_double_frame">Figure 36</a>):
   </p>
 
   <figure id="f:new_variable_in_double_frame">
     <img src="python/new_variable_in_double_frame.png" alt="A New Variable in the Second Frame" />
-    <figcaption>Figure 35: A New Variable in the Second Frame</figcaption>
+    <figcaption>Figure 36: A New Variable in the Second Frame</figcaption>
   </figure>
 
   <p class="continue">
     Python then goes through the same steps for the call to <code>kelvin_to_celsius</code>.
     It creates a stack frame with a variable <code>temp</code>,
     which it assigns the value 273.15
-    (<a href="#f:repeat_stack_frame">Figure 36</a>):
+    (<a href="#f:repeat_stack_frame">Figure 37</a>):
   </p>
 
   <figure id="f:repeat_stack_frame">
     <img src="python/repeat_stack_frame.png" alt="Repeating the Process" />
-    <figcaption>Figure 36: Repeating the Process</figcaption>
+    <figcaption>Figure 37: Repeating the Process</figcaption>
   </figure>
 
   <p class="continue">
@@ -5330,12 +5330,12 @@ print 'water freezes at', temp_c
     Python discards its stack frame,
     creates a variable called <code>temp_c</code> in the original (bottom) frame,
     and assigns it the value 0.0
-    (<a href="#f:final_state_of_frames">Figure 37</a>):
+    (<a href="#f:final_state_of_frames">Figure 38</a>):
   </p>
 
   <figure id="f:final_state_of_frames">
     <img src="python/final_state_of_frames.png" alt="The Final State" />
-    <figcaption>Figure 37: The Final State</figcaption>
+    <figcaption>Figure 38: The Final State</figcaption>
   </figure>
 
   <p>
@@ -5581,12 +5581,12 @@ print sum([1, 2])                       <span class="comment"># 11</span>
     In our pictures,
     the global scope is the bottom-most frame on the stack,
     which is there when the program starts and never goes away
-    (<a href="#f:global_scope">Figure 38</a>).
+    (<a href="#f:global_scope">Figure 39</a>).
   </p>
 
   <figure id="f:global_scope">
     <img src="python/global_scope.png" alt="Global Scope" />
-    <figcaption>Figure 38: Global Scope</figcaption>
+    <figcaption>Figure 39: Global Scope</figcaption>
   </figure>
 
   <p>
@@ -5960,12 +5960,12 @@ def average(values):
     <a href="glossary.html#chunk">chunking</a>,
     which refers to the way people group items together in memory.
     For example, when you look at the five dots on a dice
-    (<a href="#f:five_spots">Figure 39</a>):
+    (<a href="#f:five_spots">Figure 40</a>):
   </p>
 
   <figure id="f:five_spots">
     <img src="python/five_spots.png" alt="Five Spots" />
-    <figcaption>Figure 39: Five Spots</figcaption>
+    <figcaption>Figure 40: Five Spots</figcaption>
   </figure>
 
   <p class="continue">
@@ -6162,7 +6162,7 @@ inner = outer[0]
 
   <p class="continue">
     After these two lines have been executed,
-    the program's memory is as shown in <a href="#f:aliasing_a">Figure 40</a>:
+    the program's memory is as shown in <a href="#f:aliasing_a">Figure 41</a>:
     <code>outer</code> refers to a two-element list
     containing references to a couple of three-element lists,
     while <code>inner</code> refers to the first of those three-element lists.
@@ -6170,7 +6170,7 @@ inner = outer[0]
     
   <figure id="f:aliasing_a">
     <img src="src/python/aliasing_a.png" alt="First Step of Aliasing Example" />
-    <figcaption>Figure 40: First Step of Aliasing Example</figcaption>
+    <figcaption>Figure 41: First Step of Aliasing Example</figcaption>
   </figure>
     
   <p>
@@ -6182,7 +6182,7 @@ inner[2] = 99
 </pre>
 
   <p class="continue">
-    This changes memory as shown in <a href="#f:aliasing_b">Figure 41</a>,
+    This changes memory as shown in <a href="#f:aliasing_b">Figure 42</a>,
     which means that the values of both <code>inner</code> <em>and</em> <code>outer</code>
     have changed:
   </p>
@@ -6196,7 +6196,7 @@ inner[2] = 99
 
   <figure id="f:aliasing_b">
     <img src="src/python/aliasing_b.png" alt="Second Step of Aliasing Example" />
-    <figcaption>Figure 41: Second Step of Aliasing Example</figcaption>
+    <figcaption>Figure 42: Second Step of Aliasing Example</figcaption>
   </figure>
 
   <p>
@@ -6215,7 +6215,7 @@ inner = outer[0]
     would create a copy of <code>outer[0]</code>
     and assign that to <code>inner</code>
     rather than aliasing the first element of <code>outer</code>
-    (<a href="#f:aliasing_copy">Figure 42</a>).
+    (<a href="#f:aliasing_copy">Figure 43</a>).
     That would be easier to understand&mdash;there would be no chance that
     assigning to one variable would cause another variable's value to change&mdash;but
     it would also be less efficient.
@@ -6227,7 +6227,7 @@ inner = outer[0]
     
   <figure id="f:aliasing_copy">
     <img src="src/python/aliasing_copy.png" alt="Copying Instead of Aliasing" />
-    <figcaption>Figure 42: Copying Instead of Aliasing</figcaption>
+    <figcaption>Figure 43: Copying Instead of Aliasing</figcaption>
   </figure>
     
   <p>
@@ -6301,22 +6301,22 @@ list ['alan', 'turing']</span>
     Just before the call,
     the global frame has two variables
     that refer to a string and a list
-    (<a href="#f:append_before_call">Figure 43</a>):
+    (<a href="#f:append_before_call">Figure 44</a>):
   </p>
 
   <figure id="f:append_before_call">
     <img src="python/append_before_call.png" alt="Before Appending" />
-    <figcaption>Figure 43: Before Appending</figcaption>
+    <figcaption>Figure 44: Before Appending</figcaption>
   </figure>
 
   <p class="continue">
     The call creates a new stack frame with aliases for those values
-    (<a href="#f:append_during_call">Figure 44</a>):
+    (<a href="#f:append_during_call">Figure 45</a>):
   </p>
 
   <figure id="f:append_during_call">
     <img src="python/append_during_call.png" alt="While Appending" />
-    <figcaption>Figure 44: While Appending</figcaption>
+    <figcaption>Figure 45: While Appending</figcaption>
   </figure>
 
   <p>
@@ -6324,24 +6324,24 @@ list ['alan', 'turing']</span>
     assigning this to the variable <code>a_string</code>
     changes what that local variable refers to,
     but doesn't change what the global variable <code>string_val</code> refers to
-    (<a href="#f:append_new_string">Figure 45</a>):
+    (<a href="#f:append_new_string">Figure 46</a>):
   </p>
 
   <figure id="f:append_new_string">
     <img src="python/append_new_string.png" alt="A New String" />
-    <figcaption>Figure 45: A New String</figcaption>
+    <figcaption>Figure 46: A New String</figcaption>
   </figure>
 
   <p>
     The statement <code>a_list.append('turing')</code>,
     however,
     actually modifies the list that <code>a_list</code> is pointing to:
-    (<a href="#f:append_same_list">Figure 46</a>):
+    (<a href="#f:append_same_list">Figure 47</a>):
   </p>
 
   <figure id="f:append_same_list">
     <img src="python/append_same_list.png" alt="But the Same List" />
-    <figcaption>Figure 46: But the Same List</figcaption>
+    <figcaption>Figure 47: But the Same List</figcaption>
   </figure>
 
   <p>
@@ -6353,12 +6353,12 @@ list ['alan', 'turing']</span>
     on the other hand,
     is kept,
     because the function actually modified the list in place:
-    (<a href="#f:append_final_state">Figure 47</a>):
+    (<a href="#f:append_final_state">Figure 48</a>):
   </p>
 
   <figure id="f:append_final_state">
     <img src="python/append_final_state.png" alt="The Final State of Memory" />
-    <figcaption>Figure 47: The Final State of Memory</figcaption>
+    <figcaption>Figure 48: The Final State of Memory</figcaption>
   </figure>
 
   <p>
@@ -6412,7 +6412,7 @@ list ['alan']</span>
       though,
       MATLAB clones the array
       and changes the clone rather than the original
-      (<a href="#f:copy_on_write">Figure 48</a>).
+      (<a href="#f:copy_on_write">Figure 49</a>).
       This saves it from copying data when it doesn't need to,
       while guaranteeing that functions don't have side effects
       (which makes them easier to think about).
@@ -6420,7 +6420,7 @@ list ['alan']</span>
 
     <figure id="f:copy_on_write">
       <img src="python/copy_on_write.png" alt="Copy on Write" />
-      <figcaption>Figure 48: Copy on Write</figcaption>
+      <figcaption>Figure 49: Copy on Write</figcaption>
     </figure>
 
     <p>
@@ -6461,11 +6461,11 @@ base.append(base)
       
       <li>
         Which program creates the memory layout shown in
-        <a href="#f:memory_layout_challenge">Figure 49</a>?
+        <a href="#f:memory_layout_challenge">Figure 50</a>?
         
         <figure id="f:memory_layout_challenge">
           <img src="python/memory_layout_challenge.png" alt="Memory Layout Challenge" />
-          <figcaption>Figure 49: Memory Layout Challenge</figcaption>
+          <figcaption>Figure 50: Memory Layout Challenge</figcaption>
         </figure>
         
         <table>
@@ -6668,12 +6668,12 @@ NOISE_LEVEL = 1./3.
     then in its module.
     Our earlier rule "function then global" is just a special case of this,
     since the global scope is just the module scope of our main program
-    (<a href="#f:name_resolution">Figure 50</a>).
+    (<a href="#f:name_resolution">Figure 51</a>).
   </p>
 
   <figure id="f:name_resolution">
     <img src="python/name_resolution.png" alt="Name Resolution" />
-    <figcaption>Figure 50: Name Resolution</figcaption>
+    <figcaption>Figure 51: Name Resolution</figcaption>
   </figure>
 
   <p>
@@ -6744,7 +6744,7 @@ def func(arg):
       saving the instructions in a file on disk,
       which a separate <a href="glossary.html#loader">loader</a>
       copies into memory for execution some time later
-      (<a href="#f:compiling_vs_interpreting">Figure 51</a>).
+      (<a href="#f:compiling_vs_interpreting">Figure 52</a>).
       In general,
       compiled languages therefore don't execute instructions while loading;
       instead,
@@ -6753,7 +6753,7 @@ def func(arg):
 
     <figure id="f:compiling_vs_interpreting">
       <img src="python/compiling_vs_interpreting.png" alt="Compiling vs. Interpreting" />
-      <figcaption>Figure 51: Compiling vs. Interpreting</figcaption>
+      <figcaption>Figure 52: Compiling vs. Interpreting</figcaption>
     </figure>
 
   </div>
