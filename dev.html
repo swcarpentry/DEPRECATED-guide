@@ -103,11 +103,52 @@
 <div class="guide">
   <h2>For Instructors</h2>
 
-  <p class="fixme">explain</p>
+  <p>
+    I have never gotten as far as this lesson
+    in a two-day boot camp aimed at novices,
+    but I have frequently used it in week-long classes,
+    or in classes aimed at more experienced learners.
+    It has everything we want in an extended example:
+    the problem being solved is easy to understand,
+    many of the ideas we've discussed in earlier lessons
+    come up naturally during implementation,
+    testing is challenging but possible,
+    and it motivates two new ideas
+    (performance profiling and algorithmic improvement).
+    It's also a great lead-in to a discussion of object-oriented programming:
+    once the grid has been refactored a couple of times,
+    it's natural to rewrite it as a class,
+    and then swap in another version that has the same interface
+    but uses NumPy for storage.
+  </p>
+
+  <p>
+    How this lesson is presented is just as important as its content.
+    We teach top-down refinement,
+    but most programmers actually start by working out a few key details,
+    then growing toward those fixed points.
+    For example,
+    a programmer might build a clustering program by
+    implementing the core algorithm and the data structures it uses,
+    then growing outward to include I/O routines,
+    some post-analysis,
+    a user interface,
+    and so on.
+    This lesson uses that development cycle,
+    which is why the main routine of the program doesn't appear until
+    <a href="#s:assembly">the middle</a>.
+  </p>
 
   <div class="prereq">
     <h3>Prerequisites</h3>
-    <p class="fixme">explain</p>
+    <p>
+      Basic data types (strings, numbers, lists);
+      loops;
+      conditionals;
+      references and aliasing;
+      creating functions;
+      dictionaries.
+    </p>
   </div>
 
   <div class="notes">
@@ -140,7 +181,13 @@
 
   <div class="box">
     <h3>Why Not Use a NumPy Array?</h3>
-    <p class="fixme">explain: pedagogic value, and we're going to throw it all away anyway</p>
+
+    <p>
+      Because (a) we want to get some more practice manipulating lists
+      and dealing with aliasing,
+      and (b) because we need to leave something for learners to do as challenges.
+    </p>
+
   </div>
 
   <p>
@@ -262,7 +309,17 @@ for x in range(N):
 
   <div class="challenges">
     <h3>Challenges</h3>
-    <p class="fixme">write some challenges</p>
+
+    <ol>
+
+      <li>
+        Draw a diagram showing how the XY coordinates used to index the list of lists above
+        map onto a Cartesian XY grid,
+        then write a function <code>show_grid</code>
+        that prints the grid's values in normal (Cartesian) orientation.
+      </li>
+
+    </ol>
   </div>
 
 </section>
