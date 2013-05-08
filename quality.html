@@ -10,6 +10,7 @@
       <li><a href="#s:defensive">Defensive Programming</a></li>
       <li><a href="#s:except">Handling Errors</a></li>
       <li><a href="#s:unit">Unit Testing</a></li>
+      <li><a href="#s:tdd">Test-Driven Development</a></li>
       <li><a href="#s:numbers">Numbers</a></li>
       <li><a href="#s:coverage">Coverage</a></li>
       <li><a href="#s:debug">Debugging</a></li>
@@ -1324,6 +1325,50 @@ def overlap(red, blue):
           <li>Focus testing on boundary cases.</li>
           <li idea="perf">Writing tests helps us design better code by clarifying our intentions.</li>
         </ul>
+      </div>
+
+    </section>
+
+    <section id="s:tdd">
+      <h2>Test-Driven Development</h2>
+
+      <p>The first is called <em>test-driven development</em>, or TDD.  This is the practice of writing unit tests <em>before</em> writing application code.</p>
+
+      <p>The usual cycle is:</p>
+
+      <ul>
+        <li>write a handful of tests that don't even run because the code they are supposed to test doesn't exist yet;</li>
+        <li>write just enough code to make those tests pass;</li>
+        <li>clean up what's just been written; and</li>
+        <li>commit it to version control.</li>
+      </ul>
+
+      <p>
+        TDD's advocates claim that writing tests first focuses people's minds on what their code is supposed to before they're psychologically biased in favor of it being supposed to do whatever they've just written actually does.
+        It also helps ensure that code actually <em>is</em> testable: all too often, if someone spends a day writing software, they'll only discover at the end that there's no easy way to set up tests cases, run them, or check the results.
+      </p>
+
+      <div class="box" id="a:ci">
+        <h3>Continuous Integration</h3>
+
+        <p>
+          Every few minutes, or every time someone commits code to the
+          version control repository, an automated process checks out
+          a clean copy of the code, builds it, runs all the tests, and
+          posts the results somewhere, such as a web page.  If any of
+          the tests fail, the continuous integration system notifies
+          people by sending out email, texting them, or making the red
+          light in the coffee room start blinking.  We're not kidding
+          about the blinking light: the more obvious it is that
+          something's broken, the faster people will fix it, and the
+          less likely they are to shame themselves by breaking it
+          again.  Continuous integration is the reality check that
+          ensures that the software is always in a runnable state, so
+          that it's always ready to give to users.  Like TDD, it
+          encourages people to work in small steps, which in turn
+          makes short iterations possible.
+        </p>
+
       </div>
 
     </section>
