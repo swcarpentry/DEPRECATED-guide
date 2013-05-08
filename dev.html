@@ -25,7 +25,7 @@
 
 <p>
   Ethan Ecosystem is studying the way pollutants spreads through fractured rock
-  (<a href="#f:invasion_percolation">Figure XXX</a>).
+  (<a href="#f:invasion_percolation">Figure 1</a>).
   To simulate this,
   he wants to use a model called
   <a href="glossary.html#invasion-percolation">invasion percolation</a>.
@@ -33,7 +33,7 @@
 
 <figure id="f:invasion_percolation">
   <img src="dev/invasion_percolation.png" alt="Invasion Percolation" />
-  <figcaption>Figure XXX: Invasion Percolation</figcaption>
+  <figcaption>Figure 1: Invasion Percolation</figcaption>
 </figure>
 
 <p>
@@ -42,7 +42,7 @@
   as a two-dimensional grid of square cells filled with random values.
   The algorithm starts by marking the center cell as being polluted,
   then looks at that cell's four neighbors
-  (<a href="#f:invasion_percolation_algorithm">Figure XXX</a>).
+  (<a href="#f:invasion_percolation_algorithm">Figure 2</a>).
   The one with the lowest value is the one that has the least resistance to the spread of the pollutant,
   so the algorithm marks that as being filled as well.
   It then looks at the six neighbors of the entire filled region,
@@ -54,7 +54,7 @@
 
 <figure id="f:invasion_percolation_algorithm">
   <img src="dev/invasion_percolation_algorithm.png" alt="Invasion Percolation Algorithm" />
-  <figcaption>Figure XXX: Invasion Percolation Algorithm</figcaption>
+  <figcaption>Figure 2: Invasion Percolation Algorithm</figcaption>
 </figure>
 
 <p>
@@ -273,7 +273,7 @@ for x in range(N):
     we append a new empty list to the outer list.
     Each pass through the inner loop,
     we append the value 1 to that inner list
-    (<a href="#f:building_grid">Figure XXX</a>).
+    (<a href="#f:building_grid">Figure 3</a>).
     We go back through the outer loop to append another sub-list,
     which we grow by adding more 1's,
     and so on until we get the grid that we wanted.
@@ -281,7 +281,7 @@ for x in range(N):
 
   <figure id="f:building_grid">
     <img src="dev/building_grid.png" alt="Building the Grid" />
-    <figcaption>Figure XXX: Building the Grid</figcaption>
+    <figcaption>Figure 3: Building the Grid</figcaption>
   </figure>
 
   <div class="box">
@@ -340,7 +340,7 @@ for x in range(N):
     we need to revisit the issue of <a href="python.html#s:alias">aliasing</a>
     and look at some bugs that can arise when your programs uses it.
     Take another look at the list-of-lists in
-    <a href="#f:building_grid">Figure XXX</a>.
+    <a href="#f:building_grid">Figure 3</a>.
     A single list serves as the structure's spine,
     while the sublists store the actual cell values.
   </p>
@@ -376,7 +376,7 @@ for x in range(N):
     We then assign another empty list to the variable <code>EMPTY</code>.
     In the first pass through our loop,
     we append the empty list pointed to by <code>EMPTY</code> to the list pointed to by <code>grid</code>
-    to get the structure shown in <a href="#f:alias_bug">Figure XXX</a>.
+    to get the structure shown in <a href="#f:alias_bug">Figure 4</a>.
     We then go into our inner loop and append a 1 to that sublist.
     Going around the inner loop again,
     we append another 1,
@@ -386,7 +386,7 @@ for x in range(N):
 
   <figure id="f:alias_bug">
     <img src="dev/alias_bug.png" alt="Aliasing Bug" />
-    <figcaption>Figure XXX: Aliasing Bug</figcaption>
+    <figcaption>Figure 4: Aliasing Bug</figcaption>
   </figure>
 
   <p>
@@ -413,7 +413,7 @@ for x in range(N):
       are too large and too cluttered to be comprehensible.
       As a result,
       many programmers wind up drawing diagrams like
-      <a href="#f:alias_bug">Figure XXX</a>
+      <a href="#f:alias_bug">Figure 4</a>
       by hand while they're debugging.
     </p>
 
@@ -621,7 +621,7 @@ for i in range(20):
     let's find cells' neighbors.
     (We need to do this because pollutant can only spread to cells
     that are adjacent to ones that have already been filled.)
-    The blue cell shown in <a href="#f:filling_neighbors">Figure XXX</a>
+    The blue cell shown in <a href="#f:filling_neighbors">Figure 5</a>
     is a neighbor of the filled region
     if any of the green cells already have that special marker value.
     Note that we're not looking at the cells that are on the diagonals:
@@ -648,7 +648,7 @@ for i in range(20):
 
   <figure id="f:filling_neighbors">
     <img src="dev/filling_neighbors.png" alt="Filling Neighbors" />
-    <figcaption>Figure XXX: Filling Neighbors</figcaption>
+    <figcaption>Figure 5: Filling Neighbors</figcaption>
   </figure>
 
   <p>
@@ -834,13 +834,13 @@ next_list = current_list or ['default']
     to resolve ties between cells that share the lowest value on the boundary.
     For example,
     our specification says that we should choose one of the three highlighted cells
-    in <a href="#f:handling_ties">Figure XXX</a> at random.
+    in <a href="#f:handling_ties">Figure 6</a> at random.
     How do we keep track of the cells we're supposed to be choosing from?
   </p>
 
   <figure id="f:handling_ties">
     <img src="dev/handling_ties.png" alt="Handling Ties" />
-    <figcaption>Figure XXX: Handling Ties</figcaption>
+    <figcaption>Figure 6: Handling Ties</figcaption>
   </figure>
 
   <p>
@@ -883,7 +883,7 @@ next_list = current_list or ['default']
     and assign an empty set to <code>min_set</code>
     (because we haven't look at any cells yet).
     We then take a look at our first cell
-    (<a href="#f:handling_ties_example">Figure XXX</a>).
+    (<a href="#f:handling_ties_example">Figure 7</a>).
     Its value is less than <code>min_val</code>,
     so we re-set <code>min_val</code> to 4 (the value of the cell),
     and we put the coordinates of this cell (in this case, X equals 12, Y equals 23) into the set.
@@ -891,7 +891,7 @@ next_list = current_list or ['default']
 
   <figure id="f:handling_ties_example">
     <img src="dev/handling_ties_example.png" alt="Example of Handling Ties" />
-    <figcaption>Figure XXX: Example of Handling Ties</figcaption>
+    <figcaption>Figure 7: Example of Handling Ties</figcaption>
   </figure>
 
   <p>
@@ -1094,7 +1094,7 @@ def fail(msg):
     Inside the function,
     we print the message to standard error so that it will appear on the user's console,
     then exit.
-    <a href="#f:structure_a">Figure XXX</a> shows
+    <a href="#f:structure_a">Figure 8</a> shows
     the structure of the program so far:
     a documentation string,
     our <code>fail</code> function,
@@ -1103,7 +1103,7 @@ def fail(msg):
 
   <figure id="f:structure_a">
     <img src="dev/structure_a.png" alt="Program Structure (A)" />
-    <figcaption>Figure XXX: Program Structure (A)</figcaption>
+    <figcaption>Figure 8: Program Structure (A)</figcaption>
   </figure>
 
   <p>
@@ -1181,13 +1181,13 @@ def create_random_grid(N, Z):
     then it builds a list of lists of random values.
     It assumes that the random number generator has already been seeded,
     i.e., it is not going to seed the random number generator itself.
-    <a href="#f:structure_b">Figure XXX</a> shows
+    <a href="#f:structure_b">Figure 9</a> shows
     where we put this function in our program file.
   </p>
 
   <figure id="f:structure_b">
     <img src="dev/structure_b.png" alt="Program Structure (B)" />
-    <figcaption>Figure XXX: Program Structure (B)</figcaption>
+    <figcaption>Figure 9: Program Structure (B)</figcaption>
   </figure>
 
   <p>
@@ -1319,13 +1319,13 @@ def fill_grid(grid):
     as discussed <a href="#s:random">earlier</a>,
     we make a random choice to choose the cell we're going to fill,
     then mark it and increment our count of filled cells.
-    <a href="#f:structure_c">Figure XXX</a> shows
+    <a href="#f:structure_c">Figure 10</a> shows
     where this function fits in the file.
   </p>
 
   <figure id="f:structure_c">
     <img src="dev/structure_c.png" alt="Program Structure (C)" />
-    <figcaption>Figure XXX: Program Structure (C)</figcaption>
+    <figcaption>Figure 10: Program Structure (C)</figcaption>
   </figure>
 
   <p>
@@ -1395,11 +1395,11 @@ def find_candidates(grid):
 
 <figure id="f:structure_d">
   <img src="dev/structure_d.png" alt="Program Structure (D)" />
-  <figcaption>Figure XXX: Program Structure (D)</figcaption>
+  <figcaption>Figure 11: Program Structure (D)</figcaption>
 </figure>
 
   <p>
-    As <a href="#f:structure_d">Figure XXX</a> shows,
+    As <a href="#f:structure_d">Figure 11</a> shows,
     the <code>find_candidates</code> function fits right above <code>fill_grid</code> in our file.
     We can then insert the <code>is_candidate</code> function we wrote in the previous section
     right above <code>find_candidates</code>
@@ -1485,7 +1485,7 @@ $ <span class="in">python invperc.py 5 10 27187</span>
 
   <figure id="f:debugger">
     <img src="dev/debugger.png" alt="Debugging the Grid" />
-    <figcaption>Figure XXX: Debugging the Grid</figcaption>
+    <figcaption>Figure 12: Debugging the Grid</figcaption>
   </figure>
 
   <p>
@@ -1603,7 +1603,7 @@ def find_candidates(grid):
     we need to come up with examples that <em>aren't</em> random.
     One is a grid has the value 2 everywhere,
     except in three cells that we have filled with 1's
-    (<a href="#f:test_case_grid">Figure XXX</a>).
+    (<a href="#f:test_case_grid">Figure 13</a>).
     If our program is working correctly,
     it should fill exactly those three cells and nothing else.
     If it doesn't,
@@ -1612,18 +1612,18 @@ def find_candidates(grid):
 
   <figure id="f:test_case_grid">
     <img src="dev/test_case_grid.png" alt="Test Case" />
-    <figcaption>Figure XXX: Test Case</figcaption>
+    <figcaption>Figure 13: Test Case</figcaption>
   </figure>
 
   <p>
     How do we get there from here?
     The overall structure of our program is shown
-    in <a href="#f:before_refactoring">Figure XXX</a>:
+    in <a href="#f:before_refactoring">Figure 14</a>:
   </p>
 
   <figure id="f:before_refactoring">
     <img src="dev/before_refactoring.png" alt="Program Before Refactoring" />
-    <figcaption>Figure XXX: Program Before Refactoring</figcaption>
+    <figcaption>Figure 14: Program Before Refactoring</figcaption>
   </figure>
 
   <p class="continue">
@@ -1862,11 +1862,11 @@ if __name__ == '__main__':
 
 <figure id="f:revised_structure">
   <img src="dev/revised_structure.png" alt="Result of Refactoring" />
-  <figcaption>Figure XXX: Result of Refactoring</figcaption>
+  <figcaption>Figure 15: Result of Refactoring</figcaption>
 </figure>
 
   <p>
-    <a href="#f:revised_structure">Figure XXX</a> shows
+    <a href="#f:revised_structure">Figure 15</a> shows
     the structure of our program after refactoring.
     We have the documentation string,
     which we've updated to remind people that the first argument is the name of the scenario.
@@ -1924,7 +1924,7 @@ if __name__ == '__main__':
     so that if the scenario is <code>"5x5_line"</code> we will create a 5&times;5 grid,
     fill a line of cells from the center to the edge with lower values,
     and then check that <code>fill_grid</code> does the right thing
-    (<a href="#f:5x5_line">Figure XXX</a>):
+    (<a href="#f:5x5_line">Figure 16</a>):
   </p>
 
 <pre>
@@ -1940,7 +1940,7 @@ if __name__ == '__main__':
 
   <figure id="f:5x5_line">
     <img src="dev/5x5_line.png" alt="Racing for the Border" />
-    <figcaption>Figure XXX: Racing for the Border</figcaption>
+    <figcaption>Figure 16: Racing for the Border</figcaption>
   </figure>
 
   <p>
@@ -2052,7 +2052,7 @@ def check_grid_NxN_line(grid, num_filled):
   </p>
 
   <p>
-    Let's go back to the example in <a href="#f:5x5_line">Figure XXX</a>.
+    Let's go back to the example in <a href="#f:5x5_line">Figure 16</a>.
     Why don't we just draw our test cases exactly as shown?
     Today's programming languages don't actually let us include sketches in programs,
     but we can get close using strings:
@@ -2929,7 +2929,7 @@ def make_candidate(grid, pool, x, y):
       At its heart,
       it is any software development method that relies on continuous or nearly continuous feedback
       on short timescales
-      (<a href="#f:agile_cycles">Figure XXX</a>).
+      (<a href="#f:agile_cycles">Figure 17</a>).
       Agile developers work in short steps that are typically no more than two weeks long,
       and often as short as a single day.
       In each iteration,
@@ -2944,7 +2944,7 @@ def make_candidate(grid, pool, x, y):
 
     <figure id="f:agile_cycles">
       <img src="dev/agile_cycles.png" alt="Agile Feedback Loops" />
-      <figcaption>Figure XXX: Agile Feedback Loops</figcaption>
+      <figcaption>Figure 17: Agile Feedback Loops</figcaption>
     </figure>
 
     <p>
@@ -3174,12 +3174,12 @@ def make_candidate(grid, pool, x, y):
       A <a href="glossary.html#waterfall-development">waterfall model</a> of software development
       divides development into distinct stages,
       with information flowing from one stage to the next like water falling down a hill
-      (<a href="#f:waterfall_model">Figure XXX</a>).
+      (<a href="#f:waterfall_model">Figure 18</a>).
     </p>
 
     <figure id="f:waterfall_model">
       <img src="dev/waterfall_model.png" alt="Waterfall Model" />
-      <figcaption>Figure XXX: Waterfall Model</figcaption>
+      <figcaption>Figure 18: Waterfall Model</figcaption>
     </figure>
 
     <p>
@@ -3202,12 +3202,12 @@ def make_candidate(grid, pool, x, y):
       as we move from requirements to design to implementation to testing to deployment,
       the cost of fixing a problem increases by a factor of 3 to 5 at each stage,
       and those increases multiply
-      (<a href="#f:boehm_curve">Figure XXX</a>).
+      (<a href="#f:boehm_curve">Figure 19</a>).
     </p>
 
     <figure id="f:boehm_curve">
       <img src="dev/boehm_curve.png" alt="Boehm Curve" />
-      <figcaption>Figure XXX: Boehm Curve</figcaption>
+      <figcaption>Figure 19: Boehm Curve</figcaption>
     </figure>
 
     <p>
@@ -3222,7 +3222,7 @@ def make_candidate(grid, pool, x, y):
     </p>
 
     <p>
-      <a href="#f:sturdy_lifecycle">Figure XXX</a> shows
+      <a href="#f:sturdy_lifecycle">Figure 20</a> shows
       what a year-long sturdy development lifecycle looks like in practice.
       The first step in each cycle is to gather requirements,
       i.e.,
@@ -3234,7 +3234,7 @@ def make_candidate(grid, pool, x, y):
 
     <figure id="f:sturdy_lifecycle">
       <img src="dev/sturdy_lifecycle.png" alt="Sturdy Lifecycle" />
-      <figcaption>Figure XXX: Sturdy Lifecycle</figcaption>
+      <figcaption>Figure 20: Sturdy Lifecycle</figcaption>
     </figure>
 
     <p>
@@ -3296,12 +3296,12 @@ def make_candidate(grid, pool, x, y):
       The other is "importance", broken down into "low", "medium", and "high".
       Each feature's name is put on a sticky note,
       and each sticky note goes into one of the nine boxes on the grid
-      (<a href="#f:schedule_grid">Figure XXX</a>).
+      (<a href="#f:schedule_grid">Figure 21</a>).
     </p>
 
     <figure id="f:schedule_grid">
       <img src="dev/schedule_grid.png" alt="Schedule Grid" />
-      <figcaption>Figure XXX: Schedule Grid</figcaption>
+      <figcaption>Figure 21: Schedule Grid</figcaption>
     </figure>
 
     <p>
@@ -3370,7 +3370,7 @@ def make_candidate(grid, pool, x, y):
     </p>
 
     <p>
-       Going back to <a href="#f:sturdy_lifecycle">Figure XXX</a>,
+       Going back to <a href="#f:sturdy_lifecycle">Figure 20</a>,
        you may have noticed that design overlaps estimation,
        and coding overlaps design.
        This is deliberate:
