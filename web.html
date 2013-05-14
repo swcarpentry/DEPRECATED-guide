@@ -448,7 +448,7 @@ Date         Experimenter        Subject          Test       Score
     because they're not.
   </p>
 
-  <div class="box">
+  <div class="box" id="a:beautiful-soup">
     <h3>Beautiful Soup</h3>
     <p>
       There are a lot of incorrectly-formatted HTML pages out there.
@@ -1799,39 +1799,37 @@ If-Modified-Since: 16-May-2005
 
 </section>
 
-    <section id="s:client">
+<section id="s:client">
+  <h2>Getting Data</h2>
 
-      <h2>Getting Data</h2>
+  <div class="understand">
+    <h3>Learning Objectives:</h3>
+    <ul>
+      <li>Write a program that downloads a data file given its URL.</li>
+      <li>Format values as URL query parameters.</li>
+    </ul>
+  </div>
 
-      <p class="fixme">CONVERT EXAMPLE TO JSON THROUGHOUT</p>
+  <p>
+    Opening sockets, constructing HTTP requests, and parsing responses is tedious,
+    so most people use libraries to do most of the work.
+    Python comes with such a library called <code>urllib2</code>
+    (because it's a replacement for an earlier library called <code>urllib</code>),
+    but it exposes a lot of plumbing that most people never want to care about.
+    Instead,
+    we recommend using the Requests library.
+    Here's an example that uses it to download a page from our web site:
+  </p>
 
-      <div class="understand" id="u:client">
-        <h3>Understand:</h3>
-        <ul>
-          <li>How to get data from the web using HTTP.</li>
-          <li>How URL query parameters are formatted.</li>
-        </ul>
-      </div>
-
-      <p>
-        Opening sockets, constructing HTTP requests, and parsing responses is tedious,
-        so most people use libraries to do most of the work.
-        Python comes with such a library called <code>urllib2</code>
-        (because it's a replacement for an earlier library called <code>urllib</code>),
-        but it exposes a lot of plumbing that most people never want to care about.
-        Instead,
-        we recommend using the <code>Requests</code> library.
-        Here's an example that uses it to download a page from our web site:
-      </p>
-
-<pre src="web/requests_client.py">
+<pre>
 import requests
-response = requests.get("http://software-carpentry.org/testpage.html")
+response = requests.get("http://guide.software-carpentry.org/web/testpage.html")
 print 'status code:', response.status_code
 print 'content length:', response.headers['content-length']
 print response.text
 <span class="out">status code: 200
 content length: 126
+&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
     &lt;title&gt;Software Carpentry Test Page&lt;/title&gt;
@@ -1842,134 +1840,141 @@ content length: 126
 &lt;/html&gt;</span>
 </pre>
 
-      <p class="continue">
-        As you can probably infer,
-        the <code>get</code> function does an HTTP GET on a URL
-        and returns an object that stores the response.
-        Its <code>status_code</code> member is the response's status code,
-        <code>content_length</code> tells us how many bytes are in the response data,
-        and <code>text</code> is the actual data
-        (in this case, an HTML page).
-      </p>
+  <p class="continue">
+    <code>request.get</code> does an HTTP GET on a URL
+    and returns an object containing the response.
+    That object's <code>status_code</code> member is the response's status code;
+    its <code>content_length</code> member  is the number of bytes in the response data,
+    and <code>text</code> is the actual data
+    (in this case, an HTML page).
+  </p>
 
-      <p>
-        Sometimes a URL isn't enough on its own:
-        for example,
-        when searching on Google,
-        we have to specify what the search terms are.
-        We could add these to the path in the URL,
-        but then every web site could have a different convention about
-        which parts actually belong to the path
-        and which are extras.
-        Instead,
-        what we should do is add parameters to the URL
-        by putting a '?' on the end of the URL,
-        then adding key-value pairs separated by the '&amp;' character.
-        For example,
-        the URL <code>http://www.google.ca?q=Python</code>
-        ask Google to search for pages related to Python,
-        while
-        <code>http://www.google.ca/search?q=Python&amp;client=Firefox</code>
-        also tells Google that we're using Firefox.
-        We can pass whatever parameters we want,
-        whenever we want,
-        but it's up to the application running on the web site to decide
-        which ones to pay attention to,
-        and how to interpret them.
-      </p>
+  <div class="box">
+    <h3>One at a Time</h3>
+    <p class="fixme">no images etc. fetched</p>
+  </div>
 
-      <div class="box">
-        <h3>You Are Who You Say You Are</h3>
+  <p>
+    Sometimes a URL isn't enough on its own:
+    for example,
+    we have to specify what our search terms are
+    if we are using a search engine.
+    We could add these to the path in the URL,
+    but that would be misleading
+    (since most people think of paths as identifying files and directories),
+    and we've have to decide whether <code>/software/carpentry</code>
+    and <code>/carpentry/software</code> were the same search or not.
+  </p>
 
-        <p>
-          Yes,
-          this means that we could write a program of our own
-          that tells websites it's Firefox,
-          Internet Explorer,
-          or pretty much anything else.
-          We'll return to this and other security issues later.
-        </p>
-      </div>
+  <p>
+    What we should do instead is
+    add parameters to the URL
+    by adding a '?' to the URL
+    followed by 'key=value' pairs separated by '&amp;'.
+    For example,
+    the URL <code>http://www.google.ca?q=Python</code>
+    ask Google to search for pages related to Python&mdash;the key is the letter 'q',
+    and the value is 'Python'&mdash;while
+    the longer query
+    <code>http://www.google.ca/search?q=Python&amp;client=Firefox</code>
+    tells Google that we're using Firefox.
+    We can pass whatever parameters we want,
+    but it's up to the application running on the web site to decide
+    which ones to pay attention to,
+    and how to interpret them.
+  </p>
 
-      <p>
-        Of course,
-        if '?' and '&amp;' are special characters,
-        there must be a way to escape them.
-        The <a href="glossary.html#url-encoding">URL encoding</a> standard
-        represents special characters using <code>"%"</code> followed by a 2-digit hexadecimal code,
-        and replaces spaces with the '+' character
-        (<a href="#f:url_encoding">Figure XXX</a>).
-        Thus,
-        to search Google for "grade&nbsp;=&nbsp;A+" (with the spaces),
-        we would use the URL <code>http://www.google.ca/search?q=grade+%3D+A%2B</code>.
-      </p>
+  <div class="box">
+    <h3>You Are Who You Say You Are</h3>
+    <p>
+      Yes,
+      this means that we could write a program
+      that tells websites it is Firefox,
+      Internet Explorer,
+      or pretty much anything else.
+      We'll return to this and other security issues later.
+    </p>
+  </div>
 
-      <figure id="f:url_encoding">
-        <table>
-          <tr>
-            <th>Character</th>
-            <th>Encoding</th>
-          </tr>
-          <tr>
-            <td><code>"#"</code></td>
-            <td><code>%23</code></td>
-          </tr>
-          <tr>
-            <td><code>"$"</code></td>
-            <td><code>%24</code></td>
-          </tr>
-          <tr>
-            <td><code>"%"</code></td>
-            <td><code>%25</code></td>
-          </tr>
-          <tr>
-            <td><code>"&amp;"</code></td>
-            <td><code>%26</code></td>
-          </tr>
-          <tr>
-            <td><code>"+"</code></td>
-            <td><code>%2B</code></td>
-          </tr>
-          <tr>
-            <td><code>","</code></td>
-            <td><code>%2C</code></td>
-          </tr>
-          <tr>
-            <td><code>"/"</code></td>
-            <td><code>%2F</code></td>
-          </tr>
-          <tr>
-            <td><code>":"</code></td>
-            <td><code>%3A</code></td>
-          </tr>
-          <tr>
-            <td><code>";"</code></td>
-            <td><code>%3B</code></td>
-          </tr>
-          <tr>
-            <td><code>"="</code></td>
-            <td><code>%3D</code></td>
-          </tr>
-          <tr>
-            <td><code>"?"</code></td>
-            <td><code>%3F</code></td>
-          </tr>
-          <tr>
-            <td><code>"@"</code></td>
-            <td><code>%40</code></td>
-          </tr>
-        </table>
-        <figcaption>URL Encoding</figcaption>
-      </figure>
+  <p>
+    Of course,
+    if '?' and '&amp;' are special characters,
+    there must be a way to escape them.
+    The <a href="glossary.html#url-encoding">URL encoding</a> standard
+    represents special characters using <code>"%"</code> followed by a 2-digit code,
+    and replaces spaces with the '+' character
+    (<a href="#f:url_encoding">Figure XXX</a>).
+    Thus,
+    to search Google for "grade&nbsp;=&nbsp;A+" (with the spaces),
+    we would use the URL <code>http://www.google.ca/search?q=grade+%3D+A%2B</code>.
+  </p>
 
-      <p>
-        Encoding things by hand is very error-prone,
-        so the Requests library lets us pass in
-        a dictionary of key-value pairs instead
-        via the keyword argument <code>params</code>:
-      </p>
+  <figure id="f:url_encoding">
+    <table>
+      <tr>
+        <th>Character</th>
+        <th>Encoding</th>
+      </tr>
+      <tr>
+        <td><code>"#"</code></td>
+        <td><code>%23</code></td>
+      </tr>
+      <tr>
+        <td><code>"$"</code></td>
+        <td><code>%24</code></td>
+      </tr>
+      <tr>
+        <td><code>"%"</code></td>
+        <td><code>%25</code></td>
+      </tr>
+      <tr>
+        <td><code>"&amp;"</code></td>
+        <td><code>%26</code></td>
+      </tr>
+      <tr>
+        <td><code>"+"</code></td>
+        <td><code>%2B</code></td>
+      </tr>
+      <tr>
+        <td><code>","</code></td>
+        <td><code>%2C</code></td>
+      </tr>
+      <tr>
+        <td><code>"/"</code></td>
+        <td><code>%2F</code></td>
+      </tr>
+      <tr>
+        <td><code>":"</code></td>
+        <td><code>%3A</code></td>
+      </tr>
+      <tr>
+        <td><code>";"</code></td>
+        <td><code>%3B</code></td>
+      </tr>
+      <tr>
+        <td><code>"="</code></td>
+        <td><code>%3D</code></td>
+      </tr>
+      <tr>
+        <td><code>"?"</code></td>
+        <td><code>%3F</code></td>
+      </tr>
+      <tr>
+        <td><code>"@"</code></td>
+        <td><code>%40</code></td>
+      </tr>
+    </table>
+    <figcaption>Figure XXX: URL Encoding</figcaption>
+  </figure>
 
-<pre src="web/urlencode.py">
+  <p>
+    Encoding things by hand is very error-prone,
+    so the Requests library lets us use
+    a dictionary of key-value pairs instead
+    via the keyword argument <code>params</code>:
+  </p>
+
+<pre>
 import requests
 parameters = {'q' : 'Python', 'client' : 'Firefox'}
 response = requests.get('http://www.google.com/search', params=parameters)
@@ -1977,144 +1982,128 @@ print 'actual URL:', response.url
 <span class="out">actual URL: http://www.google.com/search?q=Python&amp;client=Firefox</span>
 </pre>
 
-      <p class="continue">
-        You should <em>always</em> let the library build the URL for you,
-        rather than doing it yourself:
-        there are subtleties we haven't covered,
-        and even if there weren't,
-        there's no point duplicating code that's already been written and tested.
-      </p>
+  <p class="continue">
+    You should <em>always</em> let the library build the URL for you,
+    rather than doing it yourself:
+    there are subtleties we haven't covered,
+    and even if there weren't,
+    there's no point duplicating code that's already been written and tested.
+  </p>
 
-      <p>
-        Suppose we want to write a script that actually <em>does</em> search Google.
-        Constructing a URL is easy.
-        Sending it and reading the response is easy too,
-        but parsing the response is hard,
-        since there's a lot of stuff in the page that Google sends back.
-        Many first-generation web applications relied on
-        <a href="glossary.html#screen-scraping">screen scraping</a>
-        to get data,
-        i.e.,
-        they would search for substrings in the HTML.
-        (They had to do this because a lot of hand-written HTML was improperly formatted.
-        For example,
-        it was quite common to use <code>&lt;br&gt;</code> on its own to break a line.)
-      </p>
+  <p>
+    Suppose we want to write a script that actually <em>does</em> search Google.
+    Constructing a URL is easy.
+    Sending it and reading the response is easy too,
+    but parsing the response is hard,
+    since there's a lot of stuff in the page that Google sends back.
+    Many first-generation web applications relied on
+    <a href="glossary.html#screen-scraping">screen scraping</a>
+    to get data,
+    i.e.,
+    they would search for substrings in the HTML
+    using something like <a href="#a:beautiful-soup">Beautiful Soup</a>.
+    They had to do this because a lot of hand-written HTML was improperly formatted:
+    for example,
+    it was quite common to use <code>&lt;br&gt;</code> on its own to break a line.
+  </p>
 
-      <p>
-        Screen scraping is always hard to get right if the page layout is complex.
-        It is also fragile:
-        whenever the layout of the pages changes,
-        the application will most likely break
-        because data is no longer where it was.
-      </p>
+  <p>
+    Screen scraping is always hard to get right if the page layout is complex.
+    It is also fragile:
+    whenever the layout of the pages changes,
+    the application will most likely break
+    because data is no longer where it was.
+  </p>
 
-      <p>
-        Most modern web applications try to sidestep this problem
-        by providing some sort of <a href="glossary.html#web-services">web services</a> interface,
-        which is a lot simpler than it sounds.
-        When a client sends a request,
-        it indicates whether it wants machine-oriented data rather than human-readable HTML,
-        either by using a slightly different URL
-        or by using a suffix like <code>.xml</code> instead of <code>.html</code>.
-        (<a href="#f:web_services">Figure XXX</a>).
-        If it asks for data,
-        the server sends back XML (or some other format)
-        that is easy for a program to parse.
-        If the client asks for "real" HTML,
-        on the other hand,
-        the application turns that data into HTML tables with italics and colored highlights and the like
-        to make it easy for human beings to read.
-      </p>
+  <p>
+    Most modern web applications try to sidestep this problem
+    by providing some sort of <a href="glossary.html#web-services">web services</a> interface,
+    which is a lot simpler than it sounds.
+    When a client sends a request,
+    it indicates that it wants machine-oriented data rather than human-readable HTML
+    by using a slightly different URL
+    (<a href="#f:web_services">Figure XXX</a>).
+    When asked for data,
+    the server sends back <a href="setdict.html#s:json">JSON</a>,
+    XML,
+    or something else that is easy for a program to handle.
+    If the client asks for HTML,
+    on the other hand,
+    the application turns that data into HTML pages with italics and colored highlights and the like
+    to make it easy for human beings to read.
+  </p>
 
-      <figure id="f:web_services">
-        <img src="web/web_services.png" alt="Web Services"/>
-      </figure>
+  <figure id="f:web_services">
+    <img src="web/web_services.png" alt="Web Services"/>
+    <figcaption>Figure XXX: Web Services</figcaption>
+  </figure>
 
-      <p>
-        Using "live" data from a web service is a powerful way to get a lot of science done in a hurry,
-        but only when it works.
-        As a case in point,
-        we wanted to use bird-watching data from <a href="http://ebird.org">ebird.org</a> in this example,
-        but their server was locked down for security reasons
-        when it came time for us to write our examples.
-        (This is another way in which software is like other experimental apparatus:
-        odds are that when you need it most,
-        it will be broken or someone will have borrowed it.)
-      </p>
-
-      <p>
-        We therefore chose to use climate data from the World Bank instead.
-        According to <a href="http://data.worldbank.org/developers/climate-data-api">the documentation</a>,
-        data for a particular country can be found at:
-      </p>
+  <p>
+    Using "live" data from a web service is a powerful way to get a lot of science done in a hurry,
+    but only when it works.
+    As a case in point,
+    we wanted to use bird-watching data from <a href="http://ebird.org">ebird.org</a> in this example,
+    but their server was locked down for security reasons
+    when it came time for us to write our examples.
+    (This is another way in which software is like other experimental apparatus:
+    odds are that when you need it most,
+    it will be broken or someone will have borrowed it.)
+    We therefore chose to use climate data from the World Bank instead.
+    According to <a href="http://data.worldbank.org/developers/climate-data-api">the documentation</a>,
+    data for a particular country can be found at:
+  </p>
 
 <pre>
 http://climatedataapi.worldbank.org/climateweb/rest/v1/country/cru/<em>VARIABLE</em>/year/<em>ISO</em>.<em>FORMAT</em>
 </pre>
 
-      <p class="continue">
-        where:
-      </p>
+  <p class="continue">
+    where:
+  </p>
 
-      <ul>
-        <li>
-          <em>VARIABLE</em> is either "pr" (for precipitation)
-          or "tas" (for <em>t</em>emperature <em>a</em>t <em>s</em>urface);
-        </li>
-        <li>
-          <em>ISO</em> is the International Standards Organization's 3-letter country code
-          for the country of interest
-          (e.g., "FRA" for France);
-          and
-        </li>
-        <li>
-          <em>FORMAT</em> is "XML" for XML,
-          and other strings for other formats
-          that we'll discuss later.
-        </li>
-      </ul>
+  <ul>
+    <li>
+      <em>VARIABLE</em> is either "pr" (for precipitation)
+      or "tas" (for <em>t</em>emperature <em>a</em>t <em>s</em>urface);
+    </li>
+    <li>
+      <em>ISO</em> is the International Standards Organization's 3-letter country code
+      for the country of interest,
+      and
+    </li>
+    <li>
+      <em>FORMAT</em> is "JSON" for JSON,
+      and other strings for other formats.
+    </li>
+  </ul>
 
-      <p>
-        Let's try getting some data:
-      </p>
+  <p>
+    Let's try getting temperature data for France:
+  </p>
 
-<pre>
+<pre id="a:sample-response">
 &gt;&gt;&gt; <span class="in">import requests</span>
-&gt;&gt;&gt; <span class="in">url = 'http://climatedataapi.worldbank.org/climateweb/rest/v1/country/cru/tas/year/FRA.XML'</span>
+&gt;&gt;&gt; <span class="in">url = 'http://climatedataapi.worldbank.org/climateweb/rest/v1/country/cru/tas/year/FRA.JSON'</span>
 &gt;&gt;&gt; <span class="in">response = requests.get(url)</span>
 &gt;&gt;&gt; <span class="in">print response.text</span>
-<span class="out">&lt;list&gt;
-  &lt;domain.web.V1WebCru&gt;
-    &lt;year&gt;1901&lt;/year&gt;
-    &lt;data&gt;21.357021&lt;/data&gt;
-  &lt;/domain.web.V1WebCru&gt;
-  &lt;domain.web.V1WebCru&gt;
-    &lt;year&gt;1902&lt;/year&gt;
-    &lt;data&gt;21.382462&lt;/data&gt;
-  &lt;/domain.web.V1WebCru&gt;
-  ...
-&lt;/list&gt;</span>
+<span class="out">[{"year":1901, "data":9.748865},
+ {"year":1902, "data":9.864603},
+ {"year":1903, "data":10.130159},
+ ...
+ {"year":2009,"data":11.709985}]</span>
 </pre>
 
-      <p>
-        All right:
-        the outer <code>list</code> element (the document root)
-        contains any number of <code>domain.web.V1WebCru</code> elements,
-        each of which contains <code>year</code> and <code>data</code> elements.
-        That long, clumsy name <code>domain.web.V1WebCru</code> probably means something to someone,
-        but we don't need to care:
-        all we need to know is that each element with that tag
-        contains a single year's data.
-      </p>
+  <p>
+    This is straightforward to interpret:
+    the outer list element contains a dictionary for each year,
+    each of which contains <code>"year"</code> and <code>"data"</code> entries.
+    Let's use this to write a program
+    that compares the data for two countries
+    (which is the problem Carla wanted to solve at the start of this chapter).
+    We need to know which countries to compare:
+  </p>
 
-      <p>
-        Let's write a program to compare the data for two countries
-        (which is the problem Carla wanted to solve at the start of this chapter).
-        We need to know which countries to compare:
-      </p>
-
-<pre src="web/temperatures.py">
+<pre>
 def main(args):
     first_country = 'AUS'
     second_country = 'CAN'
@@ -2122,84 +2111,102 @@ def main(args):
         first_country = args[0]
     if len(args) &gt; 1:
         second_country = args[1]
-    ratios(first_country, second_country)
+
+    result = ratios(first_country, second_country)
+    display(result)
+
+def ratios(first, second):
+    '''Calculate ratio of average temperatures for two countries over time.'''
+    return {} <span class="comment"># FIXME: fill in</span>
+
+def display(values):
+    '''Show dictionary entries in sorted order.'''
+    keys = values.keys()
+    keys.sort()
+    for k in keys:
+        print k, values[k]
 
 if __name__ == '__main__':
     main(sys.argv[1:])
 </pre>
 
-      <p>
-        This program uses a function called <code>ratios</code>
-        to fetch data and display the annual ratios:
-      </p>
+  <p>
+    The pattern here should be familiar:
+    we solve the top-level problem as if we already have the functions we need,
+    then come back and fill them in.
+    In this case,
+    this function to be filled in is <code>ratios</code>,
+    which fetches data and calculates our result:
+  </p>
 
 <pre src="web/temperatures.py">
-def ratios(first_country, second_country):
-    '''Show ratio of average temperatures for two countries over time.'''
-    first = get_temps(first_country)
-    second = get_temps(second_country)
+def ratios(first, second):
+    '''Calculate ratio of average temperatures for two countries over time.'''
+    first = get_temps(first)
+    second = get_temps(second)
     assert len(first) == len(second), 'Length mis-match in results'
-    keys = first.keys()
-    keys.sort()
-    for k in keys:
-        print k, first[k] / second[k]
+    result = {}
+    for (i, first_entry) in enumerate(first):
+        year = first_entry['year']
+        second_entry = second[i]
+        assert second_entry['year'] == year, 'Year mis-match'
+        result[year] = first_entry['data'] / second_entry['data']
+    return result
 </pre>
 
-      <p>
-        <code>ratios</code> depends in turn on a function <code>get_temps</code>:
-      </p>
+  <p>
+    It depends in turn on <code>get_temps</code>:
+  </p>
+
+<pre src="web/temperatures.py">
+URL = 'http://climatedataapi.worldbank.org/climateweb/rest/v1/country/cru/tas/year/%s.JSON'
+
+...all the code written so far...
+
+def get_temps(country_code):
+    '''Get annual temperatures for a country.'''
+    response = requests.get(URL % country_code)
+    assert response.status_code == 200, \
+           'Failed to get data for %s' % country_code
+    return json.loads(response.text)
+</pre>
+
+  <p>
+    But wait a second:
+    judging from the <a href="#a:sample-response">sample response shown earlier</a>,
+    temperatures are being reported in Celsius.
+    We should probably convert them to Kelvin
+    to make the ratios more meaningful
+    (and to avoid the risk of dividing by zero).
+    Let's modify <code>get_temps</code>:
+  </p>
 
 <pre src="web/temperatures.py">
 def get_temps(country_code):
     '''Get annual temperatures for a country.'''
-    doc = get_xml(country_code)
-    result = {}
-    for element in doc.findall('domain.web.V1WebCru'):
-        year = find_one(element, 'year').text
-        temp = find_one(element, 'data').text
-        result[int(year)] = kelvin(float(temp))
-    return result
+    response = requests.get(URL % country_code)
+    assert response.status_code == 200, \
+           'Failed to get data for %s' % country_code
+    <span class="highlight">result = json.loads(response.text)
+    for entry in result:
+        result['data'] = kelvin(result['data'])
+    return result</span>
 </pre>
 
-      <p class="continue">
-        which depends on a helper function called <code>get_xml</code>
-        to actually download text from the World Bank web site
-        and parse it to produce an XML document:
-      </p>
-
-<pre src="web/temperatures.py">
-def get_xml(country_code):
-    '''Get XML temperature data for a country.'''
-    url = 'http://climatedataapi.worldbank.org/climateweb/rest/v1/country/cru/tas/year/%s.XML'
-    u = url % country_code
-    response = requests.get(u)
-    doc = ET.fromstring(response.text)
-    return doc
-</pre>
-
-      <p class="continue">
-        The last two functions we need to finish this program are <code>kelvin</code>,
-        which converts temperatures from Celsius to Kelvin,
-        and <code>find_one</code>,
-        which pulls exactly one node out of an XML document:
-      </p>
+  <p class="continue">
+    and add the required conversion function:
+  </p>
 
 <pre src="web/temperatures.py">
 def kelvin(celsius):
     '''Convert degrees C to degrees K.'''
     return celsius + 273.15
-
-def find_one(node, pattern):
-    '''Get exactly one child that matches an XPath pattern.'''
-    all_results = node.findall(pattern)
-    assert len(all_results) == 1, 'Got %d children instead of 1' % len(all_results)
-    return all_results[0]
 </pre>
 
-      <p>
-        Let's try running this program with no arguments
-        to compare Australia to Canada, eh:
-      </p>
+  <p>
+    Let's try running this program with no arguments
+    to compare Australia to Canada:
+  </p>
 
 <pre>
 $ <span class="in">python temperatures.py</span>
@@ -2212,9 +2219,9 @@ $ <span class="in">python temperatures.py</span>
 2009 1.10865537105</span>
 </pre>
 
-      <p class="continue">
-        and then with arguments to compare Malaysia to Norway:
-      </p>
+  <p class="continue">
+    and then with arguments to compare Malaysia to Norway:
+  </p>
 
 <pre>
 $ <span class="in">python temperatures.py MYS NOR</span>
@@ -2227,27 +2234,34 @@ $ <span class="in">python temperatures.py MYS NOR</span>
 2009 1.08720464013</span>
 </pre>
 
-      <p>
-        Only 24 lines in this program do anything webbish
-        (the functions <code>get_temps</code>, <code>get_xml</code>, and <code>find_one</code>),
-        and six of those lines are blank or documentation.
-        The remaining 30 lines are the user interface
-        (handling command-line arguments and printing output)
-        and data manipulation
-        (converting temperatures and calculating ratios).
-      </p>
+  <p>
+    Only six lines in this program do anything webbish
+    (i.e., format the actual URL and get the data).
+    The remaining 47 lines are the user interface
+    (handling command-line arguments and printing output)
+    data manipulation
+    (converting temperatures and calculating ratios),
+    <code>import</code> statements,
+    and docstrings.
+    It really is that simple.
+  </p>
 
-      <div class="keypoints" id="k:client">
-        <h3>Summary</h3>
-        <ul>
-          <li>Use Python's Requests library to make HTTP requests.</li>
-          <li>Let the library format URL parameters.</li>
-          <li>Many web sites now provide machine-oriented data as well as human-readable pages.</li>
-          <li>The URLs and query parameters needed to fetch data are specified by the web site.</li>
-        </ul>
-      </div>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Use Python's Requests library to make HTTP requests.</li>
+      <li>Let the library format URL parameters.</li>
+      <li>Ask web sites for data instead of scraping it from HTML pages.</li>
+      <li>The URLs and query parameters needed to fetch data are specified by the web site.</li>
+    </ul>
+  </div>
 
-    </section>
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <p class="fixme">write challenges</p>
+  </div>
+
+</section>
 
     <section id="s:server">
 
