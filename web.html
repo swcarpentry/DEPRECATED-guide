@@ -50,7 +50,7 @@
   <h2>How We Got Here</h2>
 
   <div class="understand">
-    <h3>Learning Objectives:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Distinguish between human-readable and machine-readable data.</li>
       <li>Explain the relationship between HTML and XML.</li>
@@ -188,7 +188,7 @@ Date         Experimenter        Subject          Test       Score
   <h2>Formatting Rules</h2>
 
   <div class="understand">
-    <h3>Learning Objectives:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Explain the difference between text, elements, and tags.</li>
       <li>Explain the difference between a model and a view, and correctly identify instances of each.</li>
@@ -615,7 +615,7 @@ Date         Experimenter        Subject          Test       Score
   <h2>More HTML</h2>
 
   <div class="understand">
-    <h3>Learning Objectives:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Write correctly-formatted HTML pages containing lists, tables, images, and links.</li>
       <li>Add correctly-formatted metadata to the head of an HTML page.</li>
@@ -1082,7 +1082,7 @@ Date         Experimenter        Subject          Test       Score
   <h2>Creating Documents</h2>
 
   <div class="understand">
-    <h3>Learning Objectives:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Explain how page templating works.</li>
       <li>Use Jinja2 to create and compile a templated page that uses conditionals and loops.</li>
@@ -1227,6 +1227,7 @@ result = template.render(name=who, facts=what)
 print result
 </pre>
 
+{% raw %}
   <p class="continue">
     When we call <code>template.render</code>,
     we pass it any number of name-value pairs.
@@ -1240,6 +1241,7 @@ print result
     so that <code>{{name}}</code> is given the string <code>'Beatrice Tinsley'</code>
     and <code>facts</code> is given our list of facts about her.
   </p>
+{% endraw %}
 
   <p>
     The method call <code>template.render</code> "runs" the template
@@ -1427,7 +1429,7 @@ result = template.render(name='Helen Sawyer Hogg',
   <h2>How the Web Works</h2>
 
   <div class="understand">
-    <h3>Learning Objectives:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Explain what IP addresses, host names, and sockets are.</li>
       <li>Draw a diagram of HTTP's request-response cycle and explain the major steps.</li>
@@ -1803,7 +1805,7 @@ If-Modified-Since: 16-May-2005
   <h2>Getting Data</h2>
 
   <div class="understand">
-    <h3>Learning Objectives:</h3>
+    <h3>Learning Objectives</h3>
     <ul>
       <li>Write a program that downloads a data file given its URL.</li>
       <li>Format values as URL query parameters.</li>
@@ -2263,132 +2265,151 @@ $ <span class="in">python temperatures.py MYS NOR</span>
 
 </section>
 
-    <section id="s:server">
+<section id="s:server">
+  <h2>Providing Data</h2>
 
-      <h2>Providing Data</h2>
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Explain how server applications provide data to clients, and why doing this securely is hard.</li>
+      <li>Recognize when dynamically-generated static pages are a usable alternative, and explain how this differs from truly dynamic service.</li>
+      <li>Generate pages containing data in human-readable form.</li>
+    </ul>
+  </div>
 
-      <div class="understand" id="u:server">
-        <h3>Understand:</h3>
-        <ul>
-          <li>That writing secure dynamic web applications is hard.</li>
-          <li>That providing dynamically-generated static pages is a good alternative.</li>
-          <li>How and why to create an index for such pages.</li>
-          <li>How to keep track of what dynamic data has already been processed.</li>
-        </ul>
-      </div>
+  <p>
+    The next logical step is to provide data to others
+    by writing some kind of server application.
+    The basic idea is simple
+    (<a href="#f:web_application">Figure XXX</a>):
+  </p>
 
-      <p>
-        The next logical step is to provide data to others
-        by writing some kind of server application.
-        The basic idea is simple:
-        wait for someone to connect to your server and send you an HTTP request,
-        parse that request,
-        figure out what it's asking for,
-        fetch that data (or run a program to generate some data dynamically),
-        format the data as HTML or XML,
-        and send it back
-        (<a href="#f:web_application">Figure XXX</a>).
-      </p>
+  <ol>
+    <li>
+      wait for someone to connect to your server and send you an HTTP request;
+    </li>
+    <li>
+      parse that request;
+    </li>
+    <li>
+      figure out what it's asking for;
+    </li>
+    <li>
+      fetch that data (or run a program to generate some data dynamically);
+    </li>
+    <li>
+      format the data as HTML or XML; and
+    </li>
+    <li>
+      send it back.
+    </li>
+  </ol>
 
-      <figure id="f:web_application">
-        <img src="web/web_application.png" alt="Web Application Lifecycle"/>
-      </figure>
+  <figure id="f:web_application">
+    <img src="web/web_application.png" alt="Web Application Lifecycle"/>
+    <figcaption>Web Application Lifecycle</figcaption>
+  </figure>
 
-      <p>
-        We're not going to show you how to do this,
-        though,
-        because experience has shown that all we can actually do in a short lecture
-        is show you how to create security holes.
-        Here's just one example.
-        Suppose you want to write a web application that accepts URLs of the form
-        <code>http://my.site/data?species=homo.sapiens</code>
-        and fetches a database record
-        containing information about that species.
-        One way to do it in Python might look like this:
-      </p>
+  <p>
+    As simple as this is,
+    we're not going to show you how to do it,
+    because experience has shown that
+    all we can actually do in a short lecture
+    is show you how to create security problems.
+    Here's just one example.
+    Suppose you want to write a web application that accepts URLs of the form
+    <code>http://my.site/data?species=homo.sapiens</code>
+    and fetches a database record
+    containing information about that species.
+    One way to do it in Python might look like this:
+  </p>
 
 <pre>
 def get_species(url):
-    '''Get data for a particular species.'''
-    params = url.split('?')[1]                                # Get everything after the '?'
-    pairs = params.split('&amp;')                                 # Get the name1=value1&amp;name2=value2 pairs
-    pairs = [pairs.split('=') for p in pairs]                 # Split the name=value pairs
-    pairs = dict(pairs)                                       # Convert to a {name : value} dictionary
-    species = pairs['species']                                # Get the species we want to look up
-    sql = '''SELECT * FROM Species WHERE Name = "%s";'''      # Template for SQL query
-    sql = sql % species                                       # Insert the species name
-    cursor.execute(sql)                                       # Send query to database
-    results = cursor.fetchall()                               # Get all the results
+    '''Get data for a species given a URL with the species name as a query parameter.'''
+    params = url.split('?')[1]                                # Get everything after the '?'.
+    pairs = params.split('&amp;')                                 # Get the name1=value1&amp;name2=value2 pairs.
+    pairs = [pairs.split('=') for p in pairs]                 # Split the name=value pairs.
+    pairs = dict(pairs)                                       # Convert to a {name : value} dictionary.
+    species = pairs['species']                                # Get the species we want to look up.
+    sql = '''SELECT * FROM Species WHERE Name = "%s";'''      # Template for SQL query.
+    sql = sql % species                                       # Insert the species name.
+    cursor.execute(sql)                                       # Send query to database.
+    results = cursor.fetchall()                               # Get all the results.
     return results[0]
 </pre>
 
-      <p>
-        We've taken out all the error-checking&mdash;for example,
-        this code will fail if there aren't actually any query parameters,
-        or if the species' name isn't in the database&mdash;but
-        that's not the problem.
-        The problem is what happens if someone sends us this URL:
-      </p>
+  <p>
+    We've taken out all the error-checking&mdash;for example,
+    this code will fail if there aren't actually any query parameters,
+    or if the species' name isn't in the database&mdash;but
+    that's not the problem.
+    The problem is what happens if someone sends us this URL:
+  </p>
 
 <pre>
 http://my.site/data?species=homo.sapiens&quot;;DROP TABLE Species&quot;--
 </pre>
 
-      <p class="continue">
-        Why?
-        Because the dictionary of query parameters produced by
-        the first five lines of the function
-        will be:
-      </p>
+  <p class="continue">
+    Why?
+    Because the dictionary of query parameters produced by
+    the first five lines of the function
+    will be:
+  </p>
 
 <pre>
-{ 'species' : 'homo.sapiens&quot;;DROP TABLE Species;--' }
+{'species' : 'homo.sapiens&quot;;DROP TABLE Species;--'}
 </pre>
 
-      <p class="continue">
-        which means that the SQL query will be:
-      </p>
+  <p class="continue">
+    which means that the SQL query will be:
+  </p>
 
 <pre>
 SELECT * FROM Species WHERE Name = "homo.sapiens&quot;;DROP TABLE Species;--";
 </pre>
 
-      <p class="continue">
-        which is the same as:
-      </p>
+  <p class="continue">
+    which is the same as:
+  </p>
 
 <pre>
 SELECT * FROM Species WHERE Name = "homo.sapiens";
 DROP TABLE Species;
 </pre>
 
-      <p>
-        In other words,
-        this selects something from the database,
-        then throws away the entire <code>Species</code> table.
-        It's called an <a href="glossary.html#sql-injection">SQL injection attack</a>,
-        because the user is injecting arbitrary (and usually damaging) SQL
-        into our database query,
-        and it's just one of hundreds of different ways that villains can try to compromise a web application.
-      </p>
+  <p class="continue">
+    In other words,
+    this query selects something from the database,
+    then deletes the entire <code>Species</code> table.
+  </p>
 
-      <p>
-        Built properly,
-        web sites can withstand such attacks,
-        but learning how to do things properly takes a long time.
-        Instead,
-        we will look at how to write programs that create plain old HTML pages
-        that can then be served up to the world by a standard web server.
-        Using our previous example (ratios of average annual temperatures) as a starting point,
-        we'll create pages whose names look like
-        <code>http://my.site/tempratio/AUS-CAN.html</code>,
-        and which contain data formatted like this:
-      </p>
+  <p>
+    This is called an <a href="glossary.html#sql-injection">SQL injection attack</a>,
+    because the user is injecting SQL into our database query.
+    It's just one of hundreds of different ways that
+    evil-doers can try to compromise a web application.
+    Built properly,
+    web sites can withstand such attacks,
+    but learning what "properly" is and how to implement it
+    takes more time than we have.
+  </p>
+
+  <p>
+    Instead,
+    we will look at how to write programs that create static HTML pages
+    that can then be given to clients by a standard web server.
+    Using the ratios of average annual temperatures as our example,
+    we'll create pages whose names look like
+    <code>http://my.site/tempratio/AUS-CAN.html</code>,
+    and which contain data formatted like this:
+  </p>
 
 <pre>
 &lt;html&gt;
   &lt;head&gt;
-    &lt;meta name="revised" content="2012-09-15" /&gt;
+    &lt;meta name="revised" content="2013-09-15" /&gt;
   &lt;/head&gt;
   &lt;body&gt;
     &lt;h1&gt;Ratio of Average Annual Temperatures for AUS and CAN&lt;/h1&gt;
@@ -2423,13 +2444,13 @@ DROP TABLE Species;
 &lt;/html&gt;
 </pre>
 
-      <p>
-        The first step is to calculate ratios,
-        which we did in the <a href="#s:client">previous section</a>.
-        Our main program is:
-      </p>
+  <p>
+    The first step is to calculate ratios,
+    which we did in the <a href="#s:client">previous section</a>.
+    The main function of our program is:
+  </p>
 
-<pre src="web/make_data_page.py">
+<pre>
 def main(args):
     '''Create web page showing temperature ratios for two countries.'''
 
@@ -2445,18 +2466,21 @@ def main(args):
     writer = open(output_filename, 'w')
     writer.write(page)
     writer.close()
+
+if __name__ == '__main__':
+    main(sys.argv[1:])
 </pre>
 
-      <p>
-        The second step is to translate the temperature values into a web page.
-        We'll use the <code>get_temps</code> function we wrote above
-        to grab temperature data,
-        get the years from that,
-        and add the date as well.
-        Once we have all those
-      </p>
+  <p>
+    Most of the work is done by <code>make_page</code>,
+    which gets temperature data for two countries,
+    calculates ratios,
+    and fills in a Jinja2 template.
+    Using the <code>get_temps</code> function we wrote earlier,
+    it is:
+  </p>
 
-<pre src="web/make_data_page.py">
+<pre>
 def make_page(template_filename, output_filename, country_1, country_2):
     '''Create page showing temperature ratios.'''
 
@@ -2464,24 +2488,31 @@ def make_page(template_filename, output_filename, country_1, country_2):
     data_2 = get_temps(country_2)
     years = data_1.keys()
     years.sort()
-    the_date = date.isoformat(date.today())
+    the_date = date.isoformat(date.today())  <span class="comment"># Format today's date</span>
 
     loader = jinja2.FileSystemLoader(['.'])
     environment = jinja2.Environment(loader=loader)
     template = environment.get_template(template_filename)
+
     result = template.render(country_1=country_1, data_1=data_1,
                              country_2=country_2, data_2=data_2,
                              years=years, the_date=the_date)
-
     return result
 </pre>
 
-      <p>
-        Finally,
-        we need a Jinja2 template for the pages we want to create:
-      </p>
+  <p class="continue">
+    The only new thing here is the use of
+    <code>date.isoformat</code> and <code>date.today</code>
+    to format today's date as something like "2013-09-15".
+  </p>
 
-<pre src="web/temp_ratio.html">
+  <p>
+    To finish,
+    we need a Jinja2 template for the pages we want to create:
+  </p>
+
+{% raw %}
+<pre>
 &lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
@@ -2509,21 +2540,22 @@ def make_page(template_filename, output_filename, country_1, country_2):
   &lt;/body&gt;
 &lt;/html&gt;
 </pre>
+{% endraw %}
 
-      <p>
-        Let's run it for Australia and Canada:
-      </p>
+  <p>
+    Let's run it for Australia and Canada:
+  </p>
 
 <pre>
 $ <span class="in">python make_data_page.py temp_ratio.html /tmp/aus-can.html AUS CAN</span>
 </pre>
 
-      <p class="continue">
-        Sure enough,
-        the file <code>/tmp/aus-can.html</code>contains:
-      </p>
+  <p class="continue">
+    Sure enough,
+    the file <code>/tmp/aus-can.html</code>contains:
+  </p>
 
-<pre src="web/aus-can-ratio.html">
+<pre>
 &lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
@@ -2568,77 +2600,162 @@ $ <span class="in">python make_data_page.py temp_ratio.html /tmp/aus-can.html AU
 &lt;/html&gt;
 </pre>
 
-      <div class="keypoints" id="k:client">
-        <h3>Summary</h3>
-        <ul>
-          <li>Creating static files is a safe alternative to providing content dynamically.</li>
-        </ul>
-      </div>
+  <p>
+    This looks right,
+    but most experienced programmers would ask us to make one improvement.
+    Our program doesn't actually calculate temperature ratios;
+    that's done by this line in the template:
+  </p>
 
-    </section>
+{% raw %}
+<pre>
+        &lt;td&gt;{{data_1[year] / data_2[year]}}&lt;/td&gt;
+</pre>
+{% endraw %}
 
-    <section id="s:index">
+  <p>
+    Experience shows that the more calculations we do in our views
+    (i.e., our information displays),
+    the harder they are to maintain.
+    What we should do is:
+  </p>
 
-      <h2>Creating an Index</h2>
+  <ol>
+    <li>
+      create another dictionary called <code>ratios</code>
+      in the Python program
+      and pass it into the template,
+      and
+    </li>
+    <li>
+      have the template display those values
+      rather than calculating ratios itself.
+    </li>
+  </ol>
 
-      <div class="understand" id="u:index">
-        <h3>Understand:</h3>
-        <ul>
-          <li>Why good data sets have an index.</li>
-        </ul>
-      </div>
+  <p>
+    Splitting things this way is extra work in this small case,
+    but it's the best way to manage information
+    as our displays become more complex.
+  </p>
 
-      <p>
-        Before leaving Carla's climate problem,
-        let's go one step further and make our solution more useful.
-        If we're going to calculate these tables for many different countries,
-        how will other scientists know which ones we've done?
-        In other words,
-        how can we make our data findable?
-      </p>
+  <div class="box">
+    <h3>Running a Local Server</h3>
 
-      <p>
-        The standard answer for the last few hundred years has been,
-        "Create an index."
-        On the web,
-        we can do this by creating a file called <code>index.html</code>
-        and putting it in the directory that holds our data files,
-        because by default,
-        most web servers will give clients that file
-        when they're asked for the directory itself.
-        In other words,
-        if someone points a browser (or any other program)
-        at <code>http://my.site/tempratio/</code>,
-        the web server will look for <code>/tempratio</code>.
-        When it realizes that path is a directory rather than a file,
-        it will look inside that directory for a file called <code>index.html</code>
-        and return that.
-        This is <em>not</em> guaranteed&mdash;system administrators
-        can and do set up other default behaviors&mdash;but it is a common convention,
-        and we can always tell our colleagues to fetch
-        <code>http://my.site/tempratio/</code>
-        if they want the current index anyway.
-      </p>
+    <p>
+      The HTTP servers taht come in the standard Python library are useful
+      for practicing these things in class.
+      To start serving files,
+      we go into the directory that contains them and run:
+    </p>
 
-      <p>
-        What should be in <code>index.html</code>?
-        The answer is simple:
-        a table of some kind showing what files are available,
-        when they were created,
-        and where they are.
-        The first piece of information is the most important;
-        the second allows users to determine
-        what has been added since they last looked at our site
-        without having to download actual data files,
-        while the third tells them how to get what they want.
-        Our <code>index.html</code> will therefore be something like this:
-      </p>
+<pre>
+$ <span class="in">python -m SimpleHTTPServer 8080</span>
+</pre>
+
+    <p>
+      <code>-m SimpleHTTPServer</code> tells Python
+      to find the <code>SimpleHTTPServer</code> library
+      and run it as a program;
+      the parameter <code>8080</code> tells it what port to use.
+      (It's normal to run HTTP servers on port 80,
+      but your system may forbid you from doing that
+      if you don't have administrator privileges.)
+      To get files,
+      we use <code>localhost</code> as the site,
+      and include the appropriate port number,
+      so the URL is <code>http://localhost:80/index.html</code>,
+      or more simply,
+      <code>http://localhost:80/</code>.
+    </p>
+  </div>
+
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Creating static files is a safe, simple alternative to providing content dynamically.</li>
+      <li>Use a program to get and manipulate data, and a template to generate the page.</li>
+      <li>Views should display values, not calculate them.</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <p class="fixme">create challenges: take the division out of the template!</p>
+  </div>
+
+</section>
+
+<section id="s:index">
+  <h2>Creating an Index</h2>
+
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Create and update an index for a set of pages.</li>
+      <li>Explain why having an index is important.</li>
+    </ul>
+  </div>
+
+  <p>
+    If Carla is calculating temperature ratios for many different countries,
+    how will other scientists know which ones she has done?
+    In other words,
+    how can she make her data findable?
+  </p>
+
+  <p>
+    The standard answer for hundreds of years has been,
+    "Create an index."
+    On the web,
+    we can do this by creating a file called <code>index.html</code>
+    and putting it in the directory that holds our data files.
+  </p>
+
+  <div class="box">
+    <h3>Indexing Conventions</h3>
+
+    <p>
+      We don't have to call our index file <code>index.html</code>,
+      but it's best to do so.
+      By default,
+      most web servers will give clients that file
+      when they're asked for the directory itself.
+      In other words,
+      if someone points a browser (or any other program)
+      at <code>http://my.site/tempratio/</code>,
+      the web server will look for <code>/tempratio</code>.
+      When it realizes that path is a directory rather than a file,
+      it will look inside that directory for a file called <code>index.html</code>
+      and return that.
+      This is <em>not</em> guaranteed&mdash;system administrators
+      can and do set up other default behaviors&mdash;but it is a common convention,
+      and we can always tell our colleagues to fetch
+      <code>http://my.site/tempratio/</code>
+      if they want the current index anyway.
+    </p>
+
+  </div>
+
+  <p>
+    What should be in <code>index.html</code>?
+    The answer is simple:
+    a table of some kind showing what files are available,
+    when they were created,
+    and where they are.
+    The first piece of information is the most important;
+    the second allows users to determine
+    what has been added since they last looked at our site
+    without having to download actual data files,
+    while the third tells them how to get what they want.
+    Our <code>index.html</code> will therefore be something like this:
+  </p>
 
 <pre>
 &lt;html&gt;
   &lt;head&gt;
     &lt;title&gt;Index of Average Annual Temperature Ratios&lt;/title&gt;
-    &lt;meta name="revised" content="2012-09-15" /&gt;
+    &lt;meta name="revised" content="2013-09-15" /&gt;
   &lt;/head&gt;
   &lt;body&gt;
     &lt;h1&gt;Index of Average Annual Temperature Ratios&lt;/h1&gt;
@@ -2646,14 +2763,14 @@ $ <span class="in">python make_data_page.py temp_ratio.html /tmp/aus-can.html AU
       &lt;tr&gt;
         &lt;td class="country"&gt;AUS&lt;/td&gt;
         &lt;td class="country"&gt;CAN&lt;/td&gt;
-        &lt;td class="revised"&gt;2012-09-12&lt;/td&gt;
+        &lt;td class="revised"&gt;2013-09-12&lt;/td&gt;
         &lt;td class="revised"&gt;&lt;a href="http://my.site/tempratio/AUS-CAN.html"&gt;download&lt;/a&gt;&lt;/td&gt;
       &lt;/tr&gt;
       ...
       &lt;tr&gt;
         &lt;td class="country"&gt;MYS&lt;/td&gt;
         &lt;td class="country"&gt;NOR&lt;/td&gt;
-        &lt;td class="revised"&gt;2012-09-15&lt;/td&gt;
+        &lt;td class="revised"&gt;2013-09-15&lt;/td&gt;
         &lt;td class="download"&gt;&lt;a href="http://my.site/tempratio/MYS-NOR.html"&gt;download&lt;/a&gt;&lt;/td&gt;
       &lt;/tr&gt;
     &lt;/table&gt;
@@ -2661,42 +2778,43 @@ $ <span class="in">python make_data_page.py temp_ratio.html /tmp/aus-can.html AU
 &lt;/html&gt;
 </pre>
 
-      <div class="box" id="b:index:explicit">
-        <h3>Why Explicit URLs?</h3>
+  <div class="box" id="b:index:explicit">
+    <h3>Why Explicit URLs?</h3>
 
-        <p>
-          Strictly speaking,
-          we don't need to store the URLs in the index file:
-          we could instead tell people that if they got the index from
-          <code>http://my.site/tempratio/index.html</code>,
-          then the data for AUS and CAN is in <code>http://my.site/tempratio/AUS-CAN.html</code>,
-          and let them construct the URL themselves.
-          However,
-          that puts more of a burden on the user both in the short term
-          (since more coding is required)
-          and in the long term
-          (since the rule for constructing the URL for a particular data set could well change).
-          It also effectively hides our data from search engines,
-          since there's no way for them to know what our URL construction rule is.
-        </p>
-      </div>
+    <p>
+      Strictly speaking,
+      we don't need to store the URLs in the index file:
+      we could instead tell people that if they got the index from
+      <code>http://my.site/tempratio/index.html</code>,
+      then the data for AUS and CAN is in <code>http://my.site/tempratio/AUS-CAN.html</code>,
+      and let them construct the URL themselves.
+      However,
+      that puts more of a burden on the user both in the short term
+      (since more coding is required)
+      and in the long term
+      (since the rule for constructing the URL for a particular data set could well change).
+      It also effectively hides our data from search engines,
+      since there's no way for them to know what our URL construction rule is.
+    </p>
 
-      <p>
-        Now,
-        unlike our actual data files,
-        this index file is added to incrementally:
-        each time we generate a new version,
-        we have to include all the data that was in the old version as well.
-        We therefore need to remember what we've done.
-        The usual way to do this in a real application is to use a database,
-        but for our purposes,
-        a plain old text file will suffice.
-      </p>
+  </div>
 
-      <p>
-        We <em>could</em> make up a format to store the information we need,
-        such as:
-      </p>
+  <p>
+    Now,
+    unlike our actual data files,
+    this index file is added to incrementally:
+    each time we generate a new version,
+    we have to include all the data that was in the old version as well.
+    We therefore need to remember what we've done.
+    The usual way to do this in a real application is to use a database,
+    but for our purposes,
+    a plain old text file will suffice.
+  </p>
+
+  <p>
+    We <em>could</em> make up a format to store the information we need,
+    such as:
+  </p>
 
 <pre>
 Updated 2013-05-09
@@ -2706,23 +2824,12 @@ CAN NOR 2013-04-22
 CAN MDG 2013-05-09
 </pre>
 
-      <p class="continue">
-        but there's a better solution.
-        A growing number of applications use a data format called
-        <a href="glossary.html#json">JSON</a>,
-        which stands for "JavaScript Object Notation".
-        Despite the name,
-        it is a language-independent way to store nested data structures
-        made up of lists, dictionaries, strings, numbers, Booleans,
-        and the special value <code>null</code> (equivalent to Python's <code>None</code>).
-        Here's a program that creates a dictionary representing the four data sets listed above
-        and saves it in <code>index.json</code>:
-      </p>
+  <p class="continue">
+    but it's much simpler just to use JSON:
+  </p>
 
-<pre src="web/create-index.py">
-import json
-
-index_data = {
+<pre>
+{
     'updated' : '2013-05-09',
     'entries' : [
         ['AUS', 'CAN', '2013-03-07'],
@@ -2731,42 +2838,29 @@ index_data = {
         ['CAN', 'MDG', '2013-05-09']
     ]
 }
-
-writer = open('index.json', 'w')
-json.dump(index_data, writer)
-writer.close()
 </pre>
 
-      <p>
-        When we run this,
-        it creates a file called <code>index.json</code> that contains:
-      </p>
-
-<pre src="web/index.json">
-{"updated": "2013-05-09", "entries": [["AUS", "CAN", "2013-03-07"], ["AUS", "NOR", "2013-03-09"], ["CAN", "NOR", "2013-04-22"], ["CAN", "MDG", "2013-05-09"]]}
-</pre>
-
-      <p class="continue">
-        If we want to check that it has worked,
-        we can read the file's contents back in to re-create the original data structure:
-      </p>
+  <p>
+    Loading this data is as simple as:
+  </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">import json</span>
-&gt;&gt;&gt; <span class="in">reader = open('index.json', 'r')</span>
-&gt;&gt;&gt; <span class="in">check = json.load(reader)</span>
-&gt;&gt;&gt; <span class="in">print check</span>
+import json
+reader = open('index.json', 'r')
+check = json.load(reader)
+print check
 <span class="out">{u'updated': u'2013-05-09', u'entries': [[u'AUS', u'CAN', u'2013-03-07'], [u'AUS', u'NOR', u'2013-03-09'], [u'CAN', u'NOR', u'2013-04-22'], [u'CAN', u'MDG', u'2013-05-09']]}</span>
 </pre>
 
-      <p class="continue">
-        The 'u' in front of each string signals that these strings are actually stored as Unicode,
-        but we can safely ignore that for now.
-        Let's rewrite the main function of our program
-        so that it creates the index as well as the individual page:
-      </p>
+  <p class="continue">
+    (Remember,
+    the 'u' in front of each string signals that these strings are actually stored as Unicode,
+    but we can safely ignore that for now.)
+    Let's rewrite the main function of our temperature ratio program
+    so that it creates the index as well as the individual page:
+  </p>
 
-<pre src="web/make_indexed_page.py">
+<pre>
 import sys
 import os
 from datetime import date
@@ -2803,24 +2897,26 @@ def main(args):
     save_page(output_dir, INDEX_PAGE, page)
 </pre>
 
-      <p class="continue">
-        Since we will be expanding templates in a couple of different functions,
-        we move the creation of the Jinja2 environment to the main program.
-        We then pass that variable into <code>make_page</code>
-        and a new function called <code>update_index</code>,
-        and use another new function <code>save_page</code>
-        to save generated pages where they need to go.
-        (Note that we update the index data <em>before</em> rewriting the index HTML page.
-        The first version of this program that we wrote updated the HTML page
-        before updating the data it was based on&mdash;oops.)
-      </p>
+  <p class="continue">
+    Since we will be expanding templates in a couple of different functions,
+    we move the creation of the Jinja2 environment to the main program.
+    We then pass the environment into both <code>make_page</code>
+    and a new function called <code>update_index</code>,
+    and use another new function <code>save_page</code>
+    to save generated pages where they need to go.
+    (Note that we update the index data <em>before</em> rewriting the index HTML page,
+    so that the updates to the index appear in the HTML.
+    We did these two steps in the wrong order
+    in the first version of this program that we wrote,
+    and it was several hours before we noticed the error...)
+  </p>
 
-      <p>
-        <code>save_page</code> is the simplest of these pages to write,
-        so let's do that:
-      </p>
+  <p>
+    <code>save_page</code> is the simplest function to write,
+    so let's do that:
+  </p>
 
-<pre src="web/make_indexed_page.py">
+<pre>
 def save_page(output_dir, page_name, content):
     '''Save text in a file output_dir/page_name.'''
     path = os.path.join(output_dir, page_name)
@@ -2829,17 +2925,17 @@ def save_page(output_dir, page_name, content):
     writer.close()
 </pre>
 
-      <p>
-        Our revised <code>make_page</code> function is shorter than our original,
-        since the environment is now being created in <code>main</code>.
-        <code>make_page</code> is also now being passed the date
-        (since that is used to update the index as well),
-        and uses a fixed template specified by the global variable
-        <code>INDIVIDUAL_PAGE</code>.
-        The result is:
-      </p>
+  <p>
+    Our revised <code>make_page</code> function is shorter than our original,
+    since the environment is now being created in <code>main</code>.
+    It is also now being passed the date
+    (since that is used to update the index as well),
+    and uses a fixed template specified by the global variable
+    <code>INDIVIDUAL_PAGE</code>.
+    The result is:
+  </p>
 
-<pre src="web/make_indexed_page.py">
+<pre>
 def make_page(environment, country_1, country_2, the_date):
     '''Create page showing temperature ratios.'''
 
@@ -2856,11 +2952,11 @@ def make_page(environment, country_1, country_2, the_date):
     return result
 </pre>
 
-      <p>
-        The function that loads existing index data is also pretty simple:
-      </p>
+  <p>
+    The function that loads existing index data is also pretty simple:
+  </p>
 
-<pre src="web/make_indexed_page.py">
+<pre>
 def load_index(output_dir, filename):
     '''Load index data from output_dir/filename.'''
 
@@ -2871,11 +2967,11 @@ def load_index(output_dir, filename):
     return result
 </pre>
 
-      <p>
-        All that's left is the function that regenerates the HTML version of the index:
-      </p>
+  <p>
+    All that's left are the function that regenerates the HTML version of the index:
+  </p>
 
-<pre src="web/make_indexed_page.py">
+<pre>
 def make_index(environment, url_base, index_data):
     '''Refresh the HTML index page.'''
 
@@ -2885,11 +2981,12 @@ def make_index(environment, url_base, index_data):
                            entries=index_data['entries'])
 </pre>
 
-      <p class="continue">
-        and the HTML template it relies on:
-      </p>
+  <p class="continue">
+    and the HTML template it relies on:
+  </p>
 
-<pre src="web/index_template.html">
+{% raw %}
+<pre>
 &lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
@@ -2911,52 +3008,71 @@ def make_index(environment, url_base, index_data):
   &lt;/body&gt;
 &lt;/html&gt;
 </pre>
+{% endraw %}
 
-      <div class="keypoints" id="k:index">
-        <h3>Summary</h3>
-        <ul>
-          <li>Every collection of data should provide a machine-readable index.</li>
-          <li>Links between files should be explicit.</li>
-        </ul>
-      </div>
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Every collection of data should have an index.</li>
+      <li>The index should specify when things were updated, as well as what they are.</li>
+      <li>The URLs linking files should be absolute, so that client programs do not have to modify them in order to use them.</li>
+    </ul>
+  </div>
 
-    </section>
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <p class="fixme">write some challenges</p>
+  </div>
 
-    <section id="s:syndicate">
+</section>
 
-      <h2>Syndicating Data</h2>
+<section id="s:syndicate">
+  <h2>Syndicating Data</h2>
 
-      <p>
-        To end this chapter,
-        we'll use what we have learned to build a simple tool
-        to download new temperature comparisons from a web site.
-        In broad strokes,
-        our program will keep a list of URLs to download data from,
-        along with a timestamp showing when data was last downloaded.
-        When we run the program,
-        it will poll each site to see if any new data sets have been added
-        since the last check.
-        If any have,
-        the program will display their URLs.
-      </p>
+  <p>
+    To end this chapter,
+    we'll use what we have learned to build a simple tool
+    to download new temperature comparisons from a web site.
+    In broad strokes,
+    our program will keep a list of URLs to download data from,
+    along with a timestamp showing when data was last downloaded.
+    When we run the program,
+    it will poll each site to see if any new data sets have been added
+    since the last check.
+    If any have,
+    the program will display their URLs.
+  </p>
 
-      <p>
-        In order for this to work,
-        each of the sites that's providing data needs to be able to tell us
-        what data sets it has calculated,
-        and when they were created.
-        This information is in the site's <code>index.html</code> file in human-readable form,
-        but it's also in the <code>index.json</code> file each site is maintaining.
-        This file can be loaded directly without any XML parsing or XPath searching,
-        so we'll use that.
-      </p>
+  <p>
+    In order for this to work,
+    each of the sites that's providing data needs to be able to tell us
+    what data sets it has calculated,
+    and when they were created.
+    This information is in the site's <code>index.html</code> file in human-readable form,
+    but it's also in the <code>index.json</code> file each site is maintaining.
+    Client programs can load this file directly without having to do any parsing,
+    so we'll rely on that.
+  </p>
 
-      <p>
-        The next step is to decide how to keep track of what we have downloaded and when.
-        The simplest thing is to create another JSON file
-        containing the timestamp and the list of URLs.
-        We'll call this <code>sources.json</code>:
-      </p>
+  <div class="box">
+    <h3>Making Life Simpler</h3>
+    <p>
+      An earlier version of this tutorial loaded the HTML version of the index
+      and extracted dates and URLs from it.
+      Doing so only required twelve extra lines of code&mdash;but
+      an extra 1200 words to explain how to read HTML into a program
+      and find things in it.
+      Storing information in machine-friendly formats for machines to use
+      makes life a <em>lot</em> simpler...
+    </p>
+  </div>
+
+  <p>
+    The next step is to decide how to keep track of what we have downloaded and when.
+    The simplest thing is to create another JSON file
+    containing the timestamp and the list of URLs.
+    We'll call this <code>sources.json</code>:
+  </p>
 
 <pre>
 {
@@ -2968,19 +3084,20 @@ def make_index(environment, url_base, index_data):
 }
 </pre>
 
-      <p class="continue">
-        (Again, a larger application would use a database of some kind,
-        but that's more than we need right now.)
-        Each time we run our program,
-        it will read this file,
-        then download each <code>index.json</code> file.
-        If any of those files contain links to data sets that are newer than the timestamp,
-        it will print the data set's URL.
-        (A real data analysis program would download the data and do something with it.)
-        We will then save a fresh copy of <code>sources.json</code>
-        with an updated timestamp.
-        Our main program looks like this:
-      </p>
+  <p class="continue">
+    (Again, a larger application would use a database of some kind,
+    but that's more than we need right now.)
+    Each time we run our program,
+    it will read this file,
+    then download each <code>index.json</code> file.
+    If any of those files contain links to data sets that are newer than the timestamp,
+    it will print the data set's URL.
+    (A real data analysis program would download the data and do something with it.)
+    We will then save a fresh copy of <code>sources.json</code>
+    with an updated timestamp
+    (<a href="#f:syndication_lifecycle">Figure XXX</a>).
+    Our main program looks like this:
+  </p>
 
 <pre src="web/syndicate.py">
 import date
@@ -2995,38 +3112,44 @@ def main(sources_path):
     write_sources(sources_path, new_timestamp, sources)
 </pre>
 
-      <p>
-        That seems pretty simple;
-        the only subtlety is that we calculate the new timestamp
-        <em>before</em> we start checking for new datasets.
-        The reason is that this check might take
-        anything from a few seconds to a few hours,
-        depending on how busy the Internet is
-        and how much data we actually download.
-        If we wait until we're done
-        and then record that moment as the new timestamp,
-        then the next time we run our program,
-        we won't download any datasets that were created
-        between the time we started the first run of our program
-        and the time it finished
-        (<a href="#f:when_to_timestamp">Figure XXX</a>).
-      </p>
+  <figure id="f:syndication_lifecycle">
+    <img src="web/syndication_lifecycle.png" alt="Syndication Lifecycle" />
+    <figcaption>Figure XXX: Syndication Lifecycle</figcaption>
+  </figure>
 
-      <figure id="f:when_to_timestamp">
-        <img src="web/when_to_timestamp.png" alt="When to Create Timestamps"/>
-      </figure>
+  <p>
+    That seems pretty simple;
+    the only subtlety is that we calculate the new timestamp
+    <em>before</em> we start checking for new datasets.
+    The reason is that this check might take
+    anything from a few seconds to a few hours,
+    depending on how busy the Internet is
+    and how much data we actually download.
+    If we wait until we're done
+    and then record that moment as the new timestamp,
+    then the next time we run our program,
+    we won't download any datasets that were created
+    between the time we started the first run of our program
+    and the time it finished
+    (<a href="#f:when_to_timestamp">Figure XXX</a>).
+  </p>
 
-      <p>
-        We now have four functions to write:
-        <code>read_sources</code>,
-        <code>write_sources</code>,
-        <code>get_new_datasets</code>,
-        and
-        <code>process</code>.
-        Reading and writing the <code>sources.json</code> file is pretty simple:
-      </p>
+  <figure id="f:when_to_timestamp">
+    <img src="web/when_to_timestamp.png" alt="When to Create Timestamps"/>
+    <figcaption>Figure XXX: When to create Timestamps</figcaption>
+  </figure>
 
-<pre src="web/syndicate.py">
+  <p>
+    We now have four functions to write:
+    <code>read_sources</code>,
+    <code>write_sources</code>,
+    <code>get_new_datasets</code>,
+    and
+    <code>process</code>.
+    Reading and writing the <code>sources.json</code> file is pretty simple:
+  </p>
+
+<pre>
 import json
 
 def read_sources(path):
@@ -3046,27 +3169,27 @@ def write_sources(sources_path, timestamp, sources):
     writer.close()
 </pre>
 
-    <p>
-      What about processing a URL?
-      Right now,
-      we're just going to print it,
-      though in a real application we would probably download the data
-      and do some further calculations with it:
-    </p>
+  <p>
+    What about processing a URL?
+    Right now,
+    we're just going to print it,
+    though in a real application we would probably download the data
+    and do some further calculations with it:
+  </p>
 
-<pre src="web/syndicate.py">
+<pre>
 def process(url):
     '''Placeholder for processing a data set given its URL.'''
     print url
 </pre>
 
-    <p>
-      Finally,
-      we need to construct a list of dataset URLs
-      given the URL of an <code>index.json</code> file:
-    </p>
+  <p>
+    Finally,
+    we need to construct a list of dataset URLs
+    given the URL of an <code>index.json</code> file:
+  </p>
 
-<pre src="web/syndicate.py">
+<pre>
 import requests
 
 def get_new_datasets(last_checked, index_url):
@@ -3076,79 +3199,99 @@ def get_new_datasets(last_checked, index_url):
     result = []
     for (country_a, country_b, updated) in index_data:
         dataset_timestamp = datetime.parse(updated)
-        if dataset_timestamp >= last_checked:
+        if dataset_timestamp &gt;= last_checked:
             dataset_url = make_dataset_url(index_url, country_a, country_b)
             result.append(dataset_url)
     return result
 </pre>
 
-      <p>
-        The logic here is straightforward:
-        grab the <code>index.json</code> file,
-        check each dataset to see if it's newer than the last time we checked,
-        and if it is&mdash;hm.
-        This code uses a not-yet-written function called <code>make_dataset_url</code>
-        to construct the URL for the specific dataset
-        from the URL of the index file
-        and the two country codes,
-        but as we discussed <a href="#b:index:explicit">earlier</a>,
-        asking client programs to construct links themselves is a bad idea.
-        Instead,
-        we should modify the <code>index.json</code> files so that they include the URLs.
-        Doing this is left as a final exercise for the reader.
-      </p>
+  <p>
+    The logic here is straightforward:
+    grab the <code>index.json</code> file,
+    check each dataset to see if it's newer than the last time we checked,
+    and if it is&mdash;hm.
+    This code uses a not-yet-written function called <code>make_dataset_url</code>
+    to construct the URL for the specific dataset
+    from the URL of the index file
+    and the two country codes,
+    but as we discussed <a href="#b:index:explicit">earlier</a>,
+    asking client programs to construct links themselves is a bad idea.
+    Instead,
+    we should modify the <code>index.json</code> files so that they include the URLs.
+    Doing this is left as an exercise for the reader.
+  </p>
 
-      <div class="keypoints" id="k:syndicate">
-        <h3>Summary</h3>
-        <ul>
-          <li>Well-constructed files make data syndication simple.</li>
-        </ul>
-      </div>
+  <p>
+    But hang on:
+    what exactly are we downloading when we download data sets?
+    Right now,
+    our temperature ratio files are all HTML pages;
+    if we want to use that information in programs,
+    it would be a lot easier if producers generated JSON files
+    that consumers could use directly.
+    It's almost trivial to extend our original program
+    to produce such a file
+    each time it produces a new HTML file,
+    and to include the URLs for both files in both versions of the index
+    (<a href="#f:final_system">Figure XXX</a>).
+    Once we've done that,
+    we have a first-class data syndication system:
+    human-friendly and machine-friendly formats live side by side,
+    so scientists and programs all over the world
+    can make use of our results as soon as they appear.
+  </p>
 
-    </section>
+  <figure id="f:final_system">
+    <img src="web/final_system.png" alt="Final System" />
+    <figcaption>Figure XXX: Final System</figcaption>
+  </figure>
 
-    <section id="s:summary">
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li>Provide human-readable and machine-readable versions of everything.</li>
+    </ul>
+  </div>
 
-      <h2>Summing Up</h2>
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <p class="fixme">write some challenges</p>
+  </div>
 
-      <p>
-        The web has changed in many ways over the last 20 years,
-        not all of them for the better.
-        An HTML page on a modern commercial site
-        is likely to include dozens or hundreds of lines of Javascript
-        that depend on several large, complicated libraries,
-        and which generate the page's content on the fly inside the browser.
-        Such a "page" is really a small (or not-so-small) program
-        rather than a document in the classical sense of the word,
-        and while that may produce a better experience for human users,
-        it makes life more difficult for programs
-        (and for people with disabilities,
-        whose assistive aids are all too easy to confuse).
-        And while XML is widely used for representing data,
-        many people believe that younger alternatives like JSON
-        do a better job of balancing the needs of human and computer readers.
-      </p>
+</section>
 
-      <p>
-        Regardless of the technology used,
-        though,
-        the web's <a href="http://blog.jonudell.net/2011/01/24/seven-ways-to-think-like-the-web/">basic design principles</a>
-        are both simple and stable:
-        tell people where data is, rather than giving them a copy;
-        make the data itself and your names for it
-        easy for both human beings and computers to understand;
-        remix other people's data,
-        and allow them to remix yours.
-      </p>
+<section id="s:summary">
+  <h2>Summing Up</h2>
 
-    </section>
-<!--
-For practicing these things in class (or running tiny sites), the built-in Python servers are useful. In Python 3:
+  <p>
+    The web has changed in many ways over the last 20 years,
+    not all of them for the better.
+    An HTML page on a modern commercial site
+    is likely to include dozens or hundreds of lines of Javascript
+    that depend on several large, complicated libraries,
+    and which generate the page's content on the fly inside the browser.
+    Such a "page" is really a small (or not-so-small) program
+    rather than a document in the classical sense of the word,
+    and while that may produce a better experience for human users,
+    it makes life more difficult for programs
+    (and for people with disabilities,
+    whose assistive aids are all too easy to confuse).
+    And while XML is widely used for representing data,
+    many people believe that younger alternatives like JSON
+    do a better job of balancing the needs of human and computer readers.
+  </p>
 
-    python -m http.server 80
+  <p>
+    Regardless of the technology used,
+    though,
+    the web's <a href="http://blog.jonudell.net/2011/01/24/seven-ways-to-think-like-the-web/">basic design principles</a>
+    are both simple and stable:
+    tell people where data is, rather than giving them a copy;
+    make the data itself and your names for it
+    easy for both human beings and computers to understand;
+    remix other people's data,
+    and allow them to remix yours.
+  </p>
 
-In Python 2:
-
-    python -m SimpleHTTPServer 80
--->
+</section>
 {% endblock content %}
