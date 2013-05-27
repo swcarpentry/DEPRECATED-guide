@@ -13,19 +13,20 @@
   she is studying the way the brain interprets missing or noisy information.
   For one of her experiments,
   she wants to introduce successively larger amounts of random noise into a series of pictures
-  to see when differnet people start to notice that something is wrong.
+  to see when different people start to notice that something is wrong.
 </p>
 
 <p>
-  If Valerie only wanted to use one or two images,
-  the simplest way to create the images she needs might be
+  If Valerie only wanted one or two images,
+  the simplest way to create them might be
   to use a tool like Photoshop.
   However,
-  she wants to show each test subject several dozen images.
-  What she <em>doesn't</em> want to do is spend more time creating images
-  than running the actual experiments.
+  she wants to show each test subject several hundred images.
+  What she <em>doesn't</em> want to do is
+  spend more time creating those images
+  than actually running her experiments.
   She's going to have to learn how to program,
-  and that's what the next couple of chapters are about.
+  and that's what this lesson is about.
 </p>
 
 <p>
@@ -41,22 +42,31 @@
 </p>
 
 <p>
-  Our programs will use a library for manipulating images
-  that was specifically written for novices.
-  Many of the things we will do in five or ten lines
-  can actually be done in a single line by an experienced programmer,
-  but since our goal is to show you how to write programs of your own,
-  we will leave the training wheels on for now.
+  The particular version of Python we'll use is called IPython.
+  It was developed by and for scientists,
+  and comes with many extra tools which we'll explore as we go along.
+  The most important of these is an electronic lab notebook
+  that allows us to view and annotate our work as we go along.
+</p>
+
+<p>
+  Finally,
+  our programs will use two libraries
+  that were specifically written for novices.
+  Both work on grids of pixels,
+  but the first does this directly in the browser,
+  so that we can see what we're doing as we go along,
+  while the second manipulates photographs and other image files.
 </p>
 
 <section id="s:basic">
 
   <h2>Basic Operations</h2>
 
-  <div class="understand" id="u:basic">
-    <h3>Understand:</h3>
+  <div class="understand">
+    <h3>Learning Objectives</h3>
     <ul>
-      <li>How to use the Python interpreter interactively.</li>
+      <li>How to use the IPython Notebook interactively.</li>
       <li>How to do basic arithmetic.</li>
       <li>How to assign values to variables.</li>
     </ul>
@@ -64,49 +74,131 @@
 
   <p>
     The best way to learn how to program is to start programming,
-    so let's run the Python interpreter
-    and type in the following:
+    so open a shell and run the IPython Notebook by typing:
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">print 1 + 1</span>
-<span class="out">2</span>
+$ <span class="in">ipython notebook</span>
+<span class="out">[NotebookApp] Using existing profile dir: u'/Users/gwilson/.ipython/profile_default'
+[NotebookApp] Serving notebooks from /Users/gwilson
+[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:8888/
+[NotebookApp] Use Control-C to stop this server and shut down all kernels.</span>
 </pre>
 
   <p class="continue">
-    The <code>&gt;&gt;&gt;</code> <a href="glossary.html#prompt">prompt</a>
-    is the interpreter's way of telling us that it's waiting for input,
-    like the <code>$</code> prompt in <a href="shell.html">the shell</a>.
-    When we enter 1+1,
-    Python does the calculation we've asked for
-    and prints the result.
+    If everything has been installed correctly,
+    you will see something like the output shown above,
+    which tells you that IPython has started running.
+    You will also see something like <a href="#f:ipython_welcome">Figure XXX</a>
+    in your browser.
   </p>
 
+  <figure id="f:ipython_welcome">
+    <img src="pymedia/ipython_welcome.png" alt="IPython Notebook Startup Screen" />
+    <figcaption>Figure XXX: IPython Notebook Startup Screen</figcaption>
+  </figure>
+
+  <figure id="f:empty_notebook">
+    <img src="pymedia/empty_notebook.png" alt="An Empty Notebook" />
+    <figcaption>Figure XXX: An Empty Notebook</figcaption>
+  </figure>
+
   <p>
-    Now type this:
+    If you click on the "New Notebook" button,
+    a new tab will open in your browser
+    with an empty notebook
+    (<a href="#f:empty_notebook">Figure XXX</a>).
+    At this point, you're ready to go,
+    so type the following line into the text box
+    and choose "Run" from the "Cell" menu.
+    You should get the output shown
+    (<a href="#f:first_computation">Figure XXX</a>).
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">x = 1+1</span>
+<span class="in">print 1 + 1</span>
+<span class="out">2</span>
+</pre>
+
+  <figure id="f:first_computation">
+    <img src="pymedia/first_computation.png" alt="Our First Computation" />
+    <figcaption>Figure XXX: Our First Computation</figcaption>
+  </figure>
+
+  <p>
+    <a href="#f:architecture">Figure XXX</a> shows what just happened.
+    When we type something into the notebook and run it,
+    the browser sends the contents of the cell to IPython,
+    which is running in the background.
+    IPython runs our commands and sends output back to the browser,
+    which displays it
+    and gives us another box for input.
+  </p>
+
+  <figure id="f:architecture">
+    <img src="pymedia/architecture.png" alt="The Architecture of the IPython Notebook" />
+    <figcaption>Figure XXX: The Architecture of the IPython Notebook</figcaption>
+  </figure>
+
+  <div class="box">
+    <h3>Shortcuts</h3>
+    <p>
+      We can access all of the Notebook's commands through its menus,
+      but it's often easier to use keyboard shortcuts.
+      Typing Control-M follows by 'h' (for "help") displays a list of these;
+      along with the usual copy, paste, and delete,
+      the most commonly used are:
+    </p>
+    <table>
+      <tr>
+        <td>Shift-Enter</td>
+        <td>Run the current cell and move to the next one.</td>
+      </tr>
+      <tr>
+        <td>Control-Enter</td>
+        <td>Run the current cell and stay in it.</td>
+      </tr>
+      <tr>
+        <td>Control-M + L</td>
+        <td>Turn line numbering on or off.</td>
+      </tr>
+      <tr>
+        <td>Control-M + A</td>
+        <td>Insert a new cell above the current one.</td>
+      </tr>
+      <tr>
+        <td>Control-M + B</td>
+        <td>Insert a new cell below the current one.</td>
+      </tr>
+    </table>
+  </div>
+
+  <p>
+    Now enter and run this:
+  </p>
+
+<pre>
+<span class="in">x = 1+1</span>
 </pre>
 
   <p class="continue">
     Python doesn't display anything this time
-    (except another prompt).
+    (except a new cell).
     Instead,
-    as <a href="#f:first_variable">Figure 1</a> shows,
+    as <a href="#f:first_variable">Figure XXX</a> shows,
     it creates a <a href="glossary.html#variable">variable</a> called <code>x</code>
     and assigns it the value 2.
     We can then get that variable's value simply by entering its name:
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">print x</span>
+<span class="in">print x</span>
 <span class="out">2</span>
 </pre>
 
   <figure id="f:first_variable">
-    <img src="img/python/first_variable.png" alt="Our First Variable" />
+    <img src="pymedia/first_variable.png" alt="Our First Variable" />
+    <figcaption>Figure XXX: Our First Variable</figcaption>
   </figure>
 
   <div class="box">
@@ -115,7 +207,7 @@
 
     <p>
       Python is a fairly relaxed language,
-      but there are still some things it won't let us do.
+      but there are some things it won't let us do.
       For example,
       this doesn't work:
     </p>
@@ -140,12 +232,12 @@ print x = 1 + 2
   </div>
 
   <p>
-    We can now use that variable's value in calculations:
+    We can now use the value of <code>x</code> in new calculations:
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">print x * 2</span>
-4
+<span class="in">print x * 2</span>
+<span class="out">4</span>
 </pre>
 
   <p class="continue">
@@ -153,8 +245,8 @@ print x = 1 + 2
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">y = x * 2</span>
-&gt;&gt;&gt; <span class="in">print y</span>
+<span class="in">y = x * 2</span>
+<span class="in">print y</span>
 <span class="out">4</span>
 </pre>
 
@@ -164,9 +256,9 @@ print x = 1 + 2
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">x = 10</span>
-&gt;&gt;&gt; <span class="in">print x</span>
-10
+<span class="in">x = 10</span>
+<span class="in">print x</span>
+<span class="out">10</span>
 </pre>
 
   <p class="continue">
@@ -180,17 +272,27 @@ print x = 1 + 2
   </p>
 
   <figure id="f:assign_new_value">
-    <img src="img/python/assign_new_value.png" alt="Assigning a New Value" />
+    <img src="pymedia/assign_new_value.png" alt="Assigning a New Value" />
+    <figcaption>Figure XXX: Assigning a New Value</figcaption>
   </figure>
+
+  <p>
+    Notice,
+    by the way,
+    that some of our input cells contain several lines of Python.
+    Referring back to <a href="#f:architecture">Figure XXX</a>,
+    everything in a cell is sent to IPython for execution at once,
+    and all of the output from those lines comes back as a single new output cell.
+  </p>
 
   <p>
     Here's a more complex calculation:
   </p>
 
-<pre src="src/python/fahrenheit_to_kelvin_unreadable.py">
-&gt;&gt;&gt; <span class="in">x = 98.6</span>
-&gt;&gt;&gt; <span class="in">y = (x - 32.0) * (5.0 / 9.0) + 273.15</span>
-&gt;&gt;&gt; <span class="in">print y</span>
+<pre>
+<span class="in">x = 98.6</span>
+<span class="in">y = (x - 32.0) * (5.0 / 9.0) + 273.15</span>
+<span class="in">print y</span>
 <span class="out">310.15</span>
 </pre>
 
@@ -198,10 +300,10 @@ print x = 1 + 2
     Its meaning becomes clearer if we rewrite it as:
   </p>
 
-<pre src="src/python/fahrenheit_to_kelvin.py">
-&gt;&gt;&gt; <span class="in">temp_fahr = 98.6</span>
-&gt;&gt;&gt; <span class="in">temp_kelvin = (temp_fahr - 32.0) * (5.0 / 9.0) + 273.15</span>
-&gt;&gt;&gt; <span class="in">print "body temperature in Kelvin:", temp_kelvin</span>
+<pre>
+<span class="in">temp_fahr = 98.6</span>
+<span class="in">temp_kelvin = (temp_fahr - 32.0) * (5.0 / 9.0) + 273.15</span>
+<span class="in">print "body temperature in Kelvin:", temp_kelvin</span>
 <span class="out">body temperature in Kelvin: 310.15</span>
 </pre>
 
@@ -222,7 +324,8 @@ print x = 1 + 2
   </p>
 
   <figure id="f:first_memory_model">
-    <img src="img/python/first_memory_model.png" alt="First Memory Model" />
+    <img src="pymedia/first_memory_model.png" alt="First Memory Model" />
+    <figcaption>Figure XXX: First Memory Model</figcaption>
   </figure>
 
   <p>
@@ -231,19 +334,18 @@ print x = 1 + 2
     We use variables to do the first,
     and write instructions that use those variables to do the second.
     And like every <em>good</em> program,
-    this one is written with human beings in mind.
+    it is written with human beings in mind.
     Computers get faster every year,
     but our brains don't.
     As a result,
-    the real bottleneck in scientific computing is usually not
-    how fast the program runs,
+    the biggest bottleneck in scientific computing is often not how fast the program is,
     but how long it takes us to write it.
     This is why we use variable names like <code>temp_fahr</code> and <code>temp_kelvin</code>
-    instead of <code>x</code> and <code>y</code>.
+    instead of <code>x</code> and <code>y</code>:
+    they optimize the performance of the most expensive hardware we have.
   </p>
 
   <div class="box">
-
     <h3>Creating Variables</h3>
 
     <p>
@@ -254,7 +356,7 @@ print x = 1 + 2
     </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">double_temp = temp_celsius * 2</span>
+<span class="in">double_temp = temp_celsius * 2</span>
 </pre>
 
     <p class="continue">
@@ -262,19 +364,21 @@ print x = 1 + 2
     </p>
 
 <pre>
-<span class="err">Traceback (most recent call last):
-  File "&lt;undefined-variable.py&gt;", line 1, in &lt;module&gt;
+<span class="err">NameError                                 Traceback (most recent call last)
+&lt;ipython-input-7-0fae4d15df1c&gt; in &lt;module&gt;()
+----> 1 double_temp = temp_celsius * 2
+
 NameError: name 'temp_celsius' is not defined</span>
 </pre>
 
     <p class="continue">
       We'll explain what "module" means <a href="funclib.html">later</a>.
-      What's important now is that this strictness helps catch a lot of typing mistakes:
-      if we mistakenly type <code>temp_far</code> instead of <code>temp_fahr</code>:
+      What's important now is that this strictness helps catch a lot of typing mistakes.
+      If we mistakenly type <code>temp_far</code> instead of <code>temp_fahr</code>:
     </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">temp_kelvin = (<span class="highlight">temp_far</span> - 32.0) * (5.0 / 9.0) + 273.15</span>
+<span class="in">temp_kelvin = (<span class="highlight">temp_far</span> - 32.0) * (5.0 / 9.0) + 273.15</span>
 </pre>
 
     <p class="continue">
@@ -295,51 +399,67 @@ NameError: name 'temp_celsius' is not defined</span>
     than it would be to find it buried in the middle of a line of arithmetic.
   </p>
 
+  <div class="box">
+    <h3>Tab Completion</h3>
+
+    <p>
+      Using longer variable names doesn't necessarily mean doing more typing.
+      Like the shell,
+      IPython supports <a href="shell.html#a:tab-completion">tab completion</a>:
+      if we have created variables called <code>temp_fahr</code> and <code>temp_kelvin</code>,
+      then type "te" and press tab,
+      the notebook will display a list of completions for us to choose from
+      (<a href="#f:tab_completion">Figure XXX</a>.
+      If we get as far as typing "temp_f" and press tab,
+      the rest of the name will be filled in completely
+      because there's only one possible choice.
+    </p>
+
+    <figure id="f:tab_completion">
+      <img src="pymedia/tab_completion.png" alt="Tab Completion" />
+      <figcaption>Figure XXX: Tab Completion</figcaption>
+    </figure>
+
+    <p>
+      After a while,
+      some programmers start to choose variable names to optimize tab completion
+      (whether they're conscious of doing so or not).
+      For example,
+      they might use <code>t_fahr</code> and <code>t_kelvin</code> for temperatures
+      so that they only have to type three characters and press tab
+      to fill in the rest of the variable name.
+      Others find that using slightly longer but more comprehensible names
+      is a better balance between typing time and reading time.
+      The most important thing is to be consistent:
+      every inconsistency in naming costs extra time to read.
+    </p>
+  </div>
+
   <p>
     Finally,
-    this first program also shows how arithmetic is done.
+    our first few programs show how arithmetic is done.
     '+' means addition,
     '*' means multiplication,
     and parentheses group things together,
     just as they do in pen-and-paper arithmetic.
-    We have to use parentheses here because
-    (also as in arithmetic)
-    multiplication takes precedence over addition:
-    the expression <code>2*3+5</code> means,
-    "Multiply two by three, then add five,"
-    rather than,
-    "Add three and five, then multiple by two."
-    If we want the latter,
-    we have to write <code>2*(3+5)</code>.
   </p>
 
-  <div class="box">
-
-    <h3>Repeating Commands</h3>
-
-    <p>
-      Just as we could repeat previous commands in the shell
-      by using the <a href="shell.html#a:repeat">up arrow</a>,
-      so too can we repeat commands in the Python interpreter.
-      And while the standard interpreter doesn't have an equivalent
-      of the shell's <code>history</code> command,
-      more advanced shells like IPython do
-      (along with much more).
-    </p>
-
-  </div>
-
-  <div class="keypoints" id="k:basic">
+  <div class="keypoints">
     <h3>Summary</h3>
     <ul>
       <li>Use '=' to assign a value to a variable.</li>
-      <li>Assigning to one variable does not change the values associated with other variables.</li>
-      <li>Use <code>print</code> to display values.</li>
       <li>Variables are created when values are assigned to them.</li>
       <li>Variables cannot be used until they have been created.</li>
+      <li>Assigning to one variable does not change the values associated with other variables.</li>
+      <li>Use <code>print</code> to display multiple values at once.</li>
       <li>Addition ('+'), subtraction ('-'), and multiplication ('*') work as usual in Python.</li>
-      <li idea="perf">Use meaningful, descriptive names for variables.</li>
+      <li>Using readable names for variables improves programmer performance.</li>
     </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <p class="fixme">write some challenges</p>
   </div>
 
 </section>
@@ -363,9 +483,9 @@ NameError: name 'temp_celsius' is not defined</span>
   </p>
 
 <pre src="src/python/fahrenheit_to_kelvin.py">
-&gt;&gt;&gt; <span class="in">temp_fahr = 98.6</span>
-&gt;&gt;&gt; <span class="in">temp_kelvin = (temp_fahr - 32.0) * (5.0 / 9.0) + 273.15</span>
-&gt;&gt;&gt; <span class="in">print "body temperature in Kelvin:", temp_kelvin</span>
+<span class="in">temp_fahr = 98.6</span>
+<span class="in">temp_kelvin = (temp_fahr - 32.0) * (5.0 / 9.0) + 273.15</span>
+<span class="in">print "body temperature in Kelvin:", temp_kelvin</span>
 <span class="out">body temperature in Kelvin: 310.15</span>
 </pre>
 
@@ -375,9 +495,9 @@ NameError: name 'temp_celsius' is not defined</span>
   </p>
 
 <pre src="src/python/fahrenheit_to_kelvin_int.py">
-&gt;&gt;&gt; <span class="in">temp_fahr = 98.6</span>
-&gt;&gt;&gt; <span class="highlight">temp_kelvin = (temp_fahr - 32) * (5 / 9) + 273.15</span>
-&gt;&gt;&gt; <span class="in">print "body temperature in Kelvin:", temp_kelvin</span>
+<span class="in">temp_fahr = 98.6</span>
+<span class="highlight">temp_kelvin = (temp_fahr - 32) * (5 / 9) + 273.15</span>
+<span class="in">print "body temperature in Kelvin:", temp_kelvin</span>
 <span class="out">body temperature in Kelvin: 273.15</span>
 </pre>
 
@@ -388,7 +508,7 @@ NameError: name 'temp_celsius' is not defined</span>
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">5/9</span>
+<span class="in">5/9</span>
 <span class="out">0</span>
 </pre>
 
@@ -408,9 +528,9 @@ NameError: name 'temp_celsius' is not defined</span>
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">10 / 3</span>
+<span class="in">10 / 3</span>
 <span class="out">3</span>
-&gt;&gt;&gt; <span class="in">10.0 / 3</span>
+<span class="in">10.0 / 3</span>
 <span class="out">3.3333333333333335</span>
 </pre>
 
@@ -434,9 +554,9 @@ NameError: name 'temp_celsius' is not defined</span>
 
 
 <pre>
-&gt;&gt;&gt; <span class="in">type(12)</span>
+<span class="in">type(12)</span>
 <span class="out">&lt;type 'int&gt;</span>
-&gt;&gt;&gt; <span class="in">type(12.0)</span>
+<span class="in">type(12.0)</span>
 <span class="out">&lt;type 'float&gt;</span>
 </pre>
 
@@ -448,9 +568,9 @@ NameError: name 'temp_celsius' is not defined</span>
   </p>
 
 <pre src="src/python/simple_string.py">
-&gt;&gt;&gt; <span class="in">name = "Alan Turing"</span>
-&gt;&gt;&gt; <span class="in">born = 'June 23, 1912'</span>
-&gt;&gt;&gt; <span class="in">print name, born</span>
+<span class="in">name = "Alan Turing"</span>
+<span class="in">born = 'June 23, 1912'</span>
+<span class="in">print name, born</span>
 <span class="out">Alan Turing June 23, 1912</span>
 </pre>
 
@@ -459,8 +579,8 @@ NameError: name 'temp_celsius' is not defined</span>
   </p>
 
 <pre src="src/python/simple_string.py">
-&gt;&gt;&gt; <span class="in">full = name + " (" + born + ")"</span>
-&gt;&gt;&gt; <span class="in">print full</span>
+<span class="in">full = name + " (" + born + ")"</span>
+<span class="in">print full</span>
 <span class="out">Alan Turing (June 23, 1912)</span>
 </pre>
 
@@ -469,7 +589,7 @@ NameError: name 'temp_celsius' is not defined</span>
   </p>
 
 <pre src="src/python/add_numbers_strings.py">
-&gt;&gt;&gt; <span class="in">print 2 + "three"</span>
+<span class="in">print 2 + "three"</span>
 <span class="err">Traceback (most recent call last):
   File "add-numbers-strings.py", line 1, in &lt;module&gt;
     print 2 + "three"
@@ -485,9 +605,9 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'</span>
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">print 2 + int("3")</span>
+<span class="in">print 2 + int("3")</span>
 <span class="out">5</span>
-&gt;&gt;&gt; <span class="in">print str(2) + "3"</span>
+<span class="in">print str(2) + "3"</span>
 <span class="out">23</span>
 </pre>
 
@@ -532,9 +652,9 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'</span>
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">from skimage import novice</span>
-&gt;&gt;&gt; <span class="in">flower = novice.open('flower.jpg')</span>
-&gt;&gt;&gt; <span class="in">flower.show()</span>
+<span class="in">from skimage import novice</span>
+<span class="in">flower = novice.open('flower.jpg')</span>
+<span class="in">flower.show()</span>
 </pre>
 
   <p>
@@ -847,9 +967,9 @@ ZeroDivisionError: integer division or modulo by zero</span>
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">from skimage import novice</span>
-&gt;&gt;&gt; <span class="in">flower = novice.open('flower.jpg')</span>
-&gt;&gt;&gt; <span class="in">flower.show()</span>
+<span class="in">from skimage import novice</span>
+<span class="in">flower = novice.open('flower.jpg')</span>
+<span class="in">flower.show()</span>
 </pre>
 
   <p class="continue">
@@ -857,13 +977,13 @@ ZeroDivisionError: integer division or modulo by zero</span>
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">print flower.format</span>
+<span class="in">print flower.format</span>
 <span class="out">JPEG</span>
-&gt;&gt;&gt; <span class="in">print flower.path</span>
+<span class="in">print flower.path</span>
 <span class="out">/home/gvwilson/examples/flower.jpg</span>
-&gt;&gt;&gt; <span class="in">print flower.height</span>
+<span class="in">print flower.height</span>
 <span class="out">180</span>
-&gt;&gt;&gt; <span class="in">print flower.width</span>
+<span class="in">print flower.width</span>
 <span class="out">240</span>
 </pre>
 
@@ -880,11 +1000,11 @@ ZeroDivisionError: integer division or modulo by zero</span>
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">flower.format = 'PNG'</span>
+<span class="in">flower.format = 'PNG'</span>
 <span class="err">Traceback (most recent call last):
   File "&lt;stdin&gt;", line 1, in &lt;module&gt;
 AttributeError: can't set attribute</span>
-&gt;&gt;&gt; <span class="in">flower.path = '/profiles/alan-turing.jpg'</span>
+<span class="in">flower.path = '/profiles/alan-turing.jpg'</span>
 <span class="err">Traceback (most recent call last):
   File "&lt;stdin&gt;", line 2, in &lt;module&gt;
 AttributeError: can't set attribute</span>
@@ -900,8 +1020,8 @@ AttributeError: can't set attribute</span>
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">flower.height = 90</span>
-&gt;&gt;&gt; <span class="in">flower.show()</span>
+<span class="in">flower.height = 90</span>
+<span class="in">flower.show()</span>
 </pre>
 
   <figure id="f:flower_squished">
@@ -913,7 +1033,7 @@ AttributeError: can't set attribute</span>
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">flower.save('squished.jpg')</span>
+<span class="in">flower.save('squished.jpg')</span>
 </pre>
 
   <p>
@@ -923,7 +1043,7 @@ AttributeError: can't set attribute</span>
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">print flower.path</span>
+<span class="in">print flower.path</span>
 <span class="out">/home/gvwilson/examples/squished.jpg</span>
 </pre>
 
@@ -933,8 +1053,8 @@ AttributeError: can't set attribute</span>
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">flower.save('squished.<span class="highlight">png</span>')</span>
-&gt;&gt;&gt; <span class="in">print flower.path</span>
+<span class="in">flower.save('squished.<span class="highlight">png</span>')</span>
+<span class="in">print flower.path</span>
 <span class="out">/home/gvwilson/examples/squished.png</span>
 </pre>
 
@@ -1371,10 +1491,10 @@ $ <span class="in">ls *.jpg</span>
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">import sys</span>
-&gt;&gt;&gt; <span class="in">print sys.version</span>
+<span class="in">import sys</span>
+<span class="in">print sys.version</span>
 <span class="out">2.7 (r27:82525, Jul  4 2010, 09:01:59) [MSC v.1500 32 bit (Intel)]</span>
-&gt;&gt;&gt; <span class="in">print sys.platform</span>
+<span class="in">print sys.platform</span>
 <span class="out">win32</span>
 </pre>
 
@@ -1761,9 +1881,9 @@ for filename in sys.argv<span class="in">[1:]</span>:
     </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">full_name = 'Alan Turing'</span>
-&gt;&gt;&gt; <span class="in">first_name = full_name[:4]</span>
-&gt;&gt;&gt; <span class="in">print first_name</span>
+<span class="in">full_name = 'Alan Turing'</span>
+<span class="in">first_name = full_name[:4]</span>
+<span class="in">print first_name</span>
 <span class="out">Alan</span>
 </pre>
 
@@ -1774,7 +1894,7 @@ for filename in sys.argv<span class="in">[1:]</span>:
     </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">for char in 'Alan':
+<span class="in">for char in 'Alan':
 ...     print char</span>
 <span class="out">A
 l
@@ -1826,8 +1946,8 @@ picture.show()
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">picture = novice.open('mac.jpg')
-&gt;&gt;&gt; for pixel in picture:
+<span class="in">picture = novice.open('mac.jpg')
+for pixel in picture:
 ...    pixel.red = pixel.red * 2
 ...</span>
 <span class="err">
@@ -2045,8 +2165,8 @@ for pixel in picture:
   </p>
 
 <pre src="src/python/sum_values.py">
-&gt;&gt;&gt; <span class="in">data = [1, 3, 5]</span>
-&gt;&gt;&gt; <span class="in">for value in data:</span>
+<span class="in">data = [1, 3, 5]</span>
+<span class="in">for value in data:</span>
 ... <span class="in">    print value</span>
 ...
 <span class="out">1
@@ -2066,7 +2186,7 @@ for pixel in picture:
   </p>
 
   <figure id="f:simple_list">
-    <img src="img/python/simple_list.png" alt="A Simple List" />
+    <img src="pymedia/simple_list.png" alt="A Simple List" />
   </figure>
 
   <p>
@@ -2262,7 +2382,7 @@ print "running total:", result
   </p>
 
   <figure id="f:running_total">
-    <img src="img/python/running_total.png" alt="Running Total" />
+    <img src="pymedia/running_total.png" alt="Running Total" />
   </figure>
 
   <p>
@@ -2292,7 +2412,7 @@ print "doubled data is:", data
   </p>
 
   <figure id="f:doubling_list">
-    <img src="img/python/doubling_list.png" alt="Failed Attempt to Double Values in a List" />
+    <img src="pymedia/doubling_list.png" alt="Failed Attempt to Double Values in a List" />
   </figure>
 
   <p>
@@ -2337,7 +2457,7 @@ print scientists
   </p>
 
   <figure id="f:update_list">
-    <img src="img/python/update_list.png" alt="Successfully Doubling Values in a List" />
+    <img src="pymedia/update_list.png" alt="Successfully Doubling Values in a List" />
   </figure>
 
   <p>
@@ -2586,7 +2706,7 @@ print data
   </ol>
 
   <figure id="f:double_in_place">
-    <img src="img/python/double_in_place.png" alt="Doubling in Place" />
+    <img src="pymedia/double_in_place.png" alt="Doubling in Place" />
   </figure>
 
   <p>
@@ -2623,7 +2743,7 @@ x = 2 * x
 </ol>
 
 <figure id="f:new_values_for_variables">
-  <img src="img/python/new_values_for_variables.png" alt="New Values for Variables" />
+  <img src="pymedia/new_values_for_variables.png" alt="New Values for Variables" />
 </figure>
 
   <p>
@@ -2743,7 +2863,7 @@ for color in range(BASE + STEP, BASE + NUMBER * STEP, STEP):
   </p>
 
 <pre>
-&gt;&gt;&gt; <span class="in">help(range)</span>
+<span class="in">help(range)</span>
 <span class="out">range(...)
     range([start,] stop[, step]) -> list of integers
     
