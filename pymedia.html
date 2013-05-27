@@ -66,9 +66,10 @@
   <div class="understand">
     <h3>Learning Objectives</h3>
     <ul>
-      <li>How to use the IPython Notebook interactively.</li>
-      <li>How to do basic arithmetic.</li>
-      <li>How to assign values to variables.</li>
+      <li>Run and use the IPython Notebook.</li>
+      <li>Do basic arithmetic in Python.</li>
+      <li>Assign values to variables, and use those variables in expressions.</li>
+      <li>Explain how variable names should be chosen, and choose appropriate names for variables.</li>
     </ul>
   </div>
 
@@ -285,6 +286,11 @@ print x = 1 + 2
     and all of the output from those lines comes back as a single new output cell.
   </p>
 
+  <div class="box">
+    <h3>When to Print</h3>
+    <p class="fixme">explain that only the last line of raw input produces output, and recommend print</p>
+  </div>
+
   <p>
     Here's a more complex calculation:
   </p>
@@ -468,21 +474,20 @@ NameError: name 'temp_celsius' is not defined</span>
 
   <h2>Types</h2>
 
-  <div class="understand" id="u:types">
-    <h3>Understand:</h3>
+  <div class="understand">
+    <h3>Learning Objectives</h3>
     <ul>
-      <li>What data types are.</li>
-      <li>The differences between integers, floating-point numbers, and strings.</li>
-      <li>How to call a function.</li>
-      <li>Why computers shouldn't guess what people want.</li>
+      <li>Explain what a data type is.</li>
+      <li>Identify the types of integers, floating-point numbers, and strings.</li>
+      <li>Call simple built-in functions correctly.</li>
     </ul>
   </div>
 
   <p>
-    Let's take another look at our program:
+    Let's take another look at the Python we have written so far:
   </p>
 
-<pre src="src/python/fahrenheit_to_kelvin.py">
+<pre>
 <span class="in">temp_fahr = 98.6</span>
 <span class="in">temp_kelvin = (temp_fahr - 32.0) * (5.0 / 9.0) + 273.15</span>
 <span class="in">print "body temperature in Kelvin:", temp_kelvin</span>
@@ -494,7 +499,7 @@ NameError: name 'temp_celsius' is not defined</span>
     Let's see what happens if we take out the .0's:
   </p>
 
-<pre src="src/python/fahrenheit_to_kelvin_int.py">
+<pre>
 <span class="in">temp_fahr = 98.6</span>
 <span class="highlight">temp_kelvin = (temp_fahr - 32) * (5 / 9) + 273.15</span>
 <span class="in">print "body temperature in Kelvin:", temp_kelvin</span>
@@ -513,17 +518,22 @@ NameError: name 'temp_celsius' is not defined</span>
 </pre>
 
   <p>
-    The problem is that integers and floating point numbers
-    (or <a href="glossary.html#float">floats</a>)
-    are different things to a computer.
+    The problem is that the computer treats integers and floating point numbers differently.
     If a number doesn't have a decimal point,
-    then Python stores its value as an integer (with no fractional part).
-    When it divides one integer by another,
-    it throws away the remainder.
+    then Python stores its value as an integer
+    with no fractional part.
+    And when it divides one integer by another,
+    it throws away the remainder:
+    to a computer,
+    5/2 is 2, not 2.5.
+  </p>
+
+  <p>
     If a number contains a decimal point,
     though,
-    Python stores it as a float.
-    When it does division (or any other kind of arithmetic),
+    Python stores it as a floating-point number
+    (or <a href="glossary.html#float">float</a>).
+    When it does division or any other kind of arithmetic,
     the result is a float if either of the values involved is a float:
   </p>
 
@@ -535,23 +545,35 @@ NameError: name 'temp_celsius' is not defined</span>
 </pre>
 
   <p class="continue">
-    This makes sense,
-    but only if you understand how the chips inside computers work.
     Version 3 of Python changed the rules for division
-    so that it returns fractional numbers whenever it needs to.
+    so that it creates fractional numbers when it should.
     However,
-    we're using Python 2.7 in this course,
+    we're using Python 2.7,
     so 10/3 is 3 until further notice.
   </p>
 
+  <div class="box">
+    <h3>Remainder</h3>
+    <p>
+      Python has another "division" operator,
+      written '%',
+      which returns the remainder that integer division throws away:
+    </p>
+<pre>
+<span class="in">10 % 3</span>
+<span class="out">1</span>
+<span class="in">15 % 6</span>
+<span class="out">3</span>
+</pre>
+  </div>
+
   <p>
-    Every value in a program has a specific <a href="glossary.html#type">type</a>
-    which determines how it behaves
-    and what can be done to it.
+    Integers and floats are two <a href="glossary.html#type">types</a> of data.
+    Every value in a program has a specific type
+    that determines how it behaves and what can be done to it.
     We can find out what type something is
     using a built-in <a href="glossary.html#function">function</a> called <code>type</code>:
   </p>
-
 
 <pre>
 <span class="in">type(12)</span>
@@ -561,13 +583,12 @@ NameError: name 'temp_celsius' is not defined</span>
 </pre>
 
   <p>
-    Integers and floating-point numbers are two common types;
-    another is the character string.
+    Another common data type is the character string.
     We can create one by putting characters inside either single or double quotes
-    (as long as they match at the beginning and end):
+    (as long as we use the same kind at the beginning and end):
   </p>
 
-<pre src="src/python/simple_string.py">
+<pre>
 <span class="in">name = "Alan Turing"</span>
 <span class="in">born = 'June 23, 1912'</span>
 <span class="in">print name, born</span>
@@ -575,33 +596,42 @@ NameError: name 'temp_celsius' is not defined</span>
 </pre>
 
   <p>
-    We can also "add" strings:
+    We can also "add" and "multiply" strings:
   </p>
 
-<pre src="src/python/simple_string.py">
+<pre>
 <span class="in">full = name + " (" + born + ")"</span>
 <span class="in">print full</span>
 <span class="out">Alan Turing (June 23, 1912)</span>
+<span class="in">print "ho" * 3</span>
+<span class="out">hohoho</span>
 </pre>
 
-  <p>
+  <p id="a:add-num-str">
     What we <em>can't</em> do is add numbers and strings:
   </p>
 
-<pre src="src/python/add_numbers_strings.py">
+<pre>
 <span class="in">print 2 + "three"</span>
-<span class="err">Traceback (most recent call last):
-  File "add-numbers-strings.py", line 1, in &lt;module&gt;
-    print 2 + "three"
-TypeError: unsupported operand type(s) for +: 'int' and 'str'</span>
+<span class="err">TypeError                                 Traceback (most recent call last)
+&lt;ipython-input-8-f6f99c093ec8&gt; in &lt;module&gt;()
+----> 1 print 2 + "three"
+
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+</span>
 </pre>
 
   <p>
-    The string "2three" would be a reasonable result in this case,
+    The reason we can't is that
+    "2three" would be a reasonable result in this case,
     but it's not so clear what <code>2+"3"</code> should do:
     should it produce the integer 5 or the string <code>"23"</code>?
     Rather than guessing at the programmer's intentions,
-    Python expects some guidance:
+    Python requires us to tell it
+    whether to convert the number to a string or the string to a number
+    so that it knows what kind of addition to do.
+    We do this using <code>int</code> and <code>str</code>,
+    which are two more built-in functions:
   </p>
 
 <pre>
@@ -612,22 +642,346 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'</span>
 </pre>
 
   <p>
-    <code>int</code> and <code>str</code> are two more built-in functions
-    which convert values to particular types.
-    We'll look at functions in much more detail
-    in <a href="funclib.html">the next chapter</a>.
+    Finally,
+    it's important to keep in mind that variables don't have types in Python:
+    only values do.
+    A variable is a just a name for a value;
+    it can refer to a string at one point in a program,
+    and a float at another:
   </p>
 
-  <div class="keypoints" id="k:types">
+<pre>
+<span class="in">temp = 'temperature'</span>
+<span class="in">print temp, type(temp)</span>
+<span class="out">temperature &lt;type 'str'&gt;</span>
+<span class="in">temp = 37.2</span>
+<span class="in">print temp, type(temp)</span>
+<span class="out">37.2 &lt;type 'float'&gt;</span>
+</pre>
+
+  <div class="box">
+    <h3>Static vs. Dynamic Typing</h3>
+    <p>
+      Programmers argue incessantly about whether this is a good idea or not.
+      In <a href="glossary.html#static-typing">statically-typed</a> languages like Fortran, C++, Java, and Haskell,
+      every variable has a type,
+      and can only store values of that type.
+      Proponents say that
+      this restriction makes it easier for compilers to optimize programs,
+      and for other tools (and human readers) to check their correctness,
+      but languages designed for interactive use&mdash;like Python,
+      Perl, and R&mdash;tend to be
+      <a href="glossary.html#dynamic-typing">dynamically typed</a>
+      in order to keep typing&mdash;the fingers-on-keyboard kind&mdash;to a minimum.
+    </p>
+  </div>
+
+  <div class="keypoints">
     <h3>Summary</h3>
     <ul>
       <li>The most commonly used data types in Python are integers (<code>int</code>), floating-point numbers (<code>float</code>), and strings (<code>str</code>).</li>
       <li>Strings can start and end with either single quote (') or double quote (&quot;).</li>
       <li>Division ('/') produces an <code>int</code> result when given <code>int</code> values: one or both arguments must be <code>float</code> to get a <code>float</code> result.</li>
+      <li>The modulo operator ('%') produces the remainder from integer division.</li>
       <li>"Adding" strings concatenates them, multiplying strings by numbers repeats them.</li>
-      <li idea="meaning">Strings and numbers cannot be added because the behavior is ambiguous: convert one to the other type first.</li>
-      <li>Variables do not have types, but values do.</li>
+      <li>Strings and numbers cannot be added because the behavior is ambiguous: convert one to the other type first.</li>
+      <li>Variables in Python do not have types, but values do.</li>
     </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <p class="fixme">write some challenges</p>
+  </div>
+
+</section>
+
+<section id="s:lib">
+  <h2>Libraries, Blocks, and Colors</h2>
+
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Explain what a library is and why programmers use them.</li>
+      <li>Import a library and use its contents.</li>
+      <li>Create and manipulate block images using IPythonBlocks.</li>
+      <li>Explain how colors are represented in a computer.</li>
+      <li>Create specific colors numerically.</li>
+    </ul>
+  </div>
+
+  <p>
+    Now that we can do basic arithmetic,
+    let's look at where the real power of most programming languages is.
+    Run this in an IPython Notebook cell:
+  </p>
+
+<pre>
+<span class="in">import math
+print "pi is", math.pi
+print "square root of 5 is", math.sqrt(5)</span>
+<span class="out">pi is 3.14159265359
+square root of 5 is 2.2360679775</span>
+</pre>
+
+  <p>
+    The first line in this cell is the most important.
+    It tells Python to find a library called <code>math</code>
+    and load it into our program.
+    We can then refer to the variables defined inside that library,
+    like &pi;,
+    as <code><em>library</em>.<em>variable</em></code>,
+    and call its functions,
+    like square root,
+    as <code><em>library</em>.<em>function</em></code>,
+  </p>
+
+  <p>
+    Two-part names are used because
+    many different libraries can define variables or functions with the same names.
+    For example,
+    <code>math.log</code> returns the natural logarithm of a number,
+    while <code>server.log</code>
+    (i.e., the <code>log</code> function defined by the <code>server</code> library)
+    writes a log message to a file.
+    It's exactly like saying "Valerie's paper" rather than just "the paper".
+  </p>
+
+  <div class="box">
+    <h3>Shortcuts</h3>
+
+    <p>
+      Since <code>math.sqrt</code> is a handful to type,
+      and <code>sqrt</code> is probably not ambiguous,
+      Python provides several ways to import things.
+      For example,
+      we can import specific functions from a library and then call them directly:
+    </p>
+
+<pre>
+<span class="in">from math import sqrt
+sqrt(3)</span>
+<span class="out">1.7320508075688772</span>
+</pre>
+
+    <p class="continue">
+      We can also import a function under a different name,
+      so that if two modules define functions with the same name,
+      we can give one or the other a different name when we want to use them together:
+    </p>
+
+<pre>
+<span class="in">from math import hypot as euclid
+euclid(3, 4)</span>
+<span class="out">5.0</span>
+</pre>
+
+    <p>
+      Finally,
+      we can use <code>import *</code>
+      to bring everything in the module into the current scope at once.
+      This has the same effect as using <code>from module import a</code>,
+      <code>from module import b</code>,
+      and so on for every name in the module:
+    </p>
+
+<pre>
+<span class="in">from math import *
+sin(pi)</span>
+<span class="out">1.2246063538223773e-16</span>
+</pre>
+
+    <p class="continue">
+      <code>import *</code> is usually a bad idea:
+      if someone adds a new function or variable to the next version of the module,
+      your <code>import *</code> could silently overwrite something that you have written,
+      or are importing from somewhere else.
+      Bugs like this can be extremely hard to find,
+      since nothing seemed to change in your program.
+    </p>
+  </div>
+
+  <p>
+    We now have everything we need to start drawing pictures.
+    Let's start with a simple grid of pixels:
+  </p>
+
+<pre>
+<span class="in">from ipythonblocks import BlockGrid
+grid = BlockGrid(10, 5)
+grid</span>
+FIXME: output
+</pre>
+
+  <p class="continue">
+    The first line loads something called <code>BlockGrid</code>
+    from the <code>ipythonblocks</code> library.
+    <code>BlockGrid</code> isn't actually a function&mdash;it's something
+    called a <a href="glossary.html#class">class</a> that we'll discuss later&mdash;but
+    it works like one for present purposes.
+    When we give it two integers,
+    it creates a grid of blocks of the specified width and height.
+    We can assign that to a variable
+    (in this case, called <code>grid</code>),
+    and then display it graphically.
+  </p>
+
+  <p>
+    We can ask a grid what it's height and width are
+    using the same dotted notation we use
+    to ask a library for the things it contains:
+  </p>
+
+<pre>
+<span class="in">print 'width:', grid.width
+print 'height', grid.height</span>
+<span class="out">width: 10
+height: 5</span>
+</pre>
+
+  <p>
+    We can't change these values, though:
+  </p>
+
+<pre>
+<span class="in">grid.width = 100</span>
+<span class="err">AttributeError                            Traceback (most recent call last)
+&lt;ipython-input-21-38b1940fb9ea&gt; in &lt;module&gt;()
+----> 1 grid.width=100
+
+AttributeError: can't set attribute</span>
+</pre>
+
+  <p class="continue">
+    The reason is the same as the one given <a href="#a:add-num-str">earlier</a>:
+    if we enlarged the grid,
+    Python would have to guess what colors to use for the new blocks.
+    We could tell it,
+    but to do that,
+    we need a way to define colors.
+  </p>
+
+  <p>
+    Luckily,
+    we have one&mdash;in fact, we have several.
+    The most common,
+    called "RGB",
+    defines colors according to how much red, green, and blue they contain.
+    This is an additive color model:
+    the color we see is the sum of the individual color values,
+    each of which can range between 0 and 255.
+    Why 255?
+    Because computer memory is organized into 8-bit bytes,
+    and 255 (11111111 in base 2) is the largest integer that can be represented in one byte.
+  </p>
+
+  <p>
+    In RGB,
+    black is (0, 0, 0), i.e., nothing of any color.
+    White is the maximum value of all three colors, or (255, 255, 255).
+    We can think of this color model is as a cube
+    (<a href="#f:color_cube">Figure XXX</a>).:
+    the three axes represent the primary colors,
+    while secondary colors are combinations of maximum values,
+    and each actual color is a coordinate in this cube.
+  </p>
+
+  <figure id="f:color_cube">
+    <img src="pymedia/color_cube.png" alt="A Color Cube" />
+    <figcaption>Figure XXX: A Color Cube</figcaption>
+  </figure>
+
+  <p>
+    The IPythonBlocks library includes a function called <code>show_color</code>
+    that we can use to explore the RGB color cube:
+  </p>
+
+<pre>
+<span class="in">from ipythonblocks import show_color
+show_color(255, 0, 0)</span> <span class="comment"># all red</span>
+FIXME: output
+<span class="in">show_color(0, 255, 0)
+show_color(0, 0, 255)</span>
+FIXME: output
+<span class="in">show_color(128, 255, 64)</span>
+FIXME: output
+</pre>
+
+  <p>
+    Let's change one corner of our grid from black to green:
+  </p>
+
+<pre>
+<span class="in">grid[0, 0] = (0, 255, 0)
+grid</span>
+FIXME: output
+</pre>
+
+  <p>
+    There's a lot going on in that assignment statement:
+  </p>
+
+  <ol>
+    <li>
+      A color is one value,
+      but we write it in three parts (red, green, and blue).
+      To make it clear that we want those three parts grouped together,
+      we put them in parentheses,
+      as in <code>(0, 255, 0)</code>.
+      This is <em>not</em> a function call,
+      though parentheses are used for calling functions.
+      Instead,
+      this is called a <a href="glossary.html#tuple">tuple</a>.
+      We'll see many more tuples as we go along.
+    </li>
+    <li>
+      If we want to refer to a particular block in a grid,
+      we use a <a href="glossary.html#subscript">subscript</a>,
+      just as we do when referring to a particular element of a matrix in mathematics.
+      Since subscripts and superscripts are hard to type,
+      we put the subscript values in square brackets
+      instead of typesetting them.
+    </li>
+    <li>
+      The corner's coordinates are (0, 0), not (1, 1).
+      Programming languages derived from C (a family that includes Python and Perl) all count from 0,
+      for the same reason that color values run from 0 to 255
+      instead of 1 to 256.
+      Some other languages (notably Fortran, MATLAB, and R) count from 1.
+      The latter is more sensible&mdash;nobody says, "Zero, one, two, three, four," when counting their fingers&mdash;but
+      we're stuck with the former for programming.
+    </li>
+  </ol>
+
+  <p>
+    Finally,
+    look closely at which pixel turned green.
+    A Cartesian grid is typically drawn with the origin in the lower left,
+    or in the center,
+    but IPythonBlocks' coordinate scheme is like that of tables and spreadsheets:
+    the first index counts down the rows,
+    while the second counts across the columns.
+    To prove this,
+    let's make the block at (1, 2) red:
+  </p>
+
+<pre>
+<span class="in">grid[1, 2] = (255, 0, 0)
+grid</span>
+FIXME: output
+</pre>
+
+  <p>
+    Changing the color of one block isn't very useful, though:
+    if we wanted to draw a picture that way,
+    we'd have to write millions of assignment statements.
+    What we need is a way to set the colors of many blocks at once,
+    which is the subject of the next section.
+  </p>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <p class="fixme">write challenges</p>
   </div>
 
 </section>
@@ -635,21 +989,6 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'</span>
 <section id="s:openshow">
 
   <h2>Displaying Images</h2>
-
-  <div class="understand" id="u:openshow">
-    <h3>Understand:</h3>
-    <ul>
-      <li>How to open and display images.</li>
-      <li>What a library is.</li>
-      <li>Why programs are built out of libraries.</li>
-      <li>What a method is and how to call one.</li>
-    </ul>
-  </div>
-
-  <p>
-    Now that we can do basic arithmetic,
-    let's look at some images:
-  </p>
 
 <pre>
 <span class="in">from skimage import novice</span>
@@ -671,7 +1010,7 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'</span>
   </p>
 
   <figure id="f:flower">
-    <img src="img/pymedia/flower.jpg" alt="The World's Cutest Child" />
+    <img src="pymedia/flower.jpg" alt="The World's Cutest Child" />
   </figure>
 
   <p>
@@ -814,7 +1153,7 @@ flower.show()
   </p>
 
   <figure id="f:memory_model_image_display">
-    <img src="img/pymedia/memory_model_image_display.jpg" alt="Memory Model of Image Display Program" />
+    <img src="pymedia/memory_model_image_display.jpg" alt="Memory Model of Image Display Program" />
   </figure>
 
   <div class="keypoints" id="k:openshow">
@@ -1025,7 +1364,7 @@ AttributeError: can't set attribute</span>
 </pre>
 
   <figure id="f:flower_squished">
-    <img src="img/pymedia/flower_squished.jpg" alt="Squishing a Picture" />
+    <img src="pymedia/flower_squished.jpg" alt="Squishing a Picture" />
   </figure>
 
   <p>
@@ -1116,7 +1455,7 @@ picture.save('thumb-mac.jpg')
   </p>
 
   <figure id="f:color_cube">
-    <img src="img/pymedia/color_cube.png" alt="A Color Cube" />
+    <img src="pymedia/color_cube.png" alt="A Color Cube" />
   </figure>
 
   <p>
@@ -1134,7 +1473,7 @@ all_blue.show()
 </pre>
 
   <figure id="f:primary_colors">
-    <img src="img/pymedia/primary_colors.png" alt="Primary Colors" />
+    <img src="pymedia/primary_colors.png" alt="Primary Colors" />
   </figure>
 
   <p>
@@ -1208,7 +1547,7 @@ picture.show()
 </pre>
 
   <figure id="f:color_properties">
-    <img src="img/pymedia/color_properties.png" alt="Color Properties" />
+    <img src="pymedia/color_properties.png" alt="Color Properties" />
   </figure>
 
 </section>
@@ -1347,7 +1686,7 @@ block[<span class="highlight">-1, -1</span>] = white
   </p>
 
   <figure id="f:negative_indices">
-    <img src="img/pymedia/negative_indices.png" alt="Negative Indices" />
+    <img src="pymedia/negative_indices.png" alt="Negative Indices" />
   </figure>
 
   <p>
@@ -1426,7 +1765,7 @@ block[<span class="highlight">0:40, 0:40</span>] = white
   </p>
 
   <figure id="f:single_tile">
-    <img src="img/pymedia/single_tile.png" alt="A Single Tile" />
+    <img src="pymedia/single_tile.png" alt="A Single Tile" />
   </figure>
 
   <p>
@@ -1837,7 +2176,7 @@ for filename in sys.argv<span class="in">[1:len(sys.argv)]</span>:
   </p>
 
   <figure id="f:all_but_the_first">
-    <img src="img/pymedia/all_but_the_first.png" alt="All But The First Element" />
+    <img src="pymedia/all_but_the_first.png" alt="All But The First Element" />
   </figure>
 
   <p>
@@ -1938,7 +2277,7 @@ picture.show()
   </p>
 
   <figure id="f:less_red">
-    <img src="img/pymedia/less_red.png" alt="Reducing the Red" />
+    <img src="pymedia/less_red.png" alt="Reducing the Red" />
   </figure>
 
   <p>
@@ -1976,7 +2315,7 @@ for pixel in picture:
   </p>
 
   <figure id="f:more_red">
-    <img src="img/pymedia/more_red.png" alt="Increasing the Red" />
+    <img src="pymedia/more_red.png" alt="Increasing the Red" />
   </figure>
 
   <div class="keypoints" id="k:for">
