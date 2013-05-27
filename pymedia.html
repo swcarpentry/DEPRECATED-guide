@@ -60,7 +60,6 @@
 </p>
 
 <section id="s:basic">
-
   <h2>Basic Operations</h2>
 
   <div class="understand">
@@ -372,7 +371,7 @@ print x = 1 + 2
 <pre>
 <span class="err">NameError                                 Traceback (most recent call last)
 &lt;ipython-input-7-0fae4d15df1c&gt; in &lt;module&gt;()
-----> 1 double_temp = temp_celsius * 2
+----&gt; 1 double_temp = temp_celsius * 2
 
 NameError: name 'temp_celsius' is not defined</span>
 </pre>
@@ -471,7 +470,6 @@ NameError: name 'temp_celsius' is not defined</span>
 </section>
 
 <section id="s:types">
-
   <h2>Types</h2>
 
   <div class="understand">
@@ -615,10 +613,9 @@ NameError: name 'temp_celsius' is not defined</span>
 <span class="in">print 2 + "three"</span>
 <span class="err">TypeError                                 Traceback (most recent call last)
 &lt;ipython-input-8-f6f99c093ec8&gt; in &lt;module&gt;()
-----> 1 print 2 + "three"
+----&gt; 1 print 2 + "three"
 
-TypeError: unsupported operand type(s) for +: 'int' and 'str'
-</span>
+TypeError: unsupported operand type(s) for +: 'int' and 'str'</span>
 </pre>
 
   <p>
@@ -809,7 +806,7 @@ sin(pi)</span>
 <pre>
 <span class="in">from ipythonblocks import BlockGrid
 grid = BlockGrid(10, 5)
-grid</span>
+grid.show()</span>
 FIXME: output
 </pre>
 
@@ -823,7 +820,7 @@ FIXME: output
     it creates a grid of blocks of the specified width and height.
     We can assign that to a variable
     (in this case, called <code>grid</code>),
-    and then display it graphically.
+    and then ask it to show itself.
   </p>
 
   <p>
@@ -847,7 +844,7 @@ height: 5</span>
 <span class="in">grid.width = 100</span>
 <span class="err">AttributeError                            Traceback (most recent call last)
 &lt;ipython-input-21-38b1940fb9ea&gt; in &lt;module&gt;()
-----> 1 grid.width=100
+----&gt; 1 grid.width=100
 
 AttributeError: can't set attribute</span>
 </pre>
@@ -913,7 +910,7 @@ FIXME: output
 
 <pre>
 <span class="in">grid[0, 0] = (0, 255, 0)
-grid</span>
+grid.show()</span>
 FIXME: output
 </pre>
 
@@ -942,7 +939,7 @@ FIXME: output
       we put the subscript values in square brackets
       instead of typesetting them.
     </li>
-    <li>
+    <li id="a:count-from-zero">
       The corner's coordinates are (0, 0), not (1, 1).
       Programming languages derived from C (a family that includes Python and Perl) all count from 0,
       for the same reason that color values run from 0 to 255
@@ -967,7 +964,7 @@ FIXME: output
 
 <pre>
 <span class="in">grid[1, 2] = (255, 0, 0)
-grid</span>
+grid.show()</span>
 FIXME: output
 </pre>
 
@@ -986,8 +983,769 @@ FIXME: output
 
 </section>
 
-<section id="s:openshow">
+<section id="s:for">
+  <h2>Repeating Things</h2>
 
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li>Repeat operations using a <code>for</code> loop.</li>
+      <li>Trace the value of a loop variable.</li>
+      <li>Use the <code>range</code> function to loop over a range of integers.</li>
+    </ul>
+  </div>
+
+  <p>
+    Computers are useful because they can do lots of calculations on lots of data,
+    which means we need a concise way to represent multiple steps.
+    Let's start by printing the vowels in order the hard way:
+  </p>
+
+<pre>
+<span class="in">print 'a'
+print 'e'
+print 'i'
+print 'o'
+print 'u'</span>
+<span class="out">a
+e
+i
+o
+u</span>
+</pre>
+
+  <p>
+    Now let's do it the easy way:
+  </p>
+
+<pre>
+<span class="in">for character in "aeiou":
+    print character</span>
+<span class="out">a
+e
+i
+o
+u</span>
+</pre>
+
+  <p>
+    The keywords <code>for</code> and <code>in</code> are used to create
+    a <a href="glossary.html#for-loop">for loop</a>.
+    Just like a <a href="shell.html#loop">loop in the shell</a>,
+    a <code>for</code> loop in Python repeats one or more instructions
+    for each value in some collection.
+    The indented line is called the <a href="glossary.html#loop-body">body</a> of the loop:
+    it's what Python executes repeatedly.
+    The variable <code>character</code> is the <a href="glossary.html#loop-variable">loop variable</a>:
+    each time the loop is executed,
+    it is updated to hold the next value from the collection
+    (in this case,
+    the next character from the string <code>"aeiou"</code>).
+    There's nothing magical about its name:
+    we could equally well have called it <code>something</code>,
+    but using something meaningful makes the program more readable.
+  </p>
+
+  <p>
+    Here's another loop that updates variables as it goes along:
+  </p>
+
+<pre>
+<span class="in">result = ""
+for character in "aeiou":
+    result = result + 2 * character
+print result</span>
+<span class="out">aaeeiioouu</span>
+</pre>
+
+  <p>
+    The variable <code>result</code> is initially assigned
+    an <a href="glossary.html#empty-string">empty string</a>
+    containing no characters.
+    The first time the loop executes,
+    the program adds "aa" to it;
+    the second time,
+    it adds "ee",
+    and so on to produce the string shown.
+  </p>
+
+  <p>
+    Notice that Python uses indentation to show what's in the body of a loop.
+    In fact,
+    it always uses indentation to show what lines of code belong to what.
+    To see why this matters,
+    try running this program:
+  </p>
+
+<pre>
+<span class="in">result = ""
+for character in "aeiou":
+    result = result + 2 * character
+<span class="highlight">    print result</span></span>
+<span class="out">aa
+aaee
+aaeeii
+aaeeiioo
+aaeeiioouu</span>
+</pre>
+
+  <p class="continue">
+    Since the <code>print</code> statement is inside the loop,
+    it is executed once for each <a href="glossary.html#iteration">iteration</a> of the loop,
+    so we see five lines of output.
+  </p>
+
+  <div class="box">
+
+    <h3>Why Indentation?</h3>
+
+    <p>
+      Most other languages use keywords like <code>do</code> and <code>done</code>
+      or <code>begin</code> and <code>end</code> to show what's in the body of a loop,
+      or the curly braces '{' and '}'.
+      Python uses indentation because studies done in the 1970s and 1980s showed
+      that's what people actually pay attention to.
+      If we write something as:
+    </p>
+
+<pre>
+for value in data
+begin
+    print value
+print "done"
+end
+</pre>
+
+    <p class="continue">
+      then most people reading the code in a hurry will "see"
+      the second <code>print</code> statement as being outside the loop.
+    </p>
+
+  </div>
+
+  <p>
+    What if we want to do something a certain number of times,
+    rather than once for each character in a string?
+    Python has a built-in function called <code>range</code>
+    that produces the integer 0, 1, 2, and so on up to a certain value:
+  <p>
+
+<pre>
+<span class="in">for i in range(3):
+    print i</span>
+<span class="out">0
+1
+2</span>
+</pre>
+
+  <p>
+    As discussed <a href="a:count-from-zero">earlier</a>,
+    <code>range</code> starts counting at 0,
+    not at 1.
+    It therefore stops one number short of the argument it's given
+    so that it produces the right number of values in total.
+  </p>
+
+  <p>
+    Using loops,
+    it's easy to color in many pixels with just a couple of lines of code:
+  </p>
+
+<pre>
+<span class="in">grid = BlockGrid(10, 5)
+for i in range(10):
+    grid[0, i] = (255, 0, 0)
+grid.show()</span>
+FIXME: output
+</pre>
+
+  <!-- FIXME: arguments are (X, Y), but coords are (Y, X) -->
+
+  <p>
+    The first line of this little program creates a 10&times;5 grid.
+    The next line is a loop that will run 10 times.
+    Each time around,
+    the next integer in the sequence 0&hellip;9 is assigned to the variable <code>i</code>.
+    Inside the loop,
+    we use <code>i</code> as the second (column) subscript to <code>grid</code>:
+    the first time through the loop,
+    we turn the block <code>grid[0, 0]</code> red,
+    the next time the block <code>grid[0, 1]</code>,
+    then <code>grid[0, 2]</code>
+    and so on up to <code>grid[0, 9]</code>
+    to fill in the entire row.
+  </p>
+
+  <div class="box">
+    <h3>When Short Names Are OK</h3>
+
+    <p>
+      We said earlier that programs should use meaningful variable names.
+      Are we not violating our own rule by using <code>i</code> as a variable in this program?
+      The short answer is "yes", but it's a defensible violation.
+      Suppose we re-write our loop as:
+    </p>
+
+<pre>
+<span class="in">for column in range(10):
+    grid[0, column] = (255, 0, 0)</span>
+</pre>
+
+    <p class="continue">
+      The longer name is more meaningful,
+      but it also takes longer to read.
+      Since the original <code>i</code> is only used for a few lines,
+      users will easily be able to keep its meaning in short-term memory
+      as long as they need to.
+      On balance,
+      therefore,
+      the short name are better in this case.
+    </p>
+
+    <p>
+      This is actually a general principle in program design.
+      A variable that holds a simple value,
+      and is only used in a few adjacent lines of code,
+      can (and usually should) have a short name.
+      A variable that holds a complex value,
+      or one which is used over more than a few lines of code,
+      should have a longer name
+      in order to optimize the tradeoff between reading speed
+      and the limitations of human short-term memory.
+    </p>
+  </div>
+
+  <p>
+    What happens if we use index the grid in the wrong order,
+    i.e.,
+    run the row coordinate from 0 to 9?
+  </p>
+
+<pre>
+<span class="in">for i in range(10):
+    grid[<span class="highlight">i, 0</span>] = (255, 0, 0)
+grid.show()</span>
+<span class="err">IndexError                                Traceback (most recent call last)
+&lt;ipython-input-36-3a81075e1fb2&gt; in &lt;module&gt;()
+      1 for i in range(10):
+----&gt; 2     grid[i, 0] = (255, 0, 0)
+      3 grid.show()
+
+IndexError: list index out of range</span>
+</pre>
+
+  <p>
+    Python halts the program with an error because
+    we eventually try to change the color of <code>grid[5, 0]</code>,
+    which doesn't exist:
+    row indices only go as high as 4,
+    and trying to access a non-existent block is an error,
+    just as trying to access a non-existent variable is.
+  </p>
+
+  <p>
+    But Python doesn't notice this until we actually get there.
+    If we display the grid now,
+    we see:
+  </p>
+
+<pre>
+FIXME: output
+</pre>
+
+  <p class="continue">
+    which shows that the first five iterations of the loop ran
+    before the error occurred.
+  </p>
+
+  <p>
+    Here's a better way to write this loop:
+  </p>
+
+<pre>
+<span class="in">for i in range(<span class="highlight">grid.height</span>):
+    grid[i, 0] = (255, 0, 0)
+grid.show()</span>
+FIXME: output
+</pre>
+
+  <p>
+    What makes this better is
+    the change from using 5, 10, or any specific number in the <code>range</code> call
+    to using <code>grid.height</code> instead.
+    The grid knows how large it is;
+    rather than relying on our memory
+    (which is often faulty),
+    we should rely on the computer's
+    (which usually isn't).
+    Doing this also makes the program more robust:
+    if we come back later and change the grid size to 20&times;30,
+    we don't have to re-read every line
+    looking for 10's that ought to become 30's.
+  </p>
+
+  <div class="box">
+    <h3>Don't Repeat Yourself</h3>
+    <p>
+      Every fact in a program should be represented once and only once,
+      so that if the program needs to be changed,
+      only one change,
+      in one place,
+      is needed.
+      Putting it another way,
+      if most changes to a program can be made
+      by changing one thing in one place,
+      that program is well designed.
+    </p>
+  </div>
+
+  <p>
+    What if we want to set the color of a sub-rectangle of our grid?
+    For example,
+    suppose we want to turn the nine pixels in the upper left corner blue.
+    We could do this:
+  </p>
+
+<pre>
+<span class="in">grid[0, 0] = (0, 0, 255)
+grid[0, 1] = (0, 0, 255)
+grid[0, 2] = (0, 0, 255)
+grid[1, 0] = (0, 0, 255)
+grid[1, 1] = (0, 0, 255)
+grid[1, 2] = (0, 0, 255)
+grid[2, 0] = (0, 0, 255)
+grid[2, 1] = (0, 0, 255)
+grid[2, 2] = (0, 0, 255)</span>
+</pre>
+
+  <p class="continue">
+    but we already know that's a bad approach.
+    We'd be better off using a loop for each row
+    to cut our program from nine lines to six:
+  </p>
+
+<pre>
+<span class="in">for i in range(3):
+    grid[<span class="highlight">0</span>, i] = (0, 0, 255)
+for i in range(3):
+    grid[<span class="highlight">1</span>, i] = (0, 0, 255)
+for i in range(3):
+    grid[<span class="highlight">2</span>, i] = (0, 0, 255)</span>
+</pre>
+
+  <p>
+    Look more closely:
+    the only difference between the three loops is
+    the row index used in each,
+    and those indices go in sequence from 0 to 2.
+    We can use another loop to produce them:
+  </p>
+
+<pre>
+<span class="in">for row in range(3):
+    for col in range(3):
+        grid[row, col] = (255, 0, 0)</span>
+grid.show()
+FIXME: display
+</pre>
+
+  <p>
+    This is called a <a href="glossary.html#nested-loop">nested loop</a>.
+    Each time the <a href="glossary.html#outer-loop">outer loop</a> runs,
+    the <a href="glossary.html#inner-loop">inner loop</a> runs three times,
+    so that every possible combination of row and column index
+    is seen exactly once.
+    We get the same result if we turn the loops inside out
+    and run over the columns;
+    the only difference is the order in which blocks are colored in
+    (<a href="#f:nested_loop">Figure XXX</a>).
+  </p>
+
+  <figure id="f:nested_loop">
+    <img src="pymedia/nested_loop.png" alt="Nested Loops" />
+    <figcaption>Figure XXX: Nested Loops</figcaption>
+  </figure>
+
+  <p>
+    There are cases where the order of the loops matters.
+    In the program below,
+    the range of the inner loop depends on
+    the current value of the outer loop's index:
+  </p>
+
+<pre>
+<span class="in">grid = BlockGrid(10, 5)
+for row in range(col):
+    for col in range(5):
+        grid[row, col] = (0, 255, 0)
+grid.show()</span>
+FIXME: output
+</pre>
+
+  <p class="continue">
+    The first time around the outer loop,
+    <code>col</code> is 0,
+    so the inner loops doesn't run at all:
+    <code>range(0)</code> counts from 0 up to <em>but not including</em> 0,
+    so it produces no output.
+    The second time around the outer loop,
+    <code>col</code> is 0,
+    so the inner loop runs once
+    and turns <code>grid[1, 0]</code> green.
+    The third time,
+    <code>col</code> is 1,
+    so the inner loop turns <code>grid[2, 0]</code> and <code>grid[2, 1]</code> green,
+    and so on.
+  </p>
+
+  <p>
+    Let's try inverting the loops:
+  </p>
+
+<pre>
+<span class="in">for <span class="highlight">row</span> in range(5):
+    for <span class="highlight">col</span> in range(<span class="highlight">row</span>):
+        grid[row, col] = (0, 0, 255)
+grid.show()</span>
+FIXME: output
+</pre>
+
+  <p class="continue">
+    <a href="#f:diagonal_loops">Figure XXX</a> shows the order in which
+    these nested loops turn cells blue.
+    To fill in the cells between the two triangles,
+    we can use a single loop like this:
+  </p>
+
+<pre>
+<span class="in">for diagonal in range(5):
+    grid[diagonal, diagonal] = (0, 255, 255)
+grid.show()</span>
+FIXME: output
+</pre>
+
+  <p>
+    This program works,
+    but it violates our rules about
+    making programs readable
+    and not repeating information.
+    More specifically,
+    the number 5 shows up in several places,
+    and tuples like (0, 255, 255) aren't exactly meaningful.
+    Here's how we should write it instead:
+  </p>
+
+<pre>
+<span class="in">from ipythonblocks import BlockGrid, colors
+grid = BlockGrid(10, 5)
+for col in range(grid.height):
+    for row in range(col):
+        grid[row, col] = colors['Blue']
+for row in range(grid.height):
+    for col in range(row):
+        grid[row, col] = colors['Green']
+for diagonal in range(grid.height):
+    grid[diagonal, diagonal] = colors['Aqua']
+grid.show()</span>
+FIXME: output
+</pre>
+
+  <p>
+    <code>colors</code> defines roughly 140 standard colors
+    so that we can use them by name:
+    for example,
+    <code>colors['Yellow']</code> is the tuple <code>(255, 255, 0)</code>.
+    Our loop ranges use <code>grid.height</code>,
+    so if we decide to make our grid 20&times;20,
+    all we will need to change is the second line of the program,
+    and everything else will work.
+  </p>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <p class="fixme">write challenges</p>
+  </div>
+
+</section>
+
+<section id="s:index">
+  <h2>Indexing and Slicing</h2>
+
+  <div class="box">
+    <h3>One Thing, Many Uses</h3>
+
+    <p>
+      Slices are a good example of a powerful idea in program design:
+      if something works in one place,
+      it ought to work everywhere.
+      For example,
+      if we want to select the first four characters from a string,
+      you shouldn't be surprised that we do it like this:
+    </p>
+
+<pre>
+<span class="in">full_name = 'Alan Turing'</span>
+<span class="in">first_name = full_name[:4]</span>
+<span class="in">print first_name</span>
+<span class="out">Alan</span>
+</pre>
+
+    <p class="continue">
+      or that if we want to print each character from the string
+      on a line of its own,
+      we use:
+    </p>
+
+<pre>
+<span class="in">for char in 'Alan':
+...     print char</span>
+<span class="out">A
+l
+a
+n</span>
+</pre>
+
+  </div>
+
+  <p>
+    Here's something else we can do with a loop:
+  </p>
+
+<pre>
+from skimage import novice
+
+picture = novice.open('mac.jpg')
+picture.show()
+for pixel in picture:
+    pixel.red = pixel.red / 2
+picture.show()
+</pre>
+
+  <p>
+    <a href="#f:less_red">Figure XXX</a> shows the original and modified images side by side.
+    The second version looks bluish-green
+    because the amount of red in each pixel has been cut in half.
+    That's what the <code>for</code> loop has done:
+    each time through the loop,
+    <code>pixel</code> has been assigned the next pixel in the image,
+    and the statement:
+  </p>
+
+<pre>
+    pixel.red = pixel.red / 2
+</pre>
+
+  <p class="continue">
+    has half the original value of the pixel's <code>red</code> property
+    and assigned it back to the pixel.
+  </p>
+
+  <figure id="f:less_red">
+    <img src="pymedia/less_red.png" alt="Reducing the Red" />
+  </figure>
+
+  <p>
+    What happens if we try to double the red instead?
+  </p>
+
+<pre>
+<span class="in">picture = novice.open('mac.jpg')
+for pixel in picture:
+...    pixel.red = pixel.red * 2
+...</span>
+<span class="err">
+Traceback (most recent call last):
+...several lines of error message...
+ValueError: Expected an integer between 0 and 255, but got 294 instead!</span>
+</pre>
+
+  <p class="continue">
+    Just as Python won't let us use an index that's out of range,
+    <code>skimage.novice</code> won't let us assign a color value
+    that's out of the range from 0 to 255.
+    If we want to make sure the value is in that range,
+    we can do this instead:
+  </p>
+
+<pre>
+picture = novice.open('mac.jpg')
+for pixel in picture:
+    pixel.red = min(255, pixel.red * 2)
+</pre>
+
+  <p>
+    This works,
+    and gives the result shown in <a href="#f:more_red">Figure XXX</a>.
+  </p>
+
+  <figure id="f:more_red">
+    <img src="pymedia/more_red.png" alt="Increasing the Red" />
+  </figure>
+
+  <div class="keypoints" id="k:for">
+    <h3>Summary</h3>
+    <ul>
+      <li>Use <code>for <em>variable</em> in <em>something</em>:</code> to loop over the parts of something.</li>
+      <li>The body of a loop must be indented consistently.</li>
+      <li>The parts of a string are its characters; the parts of an image are its pixels.</li>
+    </ul>
+  </div>
+
+</section>
+
+<section id="s:logic">
+
+  <h2>Making Choices</h2>
+
+  <div class="understand" id="u:logic">
+    <h3>Understand:</h3>
+    <ul>
+      <li>How to choose what statements to execute using conditionals.</li>
+      <li>How to combine conditional tests.</li>
+      <li>What an in-place operator is.</li>
+    </ul>
+  </div>
+
+  <p>
+    Using the <code>min</code> function is one way to clip values.
+    Another is to use a <a href="glossary.html#conditional">conditional</a> statement.
+    Let's start with a simple example:
+  </p>
+
+<pre>
+if 5 &gt; 0:
+    print '5 is greater than 0'
+
+if 5 &lt; 0:
+    print '5 is less than 0'
+</pre>
+
+  <p>
+    When we run this program,
+    it prints:
+  </p>
+
+<pre>
+<span class="out">5 is greater than 0</span>
+</pre>
+
+  <p class="continue">
+    The logic is fairly easy to follow.
+    The keyword <code>if</code> is followed by an expression.
+    If that expression is true,
+    Python executes the indented block of code,
+    but if the expression is false,
+    it doesn't.
+    In this case,
+    since 5 actually is greater than 0,
+    the first <code>print</code> statement is run,
+    but not the second.
+  </p>
+
+  <p>
+    Now let's try this:
+  </p>
+
+<pre>
+for char in 'GATTACA':
+    if char == 'A':
+        print 'found an A'
+<span class="out">found an A
+found an A
+found an A</span>
+</pre>
+
+  <p>
+    Python uses a double equals sign '==' to test for equality
+    (because the single equals sign '=' is used for assignment).
+    Each time through the loop above,
+    it compares the current value of <code>char</code> to the character 'A'.
+    When the two are equal,
+    it prints a message;
+    since the letter appears three times in 'GATTACA',
+    the message is printed three times.
+  </p>
+
+  <p>
+    All right,
+    how about this?
+
+<pre>
+VOWELS = 'AEIOU'
+num_vowels = 0
+num_other = 0
+for char in 'GATTACA':
+    if char in VOWELS:
+        num_vowels = num_vowels + 1
+    else:
+        num_other = num_other + 1
+print num_vowels, 'vowels'
+print num_other, 'other characters'
+<span class="out">3 vowels
+4 other characters</span>
+</pre>
+
+  <p>
+    This little program introduces two new language features.
+    The first is the <code>in</code> operator,
+    which,
+    as its name suggests,
+    tests whether one value is in another.
+    In this case,
+    we're using it to see if the current character is in our list of vowels.
+  </p>
+
+  <p>
+    The other feature is the keyword <code>else</code>,
+    which is used to introduce an alternative to an <code>if</code>.
+    Here,
+    if a character is a vowel,
+    Python increments <code>num_vowels</code>.
+    If that test fails&mdash;i.e., if the character <em>isn't</em> in <code>VOWELS</code>&mdash;Python
+    executes the both of the <code>else</code>
+    and increments <code>num_other</code> instead.
+  </p>
+
+  <p>
+    We can make this program a bit more readable by writing the body of the loop like this:
+  </p>
+
+<pre>
+for char in 'GATTACA':
+    if char in VOWELS:
+        <span class="highlight">num_vowels += 1</span>
+    else:
+        <span class="highlight">num_other += 1</span>
+</pre>
+
+  <p>
+    The notation <code>x += 1</code> means, "Add one to the variable <code>x</code>."
+    This is called an <a href="glossary.html#in-place-operator">in-place operator</a>;
+    we can similarly use <code>x += 5</code> to add 5 to <code>x</code>,
+    <code>x *= 3</code> to triple it,
+    and so on.
+    It may seem like a small saving,
+    but it actually prevents a lot of bugs
+    by eliminating duplicated code.
+  </p>
+
+  <p>
+    With conditionals in hand,
+    let's go back and rewrite our reddening program:
+  </p>
+
+<pre>
+picture = novice.open('mac.jpg')
+for pixel in picture:
+    if pixel.red &lt; 128:
+        pixel.red *= 2
+    else:
+        pixel.red = 255
+</pre>
+
+</section>
+
+<section id="s:openshow">
   <h2>Displaying Images</h2>
 
 <pre>
@@ -1167,7 +1925,6 @@ flower.show()
 </section>
 
 <section id="s:program">
-
   <h2>Creating Programs</h2>
 
   <div class="understand" id="u:program">
@@ -1290,7 +2047,6 @@ ZeroDivisionError: integer division or modulo by zero</span>
 </section>
 
 <section id="s:properties">
-
   <h2>Image Properties</h2>
 
   <div class="understand" id="u:properties">
@@ -1416,144 +2172,7 @@ picture.save('thumb-mac.jpg')
 
 </section>
 
-<section id="s:color">
-
-  <h2>Colors</h2>
-
-  <div class="understand" id="u:color">
-    <h3>Understand:</h3>
-    <ul>
-      <li>How computers represent colors.</li>
-      <li>How to create images from scratch.</li>
-      <li>How to change the color of every pixel in an image.</li>
-    </ul>
-  </div>
-
-  <p>
-    Before we go any further,
-    we need to talk about how computers represent colors.
-    The most common scheme,
-    called "RGB",
-    stores red, green, and blue values for each pixel in an image.
-    This is an additive color model:
-    the color we see is the sum of the individual color values,
-    each of which can range between 0 and 255.
-    Why 255?
-    Because computer memory is organized into 8-bit bytes,
-    and 255 (11111111 in base 2) is the largest integer that can be represented in one byte.
-  </p>
-
-  <p>
-    In RGB,
-    black is (0, 0, 0), i.e., nothing of any color.
-    White is the maximum value of all three colors, or (255, 255, 255).
-    We can think of this color model is as a cube
-    (<a href="#f:color_cube">Figure XXX</a>).:
-    the three axes represent the primary colors,
-    while secondary colors are combinations of maximum values,
-    and each actual color is a coordinate in this cube.
-  </p>
-
-  <figure id="f:color_cube">
-    <img src="pymedia/color_cube.png" alt="A Color Cube" />
-  </figure>
-
-  <p>
-    Let's have a look at how the three primary colors actually appear:
-  </p>
-
-<pre>
-from skimage import novice
-all_red = novice.new((200, 200), (255, 0, 0))
-all_red.show()
-all_green = novice.new((200, 200), (0, 255, 0))
-all_green.show()
-all_blue = novice.new((200, 200), (0, 0, 255))
-all_blue.show()
-</pre>
-
-  <figure id="f:primary_colors">
-    <img src="pymedia/primary_colors.png" alt="Primary Colors" />
-  </figure>
-
-  <p>
-    This program produces the three images shown in <a href="#f:primary_colors">Figure XXX</a> in turn.
-    The most important thing about it, though,
-    is actually where the parentheses are.
-    Just as in math,
-    programs often use parentheses to group values together.
-    Here,
-    we are using them to group (200, 200) together as the size of the image in pixels,
-    and (255, 0, 0) together as an RGB color value.
-    The designer of this library <em>could</em> have let us pass these values without the grouping,
-    as in:
-  </p>
-
-<pre>
-novice.new(200, 200, 255, 0, 0)
-</pre>
-
-  <p class="continue">
-    but as the number of values grows,
-    it quickly becomes difficult to keep track of which ones belong together.
-    A group of parenthesized values is called a <a href="glossary.html#tuple">tuple</a>;
-    we can assign tuples to variables,
-    and then use those variables in our programs to make our code easier to read:
-  </p>
-
-<pre>
-from skimage import novice
-<span class="highlight">image_size = (200, 200)</span>
-all_red = novice.new(<span class="highlight">image_size</span>, (255, 0, 0))
-all_red.show()
-all_green = novice.new(<span class="highlight">image_size</span>, (0, 255, 0))
-all_green.show()
-all_blue = novice.new(<span class="highlight">image_size</span>, (0, 0, 255))
-all_blue.show()
-</pre>
-
-  <p>
-    One nice side effect of this is that it also makes our programs easier to change.
-    If we want our images to be 300 pixels across instead of 200,
-    we only have to change the value of <code>image_size</code>,
-    and everything else just works.
-    This is a basic rule of good program design:
-    any given piece of information should be stored in one place, once,
-    so that any change requires only one change in one place.
-  </p>
-
-  <p>
-    <code>skimage.novice</code> lets us change image colors using properties as well.
-    If we don't initially specify a color for an image,
-    the image's pixels are all set to black:
-  </p>
-
-<pre>
-from skimage import novice
-image_size = (200, 200)
-picture = novice.new(image_size)
-</pre>
-
-  <p>
-    We can now change the red, green, or blue values of all its pixels like this
-    (<a href="#f:color_properties">Figure XXX</a>):
-  </p>
-
-<pre>
-picture.red   = 128
-picture.green = 192
-picture.blue  = 255
-picture.show()
-</pre>
-
-  <figure id="f:color_properties">
-    <img src="pymedia/color_properties.png" alt="Color Properties" />
-  </figure>
-
-</section>
-
 <section id="s:pixels">
-
   <h2>Manipulating Pixels</h2>
 
   <p>
@@ -1958,526 +2577,6 @@ picture.save('thumb-' + filename)
       and save the thumbnail to that file.
     </li>
   </ul>
-
-</section>
-
-<section id="s:for">
-
-  <h2>Repeating Things</h2>
-
-  <div class="understand" id="u:for">
-    <h3>Understand:</h3>
-    <ul>
-      <li>How to repeat things using a loop.</li>
-      <li>That the loop variable takes on a different value each time through the loop.</li>
-      <li>How to tell what statements are in the body of a loop.</li>
-    </ul>
-  </div>
-
-  <p>
-    Computers are useful because they can do lots of calculations on lots of data,
-    which means we need a concise way to represent multiple steps.
-    (After all,
-    writing out a million additions would take longer than doing them.)
-    Let's start by writing a program called <code>show.py</code>
-    that displays its command-line arguments one by one:
-  </p>
-
-<pre>
-import sys
-for arg in sys.argv:
-    print arg
-</pre>
-
-  <p>
-    Here's what happens when we run it:
-  </p>
-
-<pre>
-$ <span class="in">python show.py first second third</span>
-<span class="out">show.py
-first
-second
-third</span>
-</pre>
-
-  <p>
-    The keywords <code>for</code> and <code>in</code> are used to create
-    a <a href="glossary.html#for-loop">for loop</a>.
-    Just like a <a href="shell.html#loop">loop in the shell</a>,
-    a <code>for</code> loop in Python repeats one or more instructions
-    for each value in some set.
-    The indented line is called the <a href="glossary.html#loop-body">body</a> of the loop:
-    it's the command that Python executes repeatedly.
-    The variable <code>arg</code> is sometimes called
-    the <a href="glossary.html#loop-variable">loop variable</a>.
-    There's nothing special about its name:
-    we could equally well have called it <code>something</code>.
-    What's important is that the <code>for</code> loop repeatedly
-    assigns a value to it,
-    then executes the loop body one more time.
-  </p>
-
-  <p>
-    Python always uses indentation to show what's in the body of a loop
-    (or anything else&mdash;we'll see other things that have bodies soon).
-    This means that:
-  </p>
-
-<pre>
-for arg in sys.argv:
-    print arg
-    print "all done"
-</pre>
-
-   <p class="continue">
-     and:
-   </p>
-
-<pre>
-for arg in sys.argv:
-    print arg
-print "all done"
-</pre>
-
-  <p class="continue">
-    are different programs.
-    The first one would print:
-  </p>
-
-<pre>
-<span class="out">show.py
-all done
-first
-all done
-second
-all done
-third
-all done</span>
-</pre>
-
-  <p class="continue">
-    because the statement <code>print "all done"</code> is inside the loop body.
-    The second is probably what we actually want,
-    as it prints:
-  </p>
-
-<pre>
-<span class="out">show.py
-first
-second
-third
-all done</span>
-</pre>
-
-  <p class="continue">
-    because the final <code>print</code> is outside the loop.
-  </p>
-
-  <div class="box">
-
-    <h3>Why Indentation?</h3>
-
-    <p>
-      Most other languages use keywords like <code>do</code> and <code>done</code>
-      or <code>begin</code> and <code>end</code> to show what's in the body of a loop,
-      or even curly braces '{}'.
-      Python uses indentation because studies done in the 1970s and 1980s showed
-      that's what people actually pay attention to.
-      If we write something as:
-    </p>
-
-<pre>
-for value in data
-begin
-    print value
-print "done"
-end
-</pre>
-
-    <p class="continue">
-      then most people reading the code in a hurry will "see"
-      the second <code>print</code> statement as being outside the loop.
-    </p>
-
-  </div>
-
-  <p>
-    Let's go back and teach our thumbnail program how to process multiple files at once:
-  </p>
-
-<pre>
-import sys
-from skimage import novice
-
-FIXED_WIDTH = 30
-
-for filename in sys.argv:
-    picture = novice.open(filename)
-    new_height = picture.height * fixed_width / picture.width
-    picture.height = new_height
-    picture.width = fixed_width
-    picture.save('thumb-' + filename)
-</pre>
-
-  <p>
-    Almost everything has stayed the same:
-    the only change is that instead of assigning <code>sys.argv[1]</code> to <code>filename</code>,
-    we're using a loop to assign it each value in <code>sys.argv</code> in turn.
-    Let's try running it:
-  </p>
-
-<pre>
-$ <span class="in">python thumbnail.py flower.jpg mac.jpg</span>
-<span class="err">Traceback (most recent call last):
-...several lines of error message...
-IOError: cannot identify image file</span>
-</pre>
-
-  <p>
-    Whoops:
-    the first time through the loop,
-    <code>filename</code> is assigned <code>sys.argv[0]</code>,
-    which is the name of the Python program itself.
-    The <code>novice.open</code> call then tries to open a Python program
-    (i.e., a text file)
-    as if it were an image.
-    Unsurprisingly,
-    that doesn't work.
-  </p>
-
-  <p>
-    How can we fix this?
-    By using a slice that starts at index 1
-    and runs to the end of the list of filenames:
-  </p>
-
-<pre>
-import sys
-from skimage import novice
-
-FIXED_WIDTH = 30
-
-for filename in sys.argv<span class="in">[1:len(sys.argv)]</span>:
-    picture = novice.open(filename)
-    new_height = picture.height * fixed_width / picture.width
-    picture.height = new_height
-    picture.width = fixed_width
-    picture.save('thumb-' + filename)
-</pre>
-
-  <p class="continue">
-    Remember,
-    a slice starts at its low index,
-    and goes up to, but not including, its upper index.
-    The expression <code>stuff[1:len(stuff)]</code> is therefore
-    everything in <code>stuff</code> except the element at location zero
-    (<a href="#f:all_but_the_first">Figure XXX</a>):
-  </p>
-
-  <figure id="f:all_but_the_first">
-    <img src="pymedia/all_but_the_first.png" alt="All But The First Element" />
-  </figure>
-
-  <p>
-    We can make this even simpler.
-    If we don't specify the lower end of a slice,
-    it defaults to 0,
-    so <code>stuff[:3]</code> is elements 0, 1, and 2 of <code>stuff</code>.
-    Similarly,
-    if we don't specify the slice's upper end,
-    it defaults to the end,
-    so <code>stuff[3:]</code> is elements 3, 4, 5, and so on to the end.
-    In particular,
-    <code>stuff[1:]</code> is everything in <code>stuff</code> except the element at index 0,
-    so we can rewrite our thumbnailer one more time as:
-  </p>
-
-<pre>
-import sys
-from skimage import novice
-
-FIXED_WIDTH = 30
-
-for filename in sys.argv<span class="in">[1:]</span>:
-    picture = novice.open(filename)
-    new_height = picture.height * fixed_width / picture.width
-    picture.height = new_height
-    picture.width = fixed_width
-    picture.save('thumb-' + filename)
-</pre>
-
-  <div class="box">
-    <h3>One Thing, Many Uses</h3>
-
-    <p>
-      Slices are a good example of a powerful idea in program design:
-      if something works in one place,
-      it ought to work everywhere.
-      For example,
-      if we want to select the first four characters from a string,
-      you shouldn't be surprised that we do it like this:
-    </p>
-
-<pre>
-<span class="in">full_name = 'Alan Turing'</span>
-<span class="in">first_name = full_name[:4]</span>
-<span class="in">print first_name</span>
-<span class="out">Alan</span>
-</pre>
-
-    <p class="continue">
-      or that if we want to print each character from the string
-      on a line of its own,
-      we use:
-    </p>
-
-<pre>
-<span class="in">for char in 'Alan':
-...     print char</span>
-<span class="out">A
-l
-a
-n</span>
-</pre>
-
-  </div>
-
-  <p>
-    Here's something else we can do with a loop:
-  </p>
-
-<pre>
-from skimage import novice
-
-picture = novice.open('mac.jpg')
-picture.show()
-for pixel in picture:
-    pixel.red = pixel.red / 2
-picture.show()
-</pre>
-
-  <p>
-    <a href="#f:less_red">Figure XXX</a> shows the original and modified images side by side.
-    The second version looks bluish-green
-    because the amount of red in each pixel has been cut in half.
-    That's what the <code>for</code> loop has done:
-    each time through the loop,
-    <code>pixel</code> has been assigned the next pixel in the image,
-    and the statement:
-  </p>
-
-<pre>
-    pixel.red = pixel.red / 2
-</pre>
-
-  <p class="continue">
-    has half the original value of the pixel's <code>red</code> property
-    and assigned it back to the pixel.
-  </p>
-
-  <figure id="f:less_red">
-    <img src="pymedia/less_red.png" alt="Reducing the Red" />
-  </figure>
-
-  <p>
-    What happens if we try to double the red instead?
-  </p>
-
-<pre>
-<span class="in">picture = novice.open('mac.jpg')
-for pixel in picture:
-...    pixel.red = pixel.red * 2
-...</span>
-<span class="err">
-Traceback (most recent call last):
-...several lines of error message...
-ValueError: Expected an integer between 0 and 255, but got 294 instead!</span>
-</pre>
-
-  <p class="continue">
-    Just as Python won't let us use an index that's out of range,
-    <code>skimage.novice</code> won't let us assign a color value
-    that's out of the range from 0 to 255.
-    If we want to make sure the value is in that range,
-    we can do this instead:
-  </p>
-
-<pre>
-picture = novice.open('mac.jpg')
-for pixel in picture:
-    pixel.red = min(255, pixel.red * 2)
-</pre>
-
-  <p>
-    This works,
-    and gives the result shown in <a href="#f:more_red">Figure XXX</a>.
-  </p>
-
-  <figure id="f:more_red">
-    <img src="pymedia/more_red.png" alt="Increasing the Red" />
-  </figure>
-
-  <div class="keypoints" id="k:for">
-    <h3>Summary</h3>
-    <ul>
-      <li>Use <code>for <em>variable</em> in <em>something</em>:</code> to loop over the parts of something.</li>
-      <li>The body of a loop must be indented consistently.</li>
-      <li>The parts of a string are its characters; the parts of an image are its pixels.</li>
-    </ul>
-  </div>
-
-</section>
-
-<section id="s:logic">
-
-  <h2>Making Choices</h2>
-
-  <div class="understand" id="u:logic">
-    <h3>Understand:</h3>
-    <ul>
-      <li>How to choose what statements to execute using conditionals.</li>
-      <li>How to combine conditional tests.</li>
-      <li>What an in-place operator is.</li>
-    </ul>
-  </div>
-
-  <p>
-    Using the <code>min</code> function is one way to clip values.
-    Another is to use a <a href="glossary.html#conditional">conditional</a> statement.
-    Let's start with a simple example:
-  </p>
-
-<pre>
-if 5 &gt; 0:
-    print '5 is greater than 0'
-
-if 5 &lt; 0:
-    print '5 is less than 0'
-</pre>
-
-  <p>
-    When we run this program,
-    it prints:
-  </p>
-
-<pre>
-<span class="out">5 is greater than 0</span>
-</pre>
-
-  <p class="continue">
-    The logic is fairly easy to follow.
-    The keyword <code>if</code> is followed by an expression.
-    If that expression is true,
-    Python executes the indented block of code,
-    but if the expression is false,
-    it doesn't.
-    In this case,
-    since 5 actually is greater than 0,
-    the first <code>print</code> statement is run,
-    but not the second.
-  </p>
-
-  <p>
-    Now let's try this:
-  </p>
-
-<pre>
-for char in 'GATTACA':
-    if char == 'A':
-        print 'found an A'
-<span class="out">found an A
-found an A
-found an A</span>
-</pre>
-
-  <p>
-    Python uses a double equals sign '==' to test for equality
-    (because the single equals sign '=' is used for assignment).
-    Each time through the loop above,
-    it compares the current value of <code>char</code> to the character 'A'.
-    When the two are equal,
-    it prints a message;
-    since the letter appears three times in 'GATTACA',
-    the message is printed three times.
-  </p>
-
-  <p>
-    All right,
-    how about this?
-
-<pre>
-VOWELS = 'AEIOU'
-num_vowels = 0
-num_other = 0
-for char in 'GATTACA':
-    if char in VOWELS:
-        num_vowels = num_vowels + 1
-    else:
-        num_other = num_other + 1
-print num_vowels, 'vowels'
-print num_other, 'other characters'
-<span class="out">3 vowels
-4 other characters</span>
-</pre>
-
-  <p>
-    This little program introduces two new language features.
-    The first is the <code>in</code> operator,
-    which,
-    as its name suggests,
-    tests whether one value is in another.
-    In this case,
-    we're using it to see if the current character is in our list of vowels.
-  </p>
-
-  <p>
-    The other feature is the keyword <code>else</code>,
-    which is used to introduce an alternative to an <code>if</code>.
-    Here,
-    if a character is a vowel,
-    Python increments <code>num_vowels</code>.
-    If that test fails&mdash;i.e., if the character <em>isn't</em> in <code>VOWELS</code>&mdash;Python
-    executes the both of the <code>else</code>
-    and increments <code>num_other</code> instead.
-  </p>
-
-  <p>
-    We can make this program a bit more readable by writing the body of the loop like this:
-  </p>
-
-<pre>
-for char in 'GATTACA':
-    if char in VOWELS:
-        <span class="highlight">num_vowels += 1</span>
-    else:
-        <span class="highlight">num_other += 1</span>
-</pre>
-
-  <p>
-    The notation <code>x += 1</code> means, "Add one to the variable <code>x</code>."
-    This is called an <a href="glossary.html#in-place-operator">in-place operator</a>;
-    we can similarly use <code>x += 5</code> to add 5 to <code>x</code>,
-    <code>x *= 3</code> to triple it,
-    and so on.
-    It may seem like a small saving,
-    but it actually prevents a lot of bugs
-    by eliminating duplicated code.
-  </p>
-
-  <p>
-    With conditionals in hand,
-    let's go back and rewrite our reddening program:
-  </p>
-
-<pre>
-picture = novice.open('mac.jpg')
-for pixel in picture:
-    if pixel.red &lt; 128:
-        pixel.red *= 2
-    else:
-        pixel.red = 255
-</pre>
 
 </section>
 
