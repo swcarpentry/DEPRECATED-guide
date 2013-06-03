@@ -350,7 +350,7 @@ print x = 1 + 2
     they optimize the performance of the most expensive hardware we have.
   </p>
 
-  <div class="box">
+  <div class="box" id="a:creating-variables">
     <h3>Creating Variables</h3>
 
     <p>
@@ -933,7 +933,8 @@ FIXME: output
     </li>
     <li>
       If we want to refer to a particular block in a grid,
-      we use a <a href="glossary.html#subscript">subscript</a>,
+      we use a <a href="glossary.html#subscript">subscript</a>
+      or <a href="glossary.html#index">index</a>,
       just as we do when referring to a particular element of a matrix in mathematics.
       Since subscripts and superscripts are hard to type,
       we put the subscript values in square brackets
@@ -1159,7 +1160,7 @@ grid.show()</span>
 FIXME: output
 </pre>
 
-  <!-- FIXME: arguments are (X, Y), but coords are (Y, X) -->
+  <p class="fixme">arguments are (X, Y), but coords are (Y, X)</p>
 
   <p>
     The first line of this little program creates a 10&times;5 grid.
@@ -1338,7 +1339,7 @@ for i in range(3):
     the only difference between the three loops is
     the row index used in each,
     and those indices go in sequence from 0 to 2.
-    We can use another loop to produce them:
+    That means we can use another loop to produce them:
   </p>
 
 <pre>
@@ -1469,126 +1470,268 @@ FIXME: output
 </section>
 
 <section id="s:index">
-  <h2>Indexing and Slicing</h2>
-
-  <div class="box">
-    <h3>One Thing, Many Uses</h3>
-
-    <p>
-      Slices are a good example of a powerful idea in program design:
-      if something works in one place,
-      it ought to work everywhere.
-      For example,
-      if we want to select the first four characters from a string,
-      you shouldn't be surprised that we do it like this:
-    </p>
-
-<pre>
-<span class="in">full_name = 'Alan Turing'</span>
-<span class="in">first_name = full_name[:4]</span>
-<span class="in">print first_name</span>
-<span class="out">Alan</span>
-</pre>
-
-    <p class="continue">
-      or that if we want to print each character from the string
-      on a line of its own,
-      we use:
-    </p>
-
-<pre>
-<span class="in">for char in 'Alan':
-...     print char</span>
-<span class="out">A
-l
-a
-n</span>
-</pre>
-
-  </div>
+  <h2>Indexing, Slicing, and Update Operators</h2>
 
   <p>
-    Here's something else we can do with a loop:
+    A <code>for</code> loop is one way to tell the computer to do something many times.
+    Another is to tell it where to do things,
+    and let it figure out how best to take action.
+  </p>
+
+  <p>
+    To see how this works,
+    let's first revisit indexing.
+    We have seen that <code>grid[0, 1]</code> refers to a single block in a grid.
+    Many other things in Python can be indexed as well,
+    such as strings:
   </p>
 
 <pre>
-from skimage import novice
-
-picture = novice.open('mac.jpg')
-picture.show()
-for pixel in picture:
-    pixel.red = pixel.red / 2
-picture.show()
-</pre>
-
-  <p>
-    <a href="#f:less_red">Figure XXX</a> shows the original and modified images side by side.
-    The second version looks bluish-green
-    because the amount of red in each pixel has been cut in half.
-    That's what the <code>for</code> loop has done:
-    each time through the loop,
-    <code>pixel</code> has been assigned the next pixel in the image,
-    and the statement:
-  </p>
-
-<pre>
-    pixel.red = pixel.red / 2
+<span class="in">print "Darwin"[2]</span>
+<span class="out">r</span>
 </pre>
 
   <p class="continue">
-    has half the original value of the pixel's <code>red</code> property
-    and assigned it back to the pixel.
-  </p>
-
-  <figure id="f:less_red">
-    <img src="pymedia/less_red.png" alt="Reducing the Red" />
-  </figure>
-
-  <p>
-    What happens if we try to double the red instead?
+    and lists:
   </p>
 
 <pre>
-<span class="in">picture = novice.open('mac.jpg')
-for pixel in picture:
-...    pixel.red = pixel.red * 2
-...</span>
-<span class="err">
-Traceback (most recent call last):
-...several lines of error message...
-ValueError: Expected an integer between 0 and 255, but got 294 instead!</span>
+<span class="in">names = ["Newton", "Darwin", "Turing"]
+print names[1]</span>
+<span class="out">Darwin</span>
+</pre>
+
+  <p>
+    Here's something that <em>doesn't</em> work:
+  </p>
+
+<pre>
+<span class="in">print names[999]</span>
+<span class="err">IndexError                                Traceback (most recent call last)
+&lt;ipython-input-6-7359c12a3ca3&gt; in &lt;module&gt;()
+      1 names = ["Newton", "Darwin", "Turing"]
+----&gt; 2 print names[999]
+
+IndexError: list index out of range</span>
+</pre>
+
+  <p>
+    The list <code>names</code> only has three entries,
+    so <code>names[999]</code> doesn't exist.
+    Rather than giving us some default value (such as zero)
+    or extending the list and filling in the new values with a default,
+    Python considers this an error.
+    The reasoning is the same as that given <a href="#a:creating-variables">earlier</a>:
+    if we haven't defined a value,
+    our program shouldn't guess what we might have wanted.
+  </p>
+
+  <p>
+    Given that,
+    you might be surprised to learn that
+    Python actually lets use use negative indices:
+  </p>
+
+<pre>
+<span class="in">print names[-1]</span>
+<span class="out">Turing</span>
+</pre>
+
+  <p>
+    As <a href="#f:negative_indexing">Figure XXX</a> shows,
+    these count backwards from the end of the list or string.
+    They're not actually necessary:
+    if we want to get the last element of
+    the list or string referred to by the variable <code>thing</code>,
+    we can always write:
+  </p>
+
+<pre>
+thing[len(thing) - 1]
 </pre>
 
   <p class="continue">
-    Just as Python won't let us use an index that's out of range,
-    <code>skimage.novice</code> won't let us assign a color value
-    that's out of the range from 0 to 255.
-    If we want to make sure the value is in that range,
-    we can do this instead:
+    However,
+    this is harder both to type and to read.
+  </p>
+
+  <figure id="f:negative_indexing">
+    <img src="pymedia/negative_indexing.png" alt="Negative Indexing" />
+    <figcaption>Figure XXX: Negative Indexing</figcaption>
+  </figure>
+
+  <p>
+    All of the indices we have seen so far have specified single items,
+    but that doesn't have to be the case.
+    We can instead specify ranges of values,
+    also called a <a href="glossary.html#slice">slice</a>:
   </p>
 
 <pre>
-picture = novice.open('mac.jpg')
-for pixel in picture:
-    pixel.red = min(255, pixel.red * 2)
+<span class="in">name = "Alan Turing"
+print name[3:8]</span>
+<span class="out">Tur</span>
+<span class="in">print name[5:5]</span>
+<span class="out"></span>
+<span class="in">print name[5:2]</span>
+<span class="out"></span>
+<span class="in">print name[5:999]</span>
+<span class="out">Turing</span>
+<span class="in">print name[5:-1]</span>
+<span class="out">Turin</span>
+<span class="in">print name[1:-1]</span>
+<span class="out">lan Turin</span>
+<span class="in">print name[:6]</span>
+<span class="out">Alan T</span>
+<span class="in">print name[6:]</span>
+<span class="out">uring</span>
+<span class="in">print name[:]</span>
+<span class="out">Alan Turing</span>
 </pre>
 
   <p>
-    This works,
-    and gives the result shown in <a href="#f:more_red">Figure XXX</a>.
+    Slices are written as <code>[<em>lower</em>:<em>upper</em>]</code>.
+    Python interprets them according to the following rules:
   </p>
 
-  <figure id="f:more_red">
-    <img src="pymedia/more_red.png" alt="Increasing the Red" />
+  <ul>
+    <li>
+      A slice runs from its lower bound up to, but not including, its upper bound,
+      so that the total number of elements selected is upper-lower.
+      (In mathematical terms,
+      a slice is either "half open" or "half closed".)
+    </li>
+    <li>
+      This means that a slice whose lower and upper bounds are the same,
+      like <code>[5:5]</code>,
+      selects nothing.
+      It also means that if the upper bound is less than the lower bound,
+      as in <code>[5:2]</code>,
+      nothing is selected as well.
+    </li>
+    <li>
+      Slices are more lenient than single indices:
+      if one of the bounds is out of range,
+      it is treated as being 0 or the length of the object,
+      so that <code>name[5:999]</code> is legal
+      even when there are only 11 characters in <code>name</code>.
+      Some of us think this inconsistency is a bug;
+      others think it is a useful feature.
+    </li>
+    <li>
+      Negative indices count backward as always,
+      so <code>name[5:-1]</code> goes from the fifth character
+      up to, but not including,
+      the last character.
+    </li>
+    <li>
+      As a result,
+      <code>thing[1:-1]</code> is everything in <code>thing</code>
+      except the first and last element.
+      This is often useful in scientific programming
+      when we want to select the interior of a range of values.
+    </li>
+    <li>
+      If we omit the lower bound, it defaults to 0;
+      if we omit the upper, it defaults to the length of the thing we're slicing.
+      Thus,
+      <code>name[:6]</code> is the same as <code>name[0:6]</code>
+      and <code>name[6:]</code> is the same as <code>name[6:len(name)]</code>.
+    </li>
+    <li>
+      So by extension,
+      if we omit both bounds,
+      we simply select the entire thing.
+    </li>
+  </ul>
+
+  <p>
+    Slices work in two dimensions as well as one.
+    To see this,
+    let's create a grid and then change the color of the upper left corner:
+  </p>
+
+<pre>
+<span class="in">grid = BlockGrid(5, 5)
+grid[0:3, 0:3] = (255, 0, 128)
+grid.show()</span>
+FIXME: display
+</pre>
+
+  <p class="continue">
+    As this example shows,
+    the slices in each dimension are combined to select a range of elements.
+    Assigning to that range then changes the color of all those elements at once.
+  </p>
+
+  <p>
+    Exactly what happens when we assign to a slice
+    depends on the type of thing we're slicing.
+    For example,
+    if we assign to a slice of a list,
+    we replace the values in that range
+    with a new sequence of values
+    (<a href="#f:slice_assign_1">Figure XXX</a>):
+  </p>
+
+<pre>
+<span class="in">elements = ['H', 'He', 'Li', 'Be', 'Bo', 'C', 'N']
+elements[1:-1] = ['Na', 'Mg']
+print elements</span>
+<span class="out">['H', 'Na', 'Mg', 'N']</span>
+</pre>
+
+  <figure id="f:slice_assign_1">
+    <img src="pymedia/slice_assign_1.png" alt="Assigning to Slices" />
+    <figcaption>Figure XXX: Assigning to Slices</figcaption>
   </figure>
 
-  <div class="keypoints" id="k:for">
-    <h3>Summary</h3>
-    <ul>
-      <li>Use <code>for <em>variable</em> in <em>something</em>:</code> to loop over the parts of something.</li>
-      <li>The body of a loop must be indented consistently.</li>
-      <li>The parts of a string are its characters; the parts of an image are its pixels.</li>
-    </ul>
+  <p>
+    By default,
+    a slice selects every value between its bounds.
+    We can optionally provide a <a href="glossary.html#stride">stride</a>
+    to select regularly-spaced elements instead:
+  </p>
+
+<pre>
+<span class="in">grid = BlockGrid(8, 5)
+grid = (255, 128, 0) <span class="comment"># Turn all elements orange.</span>
+grid[0:8:3, :] = (0, 128, 255) <span class="comment"># Turn every third row blue.</span>
+grid[:, ::2] = (255, 0, 128) <span class="comment"># Then turn every second column pink.</span>
+grid.show()</span>
+FIXME: display
+</pre>
+
+  <p>
+    Slicing is an example of <a href="glossary.html#declarative-programming">declarative programming</a>.
+    Instead of telling the computer <em>how</em> to do something,
+    we tell it <em>what</em> to do,
+    and let it figure out what steps to take to achieve that goal.
+    Behind the scenes,
+    the computer might use a <code>for</code> loop to re-color each block in the grid.
+    It might also use some of the advanced features of the CPU
+    to change several blocks simultaneously,
+    or distribute the work between different CPUs if we have a powerful enough machine.
+    We don't need to know:
+    we just need to know that the right thing will happen,
+    and that we can spend our time worrying about more important things.
+  </p>
+
+  <div class="challenges">
+    <h2>Challenges</h2>
+
+    <ol>
+      <li>
+        Explain why these three lines of code produce the output shown.
+<pre>
+<span class="in">elements = ['H', 'He', 'Li', 'Be', 'Bo', 'C', 'N']
+elements[1:-1] = 'Xe'
+print elements</span>
+<span class="out">['H', 'X', 'e', 'N']</span>
+</pre>
+      </li>
+    </ol>
+
   </div>
 
 </section>
