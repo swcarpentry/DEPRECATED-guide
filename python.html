@@ -1117,14 +1117,14 @@ volume   2    4.0
   </p>
 
 <pre>
-reader = file('cochlear01.txt', 'r')
+reader = open('cochlear01.txt', 'r')
 first_line = reader.readline()
 print first_line
 reader.close()
 </pre>
 
   <p>
-    The first line uses a built-in function called <code>file</code>
+    The first line uses a built-in function called <code>open</code>
     to open our file.
     Its first parameter is the name of the file being opened.
     Its second is the string <code>'r'</code>,
@@ -1133,7 +1133,7 @@ reader.close()
   </p>
 
   <p>
-    <code>file</code>
+    <code>open</code>
     creates a connection (or <a href="glossary.html#handle">handle</a>)
     between the program and the data on disk
     (<a href="#f:file_object">Figure 5</a>),
@@ -1244,7 +1244,7 @@ $ <span class="in">python first.py</span>
   </p>
 
 <pre>
-reader = file('cochlear01.txt', 'r')
+reader = open('cochlear01.txt', 'r')
 first_line = reader.readline()
 print first_line<span class="highlight">,</span>
 reader.close()
@@ -1256,7 +1256,7 @@ reader.close()
   </p>
 
 <pre>
-reader = file('cochlear01.txt', 'r')
+reader = open('cochlear01.txt', 'r')
 first_line = reader.readline()
 <span class="highlight">first_line = first_line.strip()</span>
 print first_line
@@ -1291,7 +1291,7 @@ reader.close()
     </p>
 
 <pre>
-writer = file('mydata.txt', 'w')
+writer = open('mydata.txt', 'w')
 print &gt;&gt; writer, 'largest value:', 20
 print &gt;&gt; writer, 'smallest value:', -2
 writer.close()
@@ -1326,7 +1326,7 @@ writer.close()
       <li>Most things in Python are objects, and have attached functions called methods.</li>
       <li>When lines are read from files, Python keeps their end-of-line characters.</li>
       <li>Use <code>str.strip</code> to remove leading and trailing whitespace (including end-of-line characters).</li>
-      <li>Use <code>file(<em>name</em>, <em>mode</em>)</code> to open a file for reading ('r'), writing ('w'), or appending ('a').</li>
+      <li>Use <code>open(<em>name</em>, <em>mode</em>)</code> to open a file for reading ('r'), writing ('w'), or appending ('a').</li>
       <li>Opening a file for writing erases any existing content.</li>
       <li>Use <code>file.readline</code> to read a line from a file.</li>
       <li>Use <code>file.close</code> to close an open file.</li>
@@ -1593,7 +1593,7 @@ ________.________(line)
   </p>
 
 <pre>
-&gt;&gt;&gt; reader = file('cochlear01.txt', 'r')
+&gt;&gt;&gt; reader = open('cochlear01.txt', 'r')
 &gt;&gt;&gt; number = 0
 &gt;&gt;&gt; for line in reader:
 ...    number = number + 1
@@ -1979,7 +1979,7 @@ volume   2    4.0
 
 <pre>
 <span class="comment"># second.py</span>
-reader = file('cochlear01.txt', 'r')
+reader = open('cochlear01.txt', 'r')
 number = 0
 for line in reader:
     number = number + 1
@@ -4224,7 +4224,7 @@ print "grouped data:", result
 <pre>
 x_values = []
 y_values = []
-reader = file('data.txt', 'r')
+reader = open('data.txt', 'r')
 for line in reader:
     x, y = line.split()
     x = float(x)
@@ -4242,7 +4242,7 @@ reader.close()
 <pre>
 x_values = []
 y_values = []
-reader = file('data.txt', 'r')
+reader = open('data.txt', 'r')
 for line in reader:
     x, y = line.split()
     x_values.append(float(x))
@@ -4320,7 +4320,7 @@ reader.close()
 
 <pre>
 values = []
-reader = file('data.txt', 'r')
+reader = open('data.txt', 'r')
 for line in reader:
     x, y = line.split()
     coord = [float(x), float(y)]
