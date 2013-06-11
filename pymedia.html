@@ -3633,6 +3633,252 @@ print count_to_limit([1, 2, 3, 5, 7], 8)
 
 </section>
 
+<section id="s:images">
+  <h2>Manipulating Images</h2>
+
+  <div class="understand">
+    <h3>Learning Objectives</h3>
+    <ul>
+      <li class="fixme">write learning objectives</li>
+    </ul>
+    <p>
+      <span class="duration">fixme</span>.
+    </p>
+  </div>
+
+  <p>
+    We now have almost everything we need
+    to create the altered images Valerie needs for her experiments.
+    The only thing we're missing is some actual image processing.
+    Luckily,
+    that's easy to add given what we've already learned:
+  </p>
+
+<pre>
+<span class="in">from skimage import novice
+flower = novice.open('flower.png')
+flower.show()</span>
+</pre>
+
+  <p>
+    The first statement asks Python to find a library called <code>skimage</code>
+    (the SciKit image processing library)
+    and load its <code>novice</code> module.
+    The second statement asks <code>novice</code> to open
+    an file called <code>flower.png</code>
+    and assign the result to the variable <code>flower</code>.
+    Finally,
+    we ask that image to display itself.
+    If all has gone well,
+    this should show a picture of the world's cutest child
+    (<a href="#f:flower">Figure XXX</a>).
+  </p>
+  
+  <figure id="f:flower">
+    <img src="pymedia/flower.png" alt="The World's Cutest Child" />
+    <figcaption>The World's Cutest Child</figcaption>
+  </figure>
+  
+  <div class="box">
+    <h3>There's More Than One Way to Name It</h3>
+
+    <p>
+      We could also have written this little program as:
+    </p>
+
+<pre>
+import skimage
+flower = skimage.novice.open('flower.png')
+flower.show()
+</pre>
+
+    <p>
+      And yes,
+      we could do this:
+    </p>
+
+<pre>
+from skimage.novice import open
+flower = open('flower.png')
+</pre>
+
+    <p class="continue">
+      but it would be a very bad idea,
+      since it would replace Python's built-in <code>open</code>
+      with <code>skimage.novice</code>'s <code>open</code>.
+    </p>
+
+  </div>
+
+  <p>
+    Like block grids,
+    images have properties:
+  </p>
+
+<pre>
+<span class="in">from skimage import novice
+
+flower = novice.open('flower.png')
+print flower.format</span>
+<span class="out">'png'</span>
+<span class="in">print flower.size</span>
+<span class="out">(240, 180)</span>
+<span class="in">print flower.width</span>
+<span class="out">240</span>
+<span class="in">print flower.path</span>
+<span class="out">'flower.png'</span>
+</pre>
+
+  <p>
+    Unlike blocks grids,
+    though,
+    we can change some of these properties:
+  </p>
+
+<pre>
+<span class="in">flower.size = (400, 100)
+flower.show()</span>
+FIXME: display
+</pre>
+
+  <p>
+    We can also modify the colors of particular pixels:
+  </p>
+
+<pre>
+<span class="in">for pixel in flower:
+    pixel.red = 0
+flower.show()</span>
+FIXME: display
+</pre>
+
+  <p>
+    Once we make changes,
+    the picture object in memory knows that it has been modified,
+    and its <code>path</code> is set to <code>None</code>
+    to show that it doesn't correspond to a file on disk any longer:
+  </p>
+
+<pre>
+<span class="in">print flower.modified</span>
+<span class="out">True</span>
+<span class="in">print flower.path</span>
+<span class="out">None</span>
+</pre>
+
+  <p>
+    We can easily save it to disk:
+  </p>
+
+<pre>
+<span class="in">flower.save('/tmp/blue-green-flower.png')
+print flower.modified</span>
+<span class="out">False</span>
+<span class="in">print flower.path</span>
+<span class="out">/tmp/blue-green-flower.png</span>
+</pre>
+
+  <p>
+    And yes,
+    we can select individual pixels or entire slices,
+    but the results may surprise you:
+  </p>
+
+<pre>
+<span class="in">flower[0:100, 0:50] = (0, 0, 0)
+flower.show()</span>
+FIXME: display
+</pre>
+
+  <p>
+    While <code>BlockGrid</code> uses a tabular coordinate system&mdash;the
+    origin is in the upper left corner,
+    and indices are (row, column)&mdash;the
+    <code>skimage.novice</code> library uses a standard Cartesian coordinate system
+    with the origin in the lower left and (X, Y) indices.
+  </p>
+
+  <p>
+    Let's generate some images:
+  </p>
+
+<pre>
+BASE    = 128
+STEP    = 4
+SPACING = 4
+NUMBER  = 6
+GRAY    = (BASE, BASE, BASE)
+SIZE    = 200
+
+for color in range(BASE + STEP, BASE + NUMBER * STEP, STEP):
+    image = novice.new((SIZE, SIZE), GRAY)
+    image[::SPACING, ::SPACING] = (color, color, color)
+    filename = 'step-' + str(color) + '.png'
+    image.save(filename)
+</pre>
+
+  <p>
+    This program creates files with names like <code>step-132.png</code>,
+    <code>step-136.png</code>,
+    and so on.
+    Each one has white pixels spaced evenly across a gray background,
+    with the white slowly getting whiter.
+    Images like these are sometimes used in vision tests,
+    since different spacings and colorings are noticeable to different people.
+  </p>
+
+  <p>
+    Having told you that,
+    we've spoiled the second part of our experiment,
+    which is to see how much knowing what a program does
+    helps you figure out how it works.
+    As you might suspect,
+    the answer is, "A lot."
+    Let's go through this one.
+  </p>
+
+  <p>
+    The constants at the top don't tell us much,
+    although <code>GRAY</code> is obviously an RGB color value
+    and <code>SIZE</code> is (probably) an image size.
+    Next is our loop:
+    given the name of its index variable,
+    <code>color</code>,
+    we can guess that we're looping over colors,
+    and sure enough,
+    two lines down,
+    we see <code>(color, color, color)</code>,
+    which is creating a shade of gray defined by the current value of <code>color</code>.
+  </p>
+
+  <p>
+    Backing up a line,
+    we're creating a <code>SIZE</code>&times;<code>SIZE</code> image using <code>novice.new</code>
+    and setting all its pixels to the fixed color <code>GRAY</code>.
+    The loop is going from <code>BASE + STEP</code> up to <code>BASE + NUMBER * STEP</code>
+    in increments of <code>STEP</code>.
+    <code>BASE</code> is 128&mdash;our initial shade of gray.
+    <code>STEP</code> is 4:
+    that's the increment each time we go around the loop.
+    And <code>NUMBER</code> is how many we're doing,
+    so this loop is creating a bunch of images with the same gray background,
+    but whiter and whiter points spaced at equal intervals across them.
+  </p>
+
+  <div class="keypoints">
+    <h3>Summary</h3>
+    <ul>
+      <li class="fixme">key points</li>
+    </ul>
+  </div>
+
+  <div class="challenges">
+    <h3>Challenges</h3>
+    <p class="fixme">write some</p>
+  </div>
+
+</section>
+
 <section id="s:io">
   <h2>Reading Files</h2>
 
@@ -4039,7 +4285,6 @@ writer.close()
 </section>
 
 <section id="s:lists">
-
   <h2>Lists</h2>
 
   <div class="understand" id="u:lists">
@@ -4066,8 +4311,8 @@ writer.close()
   </p>
 
 <pre src="src/python/sum_values.py">
-<span class="in">data = [1, 3, 5]</span>
-<span class="in">for value in data:</span>
+<span class="in">data = [1, 3, 5]
+for value in data:</span>
 ... <span class="in">    print value</span>
 ...
 <span class="out">1
@@ -4920,18 +5165,6 @@ ________.________(line)
 
   </div>
 
-</section>
-
-<section id="s:images">
-  <h2>Manipulating Images</h2>
-
-  <p class="fixme">quick intro to skimage</p>
-</section>
-
-<section id="s:example">
-  <h2>Solving Valerie's Problem</h2>
-
-  <p class="fixme">solve Valerie's original problem</p>
 </section>
 
 <section id="s:summary">
