@@ -4,7 +4,7 @@ In the late 1920s and early 1930s,
 William Dyer,
 Frank Pabodie,
 and Valentina Roerich led expeditions to the
-<a href="http://en.wikipedia.org/wiki/Pole_of_inaccessibility">Pole of Inaccessibility</a>
+[Pole of Inaccessibility](http://en.wikipedia.org/wiki/Pole_of_inaccessibility)
 in the South Pacific,
 and then onward to Antarctica.
 Two years ago,
@@ -51,7 +51,7 @@ and so on could be in a database
 to make it easier for scientists to find what they want to.
   
 The first few sections
-(up to <a href="#s:sort">Ordering Results</a>)
+(up to [Ordering Results](#s:sort))
 usually go very quickly.
 The pace usually slows down a bit when null values and aggregation are discussed,
 mostly because learners have a lot of details to keep straight by this point.
@@ -69,26 +69,26 @@ people seem to care most about how to add data
 (which only takes a few minutes to demonstrate),
 and how to use databases from inside "real" programs.
 The material on transactions is more abstract than the rest,
-and should be omitted if <a href="web.html">web programming</a>
+and should be omitted if [web programming](web.html)
 isn't being taught.
 Overall,
-this material takes <span class="duration">three hours</span> to present
+this material takes three hours to present
 assuming that a short exercise is done with each topic.
   
 ### Prerequisites {.prereq}
 
-Everything up to the <a href="#s:programming">final section</a>
+Everything up to the [final section](#s:programming)
 only requires some understanding of Boolean operators,
 data types,
 and pipelines,
 and what's needed can actually be introduced on the fly.
-That <a href="#s:programming">final section</a>,
+That [final section](#s:programming),
 which shows how to use databases from within programs,
-depends on most of the <a href="python.html">basic Python material</a>.
+depends on most of the [basic Python material](python.html).
 
 ### Teaching Notes {.notes}
 
-* It isn't necessary to cover <a href="setdict.html">sets and dictionaries</a>
+* It isn't necessary to cover [sets and dictionaries](setdict.html)
   before this material,
   but if that has been discussed,
   it's helpful to point out that a relational table is a generalized dictionary.
@@ -115,7 +115,7 @@ depends on most of the <a href="python.html">basic Python material</a>.
     Until a leader emerges,
     it isn't clear *which* NoSQL database we should teach.
 * This discussion is a useful companion to that of vectorization
-  in the lesson on <a href="numpy.html">numerical computing</a>:
+  in the lesson on [numerical computing](numpy.html):
   in both cases,
   the key point is to describe *what* to do,
   and let the computer figure out *how* to do it.
@@ -123,6 +123,7 @@ depends on most of the <a href="python.html">basic Python material</a>.
 ## Selecting {#s:select}
 
 <div class="objectives">
+
 ### Learning Objectives
 
 * Explain the difference between a table, a database, and a database manager.
@@ -130,13 +131,14 @@ depends on most of the <a href="python.html">basic Python material</a>.
 * Select specific fields from specific tables, and display them in a specific order.
 
 Duration: 15 minutes (not including time required to download database file and connect to it)
+
 </div>
 
-A <a href="glossary.html#relational-database">relational database</a>
+A [relational database](glossary.html#relational-database)
 is a way to store and manipulate information
-that is arranged as <a href="glossary.html#table">tables</a>.
-Each table has columns (also known as <a href="glossary.html#field-database">fields</a>) which describe the data,
-and rows (also known as <a href="glossary.html#record-database">records</a>) which contain the data.
+that is arranged as [tables](glossary.html#table).
+Each table has columns (also known as [fields](glossary.html#field-database)) which describe the data,
+and rows (also known as [records](glossary.html#record-database)) which contain the data.
   
 @@@id="a:dbms"
 
@@ -144,8 +146,8 @@ When we are using a spreadsheet,
 we put formulas into cells to calculate new values based on old ones.
 When we are using a database,
 we send commands
-(usually called <a href="glossary.html#query">queries</a>)
-to a <a href="glossary.html#database-manager">database manager</a>:
+(usually called [queries](glossary.html#query))
+to a [database manager](glossary.html#database-manager):
 a program that manipulates the database for us.
 The database manager does whatever lookups and calculations the query specifies,
 returning the results in a tabular form
@@ -165,112 +167,86 @@ so it *is* possible to move information from one to another.
 
 </div>
 
-Queries are written in a language called <a href="glossary.html#sql">SQL</a>,
+Queries are written in a language called [SQL](glossary.html#sql),
 which stands for "Structured Query Language".
 SQL provides hundreds of different ways to analyze and recombine data;
 we will only look at a handful,
 but that handful accounts for most of what scientists do.
   
-<a href="#f:survey_db">Figure 1</a> shows
+[Figure 1](#f:survey_db) shows
 a simple database that stores some of the data
 Gina extracted from the logs of those long-ago expeditions.
 It contains four tables:
   
-  <table>
-    <tr>
-      <th>Table</th>
-      <th>Purpose</th>
-    </tr>
-    <tr>
-      <td>`Person`</td>
-      <td>People who took readings.</td>
-    </tr>
-    <tr>
-      <td>`Site`</td>
-      <td>Locations of observation sites.</td>
-    </tr>
-    <tr>
-      <td>`Visited`</td>
-      <td>When readings were taken at specific sites.</td>
-    </tr>
-    <tr>
-      <td>`Survey`</td>
-      <td>The actual measurement values.</td>
-    </tr>
-  </table>
+Table                   Purpose
+--------------------    --------------------
+`Person`                People who took readings.
+`Site`                  Locations of observation sites.
+`Visited`               When readings were taken at specific sites.
+`Survey`                The actual measurement values.
 
-  <figure id="f:survey_db">
-    <table border="1">
-      <tr>
-        <td valign="top">
-          <table class="db">
-            <tr><th colspan="3">Person</th></tr>
-            <tr><td>dyer</td><td>William</td><td>Dyer</td></tr>
-            <tr><td>pb</td><td>Frank</td><td>Pabodie</td></tr>
-            <tr><td>lake</td><td>Anderson</td><td>Lake</td></tr>
-            <tr><td>roe</td><td>Valentina</td><td>Roerich</td></tr>
-            <tr><td>danforth</td><td>Frank</td><td>Danforth</td></tr>
-          </table>
-        </td>
-        <td valign="top" rowspan="3">
-          <table class="db">
-            <tr><th colspan="4">Survey</th></tr>
-            <tr><td>619</td><td>dyer</td><td>rad</td><td>9.82</td></tr>
-            <tr><td>619</td><td>dyer</td><td>sal</td><td>0.13</td></tr>
-            <tr><td>622</td><td>dyer</td><td>rad</td><td>7.8</td></tr>
-            <tr><td>622</td><td>dyer</td><td>sal</td><td>0.09</td></tr>
-            <tr><td>734</td><td>pb</td><td>rad</td><td>8.41</td></tr>
-            <tr><td>734</td><td>lake</td><td>sal</td><td>0.05</td></tr>
-            <tr><td>734</td><td>pb</td><td>temp</td><td>-21.5</td></tr>
-            <tr><td>735</td><td>pb</td><td>rad</td><td>7.22</td></tr>
-            <tr><td>735</td><td>NULL</td><td>sal</td><td>0.06</td></tr>
-            <tr><td>735</td><td>NULL</td><td>temp</td><td>-26.0</td></tr>
-            <tr><td>751</td><td>pb</td><td>rad</td><td>4.35</td></tr>
-            <tr><td>751</td><td>pb</td><td>temp</td><td>-18.5</td></tr>
-            <tr><td>751</td><td>lake</td><td>sal</td><td>0.1</td></tr>
-            <tr><td>752</td><td>lake</td><td>rad</td><td>2.19</td></tr>
-            <tr><td>752</td><td>lake</td><td>sal</td><td>0.09</td></tr>
-            <tr><td>752</td><td>lake</td><td>temp</td><td>-16.0</td></tr>
-            <tr><td>752</td><td>roe</td><td>sal</td><td>41.6</td></tr>
-            <tr><td>837</td><td>lake</td><td>rad</td><td>1.46</td></tr>
-            <tr><td>837</td><td>lake</td><td>sal</td><td>0.21</td></tr>
-            <tr><td>837</td><td>roe</td><td>sal</td><td>22.5</td></tr>
-            <tr><td>844</td><td>roe</td><td>rad</td><td>11.25</td></tr>
-          </table>
-        </td>
-      </tr>
-      <tr>
-        <td valign="top">
-          <table class="db">
-            <tr><th colspan="3">Site</th></tr>
-            <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td></tr>
-            <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td></tr>
-            <tr><td>MSK-4</td><td>-48.87</td><td>-123.4</td></tr>
-          </table>
-        </td>
-      </tr>
-      <tr>
-        <td valign="top">
-          <table class="db">
-            <tr><th colspan="3">Visited</th></tr>
-            <tr><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
-            <tr><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
-            <tr><td>734</td><td>DR-3</td><td>1939-01-07</td></tr>
-            <tr><td>735</td><td>DR-3</td><td>1930-01-12</td></tr>
-            <tr><td>751</td><td>DR-3</td><td>1930-02-26</td></tr>
-            <tr><td>752</td><td>DR-3</td><td>NULL</td></tr>
-            <tr><td>837</td><td>MSK-4</td><td>1932-01-14</td></tr>
-            <tr><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-    <figcaption>Figure 1: Survey Database</figcaption>
-  </figure>
+**Person**
+
+ident                   personal                family
+--------------------    --------------------    --------------------
+dyer                    William                 Dyer
+pb                      Frank                   Pabodie
+lake                    Anderson                Lake
+roe                     Valentina               Roerich
+danforth                Frank                   Danforth
+
+**Survey**
+
+taken                   person                  quant                   reading
+--------------------    --------------------    --------------------    --------------------
+619                     dyer                    rad                     9.82
+619                     dyer                    sal                     0.13
+622                     dyer                    rad                     7.8
+622                     dyer                    sal                     0.09
+734                     pb                      rad                     8.41
+734                     lake                    sal                     0.05
+734                     pb                      temp                    -21.5
+735                     pb                      rad                     7.22
+735                     NULL                    sal                     0.06
+735                     NULL                    temp                    -26.0
+751                     pb                      rad                     4.35
+751                     pb                      temp                    -18.5
+751                     lake                    sal                     0.1
+752                     lake                    rad                     2.19
+752                     lake                    sal                     0.09
+752                     lake                    temp                    -16.0
+752                     roe                     sal                     41.6
+837                     lake                    rad                     1.46
+837                     lake                    sal                     0.21
+837                     roe                     sal                     22.5
+844                     roe                     rad                     11.25
+
+**Site**
+
+name                    lat                     long
+--------------------    --------------------    --------------------
+DR-1                    -49.85                  -128.57
+DR-3                    -47.15                  -126.72
+MSK-4                   -48.87                  -123.4
+
+**Visited**
+
+ident                   site                    dated
+--------------------    --------------------    --------------------
+619                     DR-1                    1927-02-08
+622                     DR-1                    1927-02-10
+734                     DR-3                    1939-01-07
+735                     DR-3                    1930-01-12
+751                     DR-3                    1930-02-26
+752                     DR-3                    NULL
+837                     MSK-4                   1932-01-14
+844                     DR-1                    1932-03-22
+
+<figcaption>Figure 1: Survey Database</figcaption>
 
 Notice that three entries&mdash;one in the `Visited` table,
 and two in the `Survey` table&mdash;are shown as `NULL`.
-We'll return to these values <a href="#s:null">later</a>.
+We'll return to these values [later](#s:null).
 For now,
 let's write an SQL query that displays scientists' names.
 We do this using the SQL command `select`,
@@ -298,13 +274,13 @@ to show us that it's waiting for more input:
        ...> from Person
        ...> ;
 
-<table class="db">
-<tr><td>Dyer</td><td>William</td></tr>
-<tr><td>Pabodie</td><td>Frank</td></tr>
-<tr><td>Lake</td><td>Anderson</td></tr>
-<tr><td>Roerich</td><td>Valentina</td></tr>
-<tr><td>Danforth</td><td>Frank</td></tr>
-</table>
+--------------------    --------------------
+Dyer                    William
+Pabodie                 Frank
+Lake                    Anderson
+Roerich                 Valentina
+Danforth                Frank
+--------------------    --------------------
 
 From now on,
 we won't bother to display the prompt(s) with our commands.
@@ -316,7 +292,7 @@ we won't bother to display the prompt(s) with our commands.
 We have written our command and the column names in lower case,
 and the table name in title case,
 but we could use any mix:
-SQL is <a href="glossary.html#case-insensitive">case insensitive</a>,
+SQL is [case insensitive](glossary.html#case-insensitive),
 so we could write them all in upper case,
 or even like this:
 
@@ -346,11 +322,11 @@ its default output looks like this:
     Danforth|Frank
 
 If we are using a graphical interface,
-such as the <a href="https://addons.mozilla.org/en-US/firefox/addon/sqlite-manager/">SQLite Manager</a> plugin for Firefox
-or the <a href="https://github.com/catherinedevlin/ipython-sql">database extension</a> for the IPython Notebook,
+such as the [SQLite Manager](https://addons.mozilla.org/en-US/firefox/addon/sqlite-manager/) plugin for Firefox
+or the [database extension](https://github.com/catherinedevlin/ipython-sql) for the IPython Notebook,
 our output will be displayed graphically
-(<a href="#f:firefox_output">Figure 2</a>
-and <a href="#f:notebook_output">Figure 3</a>).
+([Figure 2](#f:firefox_output)
+and [Figure 3](#f:notebook_output)).
 We'll use a simple table-based display in these notes.
 
     <figure id="f:firefox_output">
@@ -373,52 +349,49 @@ but we can control that in various ways.
 For example,
 we could swap the columns in the output by writing our query as:
   
-  <table class="db">
-    <tr>
-      <td colspan="2">
-<pre>select personal, family from Person;</pre>
-      </td>
-    </tr>
-    <tr><td>William</td><td>Dyer</td></tr>
-    <tr><td>Frank</td><td>Pabodie</td></tr>
-    <tr><td>Anderson</td><td>Lake</td></tr>
-    <tr><td>Valentina</td><td>Roerich</td></tr>
-    <tr><td>Frank</td><td>Danforth</td></tr>
-  </table>
+~~~~ {.sql}
+select personal, family from Person;
+~~~~
 
+--------------------    --------------------
+William                 Dyer
+Frank                   Pabodie
+Anderson                Lake
+Valentina               Roerich
+Frank                   Danforth
+--------------------    --------------------
+  
 or even repeat columns:
   
-  <table class="db">
-    <tr>
-      <td colspan="3">
-<pre>select ident, ident, ident from Person;</pre>
-      </td>
-    </tr>
-    <tr><td>dyer</td><td>dyer</td><td>dyer</td></tr>
-    <tr><td>pb</td><td>pb</td><td>pb</td></tr>
-    <tr><td>lake</td><td>lake</td><td>lake</td></tr>
-    <tr><td>roe</td><td>roe</td><td>roe</td></tr>
-    <tr><td>danforth</td><td>danforth</td><td>danforth</td></tr>
-  </table>
+~~~~ {.sql}
+select ident, ident, ident from Person;
+~~~~
 
-We will see ways to rearrange the rows <a href="#s:sort">later</a>.
+--------------------    --------------------    --------------------
+dyer                    dyer                    dyer
+pb                      pb                      pb
+lake                    lake                    lake
+roe                     roe                     roe
+danforth                danforth                danforth
+--------------------    --------------------    --------------------
+  
+We will see ways to rearrange the rows [later](#s:sort).
   
 As a shortcut, we can select all of the columns in a table
 using the wildcard `*`:
   
-  <table class="db">
-    <tr>
-      <td colspan="3">
-<pre>select * from Person;</pre>
-      </td>
-    </tr>
-    <tr><td>dyer</td><td>William</td><td>Dyer</td></tr>
-    <tr><td>pb</td><td>Frank</td><td>Pabodie</td></tr>
-    <tr><td>lake</td><td>Anderson</td><td>Lake</td></tr>
-    <tr><td>roe</td><td>Valentina</td><td>Roerich</td></tr>
-    <tr><td>danforth</td><td>Frank</td><td>Danforth</td></tr>
-  </table>
+~~~~ {.sql}
+select * from Person;
+~~~~
 
+--------------------    --------------------    --------------------
+dyer                    William                 Dyer
+pb                      Frank                   Pabodie
+lake                    Anderson                Lake
+roe                     Valentina               Roerich
+danforth                Frank                   Danforth
+--------------------    --------------------    --------------------
+  
 ### Summary {.keypoints}
 
 * A relational database stores information in tables with fields and records.
@@ -462,82 +435,79 @@ if we select the quantitites that have been measured
 from the `survey` table,
 we get this:
   
-  <table class="db">
-    <tr>
-      <td colspan="1">
-<pre>select quant from Survey;</pre>
-      </td>
-    </tr>
-    <tr><td>rad</td></tr>
-    <tr><td>sal</td></tr>
-    <tr><td>rad</td></tr>
-    <tr><td>sal</td></tr>
-    <tr><td>rad</td></tr>
-    <tr><td>sal</td></tr>
-    <tr><td>temp</td></tr>
-    <tr><td>rad</td></tr>
-    <tr><td>sal</td></tr>
-    <tr><td>temp</td></tr>
-    <tr><td>rad</td></tr>
-    <tr><td>temp</td></tr>
-    <tr><td>sal</td></tr>
-    <tr><td>rad</td></tr>
-    <tr><td>sal</td></tr>
-    <tr><td>temp</td></tr>
-    <tr><td>sal</td></tr>
-    <tr><td>rad</td></tr>
-    <tr><td>sal</td></tr>
-    <tr><td>sal</td></tr>
-    <tr><td>rad</td></tr>
-  </table>
+~~~~ {.sql}
+select quant from Survey;
+~~~~
 
+--------------------
+rad
+sal
+rad
+sal
+rad
+sal
+temp
+rad
+sal
+temp
+rad
+temp
+sal
+rad
+sal
+temp
+sal
+rad
+sal
+sal
+rad
+--------------------
+  
 We can eliminate the redundant output
 to make the result more readable
 by adding the `distinct` keyword
 to our query:
   
-  <table class="db">
-    <tr>
-      <td colspan="1">
-<pre>select distinct quant from Survey;</pre>
-      </td>
-    </tr>
-    <tr><td>rad</td></tr>
-    <tr><td>sal</td></tr>
-    <tr><td>temp</td></tr>
-  </table>
+~~~~ {.sql}
+select distinct quant from Survey;
+~~~~
 
+--------------------
+rad
+sal
+temp
+--------------------
+  
 If we select more than one column&mdash;for example,
 both the survey site ID and the quantity measured&mdash;then
 the distinct pairs of values are returned:
   
-  <table class="db">
-    <tr>
-      <td colspan="2">
-<pre>select distinct taken, quant from Survey;</pre>
-      </td>
-    </tr>
-    <tr><td>619</td><td>rad</td></tr>
-    <tr><td>619</td><td>sal</td></tr>
-    <tr><td>622</td><td>rad</td></tr>
-    <tr><td>622</td><td>sal</td></tr>
-    <tr><td>734</td><td>rad</td></tr>
-    <tr><td>734</td><td>sal</td></tr>
-    <tr><td>734</td><td>temp</td></tr>
-    <tr><td>735</td><td>rad</td></tr>
-    <tr><td>735</td><td>sal</td></tr>
-    <tr><td>735</td><td>temp</td></tr>
-    <tr><td>751</td><td>rad</td></tr>
-    <tr><td>751</td><td>temp</td></tr>
-    <tr><td>751</td><td>sal</td></tr>
-    <tr><td>752</td><td>rad</td></tr>
-    <tr><td>752</td><td>sal</td></tr>
-    <tr><td>752</td><td>temp</td></tr>
-    <tr><td>837</td><td>rad</td></tr>
-    <tr><td>837</td><td>sal</td></tr>
-    <tr><td>844</td><td>rad</td></tr>
-  </table>
+~~~~ {.sql}
+select distinct taken, quant from Survey;
+~~~~
 
+--------------------    --------------------
+619                     rad
+619                     sal
+622                     rad
+622                     sal
+734                     rad
+734                     sal
+734                     temp
+735                     rad
+735                     sal
+735                     temp
+751                     rad
+751                     temp
+751                     sal
+752                     rad
+752                     sal
+752                     temp
+837                     rad
+837                     sal
+844                     rad
+--------------------    --------------------
+  
 Notice in both cases that duplicates are removed
 even if they didn't appear to be adjacent in the database.
 Again,
@@ -558,11 +528,13 @@ they're just displayed that way.
 
     $ sqlite3 survey.db 'select * from Person;'
 
-    dyer|William|Dyer
-    pb|Frank|Pabodie
-    lake|Anderson|Lake
-    roe|Valentina|Roerich
-    danforth|Frank|Danforth
+--------------------    --------------------    --------------------
+dyer                    William                 Dyer
+pb                      Frank                   Pabodie
+lake                    Anderson                Lake
+roe                     Valentina               Roerich
+danforth                Frank                   Danforth
+--------------------    --------------------    --------------------
 
   Fill in the missing commands in the pipeline below
   so that the output contains no redundant values.
@@ -588,7 +560,7 @@ Duration: 5-10 minutes.
 </div>
 
 One of the most powerful features of a database is
-the ability to <a href="glossary.html#filter">filter</a> data,
+the ability to [filter](glossary.html#filter) data,
 i.e.,
 to select only those records that match certain criteria.
 For example,
@@ -596,19 +568,18 @@ suppose we want to see when a particular site was visited.
 We can select these records from the `Visited` table
 by using a `where` clause in our query:
   
-  <table class="db">
-    <tr>
-      <td colspan="3">
-<pre>select * from Visited where site='DR-1';</pre>
-      </td>
-    </tr>
-    <tr><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
-    <tr><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
-    <tr><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
-  </table>
+~~~~ {.sql}
+select * from Visited where site='DR-1';
+~~~~
 
+--------------------	--------------------	--------------------
+619			DR-1			1927-02-08
+622			DR-1			1927-02-10
+844			DR-1			1932-03-22
+--------------------	--------------------	--------------------
+  
 The database manager executes this query in two stages
-(<a href="#f:pipeline_where">Figure 4</a>).
+([Figure 4](#f:pipeline_where)).
 First,
 it checks at each row in the `Visited` table
 to see which ones satisfy the `where`.
@@ -624,30 +595,28 @@ This processing order means that
 we can filter records using `where`
 based on values in columns that aren't then displayed:
   
-  <table class="db">
-    <tr>
-      <td colspan="1">
-<pre>select ident from Visited where site='DR-1';</pre>
-      </td>
-    </tr>
-    <tr><td>619</td></tr>
-    <tr><td>622</td></tr>
-    <tr><td>844</td></tr>
-  </table>
+~~~~ {.sql}
+select ident from Visited where site='DR-1';
+~~~~
 
+--------------------
+619
+622
+844
+--------------------
+  
 We can use many other Boolean operators to filter our data.
 For example,
 we can ask for all information from the DR-1 site collected since 1930:
   
-  <table class="db">
-    <tr>
-      <td colspan="3">
-<pre>select * from Visited where (site='DR-1') and (dated>='1930-00-00');</pre>
-      </td>
-    </tr>
-    <tr><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
-  </table>
+~~~~ {.sql}
+select * from Visited where (site='DR-1') and (dated>='1930-00-00');
+~~~~
 
+--------------------	--------------------	--------------------
+844			DR-1			1932-03-22
+--------------------	--------------------	--------------------
+  
 (The parentheses around the individual tests aren't strictly required,
 but they help make the query easier to read.)
   
@@ -672,107 +641,102 @@ or integers
 If this sounds complicated,
 it is,
 but not nearly as complicated as figuring out
-<a href="http://en.wikipedia.org/wiki/Swedish_calendar">historical dates in Sweden</a>.
+[historical dates in Sweden](http://en.wikipedia.org/wiki/Swedish_calendar).
     
 </div>
 
 If we want to find out what measurements were taken by either Lake or Roerich,
 we can combine the tests on their names using `or`:
   
-  <table class="db">
-    <tr>
-      <td colspan="4">
-<pre>select * from Survey where person='lake' or person='roe';</pre>
-      </td>
-    </tr>
-    <tr><td>734</td><td>lake</td><td>sal</td><td>0.05</td></tr>
-    <tr><td>751</td><td>lake</td><td>sal</td><td>0.1</td></tr>
-    <tr><td>752</td><td>lake</td><td>rad</td><td>2.19</td></tr>
-    <tr><td>752</td><td>lake</td><td>sal</td><td>0.09</td></tr>
-    <tr><td>752</td><td>lake</td><td>temp</td><td>-16.0</td></tr>
-    <tr><td>752</td><td>roe</td><td>sal</td><td>41.6</td></tr>
-    <tr><td>837</td><td>lake</td><td>rad</td><td>1.46</td></tr>
-    <tr><td>837</td><td>lake</td><td>sal</td><td>0.21</td></tr>
-    <tr><td>837</td><td>roe</td><td>sal</td><td>22.5</td></tr>
-    <tr><td>844</td><td>roe</td><td>rad</td><td>11.25</td></tr>
-  </table>
+~~~~ {.sql}
+select * from Survey where person='lake' or person='roe';
+~~~~
 
+--------------------	--------------------	--------------------	--------------------
+734			lake			sal			0.05
+751			lake			sal			0.1
+752			lake			rad			2.19
+752			lake			sal			0.09
+752			lake			temp			-16.0
+752			roe			sal			41.6
+837			lake			rad			1.46
+837			lake			sal			0.21
+837			roe			sal			22.5
+844			roe			rad			11.25
+--------------------	--------------------	--------------------	--------------------
+  
 Alternatively,
 we can use `in` to see if a value is in a specific set:
   
-  <table class="db">
-    <tr>
-      <td colspan="4">
-<pre>select * from Survey where person in ('lake', 'roe');</pre>
-      </td>
-    </tr>
-    <tr><td>734</td><td>lake</td><td>sal</td><td>0.05</td></tr>
-    <tr><td>751</td><td>lake</td><td>sal</td><td>0.1</td></tr>
-    <tr><td>752</td><td>lake</td><td>rad</td><td>2.19</td></tr>
-    <tr><td>752</td><td>lake</td><td>sal</td><td>0.09</td></tr>
-    <tr><td>752</td><td>lake</td><td>temp</td><td>-16.0</td></tr>
-    <tr><td>752</td><td>roe</td><td>sal</td><td>41.6</td></tr>
-    <tr><td>837</td><td>lake</td><td>rad</td><td>1.46</td></tr>
-    <tr><td>837</td><td>lake</td><td>sal</td><td>0.21</td></tr>
-    <tr><td>837</td><td>roe</td><td>sal</td><td>22.5</td></tr>
-    <tr><td>844</td><td>roe</td><td>rad</td><td>11.25</td></tr>
-  </table>
+~~~~ {.sql}
+select * from Survey where person in ('lake', 'roe');
+~~~~
 
+--------------------	--------------------	--------------------	--------------------
+734			lake			sal			0.05
+751			lake			sal			0.1
+752			lake			rad			2.19
+752			lake			sal			0.09
+752			lake			temp			-16.0
+752			roe			sal			41.6
+837			lake			rad			1.46
+837			lake			sal			0.21
+837			roe			sal			22.5
+844			roe			rad			11.25
+--------------------	--------------------	--------------------	--------------------
+  
 We can combine `and` with `or`,
 but we need to be careful about which operator is executed first.
 If we *don't* use parentheses,
 we get this:
   
-  <table class="db">
-    <tr>
-      <td colspan="4">
-<pre>select * from Survey where quant='sal' and person='lake' or person='roe';</pre>
-      </td>
-    </tr>
-    <tr><td>734</td><td>lake</td><td>sal</td><td>0.05</td></tr>
-    <tr><td>751</td><td>lake</td><td>sal</td><td>0.1</td></tr>
-    <tr><td>752</td><td>lake</td><td>sal</td><td>0.09</td></tr>
-    <tr><td>752</td><td>roe</td><td>sal</td><td>41.6</td></tr>
-    <tr><td>837</td><td>lake</td><td>sal</td><td>0.21</td></tr>
-    <tr><td>837</td><td>roe</td><td>sal</td><td>22.5</td></tr>
-    <tr><td>844</td><td>roe</td><td>rad</td><td>11.25</td></tr>
-  </table>
+~~~~ {.sql}
+select * from Survey where quant='sal' and person='lake' or person='roe';
+~~~~
 
+--------------------	--------------------	--------------------	--------------------
+734			lake			sal			0.05
+751			lake			sal			0.1
+752			lake			sal			0.09
+752			roe			sal			41.6
+837			lake			sal			0.21
+837			roe			sal			22.5
+844			roe			rad			11.25
+--------------------	--------------------	--------------------	--------------------
+  
 which is salinity measurements by Lake,
 and *any* measurement by Roerich.
 We probably want this instead:
   
-  <table class="db">
-    <tr>
-      <td colspan="4">
-<pre>select * from Survey where quant='sal' and <span class="highlight">(</span>person='lake' or person='roe'<span class="highlight">)</span>;</pre>
-      </td>
-    </tr>
-    <tr><td>734</td><td>lake</td><td>sal</td><td>0.05</td></tr>
-    <tr><td>751</td><td>lake</td><td>sal</td><td>0.1</td></tr>
-    <tr><td>752</td><td>lake</td><td>sal</td><td>0.09</td></tr>
-    <tr><td>752</td><td>roe</td><td>sal</td><td>41.6</td></tr>
-    <tr><td>837</td><td>lake</td><td>sal</td><td>0.21</td></tr>
-    <tr><td>837</td><td>roe</td><td>sal</td><td>22.5</td></tr>
-  </table>
+~~~~ {.sql}
+select * from Survey where quant='sal' and <span class="highlight">(</span>person='lake' or person='roe'<span class="highlight">)</span>;
+~~~~
 
+--------------------	--------------------	--------------------	--------------------
+734			lake			sal			0.05
+751			lake			sal			0.1
+752			lake			sal			0.09
+752			roe			sal			41.6
+837			lake			sal			0.21
+837			roe			sal			22.5
+--------------------	--------------------	--------------------	--------------------
+  
 Finally,
 we can use `distinct` with `where`
 to give a second level of filtering:
   
-  <table class="db">
-    <tr>
-      <td colspan="2">
-<pre>select distinct person, quant from Survey where person='lake' or person='roe';</pre>
-      </td>
-    </tr>
-    <tr><td>lake</td><td>sal</td></tr>
-    <tr><td>lake</td><td>rad</td></tr>
-    <tr><td>lake</td><td>temp</td></tr>
-    <tr><td>roe</td><td>sal</td></tr>
-    <tr><td>roe</td><td>rad</td></tr>
-  </table>
+~~~~ {.sql}
+select distinct person, quant from Survey where person='lake' or person='roe';
+~~~~
 
+--------------------	--------------------
+lake			sal
+lake			rad
+lake			temp
+roe			sal
+roe			rad
+--------------------	--------------------
+  
 But remember:
 `distinct` is applied to the values displayed in the chosen columns,
 not to the entire rows as they are being processed.
@@ -829,41 +793,20 @@ and use that.
   the character '%' can be used any number of times in the pattern
   to mean "match zero or more characters".
 
-        <table>
-          <tr>
-            <th>Expression</th>
-            <th>Value</th>
-          </tr>
-          <tr>
-            <td>`'a' like 'a'`</td>
-            <td>`True`</td>
-          </tr>
-          <tr>
-            <td>`'a' like '%a'`</td>
-            <td>`True`</td>
-          </tr>
-          <tr>
-            <td>`'b' like '%a'`</td>
-            <td>`False`</td>
-          </tr>
-          <tr>
-            <td>`'alpha' like 'a%'`</td>
-            <td>`True`</td>
-          </tr>
-          <tr>
-            <td>`'alpha' like 'a%p%'`</td>
-            <td>`True`</td>
-          </tr>
-          <tr>
-            <td>`'beta' like 'a%p%'`</td>
-            <td>`False`</td>
-          </tr>
-        </table>
-        The expression `*column-name* not like *pattern*`
-        inverts the test.
-        Using `like`,
-        write a query that finds all the records in `Visited`
-        that *aren't* from sites labelled 'DR-something'.
+Expression		Value
+--------------------	--------------------
+`'a' like 'a'`		`True`
+`'a' like '%a'`		`True`
+`'b' like '%a'`		`False`
+`'alpha' like 'a%'`	`True`
+`'alpha' like 'a%p%'`	`True`
+`'beta' like 'a%p%'`	`False`
+
+  The expression `*column-name* not like *pattern*`
+  inverts the test.
+  Using `like`,
+  write a query that finds all the records in `Visited`
+  that *aren't* from sites labelled 'DR-something'.
 
 ## Calculating New Values {#s:calc}
 
@@ -884,22 +827,21 @@ Rather than modifying the stored data,
 she can do this calculation on the fly
 as part of her query:
   
-  <table class="db">
-    <tr>
-      <td colspan="1">
-<pre>select 1.05 * reading from Survey where quant='rad';</pre>
-      </td>
-    </tr>
-    <tr><td>10.311</td></tr>
-    <tr><td>8.19</td></tr>
-    <tr><td>8.8305</td></tr>
-    <tr><td>7.581</td></tr>
-    <tr><td>4.5675</td></tr>
-    <tr><td>2.2995</td></tr>
-    <tr><td>1.533</td></tr>
-    <tr><td>11.8125</td></tr>
-  </table>
+~~~~ {.sql}
+select 1.05 * reading from Survey where quant='rad';
+~~~~
 
+--------------------
+10.311
+8.19
+8.8305
+7.581
+4.5675
+2.2995
+1.533
+11.8125
+--------------------
+  
 When we run the query,
 the expression `1.05 * reading` is evaluated for each row.
 Expressions can use any of the fields,
@@ -910,34 +852,32 @@ For example,
 we can convert temperature readings from Fahrenheit to Celsius
 and round to two decimal places as follows:
   
-  <table class="db">
-    <tr>
-      <td colspan="2">
-<pre>select taken, round(5*(reading-32)/9, 2) from Survey where quant='temp';</pre>
-      </td>
-    </tr>
-    <tr><td>734</td><td>-29.72</td></tr>
-    <tr><td>735</td><td>-32.22</td></tr>
-    <tr><td>751</td><td>-28.06</td></tr>
-    <tr><td>752</td><td>-26.67</td></tr>
-  </table>
+~~~~ {.sql}
+select taken, round(5*(reading-32)/9, 2) from Survey where quant='temp';
+~~~~
 
+--------------------	--------------------
+734			-29.72
+735			-32.22
+751			-28.06
+752			-26.67
+--------------------	--------------------
+  
 We can also combine values from different fields,
 for example by using the string concatenation operator `||`:
   
-  <table class="db">
-    <tr>
-      <td colspan="1">
-<pre>select personal || ' ' || family from Person;</pre>
-      </td>
-    </tr>
-    <tr><td>William Dyer</td></tr>
-    <tr><td>Frank Pabodie</td></tr>
-    <tr><td>Anderson Lake</td></tr>
-    <tr><td>Valentina Roerich</td></tr>
-    <tr><td>Frank Danforth</td></tr>
-  </table>
+~~~~ {.sql}
+select personal || ' ' || family from Person;
+~~~~
 
+--------------------
+William Dyer
+Frank Pabodie
+Anderson Lake
+Valentina Roerich
+Frank Danforth
+--------------------
+  
 <div class="box">
 
 ### A Note on Names
@@ -948,59 +888,18 @@ but it's a necessary first step toward handling cultural differences.
 For example,
 consider the following rules:
     
-    <table>
-      <tr>
-        <th>Full Name</th>
-        <th>Alphabetized Under</th>
-        <th>Reason</th>
-      </tr>
-      <tr>
-        <td>Liu Xiaobo</td>
-        <td>Liu</td>
-        <td>Chinese family names come first</td>
-      </tr>
-      <tr>
-        <td>Leonardo da Vinci</td>
-        <td>Leonardo</td>
-        <td>"da Vinci" just means "from Vinci"</td>
-      </tr>
-      <tr>
-        <td>Catherine de Medici</td>
-        <td>Medici</td>
-        <td>family name</td>
-      </tr>
-      <tr>
-        <td>Jean de La Fontaine</td>
-        <td>La Fontaine</td>
-        <td>family name is "La Fontaine"</td>
-      </tr>
-      <tr>
-        <td>Juan Ponce de Leon</td>
-        <td>Ponce de Leon</td>
-        <td>full family name is "Ponce de Leon"</td>
-      </tr>
-      <tr>
-        <td>Gabriel Garcia Marquez</td>
-        <td>Garcia Marquez</td>
-        <td>double-barrelled Spanish surnames</td>
-      </tr>
-      <tr>
-        <td>Wernher von Braun</td>
-        <td>von *or* Braun</td>
-        <td>depending on whether he was in Germany or the US</td>
-      </tr>
-      <tr>
-        <td>Elizabeth Alexandra May Windsor</td>
-        <td>Elizabeth</td>
-        <td>monarchs alphabetize by the name under which they reigned</td>
-      </tr>
-      <tr>
-        <td>Thomas a Beckett</td>
-        <td>Thomas</td>
-        <td>and saints according to the names by which they were canonized</td>
-      </tr>
-    </table>
-
+Full Name			Alphabetized Under	Reason
+--------------------		--------------------	--------------------
+Liu Xiaobo			Liu			Chinese family names come first
+Leonardo da Vinci		Leonardo		"da Vinci" just means "from Vinci"
+Catherine de Medici		Medici			family name
+Jean de La Fontaine		La Fontaine		family name is "La Fontaine"
+Juan Ponce de Leon		Ponce de Leon		full family name is "Ponce de Leon"
+Gabriel Garcia Marquez		Garcia Marquez		double-barrelled Spanish surnames
+Wernher von Braun		von *or* Braun		depending on whether he was in Germany or the US
+Elizabeth Alexandra May Windsor	Elizabeth		monarchs alphabetize by the name under which they reigned
+Thomas a Beckett		Thomas			and saints according to the names by which they were canonized
+    
 Clearly,
 even a two-part division into "personal" and "family"
 isn't enough...
@@ -1022,46 +921,44 @@ isn't enough...
 
 * The `union` operator combines the results of two queries:
 
-        <table class="db">
-          <tr>
-            <td colspan="1">
-<pre>select * from Person where ident='dyer' union select * from Person where ident='roe';</pre>
-            </td>
-          </tr>
-          <tr><td>dyer</td><td>William</td><td>Dyer</td></tr>
-          <tr><td>roe</td><td>Valentina</td><td>Roerich</td></tr>
-        </table>
+~~~~ {.sql}
+select * from Person where ident='dyer' union select * from Person where ident='roe';
+~~~~
 
+--------------------	--------------------	--------------------
+dyer			William			Dyer
+roe			Valentina			Roerich
+--------------------	--------------------	--------------------
+        
   Use `union` to create a consolidated list of salinity measurements
   in which Roerich's, and only Roerich's,
   have been corrected as described in the previous challenge.
   The output should be something like:
 
-        <table class="db">
-          <tr><td>619</td><td>0.13</td></tr>
-          <tr><td>622</td><td>0.09</td></tr>
-          <tr><td>734</td><td>0.05</td></tr>
-          <tr><td>751</td><td>0.1</td></tr>
-          <tr><td>752</td><td>0.09</td></tr>
-          <tr><td>752</td><td>0.416</td></tr>
-          <tr><td>837</td><td>0.21</td></tr>
-          <tr><td>837</td><td>0.225</td></tr>
-        </table>
+--------------------	--------------------
+619			0.13
+622			0.09
+734			0.05
+751			0.1
+752			0.09
+752			0.416
+837			0.21
+837			0.225
+--------------------	--------------------
 
 * The site identifiers in the `Visited` table have two parts
   separated by a '-':
 
-  <table class="db">
-    <tr>
-      <td colspan="1">
-<pre>select distinct site from Visited;</pre>
-      </td>
-    </tr>
-    <tr><td>DR-1</td></tr>
-    <tr><td>DR-3</td></tr>
-    <tr><td>MSK-4</td></tr>
-  </table>
+~~~~ {.sql}
+select distinct site from Visited;
+~~~~
 
+--------------------
+DR-1
+DR-3
+MSK-4
+--------------------
+  
   Some major site identifiers are two letters long and some are three.
   The "in string" function `instr(X, Y)`
   returns the 1-based index of the first occurrence of string Y in string X,
@@ -1100,44 +997,42 @@ we often want to sort them in a different way,
 e.g., by the name of the project instead of by the name of the scientist.
 We can do this in SQL by adding an `order by` clause to our query:
   
-  <table class="db">
-    <tr>
-      <td colspan="1">
-<pre>select reading from Survey where quant='rad' order by reading;</pre>
-      </td>
-    </tr>
-    <tr><td>1.46</td></tr>
-    <tr><td>2.19</td></tr>
-    <tr><td>4.35</td></tr>
-    <tr><td>7.22</td></tr>
-    <tr><td>7.8</td></tr>
-    <tr><td>8.41</td></tr>
-    <tr><td>9.82</td></tr>
-    <tr><td>11.25</td></tr>
-  </table>
+~~~~ {.sql}
+select reading from Survey where quant='rad' order by reading;
+~~~~
 
+--------------------
+1.46
+2.19
+4.35
+7.22
+7.8
+8.41
+9.82
+11.25
+--------------------
+  
 By default,
 results are sorted in ascending order
 (i.e.,
 from least to greatest).
 We can sort in the opposite order using `desc` (for "descending"):
   
-  <table class="db">
-    <tr>
-      <td colspan="1">
-<pre>select reading from Survey where quant='rad' order by reading desc;</pre>
-      </td>
-    </tr>
-    <tr><td>11.25</td></tr>
-    <tr><td>9.82</td></tr>
-    <tr><td>8.41</td></tr>
-    <tr><td>7.8</td></tr>
-    <tr><td>7.22</td></tr>
-    <tr><td>4.35</td></tr>
-    <tr><td>2.19</td></tr>
-    <tr><td>1.46</td></tr>
-  </table>
+~~~~ {.sql}
+select reading from Survey where quant='rad' order by reading desc;
+~~~~
 
+--------------------
+11.25
+9.82
+8.41
+7.8
+7.22
+4.35
+2.19
+1.46
+--------------------
+  
 (And if we want to make it clear that we're sorting in ascending order,
 we can use `asc` instead of `desc`.)
   
@@ -1147,77 +1042,74 @@ this query sorts results first in ascending order by `taken`,
 and then in descending order by `person`
 within each group of equal `taken` values:
     
-  <table class="db">
-    <tr>
-      <td colspan="2">
-<pre>select taken, person from Survey order by taken asc, person desc;</pre>
-      </td>
-    </tr>
-    <tr><td>619</td><td>dyer</td></tr>
-    <tr><td>619</td><td>dyer</td></tr>
-    <tr><td>622</td><td>dyer</td></tr>
-    <tr><td>622</td><td>dyer</td></tr>
-    <tr><td>734</td><td>pb</td></tr>
-    <tr><td>734</td><td>pb</td></tr>
-    <tr><td>734</td><td>lake</td></tr>
-    <tr><td>735</td><td>pb</td></tr>
-    <tr><td>735</td><td></td></tr>
-    <tr><td>735</td><td></td></tr>
-    <tr><td>751</td><td>pb</td></tr>
-    <tr><td>751</td><td>pb</td></tr>
-    <tr><td>751</td><td>lake</td></tr>
-    <tr><td>752</td><td>roe</td></tr>
-    <tr><td>752</td><td>lake</td></tr>
-    <tr><td>752</td><td>lake</td></tr>
-    <tr><td>752</td><td>lake</td></tr>
-    <tr><td>837</td><td>roe</td></tr>
-    <tr><td>837</td><td>lake</td></tr>
-    <tr><td>837</td><td>lake</td></tr>
-    <tr><td>844</td><td>roe</td></tr>
-  </table>
+~~~~ {.sql}
+select taken, person from Survey order by taken asc, person desc;
+~~~~
 
+--------------------	--------------------
+619			dyer
+619			dyer
+622			dyer
+622			dyer
+734			pb
+734			pb
+734			lake
+735			pb
+735         		
+735         		
+751			pb
+751			pb
+751			lake
+752			roe
+752			lake
+752			lake
+752			lake
+837			roe
+837			lake
+837			lake
+844			roe
+--------------------	--------------------
+  
 This is easier to understand if we also remove duplicates:
   
-  <table class="db">
-    <tr>
-      <td colspan="2">
-<pre>select <span class="highlight">distinct</span> taken, person from Survey order by taken asc, person desc;</pre>
-      </td>
-    </tr>
-    <tr><td>619</td><td>dyer</td></tr>
-    <tr><td>622</td><td>dyer</td></tr>
-    <tr><td>734</td><td>pb</td></tr>
-    <tr><td>734</td><td>lake</td></tr>
-    <tr><td>735</td><td>pb</td></tr>
-    <tr><td>735</td><td></td></tr>
-    <tr><td>751</td><td>pb</td></tr>
-    <tr><td>751</td><td>lake</td></tr>
-    <tr><td>752</td><td>roe</td></tr>
-    <tr><td>752</td><td>lake</td></tr>
-    <tr><td>837</td><td>roe</td></tr>
-    <tr><td>837</td><td>lake</td></tr>
-    <tr><td>844</td><td>roe</td></tr>
-  </table>
+~~~~ {.sql}
+select <span class="highlight">distinct</span> taken, person from Survey order by taken asc, person desc;
+~~~~
+
+--------------------	--------------------
+619			dyer
+622			dyer
+734			pb
+734			lake
+735			pb
+735         		
+751			pb
+751			lake
+752			roe
+752			lake
+837			roe
+837			lake
+844			roe
+--------------------	--------------------
 
 Since sorting happens before columns are filtered,
 we can sort by a field that isn't actually displayed:
   
-  <table class="db">
-    <tr>
-      <td colspan="1">
-<pre>select reading from Survey where quant='rad' order by taken;</pre>
-      </td>
-    </tr>
-    <tr><td>9.82</td></tr>
-    <tr><td>7.8</td></tr>
-    <tr><td>8.41</td></tr>
-    <tr><td>7.22</td></tr>
-    <tr><td>4.35</td></tr>
-    <tr><td>2.19</td></tr>
-    <tr><td>1.46</td></tr>
-    <tr><td>11.25</td></tr>
-  </table>
+~~~~ {.sql}
+select reading from Survey where quant='rad' order by taken;
+~~~~
 
+--------------------
+9.82
+7.8
+8.41
+7.22
+4.35
+2.19
+1.46
+11.25
+--------------------
+  
 We can also sort results by the value of an expression.
 In SQLite,
 for example,
@@ -1226,48 +1118,48 @@ each time it is called
 (i.e.,
 once per record):
   
-  <table class="db">
-    <tr>
-      <td colspan="2">
-<pre>select random(), ident from Person;</pre>
-      </td>
-    </tr>
-    <tr><td>-6309766557809954936</td><td>dyer</td></tr>
-    <tr><td>-2098461436941487136</td><td>pb</td></tr>
-    <tr><td>-2248225962969032314</td><td>lake</td></tr>
-    <tr><td>6062184424509295966</td><td>roe</td></tr>
-    <tr><td>-1268956870222271271</td><td>danforth</td></tr>
-  </table>
+~~~~ {.sql}
+select random(), ident from Person;
+~~~~
 
+--------------------	--------------------
+-6309766557809954936	dyer
+-2098461436941487136	pb
+-2248225962969032314	lake
+6062184424509295966	roe
+-1268956870222271271	danforth
+--------------------	--------------------
+  
 So to randomize the order of our query results,
 e.g., when doing clinical trials,
 we can sort them by the value of this function:
   
-  <table class="db">
-    <tr>
-      <td colspan="1">
-<pre>select ident from Person order by random();</pre>
-      </td>
-    </tr>
-    <tr><td>danforth</td></tr>
-    <tr><td>pb</td></tr>
-    <tr><td>dyer</td></tr>
-    <tr><td>lake</td></tr>
-    <tr><td>roe</td></tr>
-    <tr>
-      <td colspan="1">
-<pre>select ident from Person order by random();</pre>
-      </td>
-    </tr>
-    <tr><td>roe</td></tr>
-    <tr><td>dyer</td></tr>
-    <tr><td>pb</td></tr>
-    <tr><td>lake</td></tr>
-    <tr><td>danforth</td></tr>
-  </table>
+~~~~ {.sql}
+select ident from Person order by random();
+~~~~
 
+--------------------
+danforth
+pb
+dyer
+lake
+roe
+--------------------
+
+~~~~ {.sql}
+select ident from Person order by random();
+~~~~
+
+--------------------
+roe
+dyer
+pb
+lake
+danforth
+--------------------
+  
 Our query pipeline now has four stages
-(<a href="#f:pipeline_sort_distinct">Figure 5</a>):
+([Figure 5](#f:pipeline_sort_distinct)):
   
 * Select the rows that pass the `where` criteria.
 * Sort them if required.
@@ -1291,7 +1183,7 @@ Our query pipeline now has four stages
   sorted from furthest to closest.
   (A degree of latitude corresponds to 111.12 km.)
 
-*  Gina needs a list of radiation measurements from all sites
+* Gina needs a list of radiation measurements from all sites
   sorted by when they were taken.
   The query:
 
@@ -1299,8 +1191,6 @@ Our query pipeline now has four stages
 
   produces the correct answer for the data used in our examples.
   Explain when and why it might produce the wrong answer.
-
-</section>
 
 ## Missing Data {#s:null}
 
@@ -1332,22 +1222,21 @@ There are eight records,
 but #752 doesn't have a date&mdash;or rather,
 its date is null:
   
-  <table class="db">
-    <tr>
-      <td colspan="3">
-<pre>select * from Visited;</pre>
-      </td>
-    </tr>
-    <tr><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
-    <tr><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
-    <tr><td>734</td><td>DR-3</td><td>1939-01-07</td></tr>
-    <tr><td>735</td><td>DR-3</td><td>1930-01-12</td></tr>
-    <tr><td>751</td><td>DR-3</td><td>1930-02-26</td></tr>
-    <tr><td>752</td><td>DR-3</td><td></td></tr>
-    <tr><td>837</td><td>MS-4</td><td>1932-01-14</td></tr>
-    <tr><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
-  </table>
+~~~~ {.sql}
+select * from Visited;
+~~~~
 
+--------------------	--------------------	--------------------
+619			DR-1			1927-02-08
+622			DR-1			1927-02-10
+734			DR-3			1939-01-07
+735			DR-3			1930-01-12
+751			DR-3			1930-02-26
+752			DR-3            	
+837			MS-4			1932-01-14
+844			DR-1			1932-03-22
+--------------------	--------------------	--------------------
+  
 <div class="box">
 
 ### Displaying Nulls
@@ -1363,32 +1252,30 @@ which makes nulls easy to overlook
 Null doesn't behave like other values.
 If we select the records that come before 1930:
   
-  <table class="db">
-    <tr>
-      <td colspan="3">
-<pre>select * from Visited where dated<'1930-00-00';</pre>
-      </td>
-    </tr>
-    <tr><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
-    <tr><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
-  </table>
+~~~~ {.sql}
+select * from Visited where dated<'1930-00-00';
+~~~~
 
+--------------------	--------------------	--------------------
+619			DR-1			1927-02-08
+622			DR-1			1927-02-10
+--------------------	--------------------	--------------------
+  
 we get two results,
 and if we select the ones that come during or after 1930:
   
-  <table class="db">
-    <tr>
-      <td colspan="3">
-<pre>select * from Visited where dated>='1930-00-00';</pre>
-      </td>
-    </tr>
-    <tr><td>734</td><td>DR-3</td><td>1939-01-07</td></tr>
-    <tr><td>735</td><td>DR-3</td><td>1930-01-12</td></tr>
-    <tr><td>751</td><td>DR-3</td><td>1930-02-26</td></tr>
-    <tr><td>837</td><td>MS-4</td><td>1932-01-14</td></tr>
-    <tr><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
-  </table>
+~~~~ {.sql}
+select * from Visited where dated>='1930-00-00';
+~~~~
 
+--------------------	--------------------	--------------------
+734			DR-3			1939-01-07
+735			DR-3			1930-01-12
+751			DR-3			1930-02-26
+837			MS-4			1932-01-14
+844			DR-1			1932-03-22
+--------------------	--------------------	--------------------
+  
 we get five,
 but record #752 isn't in either set of results.
 The reason is that
@@ -1414,66 +1301,58 @@ and so on.
 In particular,
 comparing things to null with = and != produces null:
   
-  <table class="db">
-    <tr>
-      <td colspan="1">
-<pre>select * from Visited where dated=NULL;</pre>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="1">
-<pre>select * from Visited where dated!=NULL;</pre>
-      </td>
-    </tr>
-  </table>
+~~~~ {.sql}
+select * from Visited where dated=NULL;
+~~~~
 
+~~~~ {.sql}
+select * from Visited where dated!=NULL;
+~~~~
+  
 To check whether a value is `null` or not,
 we must use a special test `is null`:
   
-  <table class="db">
-    <tr>
-      <td colspan="3">
-<pre>select * from Visited where dated is NULL;</pre>
-      </td>
-    </tr>
-    <tr><td>752</td><td>DR-3</td><td></td></tr>
-  </table>
+~~~~ {.sql}
+select * from Visited where dated is NULL;
+~~~~
 
+--------------------	--------------------
+752			DR-3            
+--------------------	--------------------
+  
 or its inverse `is not null`:
   
-  <table class="db">
-    <tr>
-      <td colspan="3">
-<pre>select * from Visited where dated is not NULL;</pre>
-      </td>
-    </tr>
-    <tr><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
-    <tr><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
-    <tr><td>734</td><td>DR-3</td><td>1939-01-07</td></tr>
-    <tr><td>735</td><td>DR-3</td><td>1930-01-12</td></tr>
-    <tr><td>751</td><td>DR-3</td><td>1930-02-26</td></tr>
-    <tr><td>837</td><td>MS-4</td><td>1932-01-14</td></tr>
-    <tr><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
-  </table>
+~~~~ {.sql}
+select * from Visited where dated is not NULL;
+~~~~
 
+--------------------	--------------------	--------------------
+619			DR-1			1927-02-08
+622			DR-1			1927-02-10
+734			DR-3			1939-01-07
+735			DR-3			1930-01-12
+751			DR-3			1930-02-26
+837			MS-4			1932-01-14
+844			DR-1			1932-03-22
+--------------------	--------------------	--------------------
+  
 Null values cause headaches wherever they appear.
 For example,
 suppose we want to find the all of salinity measurements
 that weren't taken by Dyer.
 It's natural to write the query like this:
   
-  <table class="db">
-    <tr>
-      <td colspan="4">
-<pre>select * from Survey where quant='sal' and person!='lake';</pre>
-      </td>
-    </tr>
-    <tr><td>619</td><td>dyer</td><td>sal</td><td>0.13</td></tr>
-    <tr><td>622</td><td>dyer</td><td>sal</td><td>0.09</td></tr>
-    <tr><td>752</td><td>roe</td><td>sal</td><td>41.6</td></tr>
-    <tr><td>837</td><td>roe</td><td>sal</td><td>22.5</td></tr>
-  </table>
+~~~~ {.sql}
+select * from Survey where quant='sal' and person!='lake';
+~~~~
 
+--------------------	--------------------	--------------------	--------------------
+619			dyer			sal			0.13
+622			dyer			sal			0.09
+752			roe			sal			41.6
+837			roe			sal			22.5
+--------------------	--------------------	--------------------	--------------------
+  
 but this query filters omits the records
 where we don't know who took the measurement.
 Once again,
@@ -1483,19 +1362,19 @@ so the record isn't kept in our results.
 If we want to keep these records
 we need to add an explicit check:
   
-  <table class="db">
-    <tr>
-      <td colspan="4">
-<pre>select * from Survey where quant='sal' and (person!='lake' <span class="highlight">or person is null</span>);</pre>
-      </td>
-    </tr>
-    <tr><td>619</td><td>dyer</td><td>sal</td><td>0.13</td></tr>
-    <tr><td>622</td><td>dyer</td><td>sal</td><td>0.09</td></tr>
-    <tr><td>735</td><td></td><td>sal</td><td>0.06</td></tr>
-    <tr><td>752</td><td>roe</td><td>sal</td><td>41.6</td></tr>
-    <tr><td>837</td><td>roe</td><td>sal</td><td>22.5</td></tr>
-  </table>
+~~~~ {.sql}
+select * from Survey where quant='sal' and (person!='lake' <span class="highlight">or person is null</span>);
+~~~~
 
+--------------------	--------------------	--------------------	--------------------
+619			dyer			sal			0.13
+622			dyer			sal			0.09
+735						sal			0.06
+752			roe			sal			41.6
+837			roe			sal			22.5
+--------------------	--------------------	--------------------	--------------------
+
+  
 We still have to decide whether this is the right thing to do or not.
 If we want to be absolutely sure that
 we aren't including any measurements by Lake in our results,
@@ -1566,7 +1445,7 @@ checking your samples when you're doing chemistry.
   What does it actually produce?
 
 * Some database designers prefer to use
-  a <a href="glossary.html#sentinel-value">sentinel value</a>
+  a [sentinel value](glossary.html#sentinel-value)
   to mark missing data rather than `null`.
   For example,
   they will use the date "0000-00-00" to mark a missing date,
@@ -1593,70 +1472,73 @@ Duration: 10 minutes.
 Gina now wants to calculate ranges and averages for her data.
 She knows how to select all of the dates from the `Visited` table:
   
-  <table class="db">
-    <tr>
-      <td colspan="1">
-<pre>select dated from Visited;</pre>
-      </td>
-    </tr>
-    <tr><td>1927-02-08</td></tr>
-    <tr><td>1927-02-10</td></tr>
-    <tr><td>1939-01-07</td></tr>
-    <tr><td>1930-01-12</td></tr>
-    <tr><td>1930-02-26</td></tr>
-    <tr><td> </td></tr>
-    <tr><td>1932-01-14</td></tr>
-    <tr><td>1932-03-22</td></tr>
-  </table>
+~~~~ {.sql}
+select dated from Visited;
+~~~~
 
+--------------------
+1927-02-08
+1927-02-10
+1939-01-07
+1930-01-12
+1930-02-26
+     
+1932-01-14
+1932-03-22
+--------------------
+  
 but to combine them,
-she must use an <a href="glossary.html#aggregation-function">aggregation function</a>
+she must use an [aggregation function](glossary.html#aggregation-function)
 such as `min` or `max`.
 Each of these functions takes a set of records as input,
 and produces a single record as output:
   
-  <table class="db">
-    <tr>
-      <td colspan="1">
-<pre>select min(dated) from Visited;</pre>
-      </td>
-    </tr>
-    <tr><td>1927-02-08</td></tr>
-    <tr>
-      <td colspan="1">
-<pre>select max(dated) from Visited;</pre>
-      </td>
-    </tr>
-    <tr><td>1939-01-07</td></tr>
-  </table>
+~~~~ {.sql}
+select min(dated) from Visited;
+~~~~
 
+--------------------
+1927-02-08
+--------------------
+
+~~~~ {.sql}
+select max(dated) from Visited;
+~~~~
+
+--------------------
+1939-01-07
+--------------------
+  
 `min` and `max` are just two of
 the aggregation functions built into SQL.
 Three others are `avg`,
 `count`,
 and `sum`:
   
-  <table class="db">
-    <tr>
-      <td colspan="1">
-<pre>select avg(reading) from Survey where quant='sal';</pre>
-      </td>
-    </tr>
-    <tr><td>7.20333333333</td></tr>
-    <tr>
-      <td colspan="1">
-<pre>select count(reading) from Survey where quant='sal';</pre>
-      </td>
-    </tr>
-    <tr><td>9</td></tr>
-    <tr>
-      <td colspan="1">
-<pre>select sum(reading) from Survey where quant='sal';</pre>
-      </td>
-    </tr>
-    <tr><td>64.83</td></tr>
-  </table>
+~~~~ {.sql}
+select avg(reading) from Survey where quant='sal';
+~~~~
 
+--------------------
+7.20333333333
+--------------------
+
+~~~~ {.sql}
+select count(reading) from Survey where quant='sal';
+~~~~
+
+--------------------
+9
+--------------------
+
+~~~~ {.sql}
+select sum(reading) from Survey where quant='sal';
+~~~~
+
+--------------------
+64.83
+--------------------
+  
 We used `count(reading)` here,
 but we could just as easily have counted `quant`
 or any other field in the table,
@@ -1669,27 +1551,25 @@ We can,
 for example,
 find the range of sensible salinity measurements:
   
-  <table class="db">
-    <tr>
-      <td colspan="2">
-<pre>select min(reading), max(reading) from Survey where quant='sal' and reading<=1.0;</pre>
-      </td>
-    </tr>
-    <tr><td>0.05</td><td>0.21</td></tr>
-  </table>
+~~~~ {.sql}
+select min(reading), max(reading) from Survey where quant='sal' and reading<=1.0;
+~~~~
 
+--------------------	--------------------
+0.05			0.21
+--------------------	--------------------
+  
 We can also combine aggregated results with raw results,
 although the output might surprise you:
   
-  <table class="db">
-    <tr>
-      <td colspan="2">
-<pre>select person, count(*) from Survey where quant='sal' and reading<=1.0;</pre>
-      </td>
-    </tr>
-    <tr><td>lake</td><td>7</td></tr>
-  </table>
+~~~~ {.sql}
+select person, count(*) from Survey where quant='sal' and reading<=1.0;
+~~~~
 
+--------------------	--------------------
+lake			7
+--------------------	--------------------
+  
 Why does Lake's name appear rather than Roerich's or Dyer's?
 The answer is that when it has to aggregate a field,
 but isn't told how to,
@@ -1702,15 +1582,10 @@ Another important fact is that when there are no values to aggregate,
 aggregation's result is "don't know"
 rather than zero or some other arbitrary value:
   
-  <table class="db">
-    <tr>
-      <td colspan="3">
-<pre>select person, max(reading), sum(reading) from Survey where quant='missing';</pre>
-      </td>
-    </tr>
-    <tr><td></td><td></td><td></td></tr>
-  </table>
-
+~~~~ {.sql}
+select person, max(reading), sum(reading) from Survey where quant='missing';
+~~~~
+  
 One final important feature of aggregation functions is that
 they are inconsistent with the rest of SQL in a very useful way.
 If we add two values,
@@ -1726,26 +1601,24 @@ for aggregation functions to ignore null values
 and only combine those that are non-null.
 This behavior lets us write our queries as:
   
-  <table class="db">
-    <tr>
-      <td colspan="1">
-<pre>select min(dated) from Visited;</pre>
-      </td>
-    </tr>
-    <tr><td>1927-02-08</td></tr>
-  </table>
+~~~~ {.sql}
+select min(dated) from Visited;
+~~~~
 
+--------------------
+1927-02-08
+--------------------
+  
 instead of always having to filter explicitly:
   
-  <table class="db">
-    <tr>
-      <td colspan="1">
-<pre>select min(dated) from Visited <span class="highlight">where dated is not null</span>;</pre>
-      </td>
-    </tr>
-    <tr><td>1927-02-08</td></tr>
-  </table>
+~~~~ {.sql}
+select min(dated) from Visited <span class="highlight">where dated is not null</span>;
+~~~~
 
+--------------------
+1927-02-08
+--------------------
+  
 ### Summary {.keypoints}
 
 * Use aggregation functions like `sum` and `max` to combine query results.
@@ -1802,34 +1675,32 @@ suppose Gina suspects that there is a systematic bias in her data,
 and that some scientists' radiation readings are higher than others.
 We know that this doesn't work:
   
-  <table class="db">
-    <tr>
-      <td colspan="3">
-<pre>select person, count(reading), round(avg(reading), 2)
+~~~~ {.sql}
+select person, count(reading), round(avg(reading), 2)
 from  Survey
-where quant='rad';</pre>
-      </td>
-    </tr>
-    <tr><td>roe</td><td>8</td><td>6.56</td></tr>
-  </table>
+where quant='rad';
+~~~~
 
+--------------------	--------------------	--------------------
+roe			8			6.56
+--------------------	--------------------	--------------------
+  
 because the database manager selects a single arbitrary scientist's name
 rather than aggregating separately for each scientist.
 Since there are only five scientists,
 she could write five queries of the form:
   
-  <table class="db">
-    <tr>
-      <td colspan="3">
-<pre>select person, count(reading), round(avg(reading), 2)
+~~~~ {.sql}
+select person, count(reading), round(avg(reading), 2)
 from  Survey
 where quant='rad'
-and   person='dyer';</pre>
-      </td>
-    </tr>
-    <tr><td>dyer</td><td>2</td><td>8.81</td></tr>
-  </table>
+and   person='dyer';
+~~~~
 
+--------------------	--------------------	--------------------
+dyer			2			8.81
+--------------------	--------------------	--------------------
+  
 but this would be tedious,
 and if she ever had a data set with fifty or five hundred scientists,
 the chances of her getting all of those queries right is small.
@@ -1838,21 +1709,20 @@ What we need to do is
 tell the database manager to aggregate the hours for each scientist separately
 using a `group by` clause:
   
-  <table class="db">
-    <tr>
-      <td colspan="3">
-<pre>select   person, count(reading), round(avg(reading), 2)
+~~~~ {.sql}
+select   person, count(reading), round(avg(reading), 2)
 from     Survey
 where    quant='rad'
-group by person;</pre>
-      </td>
-    </tr>
-    <tr><td>dyer</td><td>2</td><td>8.81</td></tr>
-    <tr><td>lake</td><td>2</td><td>1.82</td></tr>
-    <tr><td>pb</td><td>3</td><td>6.66</td></tr>
-    <tr><td>roe</td><td>1</td><td>11.25</td></tr>
-  </table>
+group by person;
+~~~~
 
+--------------------	--------------------	--------------------
+dyer			2			8.81
+lake			2			1.82
+pb			3			6.66
+roe			1			11.25
+--------------------	--------------------	--------------------
+  
 `group by` does exactly what its name implies:
 groups all the records with the same value for the specified field together
 so that aggregation can process each batch separately.
@@ -1860,7 +1730,7 @@ Since all the records in each batch have the same value for `person`,
 it no longer matters that the database manager
 is picking an arbitrary one to display
 alongside the aggregated `reading` values
-(<a href="#f:grouped_aggregation">Figure 6</a>).
+([Figure 6](#f:grouped_aggregation)).
   
   <figure id="f:grouped_aggregation">
     <img src="db/grouped_aggregation.png" alt="Grouped Aggregation" />
@@ -1873,54 +1743,52 @@ To get the average reading by scientist and quantity measured,
 for example,
 we just add another field to the `group by` clause:
   
-  <table class="db">
-    <tr>
-      <td colspan="4">
-<pre>select   person, quant, count(reading), round(avg(reading), 2)
+~~~~ {.sql}
+select   person, quant, count(reading), round(avg(reading), 2)
 from     Survey
-group by person, quant;</pre>
-      </td>
-    </tr>
-    <tr><td></td><td>sal</td><td>1</td><td>0.06</td></tr>
-    <tr><td></td><td>temp</td><td>1</td><td>-26.0</td></tr>
-    <tr><td>dyer</td><td>rad</td><td>2</td><td>8.81</td></tr>
-    <tr><td>dyer</td><td>sal</td><td>2</td><td>0.11</td></tr>
-    <tr><td>lake</td><td>rad</td><td>2</td><td>1.82</td></tr>
-    <tr><td>lake</td><td>sal</td><td>4</td><td>0.11</td></tr>
-    <tr><td>lake</td><td>temp</td><td>1</td><td>-16.0</td></tr>
-    <tr><td>pb</td><td>rad</td><td>3</td><td>6.66</td></tr>
-    <tr><td>pb</td><td>temp</td><td>2</td><td>-20.0</td></tr>
-    <tr><td>roe</td><td>rad</td><td>1</td><td>11.25</td></tr>
-    <tr><td>roe</td><td>sal</td><td>2</td><td>32.05</td></tr>
-  </table>
+group by person, quant;
+~~~~
 
+--------------------	--------------------	--------------------	--------------------
+			sal			1			0.06
+			temp			1			-26.0
+dyer			rad			2			8.81
+dyer			sal			2			0.11
+lake			rad			2			1.82
+lake			sal			4			0.11
+lake			temp			1			-16.0
+pb			rad			3			6.66
+pb			temp			2			-20.0
+roe			rad			1			11.25
+roe			sal			2			32.05
+--------------------	--------------------	--------------------	--------------------
+  
 Note that we have added `person` to the list of fields displayed,
 since the results wouldn't make much sense otherwise.
   
 Let's go one step further and remove all the entries
 where we don't know who took the measurement:
   
-  <table class="db">
-    <tr>
-      <td colspan="4">
-<pre>select   person, quant, count(reading), round(avg(reading), 2)
+~~~~ {.sql}
+select   person, quant, count(reading), round(avg(reading), 2)
 from     Survey
 where    person is not null
 group by person, quant
-order by person, quant;</pre>
-      </td>
-    </tr>
-    <tr><td>dyer</td><td>rad</td><td>2</td><td>8.81</td></tr>
-    <tr><td>dyer</td><td>sal</td><td>2</td><td>0.11</td></tr>
-    <tr><td>lake</td><td>rad</td><td>2</td><td>1.82</td></tr>
-    <tr><td>lake</td><td>sal</td><td>4</td><td>0.11</td></tr>
-    <tr><td>lake</td><td>temp</td><td>1</td><td>-16.0</td></tr>
-    <tr><td>pb</td><td>rad</td><td>3</td><td>6.66</td></tr>
-    <tr><td>pb</td><td>temp</td><td>2</td><td>-20.0</td></tr>
-    <tr><td>roe</td><td>rad</td><td>1</td><td>11.25</td></tr>
-    <tr><td>roe</td><td>sal</td><td>2</td><td>32.05</td></tr>
-  </table>
+order by person, quant;
+~~~~
 
+--------------------	--------------------	--------------------	--------------------
+dyer			rad			2			8.81
+dyer			sal			2			0.11
+lake			rad			2			1.82
+lake			sal			4			0.11
+lake			temp			1			-16.0
+pb			rad			3			6.66
+pb			temp			2			-20.0
+roe			rad			1			11.25
+roe			sal			2			32.05
+--------------------	--------------------	--------------------	--------------------
+  
 Looking more closely,
 this query:
   
@@ -1942,7 +1810,7 @@ this query:
   since they're all equal).
 
 Our query processing pipeline now looks like
-<a href="#f:pipeline_grouping">Figure 7</a>.
+[Figure 7](#f:pipeline_grouping).
   
   <figure id="f:pipeline_grouping">
     <img src="db/pipeline_grouping.png" alt="Query Processing Pipeline With Grouping" />
@@ -1959,7 +1827,7 @@ Our query processing pipeline now looks like
   that each site was visited.
 
 * Show the records produced by each stage of
-  <a href="#f:pipeline_grouping">Figure 7</a>
+  [Figure 7](#f:pipeline_grouping)
   for the following query:
 
     select   min(reading), max(reading) from Survey
@@ -1988,18 +1856,8 @@ Duration: 20 minutes (and expect to have to walk through an example step-by-step
 
 In order to submit her data to a web site
 that aggregates historical meteorological data,
-Gina needs to format it as:
-  
-  <table>
-    <tr>
-      <td>latitude</td>
-      <td>longitude</td>
-      <td>date</td>
-      <td>quantity</td>
-      <td>reading</td>
-    </tr>
-  </table>
-
+Gina needs to format it as
+latitude, longitude, date, quantity, and reading.
 However,
 her latitudes and longitudes are in the `Site` table,
 while the dates of measurements are in the `Visited` table
@@ -2010,40 +1868,39 @@ The SQL command to do this is `join`.
 To see how it works,
 let's start by joining the `Site` and `Visited` tables:
   
-  <table class="db">
-    <tr>
-      <td colspan="6">
-<pre>select * from Site join Visited;</pre>
-      </td>
-    </tr>
-    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
-    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
-    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>734</td><td>DR-3</td><td>1939-01-07</td></tr>
-    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>735</td><td>DR-3</td><td>1930-01-12</td></tr>
-    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>751</td><td>DR-3</td><td>1930-02-26</td></tr>
-    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>752</td><td>DR-3</td><td></td></tr>
-    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>837</td><td>MS-4</td><td>1932-01-14</td></tr>
-    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
-    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
-    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
-    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>734</td><td>DR-3</td><td>1939-01-07</td></tr>
-    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>735</td><td>DR-3</td><td>1930-01-12</td></tr>
-    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>751</td><td>DR-3</td><td>1930-02-26</td></tr>
-    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>752</td><td>DR-3</td><td></td></tr>
-    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>837</td><td>MS-4</td><td>1932-01-14</td></tr>
-    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
-    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
-    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
-    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>734</td><td>DR-3</td><td>1939-01-07</td></tr>
-    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>735</td><td>DR-3</td><td>1930-01-12</td></tr>
-    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>751</td><td>DR-3</td><td>1930-02-26</td></tr>
-    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>752</td><td>DR-3</td><td></td></tr>
-    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>837</td><td>MS-4</td><td>1932-01-14</td></tr>
-    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
-  </table>
+~~~~ {.sql}
+select * from Site join Visited;
+~~~~
 
+--------------------	--------------------	--------------------	--------------------	--------------------	--------------------
+DR-1			-49.85			-128.57			619			DR-1			1927-02-08
+DR-1			-49.85			-128.57			622			DR-1			1927-02-10
+DR-1			-49.85			-128.57			734			DR-3			1939-01-07
+DR-1			-49.85			-128.57			735			DR-3			1930-01-12
+DR-1			-49.85			-128.57			751			DR-3			1930-02-26
+DR-1			-49.85			-128.57			752			DR-3			
+DR-1			-49.85			-128.57			837			MS-4			1932-01-14
+DR-1			-49.85			-128.57			844			DR-1			1932-03-22
+DR-3			-47.15			-126.72			619			DR-1			1927-02-08
+DR-3			-47.15			-126.72			622			DR-1			1927-02-10
+DR-3			-47.15			-126.72			734			DR-3			1939-01-07
+DR-3			-47.15			-126.72			735			DR-3			1930-01-12
+DR-3			-47.15			-126.72			751			DR-3			1930-02-26
+DR-3			-47.15			-126.72			752			DR-3			
+DR-3			-47.15			-126.72			837			MS-4			1932-01-14
+DR-3			-47.15			-126.72			844			DR-1			1932-03-22
+MS-4			-48.87			-123.4			619			DR-1			1927-02-08
+MS-4			-48.87			-123.4			622			DR-1			1927-02-10
+MS-4			-48.87			-123.4			734			DR-3			1939-01-07
+MS-4			-48.87			-123.4			735			DR-3			1930-01-12
+MS-4			-48.87			-123.4			751			DR-3			1930-02-26
+MS-4			-48.87			-123.4			752			DR-3			
+MS-4			-48.87			-123.4			837			MS-4			1932-01-14
+MS-4			-48.87			-123.4			844			DR-1			1932-03-22
+--------------------	--------------------	--------------------	--------------------	--------------------	--------------------
+  
 `join` creates
-the <a href="glossary.html#cross-product">cross product</a>
+the [cross product](glossary.html#cross-product)
 of two tables,
 i.e.,
 it joins each record of one with each record of the other
@@ -2061,22 +1918,21 @@ To do that,
 we add a clause specifying that
 we're only interested in combinations that have the same site name:
   
-  <table class="db">
-    <tr>
-      <td colspan="6">
-<pre>select * from Site join Visited <span class="highlight">on Site.name=Visited.site</span>;</pre>
-      </td>
-    </tr>
-    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>619</td><td>DR-1</td><td>1927-02-08</td></tr>
-    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>622</td><td>DR-1</td><td>1927-02-10</td></tr>
-    <tr><td>DR-1</td><td>-49.85</td><td>-128.57</td><td>844</td><td>DR-1</td><td>1932-03-22</td></tr>
-    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>734</td><td>DR-3</td><td>1939-01-07</td></tr>
-    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>735</td><td>DR-3</td><td>1930-01-12</td></tr>
-    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>751</td><td>DR-3</td><td>1930-02-26</td></tr>
-    <tr><td>DR-3</td><td>-47.15</td><td>-126.72</td><td>752</td><td>DR-3</td><td></td></tr>
-    <tr><td>MS-4</td><td>-48.87</td><td>-123.4</td><td>837</td><td>MS-4</td><td>1932-01-14</td></tr>
-  </table>
+~~~~ {.sql}
+select * from Site join Visited <span class="highlight">on Site.name=Visited.site</span>;
+~~~~
 
+--------------------	--------------------	--------------------	--------------------	--------------------	--------------------
+DR-1			-49.85			-128.57			619			DR-1			1927-02-08
+DR-1			-49.85			-128.57			622			DR-1			1927-02-10
+DR-1			-49.85			-128.57			844			DR-1			1932-03-22
+DR-3			-47.15			-126.72			734			DR-3			1939-01-07
+DR-3			-47.15			-126.72			735			DR-3			1930-01-12
+DR-3			-47.15			-126.72			751			DR-3			1930-02-26
+DR-3			-47.15			-126.72			752			DR-3			
+MS-4			-48.87			-123.4			837			MS-4			1932-01-14
+--------------------	--------------------	--------------------	--------------------	--------------------	--------------------
+  
 `on` does the same job as `where`:
 it only keeps records that pass some test.
 (The difference between the two is that `on` filters records
@@ -2101,24 +1957,23 @@ We can now use the same dotted notation
 to select the three columns we actually want
 out of our join:
   
-  <table class="db">
-    <tr>
-      <td colspan="3">
-<pre>select <span class="highlight">Site.lat, Site.long, Visited.dated</span>
+~~~~ {.sql}
+select <span class="highlight">Site.lat, Site.long, Visited.dated</span>
 from   Site join Visited
-on     Site.name=Visited.site;</pre>
-      </td>
-    </tr>
-    <tr><td>-49.85</td><td>-128.57</td><td>1927-02-08</td></tr>
-    <tr><td>-49.85</td><td>-128.57</td><td>1927-02-10</td></tr>
-    <tr><td>-49.85</td><td>-128.57</td><td>1932-03-22</td></tr>
-    <tr><td>-47.15</td><td>-126.72</td><td></td></tr>
-    <tr><td>-47.15</td><td>-126.72</td><td>1930-01-12</td></tr>
-    <tr><td>-47.15</td><td>-126.72</td><td>1930-02-26</td></tr>
-    <tr><td>-47.15</td><td>-126.72</td><td>1939-01-07</td></tr>
-    <tr><td>-48.87</td><td>-123.4</td><td>1932-01-14</td></tr>
-  </table>
+on     Site.name=Visited.site;
+~~~~
 
+--------------------	--------------------	--------------------
+-49.85			-128.57			1927-02-08
+-49.85			-128.57			1927-02-10
+-49.85			-128.57			1932-03-22
+-47.15			-126.72			
+-47.15			-126.72			1930-01-12
+-47.15			-126.72			1930-02-26
+-47.15			-126.72			1939-01-07
+-48.87			-123.4			1932-01-14
+--------------------	--------------------	--------------------
+  
 If joining two tables is good,
 joining many tables must be better.
 In fact,
@@ -2127,42 +1982,41 @@ simply by adding more `join` clauses to our query,
 and more `on` tests to filter out combinations of records
 that don't make sense:
 
-  <table class="db">
-    <tr>
-      <td colspan="5">
-<pre>select Site.lat, Site.long, Visited.dated, <span class="highlight">Survey.quant, Survey.reading</span>
+~~~~ {.sql}
+select Site.lat, Site.long, Visited.dated, <span class="highlight">Survey.quant, Survey.reading</span>
 from   Site join Visited join Survey
 on     Site.name=Visited.site
 <span class="highlight">and    Visited.ident=Survey.taken
-and    Visited.dated is not null</span>;</pre>
-      </td>
-    </tr>
-    <tr><td>-49.85</td><td>-128.57</td><td>1927-02-08</td><td>rad</td><td>9.82</td></tr>
-    <tr><td>-49.85</td><td>-128.57</td><td>1927-02-08</td><td>sal</td><td>0.13</td></tr>
-    <tr><td>-49.85</td><td>-128.57</td><td>1927-02-10</td><td>rad</td><td>7.8</td></tr>
-    <tr><td>-49.85</td><td>-128.57</td><td>1927-02-10</td><td>sal</td><td>0.09</td></tr>
-    <tr><td>-47.15</td><td>-126.72</td><td>1939-01-07</td><td>rad</td><td>8.41</td></tr>
-    <tr><td>-47.15</td><td>-126.72</td><td>1939-01-07</td><td>sal</td><td>0.05</td></tr>
-    <tr><td>-47.15</td><td>-126.72</td><td>1939-01-07</td><td>temp</td><td>-21.5</td></tr>
-    <tr><td>-47.15</td><td>-126.72</td><td>1930-01-12</td><td>rad</td><td>7.22</td></tr>
-    <tr><td>-47.15</td><td>-126.72</td><td>1930-01-12</td><td>sal</td><td>0.06</td></tr>
-    <tr><td>-47.15</td><td>-126.72</td><td>1930-01-12</td><td>temp</td><td>-26.0</td></tr>
-    <tr><td>-47.15</td><td>-126.72</td><td>1930-02-26</td><td>rad</td><td>4.35</td></tr>
-    <tr><td>-47.15</td><td>-126.72</td><td>1930-02-26</td><td>sal</td><td>0.1</td></tr>
-    <tr><td>-47.15</td><td>-126.72</td><td>1930-02-26</td><td>temp</td><td>-18.5</td></tr>
-    <tr><td>-48.87</td><td>-123.4</td><td>1932-01-14</td><td>rad</td><td>1.46</td></tr>
-    <tr><td>-48.87</td><td>-123.4</td><td>1932-01-14</td><td>sal</td><td>0.21</td></tr>
-    <tr><td>-48.87</td><td>-123.4</td><td>1932-01-14</td><td>sal</td><td>22.5</td></tr>
-    <tr><td>-49.85</td><td>-128.57</td><td>1932-03-22</td><td>rad</td><td>11.25</td></tr>
-  </table>
+and    Visited.dated is not null</span>;
+~~~~
 
+--------------------	--------------------	--------------------	--------------------	--------------------
+-49.85			-128.57			1927-02-08		rad			9.82
+-49.85			-128.57			1927-02-08		sal			0.13
+-49.85			-128.57			1927-02-10		rad			7.8
+-49.85			-128.57			1927-02-10		sal			0.09
+-47.15			-126.72			1939-01-07		rad			8.41
+-47.15			-126.72			1939-01-07		sal			0.05
+-47.15			-126.72			1939-01-07		temp			-21.5
+-47.15			-126.72			1930-01-12		rad			7.22
+-47.15			-126.72			1930-01-12		sal			0.06
+-47.15			-126.72			1930-01-12		temp			-26.0
+-47.15			-126.72			1930-02-26		rad			4.35
+-47.15			-126.72			1930-02-26		sal			0.1
+-47.15			-126.72			1930-02-26		temp			-18.5
+-48.87			-123.4			1932-01-14		rad			1.46
+-48.87			-123.4			1932-01-14		sal			0.21
+-48.87			-123.4			1932-01-14		sal			22.5
+-49.85			-128.57			1932-03-22		rad			11.25
+--------------------	--------------------	--------------------	--------------------	--------------------
+  
 @@@id="a:keys"
 
 We can tell which records from `Site`, `Visited`, and `Survey`
 correspond with each other
 because those tables contain
-<a href="glossary.html#primary-key">primary keys</a>
-and <a href="glossary.html#foreign-key">foreign keys</a>.
+[primary keys](glossary.html#primary-key)
+and [foreign keys](glossary.html#foreign-key).
 A primary key is a value,
 or combination of values,
 that uniquely identifies each record in a table.
@@ -2193,19 +2047,18 @@ As the query below demonstrates,
 SQLite automatically numbers records as they're added to tables,
 and we can use those record numbers in queries:
   
-  <table class="db">
-    <tr>
-      <td colspan="4">
-<pre>select rowid, * from Person;</pre>
-      </td>
-    </tr>
-    <tr><td>1</td><td>dyer</td><td>William</td><td>Dyer</td></tr>
-    <tr><td>2</td><td>pb</td><td>Frank</td><td>Pabodie</td></tr>
-    <tr><td>3</td><td>lake</td><td>Anderson</td><td>Lake</td></tr>
-    <tr><td>4</td><td>roe</td><td>Valentina</td><td>Roerich</td></tr>
-    <tr><td>5</td><td>danforth</td><td>Frank</td><td>Danforth</td></tr>
-  </table>
+~~~~ {.sql}
+select rowid, * from Person;
+~~~~
 
+--------------------	--------------------	--------------------	--------------------
+1			dyer			William			Dyer
+2			pb			Frank			Pabodie
+3			lake			Anderson		Lake
+4			roe			Valentina		Roerich
+5			danforth		Frank			Danforth
+--------------------	--------------------	--------------------	--------------------
+  
 ### Summary {.keypoints}
 
 * Use `join` to create all possible combinations of records from two or more tables.
@@ -2280,45 +2133,16 @@ but it's better not to have to rely on it.
 Different database systems support different data types for table columns,
 but most provide the following:
 
-  <table>
-    <tr>
-      <td>
-        `integer`
-      </td>
-      <td>
-        A signed integer.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        `real`
-      </td>
-      <td>
-        A floating point value.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        `text`
-      </td>
-      <td>
-        A string.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        `blob`
-      </td>
-      <td>
-        Any "binary large object"
-        such as an image or audio file.
-      </td>
-    </tr>
-  </table>
+--------------------	--------------------
+`integer`		A signed integer.
+`real`			A floating point value.
+`text`			A string.
+`blob`			Any "binary large object" such as an image or audio file.
+--------------------	--------------------
 
 Most databases also support Booleans and date/time values;
 SQLite uses the integers 0 and 1 for the former,
-and represents the latter as discussed <a href="#a:dates">earlier</a>.
+and represents the latter as discussed [earlier](#a:dates).
 An increasing number of databases also support geographic data types,
 such as latitude and longitude.
 Keeping track of what particular systems do or do not offer,
@@ -2331,13 +2155,13 @@ For example,
 a better definition for the `Survey` table would be:
   
     create table Survey(
-    taken   integer not null, <span class="comment">-- where reading taken</span>
-    person  text,             <span class="comment">-- may not know who took it</span>
-    quant   real not null,    <span class="comment">-- the quantity measured</span>
-    reading real not null,    <span class="comment">-- the actual reading</span>
-    primary key(taken, quant),
-    foreign key(taken) references Visited(ident),
-    foreign key(person) references Person(ident)
+	taken   integer not null, <span class="comment">-- where reading taken</span>
+	person  text,             <span class="comment">-- may not know who took it</span>
+	quant   real not null,    <span class="comment">-- the quantity measured</span>
+	reading real not null,    <span class="comment">-- the actual reading</span>
+	primary key(taken, quant),
+	foreign key(taken) references Visited(ident),
+	foreign key(person) references Person(ident)
     );
 
 Once again,
@@ -2374,28 +2198,27 @@ But what if we removed Anderson Lake instead?
 Our `Survey` table would still contain seven records
 of measurements he'd taken:
   
-  <table class="db">
-    <tr>
-      <td colspan="1">
-<pre>select count(*) from Survey where person='lake';</pre>
-      </td>
-    </tr>
-    <tr><td>7</td></tr>
-  </table>
+~~~~ {.sql}
+select count(*) from Survey where person='lake';
+~~~~
 
+--------------------
+7
+--------------------
+  
 That's never supposed to happen:
 `Survey.person` is a foreign key into the `Person` table,
 and all our queries assume there will be a row in the latter
 matching every value in the former.
   
-This problem is called <a href="glossary.html#referential-integrity">referential integrity</a>:
+This problem is called [referential integrity](glossary.html#referential-integrity):
 we need to ensure that all references between tables can always be resolved correctly.
 One way to do this is to delete all the records
 that use `'lake'` as a foreign key
 before deleting the record that uses it as a primary key.
 If our database manager supports it,
 we can automate this
-using <a href="glossary.html#cascading-delete">cascading delete</a>.
+using [cascading delete](glossary.html#cascading-delete).
 However,
 this technique is outside the scope of this chapter.
   
@@ -2433,7 +2256,7 @@ but the files themselves live on disk.
   in `Survey.person`
   with the string `'unknown'`.
 
-* One of Gina's colleagues has sent her a <a href="glossary.html#csv">CSV</a> file
+* One of Gina's colleagues has sent her a [CSV](glossary.html#csv) file
   containing temperature readings by Robert Olmstead,
   which is formatted like this:
 
@@ -2477,17 +2300,16 @@ Duration: 10 minutes.
 Suppose we have another table in our database that shows
 which pieces of equipment have been borrowed by which scientists:
   
-  <table class="db">
-    <tr>
-      <td colspan="2">
-<pre>select * from Equipment;</pre>
-      </td>
-    </tr>
-    <tr><td>dyer</td><td>CX-211 oscilloscope</td></tr>
-    <tr><td>pb</td><td>Greenworth balance</td></tr>
-    <tr><td>lake</td><td>Cavorite damping plates</td></tr>
-  </table>
-  
+~~~~ {.sql}
+select * from Equipment;
+~~~~
+
+--------------------	--------------------
+dyer			CX-211 oscilloscope
+pb			Greenworth balance
+lake			Cavorite damping plates
+--------------------	--------------------
+    
 (We should actually give each piece of equipment a unique ID,
 and use that ID here instead of the full name,
 just as we created a separate table for scientists earlier in this chapter,
@@ -2510,8 +2332,8 @@ And if our operations take a long time to complete&mdash;as they will
 when we are working with large datasets,
 or when the database is being heavily used&mdash;the odds of failure increase.
 
-What we really want is a way to ensure that every operation is <a href="glossary.html#acid">ACID</a>:
-<a href="glossary.html#atomic-operation">atomic</a> (i.e. indivisible),
+What we really want is a way to ensure that every operation is [ACID](glossary.html#acid):
+[atomic](glossary.html#atomic-operation) (i.e. indivisible),
 consistent, isolated, and durable.
 The precise meanings of these terms doesn't matter;
 what does is the notion that
@@ -2520,7 +2342,7 @@ as if nothing else was going on at the same time,
 or fail without having any effect at all.
 
 The tool we use to ensure that this happens is called
-a <a href="glossary.html#transaction">transaction</a>.
+a [transaction](glossary.html#transaction).
 Here's how we should actually write the statements
 to move the oscilloscope from one person to another:
   
@@ -2534,20 +2356,20 @@ If anything goes wrong inside,
 then none of the changes made in the transaction will actually be written to the database&mdash;it
 will be as if the transaction had never happened.
 Changes are only stored permanently
-when we <a href="glossary.html#commit">commit</a> them at the end of the transaction.
+when we [commit](glossary.html#commit) them at the end of the transaction.
   
 <div class="box">
 
 ### Transactions and Commits
 
 We first used the term "transaction" in
-<a href="svn.html#b:basics:transaction">our discussion of version control</a>.
+[our discussion of version control](svn.html#b:basics:transaction).
 That's not a coincidence:
 behind the scenes,
 tools like Subversion are using many of the same algorithms as database managers
 to ensure that either everything happens consistently
 or nothing happens at all.
-We <a href="svn.html#a:commit">use the term "commit"</a> for the same reason:
+We [use the term "commit"](svn.html#a:commit) for the same reason:
 just as our changes to local files aren't written back to the version control repository
 until we commit them,
 our (apparent) changes to a database aren't written to disk
@@ -2560,17 +2382,16 @@ Suppose there is another table in the database called `Exposure`
 that records the number of days each scientist was exposed to
 higher-than-normal levels of radiation:
   
-  <table class="db">
-    <tr>
-      <td colspan="2">
-<pre>select * from Exposure;</pre>
-      </td>
-    </tr>
-    <tr><td>pb</td><td>4</td></tr>
-    <tr><td>dyer</td><td>1</td></tr>
-    <tr><td>lake</td><td>5</td></tr>
-  </table>
+~~~~ {.sql}
+select * from Exposure;
+~~~~
 
+--------------------	--------------------
+pb			4
+dyer			1
+lake			5
+--------------------	--------------------
+  
 After going through the journal entries for 1932,
 Gina wants to add two days to Lake's count:
   
@@ -2593,71 +2414,41 @@ there is a small chance that it won't.
 To see why,
 let's break the two queries into their respective read and write steps
 and place them side by side:
-  
-  <table border="1">
-    <tr>
-      <td>`X = read Exposure('lake', __)`</td>
-      <td>`Y = read Exposure('lake', __)`</td>
-    </tr>
-    <tr>
-      <td>`write Exposure('lake', X+2)`</td>
-      <td>`write Exposure('lake', Y+1)`</td>
-    </tr>
-  </table>
 
+--------------------		--------------------  
+`X = read Exposure('lake', __)`	`Y = read Exposure('lake', __)`
+`write Exposure('lake', X+2)`	`write Exposure('lake', Y+1)`
+--------------------		--------------------  
+  
 The database can only actually do one thing at once,
 so it must put these four operations into some sequential order.
 That order has to respect the original order within each column,
 but the database can interleave the two columns any way it wants.
 If it orders them like this:
   
-  <table border="1">
-    <tr>
-      <td>`X = read Exposure('lake', __)`</td>
-      <td>`X` is 5</td>
-    </tr>
-    <tr>
-      <td>`write Exposure('lake', X+2)`</td>
-      <td>database contains 7</td>
-    </tr>
-    <tr>
-      <td>`Y = read Exposure('lake', __)`</td>
-      <td>`Y` is 7</td>
-    </tr>
-    <tr>
-      <td>`write Exposure('lake', Y+1)`</td>
-      <td>database contains 8</td>
-    </tr>
-  </table>
-
+--------------------		--------------------  
+`X = read Exposure('lake', __)`	`X` is 5
+`write Exposure('lake', X+2)`	database contains 7
+`Y = read Exposure('lake', __)`	`Y` is 7
+`write Exposure('lake', Y+1)`	database contains 8
+--------------------		--------------------  
+  
 then all is well.
 But what if it interleaves the operations like this:
   
-  <table border="1">
-    <tr>
-      <td>`X = read Exposure('lake', __)`</td>
-      <td>`X` is 5</td>
-    </tr>
-    <tr>
-      <td>`Y = read Exposure('lake', __)`</td>
-      <td>`Y` is 5</td>
-    </tr>
-    <tr>
-      <td>`write Exposure('lake', X+2)`</td>
-      <td>database contains 7</td>
-    </tr>
-    <tr>
-      <td>`write Exposure('lake', Y+1)`</td>
-      <td>database contains 6</td>
-    </tr>
-  </table>
-
+--------------------		--------------------  
+`X = read Exposure('lake', __)`	`X` is 5
+`Y = read Exposure('lake', __)`	`Y` is 5
+`write Exposure('lake', X+2)`	database contains 7
+`write Exposure('lake', Y+1)`	database contains 6
+--------------------		--------------------  
+  
 This ordering puts the initial value, 5, into both `X` and `Y`.
 It then writes 7 back to the database (the third statement),
 and then overwrites that with 6,
 since `Y` holds 5.
   
-This is called a <a href="glossary.html#race-condition">race condition</a>,
+This is called a [race condition](glossary.html#race-condition),
 since the final result depends on a race between the two operations.
 Race conditions are part of what makes programming large systems with many components a nightmare:
 they are difficult to spot in advance
@@ -2712,16 +2503,18 @@ but the concepts are the same.
 
 Here's a short Python program that selects latitudes and longitudes
 from an SQLite database stored in a file called `survey.db`:
-  
-    import sqlite3
-    connection = sqlite3.connect("survey.db")
-    cursor = connection.cursor()
-    cursor.execute("select site.lat, site.long from site;")
-    results = cursor.fetchall()
-    for r in results:
-    print r
-    cursor.close()
-    connection.close()
+
+~~~~ {.python}  
+import sqlite3
+connection = sqlite3.connect("survey.db")
+cursor = connection.cursor()
+cursor.execute("select site.lat, site.long from site;")
+results = cursor.fetchall()
+for r in results:
+print r
+cursor.close()
+connection.close()
+~~~~
 
 The program starts by importing the `sqlite3` library.
 If we were connecting to MySQL, DB2, or some other database,
@@ -2736,7 +2529,7 @@ Since we're using SQLite,
 all we need to specify is the name of the database file.
 Other systems may require us to provide a username and password as well.
 Line 3 then uses this connection to create
-a <a href="glossary.html#cursor">cursor</a>;
+a [cursor](glossary.html#cursor);
 just like the cursor in an editor,
 its role is to keep track of where we are in the database.
 
@@ -2773,7 +2566,7 @@ it's normal to create one connection that stays open for the lifetime of the pro
 You may have noticed that
 each of the strings in our output has a lower-case 'u' in front of it.
 That is Python's way of telling us that the string is stored in
-<a href="glossary.html#unicode">Unicode</a>.
+[Unicode](glossary.html#unicode).
     
 </div>
 
@@ -2781,22 +2574,24 @@ Queries in real applications will often depend on values provided by users.
 For example,
 a program might take a user ID as a command-line parameter
 and display the user's full name:
-  
-    import sys
-    import sqlite3
 
-    query = "select personal, family from Person where ident='%s';"
-    user_id = sys.argv[1]
+~~~~ {.python}  
+import sys
+import sqlite3
 
-    connection = sqlite3.connect("survey.db")
-    cursor = connection.cursor()
+query = "select personal, family from Person where ident='%s';"
+user_id = sys.argv[1]
 
-    cursor.execute(query % user_id)
-    results = cursor.fetchall()
-    print results[0][0], results[0][1]
+connection = sqlite3.connect("survey.db")
+cursor = connection.cursor()
 
-    cursor.close()
-    connection.close()
+cursor.execute(query % user_id)
+results = cursor.fetchall()
+print results[0][0], results[0][1]
+
+cursor.close()
+connection.close()
+~~~~
 
 The variable `query` holds the statement we want to execute
 with a `%s` format string where we want to insert
@@ -2810,14 +2605,16 @@ It looks like there's garbage after the name of the project,
 but it is very carefully chosen garbage.
 If we insert this string into our query,
 the result is:
-  
-    select personal, family from Person where ident='dyer'; drop table Survey; select '';
+
+~~~~ {.sql}  
+select personal, family from Person where ident='dyer'; drop table Survey; select '';
+~~~~
 
 Whoops:
 if we execute this,
 it will erase one of the tables in our database.
   
-This technique is called <a href="glossary.html#sql-injection">SQL injection</a>,
+This technique is called [SQL injection](glossary.html#sql-injection),
 and it has been used to attack thousands of programs over the years.
 In particular,
 many web sites that take data from users insert values directly into queries
@@ -2827,25 +2624,27 @@ Since a villain might try to smuggle commands into our queries in many different
 the safest way to deal with this threat is
 to replace characters like quotes with their escaped equivalents,
 so that we can safely put whatever the user gives us inside a string.
-We can do this by using a <a href="glossary.html#prepared-statement">prepared statement</a>
+We can do this by using a [prepared statement](glossary.html#prepared-statement)
 instead of formatting our statements as strings.
 Here's what our example program looks like if we do this:
 
+~~~~ {.python}
     import sys
     import sqlite3
 
-    query = <span class="highlight">"select personal, family from Person where ident=?;"</span>
+    query = "select personal, family from Person where ident=?;"
     user_id = sys.argv[1]
 
     connection = sqlite3.connect("survey.db")
     cursor = connection.cursor()
 
-    <span class="highlight">cursor.execute(query, [user_id])</span>
+    cursor.execute(query, [user_id])
     results = cursor.fetchall()
     print results[0][0], results[0][1]
 
     cursor.close()
     connection.close()
+~~~~
 
 The key changes are in the query string and the `execute` call.
 Instead of formatting the query ourselves,

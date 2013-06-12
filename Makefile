@@ -79,3 +79,10 @@ clean : tidy
 sterile : tidy
 	rm -rf $(OUT_DIR)
 
+#------------------------------------------------------------
+
+## testing Markdown
+markdown : temp.html
+
+temp.html : db.md
+	pandoc --toc -r markdown+header_attributes -t html5 --section-divs -o temp.html db.md
