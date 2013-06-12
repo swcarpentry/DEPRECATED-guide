@@ -289,7 +289,12 @@ print x = 1 + 2
 
   <div class="box">
     <h3>When to Print</h3>
-    <p class="fixme">explain that only the last line of raw input produces output, and recommend print</p>
+    <p>
+      If the last thing in a cell is an expression on a line of its own,
+      the notebook displays its value as the cell's output.
+      If we want to display things from the middle of a cell,
+      we need to use a <code>print</code> statement.
+    </p>
   </div>
 
   <p>
@@ -326,7 +331,7 @@ print 'body temperature in Kelvin:', temp_kelvin</span>
     The last line prints the result.
     The <a href="glossary.html#string">character string</a>
     (or just "string" for short)
-    inside double quotes is printed as-is,
+    inside quotes is printed as-is,
     followed by the value of <code>temp_kelvin</code>.
   </p>
 
@@ -379,7 +384,7 @@ NameError: name 'temp_celsius' is not defined</span>
 </pre>
 
     <p class="continue">
-      We'll explain what "module" means <a href="funclib.html">later</a>.
+      We'll explain what "module" means <a href="#s:lib">later</a>.
       What's important now is that this strictness helps catch a lot of typing mistakes.
       If we mistakenly type <code>temp_far</code> instead of <code>temp_fahr</code>:
     </p>
@@ -466,7 +471,40 @@ NameError: name 'temp_celsius' is not defined</span>
 
   <div class="challenges">
     <h3>Challenges</h3>
-    <p class="fixme">write some challenges</p>
+    <ol>
+
+      <li>
+        What is the output of:
+<pre>
+inner = 13.0
+outer = 2 * inner
+inner = 2 * inner
+print outer
+</pre>
+      </li>
+
+      <li>
+        Fill in the blank so that these lines of code produce the output shown.
+<pre>
+female = 'GGT'
+male = 'CAC'
+________
+print female
+<span class="out">GGTGGTCAC</span>
+</pre>
+      </li>
+
+      <li>
+        What single change can be made to the first three lines below to get the output shown?
+<pre>
+scaling = 10
+original = 7
+adjusted = primary / scaling
+print original + adjusted
+<span class="out">7.7</span>
+</pre>
+      </li>
+    </ol>
   </div>
 
 </section>
@@ -500,8 +538,8 @@ print 'body temperature in Kelvin:', temp_kelvin</span>
   </p>
 
 <pre>
-<span class="in">temp_fahr = 98.6</span>
-<span class="highlight">temp_kelvin = (temp_fahr - 32) * (5 / 9) + 273.15
+<span class="in">temp_fahr = 98.6
+temp_kelvin = (temp_fahr - 32) * <span class="highlight">(5 / 9)</span> + 273.15
 print 'body temperature in Kelvin:', temp_kelvin</span>
 <span class="out">body temperature in Kelvin: 273.15</span>
 </pre>
@@ -519,12 +557,12 @@ print 'body temperature in Kelvin:', temp_kelvin</span>
 
   <p>
     The problem is that computers have two different kinds of numbers:
-    integers like 1, 2, and 3,
+    <a href="glossary.html#integer">integers</a> like 1, 2, and 3,
     and floating-point numbers
     (or <a href="glossary.html#float">floats</a>),
     which have fractional parts.
-    If a number doesn't have a decimal point,
-    Python stores its value as an integer.
+    If a number is written without a decimal point,
+    Python stores it as an integer.
     When it divides one integer by another,
     it throws away the remainder:
     to a computer,
@@ -546,25 +584,27 @@ print 'body temperature in Kelvin:', temp_kelvin</span>
 <span class="out">3.3333333333333335</span>
 </pre>
 
-  <p class="continue">
-    Version 3 of Python changed the rules for division
-    so that it creates fractional numbers when it should.
-    However,
-    we're using Python 2.7,
-    so 10/3 is 3 until further notice.
-  </p>
+  <p>
+    Computers have both kinds of numbers for two reasons.
+    The first is historical:
+    integer operations were significantly faster on early computers,
+    so allowing people to use them was one way to speed up programs.
+    Secondly,
+    they actually have different purposes:
+    integers are for counting things,
+    and floats for measuring quantities.
+  <p>
 
   <div class="box">
-    <h3>Why Two?</h3>
+    <h3>Changing the Rules</h3>
+
     <p>
-      Computers have both integers and floats for two reasons.
-      The first is historical:
-      integer operations were significantly faster on early computers.
-      Secondly,
-      they have different purposes:
-      integers are for counting,
-      and floats for measuring.
-    <p>
+      Version 3 of Python changed the rules for division
+      so that it creates fractional numbers when it should.
+      However,
+      we're using Python 2.7,
+      so 10/3 is 3 until further notice.
+    </p>
   </div>
 
   <div class="box">
@@ -618,8 +658,8 @@ print 'body temperature in Kelvin:', temp_kelvin</span>
 <span class="in">full = name + " (" + born + ")"</span>
 <span class="in">print full</span>
 <span class="out">Alan Turing (June 23, 1912)</span>
-<span class="in">print "ho" * 3</span>
-<span class="out">hohoho</span>
+<span class="in">print "xo" * 3</span>
+<span class="out">xoxoxo</span>
 </pre>
 
   <p id="a:add-num-str">
@@ -636,10 +676,9 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'</span>
 </pre>
 
   <p>
-    The reason we can't is that
+    The reason we can't is that Python won't always know what we actually want.
     "2three" would be a reasonable result in this case,
-    but it's not so clear what <code>2+"3"</code> should do:
-    should it produce the integer 5 or the string <code>"23"</code>?
+    but should <code>2+"3"</code> produce the integer 5 or the string <code>"23"</code>?
     Rather than guessing at the programmer's intentions,
     Python requires us to tell it
     whether to convert the number to a string or the string to a number
@@ -656,12 +695,11 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'</span>
 </pre>
 
   <p>
-    Finally,
-    it's important to keep in mind that variables don't have types in Python:
+    One last fact about types is that variables in Python don't have them:
     only values do.
-    A variable is a just a name for a value;
+    A variable is a just a name;
     it can refer to a string at one point in a program,
-    and a float at another:
+    and a float a moment later:
   </p>
 
 <pre>
@@ -678,15 +716,13 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'</span>
     <p>
       Programmers argue incessantly about whether this is a good idea or not.
       In <a href="glossary.html#static-typing">statically-typed</a> languages like Fortran, C++, Java, and Haskell,
-      every variable has a type,
-      and can only store values of that type.
-      Proponents say that
-      this restriction makes it easier for compilers to optimize programs,
-      and for other tools (and human readers) to check their correctness,
-      but languages designed for interactive use&mdash;like Python,
-      Perl, and R&mdash;tend to be
-      <a href="glossary.html#dynamic-typing">dynamically typed</a>
-      in order to keep typing&mdash;the fingers-on-keyboard kind&mdash;to a minimum.
+      a variable can only store values of a particular type.
+      This restriction makes it easier for compilers to check programs' correctness
+      and optimize their performance,
+      but languages like Python and R,
+      which are designed for interactive use,
+      tend to be <a href="glossary.html#dynamic-typing">dynamically typed</a>
+      in order to keep fingers-on-keyboard typing to a minimum.
     </p>
   </div>
 
@@ -705,7 +741,26 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'</span>
 
   <div class="challenges">
     <h3>Challenges</h3>
-    <p class="fixme">write some challenges</p>
+
+    <ol>
+
+      <li>
+        If the variable <code>x</code> holds a number,
+        is the value of <code>int(str(x))</code> the same as the value of <code>x</code>?
+      </li>
+
+      <li>
+        What is value of <code>molecule</code> after the following code is run?
+        What is its type?
+<pre>
+oxygen = 'O'
+carbon = 'C
+molecule = carbon + oxygen * 2
+</pre>
+      </li>
+
+    </ol>
+
   </div>
 
 </section>
@@ -747,7 +802,7 @@ square root of 5 is 2.2360679775</span>
     as <code><em>library</em>.<em>variable</em></code>,
     and call its functions,
     like square root,
-    as <code><em>library</em>.<em>function</em></code>,
+    as <code><em>library</em>.<em>function</em></code>.
   </p>
 
   <p>
@@ -765,11 +820,8 @@ square root of 5 is 2.2360679775</span>
     <h3>Shortcuts</h3>
 
     <p>
-      Since <code>math.sqrt</code> is a handful to type,
-      and <code>sqrt</code> is probably not ambiguous,
-      Python provides several ways to import things.
-      For example,
-      we can import specific functions from a library and then call them directly:
+      If we only want a few specific functions from a library,
+      we can import them by name and then call them directly:
     </p>
 
 <pre>
@@ -780,7 +832,7 @@ sqrt(3)</span>
 
     <p class="continue">
       We can also import a function under a different name,
-      so that if two modules define functions with the same name,
+      so that if two libraries define functions with the same name,
       we can give one or the other a different name when we want to use them together:
     </p>
 
@@ -816,8 +868,8 @@ sin(pi)</span>
   </div>
 
   <p>
-    We now have everything we need to start drawing pictures.
-    Let's start with a simple grid of pixels:
+    Now that we know how to import libraries,
+    let's create a grid of colored blocks:
   </p>
 
 <pre>
@@ -828,33 +880,40 @@ FIXME: output
 </pre>
 
   <p class="continue">
-    The first line loads something called <code>BlockGrid</code>
-    from the <code>ipythonblocks</code> library.
-    <code>BlockGrid</code> isn't actually a function&mdash;it's something
-    called a <a href="glossary.html#class">class</a> that we'll discuss later&mdash;but
-    it works like one for present purposes.
-    When we give it two integers,
-    it creates a grid of blocks of the specified width and height.
-    We can assign that to a variable
+    The first line loads <code>BlockGrid</code> from the <code>ipythonblocks</code> library.
+    When we give <code>BlockGrid</code> two integers,
+    it creates a grid of the specified width and height.
+    We can assign that grid to a variable
     (in this case, called <code>grid</code>),
-    and then ask it to show itself.
-  </p>
-
-  <p>
-    We can ask a grid what it's height and width are
-    using the same dotted notation we use
-    to ask a library for the things it contains:
+    and then ask it to display itself
+    by calling a <a href="glossary.html#method">method</a> named <code>show</code>.
+    A method is just a function that belongs to a particular object
+    (in this case, the grid);
+    objects can also have <a href="glossary.html#member">members</a>,
+    which are just variables attached to the object:
   </p>
 
 <pre>
 <span class="in">print 'width:', grid.width
-print 'height', grid.height</span>
+print 'height', grid.height
+print 'lines_on', grid.lines_on</span>
 <span class="out">width: 10
-height: 5</span>
+height: 5
+lines_on: True</span>
 </pre>
 
   <p>
-    We can't change these values, though:
+    We can change some of the grid's members:
+  </p>
+
+<pre>
+<span class="in">grid.lines_on = False
+grid.show()</span>
+FIXME: display
+</pre>
+
+  <p class="continue">
+    but not others:
   </p>
 
 <pre>
@@ -870,24 +929,53 @@ AttributeError: can't set attribute</span>
     The reason is the same as the one given <a href="#a:add-num-str">earlier</a>:
     if we enlarged the grid,
     Python would have to guess what colors to use for the new blocks.
-    We could tell it,
-    but to do that,
-    we need a way to define colors.
   </p>
 
+  <div class="box">
+    <h3>Getting Help</h3>
+    <p>
+      To find out what methods and members something has,
+      we can ask Python for help:
+    </p>
+
+<pre>
+<span class="in">help(grid)</span>
+<span class="out'">class BlockGrid(__builtin__.object)
+ |  A grid of blocks whose colors can be individually controlled.
+ |  
+ |  Parameters
+ |  ----------
+ |  width : int
+ |      Number of blocks wide to make the grid.
+ |  height : int
+ |      Number of blocks high to make the grid.
+...</span>
+</pre>
+
+  </div>
+
   <p>
-    Luckily,
-    we have one&mdash;in fact, we have several.
-    The most common,
-    called "RGB",
-    defines colors according to how much red, green, and blue they contain.
+    A monochrome grid isn't very exciting;
+    we need a way to change blocks' colors,
+    and some way to specify the colors we want.
+    The most common way to do this is called "RGB",
+    which defines colors according to how much red, green, and blue they contain.
     This is an additive color model:
     the color we see is the sum of the individual color values,
     each of which can range between 0 and 255.
-    Why 255?
-    Because computer memory is organized into 8-bit bytes,
-    and 255 (11111111 in base 2) is the largest integer that can be represented in one byte.
   </p>
+
+  <div class="box">
+    <h3>Bytes and Colors</h3>
+    <p>
+      Color values go up to 255
+      because computer memory is organized into 8-bit bytes,
+      and 255 (or 11111111 in base 2) is the largest integer that can be represented in one byte.
+      Storing each color component in a single byte is a good balance between
+      being able to represent enough colors to fool the human eye
+      and being able to store color values efficiently.
+    </p>
+  </div>
 
   <p>
     In RGB,
@@ -942,20 +1030,14 @@ FIXME: output
       To make it clear that we want those three parts grouped together,
       we put them in parentheses,
       as in <code>(0, 255, 0)</code>.
-      This is <em>not</em> a function call,
-      though parentheses are used for calling functions.
-      Instead,
-      this is called a <a href="glossary.html#tuple">tuple</a>.
-      We'll see many more tuples as we go along.
+      This is called a <a href="glossary.html#tuple">tuple</a>;
+      we'll see more of them as we go along.
     </li>
     <li>
       If we want to refer to a particular block in a grid,
-      we use a <a href="glossary.html#subscript">subscript</a>
-      or <a href="glossary.html#index">index</a>,
-      just as we do when referring to a particular element of a matrix in mathematics.
-      Since subscripts and superscripts are hard to type,
-      we put the subscript values in square brackets
-      instead of typesetting them.
+      we use an <a href="glossary.html#index">index</a>
+      (sometimes called a <a href="glossary.html#subscript">subscript</a>),
+      just as we do when referring to a particular element of a matrix in mathematics such as <em>A<sub>i,j</sub></em>.
     </li>
     <li id="a:count-from-zero">
       The corner's coordinates are (0, 0), not (1, 1).
@@ -963,7 +1045,7 @@ FIXME: output
       for the same reason that color values run from 0 to 255
       instead of 1 to 256.
       Some other languages (notably Fortran, MATLAB, and R) count from 1.
-      The latter is more sensible&mdash;nobody says, "Zero, one, two, three, four," when counting their fingers&mdash;but
+      The latter is more natural&mdash;nobody says, "Zero, one, two, three, four," when counting their fingers&mdash;but
       we're stuck with the former for programming.
     </li>
   </ol>
@@ -973,10 +1055,10 @@ FIXME: output
     look closely at which pixel turned green.
     A Cartesian grid is typically drawn with the origin in the lower left,
     or in the center,
-    but IPythonBlocks' coordinate scheme is like that of tables and spreadsheets:
+    but IPythonBlocks uses the same coordinate scheme as tables and spreadsheets:
     the first index counts down the rows,
     while the second counts across the columns.
-    To prove this,
+    To check this,
     let's make the block at (1, 2) red:
   </p>
 
@@ -996,7 +1078,32 @@ FIXME: output
 
   <div class="challenges">
     <h3>Challenges</h3>
-    <p class="fixme">write challenges</p>
+
+    <ol>
+
+      <li>
+        Create a 5&times;5 grid,
+        and change the color of the diagonal elements from black to blue-green.
+        What pattern is there in the indices?
+        What pattern is there if you change the color of the anti-diagonal elements?
+      </li>
+
+      <li>
+        If we want to initialize the grid to something other than black,
+        we can pass a color to <code>BlockGrid</code> like this:
+
+<pre>
+<span class="in">example = BlockGrid(6, 5, fill=(128, 255, 128))</span>
+</pre>
+        Use this to create a BlockGrid that is medium-gray
+        (i.e., all three color values are 128),
+        and then change the color of one cell to be successively lighter grays
+        until you can see a difference.
+        What is the first gray for which this happens?
+      </li>
+
+    </ol>
+
   </div>
 
 </section>
@@ -1037,8 +1144,8 @@ u</span>
   </p>
 
 <pre>
-<span class="in">for character in "aeiou":
-    print character</span>
+<span class="in">for vowel in "aeiou":
+    print vowel</span>
 <span class="out">a
 e
 i
@@ -1054,7 +1161,7 @@ u</span>
     for each value in some collection.
     The indented line is called the <a href="glossary.html#loop-body">body</a> of the loop:
     it's what Python executes repeatedly.
-    The variable <code>character</code> is the <a href="glossary.html#loop-variable">loop variable</a>:
+    The variable <code>vowel</code> is the <a href="glossary.html#loop-variable">loop variable</a>:
     each time the loop is executed,
     it is updated to hold the next value from the collection
     (in this case,
@@ -1070,8 +1177,8 @@ u</span>
 
 <pre>
 <span class="in">result = ""
-for character in "aeiou":
-    result = result + 2 * character
+for vowel in "aeiou":
+    result = result + 2 * vowel
 print result</span>
 <span class="out">aaeeiioouu</span>
 </pre>
@@ -1081,24 +1188,22 @@ print result</span>
     an <a href="glossary.html#empty-string">empty string</a>
     containing no characters.
     The first time the loop executes,
-    the program adds "aa" to it;
-    the second time,
+    the program adds "aa" to it to create "aa".
+    The second time,
     it adds "ee",
-    and so on to produce the string shown.
+    and so on to produce the final result.
   </p>
 
   <p>
-    Notice that Python uses indentation to show what's in the body of a loop.
-    In fact,
-    it always uses indentation to show what lines of code belong to what.
+    Python uses indentation to show what's in the body of a loop.
     To see why this matters,
-    try running this program:
+    try indenting the <code>print</code> statement:
   </p>
 
 <pre>
 <span class="in">result = ""
-for character in "aeiou":
-    result = result + 2 * character
+for vowel in "aeiou":
+    result = result + 2 * vowel
 <span class="highlight">    print result</span></span>
 <span class="out">aa
 aaee
@@ -1158,10 +1263,14 @@ end
 
   <p>
     As discussed <a href="a:count-from-zero">earlier</a>,
-    <code>range</code> starts counting at 0,
-    not at 1.
-    It therefore stops one number short of the argument it's given
-    so that it produces the right number of values in total.
+    Python counts from 0,
+    not 1.
+    To be consistent with this,
+    <code>range(3)</code> produces the values 0, 1, and 2,
+    rather than 1, 2, 3,
+    so that (for example)
+    <code>range(grid.height)</code> produces
+    all the legal Y-axis indexes for <code>grid</code>.
   </p>
 
   <p>
