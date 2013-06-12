@@ -8,12 +8,10 @@
 {% block content %}
 
 <p>
-  Valerie Visual is studying human visual processing.
-  More specifically,
-  she is studying the way the brain interprets missing or noisy information.
+  Valerie Visual is studying the way people interpret missing or noisy information.
   For one of her experiments,
   she wants to introduce successively larger amounts of random noise into a series of pictures
-  to see when different people start to notice that something is wrong.
+  to see when people start to notice it.
 </p>
 
 <p>
@@ -22,10 +20,8 @@
   to use a tool like Photoshop.
   However,
   she wants to show each test subject several hundred images.
-  What she <em>doesn't</em> want to do is
-  spend more time creating those images
-  than actually running her experiments.
-  She's going to have to learn how to program,
+  Creating these by hand would take longer than actually running her experiments,
+  so she's going to learn how to program,
   and that's what this lesson is about.
 </p>
 
@@ -38,7 +34,7 @@
   though,
   is that newcomers find it easier to read than most other languages.
   It also allows people to do useful things
-  without having to master advanced concepts like object-oriented programming.
+  without first having to master advanced concepts like object-oriented programming.
 </p>
 
 <p>
@@ -58,6 +54,11 @@
   so that we can see what we're doing as we go along,
   while the second manipulates photographs and other image files.
 </p>
+
+<div class="guide">
+  <h2>For Instructors</h2>
+  <p class="fixme">instructors' material: call stack</p>
+</div>
 
 <section id="s:basic">
   <h2>Basic Operations</h2>
@@ -219,8 +220,9 @@ print x = 1 + 2
 
     <p class="continue">
       The problem is that printing and assignment are both
-      <a href="glossary.html#statement">statements</a>,
-      and statements cannot be mixed together.
+      <a href="glossary.html#statement">statements</a>.
+      A statement is a complete, self-contained action in a programming language,
+      and statements cannot be combined.
       1+2, on the other hand,
       is an <a href="glossary.html#expression">expression</a>&mdash;something
       that produces a new value&mdash;and expressions can be combined in many ways.
@@ -306,9 +308,9 @@ print x = 1 + 2
   </p>
 
 <pre>
-<span class="in">temp_fahr = 98.6</span>
-<span class="in">temp_kelvin = (temp_fahr - 32.0) * (5.0 / 9.0) + 273.15</span>
-<span class="in">print "body temperature in Kelvin:", temp_kelvin</span>
+<span class="in">temp_fahr = 98.6
+temp_kelvin = (temp_fahr - 32.0) * (5.0 / 9.0) + 273.15
+print 'body temperature in Kelvin:', temp_kelvin</span>
 <span class="out">body temperature in Kelvin: 310.15</span>
 </pre>
 
@@ -435,8 +437,8 @@ NameError: name 'temp_celsius' is not defined</span>
       to fill in the rest of the variable name.
       Others find that using slightly longer but more comprehensible names
       is a better balance between typing time and reading time.
-      The most important thing is to be consistent:
-      every inconsistency in naming costs extra time to read.
+      The most important thing is to be consistent,
+      because every inconsistency makes reading harder and slower.
     </p>
   </div>
 
@@ -486,21 +488,21 @@ NameError: name 'temp_celsius' is not defined</span>
   </p>
 
 <pre>
-<span class="in">temp_fahr = 98.6</span>
-<span class="in">temp_kelvin = (temp_fahr - 32.0) * (5.0 / 9.0) + 273.15</span>
-<span class="in">print "body temperature in Kelvin:", temp_kelvin</span>
+<span class="in">temp_fahr = 98.6
+temp_kelvin = (temp_fahr - 32.0) * (5.0 / 9.0) + 273.15
+print 'body temperature in Kelvin:', temp_kelvin</span>
 <span class="out">body temperature in Kelvin: 310.15</span>
 </pre>
 
   <p>
-    Why have we written 5.0/9.0 instead of 5/9?
+    Why have we written 5.0/9.0 instead of simply 5/9?
     Let's see what happens if we take out the .0's:
   </p>
 
 <pre>
 <span class="in">temp_fahr = 98.6</span>
-<span class="highlight">temp_kelvin = (temp_fahr - 32) * (5 / 9) + 273.15</span>
-<span class="in">print "body temperature in Kelvin:", temp_kelvin</span>
+<span class="highlight">temp_kelvin = (temp_fahr - 32) * (5 / 9) + 273.15
+print 'body temperature in Kelvin:', temp_kelvin</span>
 <span class="out">body temperature in Kelvin: 273.15</span>
 </pre>
 
@@ -516,11 +518,14 @@ NameError: name 'temp_celsius' is not defined</span>
 </pre>
 
   <p>
-    The problem is that the computer treats integers and floating point numbers differently.
+    The problem is that computers have two different kinds of numbers:
+    integers like 1, 2, and 3,
+    and floating-point numbers
+    (or <a href="glossary.html#float">floats</a>),
+    which have fractional parts.
     If a number doesn't have a decimal point,
-    then Python stores its value as an integer
-    with no fractional part.
-    And when it divides one integer by another,
+    Python stores its value as an integer.
+    When it divides one integer by another,
     it throws away the remainder:
     to a computer,
     5/2 is 2, not 2.5.
@@ -529,8 +534,7 @@ NameError: name 'temp_celsius' is not defined</span>
   <p>
     If a number contains a decimal point,
     though,
-    Python stores it as a floating-point number
-    (or <a href="glossary.html#float">float</a>).
+    Python stores it as a float.
     When it does division or any other kind of arithmetic,
     the result is a float if either of the values involved is a float:
   </p>
@@ -549,6 +553,19 @@ NameError: name 'temp_celsius' is not defined</span>
     we're using Python 2.7,
     so 10/3 is 3 until further notice.
   </p>
+
+  <div class="box">
+    <h3>Why Two?</h3>
+    <p>
+      Computers have both integers and floats for two reasons.
+      The first is historical:
+      integer operations were significantly faster on early computers.
+      Secondly,
+      they have different purposes:
+      integers are for counting,
+      and floats for measuring.
+    <p>
+  </div>
 
   <div class="box">
     <h3>Remainder</h3>
