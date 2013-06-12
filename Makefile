@@ -82,7 +82,7 @@ sterile : tidy
 #------------------------------------------------------------
 
 ## testing Markdown
-markdown : temp.html
+markdown : build/temp.html
 
-temp.html : db.md
-	pandoc --ascii --toc -r markdown+header_attributes -t html5 --section-divs -o temp.html db.md
+build/temp.html : db.md templates/_md.html
+	pandoc --ascii --toc -r markdown+header_attributes+pandoc_title_block -t html5 --section-divs --standalone --template=templates/_md.html -o $@ $<

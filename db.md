@@ -1,4 +1,6 @@
-# Databases and SQL
+% Databases and SQL
+% Greg Wilson
+% June 2013
 
 In the late 1920s and early 1930s,
 William Dyer,
@@ -136,8 +138,7 @@ that is arranged as [tables](glossary.html#table).
 Each table has columns (also known as [fields](glossary.html#field-database)) which describe the data,
 and rows (also known as [records](glossary.html#record-database)) which contain the data.
   
-@@@id="a:dbms"
-
+<a id="a:dbms"></a>
 When we are using a spreadsheet,
 we put formulas into cells to calculate new values based on old ones.
 When we are using a database,
@@ -1942,8 +1943,7 @@ and    Visited.dated is not null</span>;
 -49.85                  -128.57                 1932-03-22              rad                     11.25
 --------------------    --------------------    --------------------    --------------------    --------------------
   
-@@@id="a:keys"
-
+<a id="a:keys"></a>
 We can tell which records from `Site`, `Visited`, and `Survey`
 correspond with each other
 because those tables contain
