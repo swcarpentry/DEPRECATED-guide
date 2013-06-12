@@ -122,17 +122,13 @@ depends on most of the [basic Python material](python.html).
 
 ## Selecting {#s:select}
 
-<div class="objectives">
-
-### Learning Objectives
-
-* Explain the difference between a table, a database, and a database manager.
-* Explain the difference between a field and a record.
-* Select specific fields from specific tables, and display them in a specific order.
-
-Duration: 15 minutes (not including time required to download database file and connect to it)
-
-</div>
+> ### Learning Objectives {.objectives}
+> 
+> * Explain the difference between a table, a database, and a database manager.
+> * Explain the difference between a field and a record.
+> * Select specific fields from specific tables, and display them in a specific order.
+> 
+> Duration: 15 minutes (not including time required to download database file and connect to it)
 
 A [relational database](glossary.html#relational-database)
 is a way to store and manipulate information
@@ -153,19 +149,15 @@ The database manager does whatever lookups and calculations the query specifies,
 returning the results in a tabular form
 that we can then use as a starting point for further queries.
   
-<div class="box">
-
-### Under the Hood
-
-Every database manager&mdash;Oracle,
-IBM DB2, PostgreSQL, MySQL, Microsoft Access, and SQLite&mdash;stores
-data in a different way,
-so a database created with one cannot be used directly by another.
-However,
-every database manager can import and export data in a variety of formats,
-so it *is* possible to move information from one to another.
-
-</div>
+> ### Under the Hood {.box}
+> 
+> Every database manager&mdash;Oracle,
+> IBM DB2, PostgreSQL, MySQL, Microsoft Access, and SQLite&mdash;stores
+> data in a different way,
+> so a database created with one cannot be used directly by another.
+> However,
+> every database manager can import and export data in a variety of formats,
+> so it *is* possible to move information from one to another.
 
 Queries are written in a language called [SQL](glossary.html#sql),
 which stands for "Structured Query Language".
@@ -285,61 +277,53 @@ Danforth                Frank
 From now on,
 we won't bother to display the prompt(s) with our commands.
   
-<div class="box">
+> ### Case and Consistency {.box}
+> 
+> We have written our command and the column names in lower case,
+> and the table name in title case,
+> but we could use any mix:
+> SQL is [case insensitive](glossary.html#case-insensitive),
+> so we could write them all in upper case,
+> or even like this:
+> 
+> ~~~~ {.sql}
+> SeLeCt famILY, PERSonal frOM PERson;
+> ~~~~
+> 
+> But please don't:
+> large SQL queries are hard enough to read
+> without the extra cognitive load of random capitalization.
 
-### Case and Consistency
-
-We have written our command and the column names in lower case,
-and the table name in title case,
-but we could use any mix:
-SQL is [case insensitive](glossary.html#case-insensitive),
-so we could write them all in upper case,
-or even like this:
-
-~~~~ {.sql}
-SeLeCt famILY, PERSonal frOM PERson;
-~~~~
-
-But please don't:
-large SQL queries are hard enough to read
-without the extra cognitive load of random capitalization.
-
-</div>
-
-<div class="box">
-
-### Displaying Results
-
-Exactly *how* the database displays the query's results
-depends on what kind of interface we are using.
-If we are running SQLite directly from the shell,
-its default output looks like this:
-    
-    Dyer|William
-    Pabodie|Frank
-    Lake|Anderson
-    Roerich|Valentina
-    Danforth|Frank
-
-If we are using a graphical interface,
-such as the [SQLite Manager](https://addons.mozilla.org/en-US/firefox/addon/sqlite-manager/) plugin for Firefox
-or the [database extension](https://github.com/catherinedevlin/ipython-sql) for the IPython Notebook,
-our output will be displayed graphically
-([Figure 2](#f:firefox_output)
-and [Figure 3](#f:notebook_output)).
-We'll use a simple table-based display in these notes.
-
-    <figure id="f:firefox_output">
-      <img src="db/firefox_output.png" alt="Firefox SQLite Manager Output" />
-      <figcaption>Figure 2: Firefox SQLite Manager Output</figcaption>
-    </figure>
-
-    <figure id="f:notebook_output">
-      <img src="db/notebook_output.png" alt="IPython Notebook Database Extension Output" />
-      <figcaption>Figure 3: IPython Notebook Database Extension Output</figcaption>
-    </figure>
-
-</div>
+> ### Displaying Results {.box}
+> 
+> Exactly *how* the database displays the query's results
+> depends on what kind of interface we are using.
+> If we are running SQLite directly from the shell,
+> its default output looks like this:
+>     
+>     Dyer|William
+>     Pabodie|Frank
+>     Lake|Anderson
+>     Roerich|Valentina
+>     Danforth|Frank
+> 
+> If we are using a graphical interface,
+> such as the [SQLite Manager](https://addons.mozilla.org/en-US/firefox/addon/sqlite-manager/) plugin for Firefox
+> or the [database extension](https://github.com/catherinedevlin/ipython-sql) for the IPython Notebook,
+> our output will be displayed graphically
+> ([Figure 2](#f:firefox_output)
+> and [Figure 3](#f:notebook_output)).
+> We'll use a simple table-based display in these notes.
+> 
+>     <figure id="f:firefox_output">
+>       <img src="db/firefox_output.png" alt="Firefox SQLite Manager Output" />
+>       <figcaption>Figure 2: Firefox SQLite Manager Output</figcaption>
+>     </figure>
+> 
+>     <figure id="f:notebook_output">
+>       <img src="db/notebook_output.png" alt="IPython Notebook Database Extension Output" />
+>       <figcaption>Figure 3: IPython Notebook Database Extension Output</figcaption>
+>     </figure>
 
 Going back to our query,
 it's important to understand that
@@ -418,15 +402,11 @@ or as:
 
 ## Removing Duplicates {#s:distinct}
 
-<div class="understand">
-
-### Learning Objectives
-
-* Write queries that only display distinct results once.
-
-Duration: 5 minutes.
-
-</div>
+> ### Learning Objectives {.objectives}
+> 
+> * Write queries that only display distinct results once.
+> 
+> Duration: 5 minutes.
 
 Data is often redundant,
 so queries often return redundant information.
@@ -546,18 +526,14 @@ danforth                Frank                   Danforth
 
 ## Filtering {#s:filter}
 
-<div class="understand">
-
-### Learning Objectives
-
-* Write queries that select records based on the values of their fields.
-* Write queries that select records using combinations of several tests on their fields' values.
-* Build up complex filtering criteria incrementally.
-* Explain the logical order in which filtering by field value and displaying fields takes place.
-
-Duration: 5-10 minutes.
-
-</div>
+> ### Learning Objectives {.objectives}
+> 
+> * Write queries that select records based on the values of their fields.
+> * Write queries that select records using combinations of several tests on their fields' values.
+> * Build up complex filtering criteria incrementally.
+> * Explain the logical order in which filtering by field value and displaying fields takes place.
+> 
+> Duration: 5-10 minutes.
 
 One of the most powerful features of a database is
 the ability to [filter](glossary.html#filter) data,
@@ -572,11 +548,11 @@ by using a `where` clause in our query:
 select * from Visited where site='DR-1';
 ~~~~
 
---------------------	--------------------	--------------------
-619			DR-1			1927-02-08
-622			DR-1			1927-02-10
-844			DR-1			1932-03-22
---------------------	--------------------	--------------------
+--------------------    --------------------    --------------------
+619                     DR-1                    1927-02-08
+622                     DR-1                    1927-02-10
+844                     DR-1                    1932-03-22
+--------------------    --------------------    --------------------
   
 The database manager executes this query in two stages
 ([Figure 4](#f:pipeline_where)).
@@ -613,37 +589,33 @@ we can ask for all information from the DR-1 site collected since 1930:
 select * from Visited where (site='DR-1') and (dated>='1930-00-00');
 ~~~~
 
---------------------	--------------------	--------------------
-844			DR-1			1932-03-22
---------------------	--------------------	--------------------
+--------------------    --------------------    --------------------
+844                     DR-1                    1932-03-22
+--------------------    --------------------    --------------------
   
 (The parentheses around the individual tests aren't strictly required,
 but they help make the query easier to read.)
   
-<div class="box">
-
-### Working With Dates {#a:dates}
-
-Most database managers have a special data type for dates.
-In fact, many have two:
-one for dates,
-such as "May 31, 1971",
-and one for durations,
-such as "31 days".
-SQLite doesn't:
-instead,
-it stores dates as either text
-(in the ISO-8601 standard format "YYYY-MM-DD HH:MM:SS.SSSS"),
-real numbers
-(the number of days since November 24, 4714 BCE),
-or integers
-(the number of seconds since midnight, January 1, 1970).
-If this sounds complicated,
-it is,
-but not nearly as complicated as figuring out
-[historical dates in Sweden](http://en.wikipedia.org/wiki/Swedish_calendar).
-    
-</div>
+> ### Working With Dates {#a:dates .box}
+> 
+> Most database managers have a special data type for dates.
+> In fact, many have two:
+> one for dates,
+> such as "May 31, 1971",
+> and one for durations,
+> such as "31 days".
+> SQLite doesn't:
+> instead,
+> it stores dates as either text
+> (in the ISO-8601 standard format "YYYY-MM-DD HH:MM:SS.SSSS"),
+> real numbers
+> (the number of days since November 24, 4714 BCE),
+> or integers
+> (the number of seconds since midnight, January 1, 1970).
+> If this sounds complicated,
+> it is,
+> but not nearly as complicated as figuring out
+> [historical dates in Sweden](http://en.wikipedia.org/wiki/Swedish_calendar).
 
 If we want to find out what measurements were taken by either Lake or Roerich,
 we can combine the tests on their names using `or`:
@@ -652,18 +624,18 @@ we can combine the tests on their names using `or`:
 select * from Survey where person='lake' or person='roe';
 ~~~~
 
---------------------	--------------------	--------------------	--------------------
-734			lake			sal			0.05
-751			lake			sal			0.1
-752			lake			rad			2.19
-752			lake			sal			0.09
-752			lake			temp			-16.0
-752			roe			sal			41.6
-837			lake			rad			1.46
-837			lake			sal			0.21
-837			roe			sal			22.5
-844			roe			rad			11.25
---------------------	--------------------	--------------------	--------------------
+--------------------    --------------------    --------------------    --------------------
+734                     lake                    sal                     0.05
+751                     lake                    sal                     0.1
+752                     lake                    rad                     2.19
+752                     lake                    sal                     0.09
+752                     lake                    temp                    -16.0
+752                     roe                     sal                     41.6
+837                     lake                    rad                     1.46
+837                     lake                    sal                     0.21
+837                     roe                     sal                     22.5
+844                     roe                     rad                     11.25
+--------------------    --------------------    --------------------    --------------------
   
 Alternatively,
 we can use `in` to see if a value is in a specific set:
@@ -672,18 +644,18 @@ we can use `in` to see if a value is in a specific set:
 select * from Survey where person in ('lake', 'roe');
 ~~~~
 
---------------------	--------------------	--------------------	--------------------
-734			lake			sal			0.05
-751			lake			sal			0.1
-752			lake			rad			2.19
-752			lake			sal			0.09
-752			lake			temp			-16.0
-752			roe			sal			41.6
-837			lake			rad			1.46
-837			lake			sal			0.21
-837			roe			sal			22.5
-844			roe			rad			11.25
---------------------	--------------------	--------------------	--------------------
+--------------------    --------------------    --------------------    --------------------
+734                     lake                    sal                     0.05
+751                     lake                    sal                     0.1
+752                     lake                    rad                     2.19
+752                     lake                    sal                     0.09
+752                     lake                    temp                    -16.0
+752                     roe                     sal                     41.6
+837                     lake                    rad                     1.46
+837                     lake                    sal                     0.21
+837                     roe                     sal                     22.5
+844                     roe                     rad                     11.25
+--------------------    --------------------    --------------------    --------------------
   
 We can combine `and` with `or`,
 but we need to be careful about which operator is executed first.
@@ -694,15 +666,15 @@ we get this:
 select * from Survey where quant='sal' and person='lake' or person='roe';
 ~~~~
 
---------------------	--------------------	--------------------	--------------------
-734			lake			sal			0.05
-751			lake			sal			0.1
-752			lake			sal			0.09
-752			roe			sal			41.6
-837			lake			sal			0.21
-837			roe			sal			22.5
-844			roe			rad			11.25
---------------------	--------------------	--------------------	--------------------
+--------------------    --------------------    --------------------    --------------------
+734                     lake                    sal                     0.05
+751                     lake                    sal                     0.1
+752                     lake                    sal                     0.09
+752                     roe                     sal                     41.6
+837                     lake                    sal                     0.21
+837                     roe                     sal                     22.5
+844                     roe                     rad                     11.25
+--------------------    --------------------    --------------------    --------------------
   
 which is salinity measurements by Lake,
 and *any* measurement by Roerich.
@@ -712,14 +684,14 @@ We probably want this instead:
 select * from Survey where quant='sal' and <span class="highlight">(</span>person='lake' or person='roe'<span class="highlight">)</span>;
 ~~~~
 
---------------------	--------------------	--------------------	--------------------
-734			lake			sal			0.05
-751			lake			sal			0.1
-752			lake			sal			0.09
-752			roe			sal			41.6
-837			lake			sal			0.21
-837			roe			sal			22.5
---------------------	--------------------	--------------------	--------------------
+--------------------    --------------------    --------------------    --------------------
+734                     lake                    sal                     0.05
+751                     lake                    sal                     0.1
+752                     lake                    sal                     0.09
+752                     roe                     sal                     41.6
+837                     lake                    sal                     0.21
+837                     roe                     sal                     22.5
+--------------------    --------------------    --------------------    --------------------
   
 Finally,
 we can use `distinct` with `where`
@@ -729,42 +701,38 @@ to give a second level of filtering:
 select distinct person, quant from Survey where person='lake' or person='roe';
 ~~~~
 
---------------------	--------------------
-lake			sal
-lake			rad
-lake			temp
-roe			sal
-roe			rad
---------------------	--------------------
+--------------------    --------------------
+lake                    sal
+lake                    rad
+lake                    temp
+roe                     sal
+roe                     rad
+--------------------    --------------------
   
 But remember:
 `distinct` is applied to the values displayed in the chosen columns,
 not to the entire rows as they are being processed.
   
-<div class="box">
-
-### Growing Queries
-
-What we have just done is how most people "grow" their SQL queries.
-We started with something simple that did part of what we wanted,
-then added more clauses one by one,
-testing their effects as we went.
-This is a good strategy&mdash;in fact,
-for complex queries it's often the *only* strategy&mdash;but
-it depends on quick turnaround,
-and on us recognizing the right answer when we get it.
-    
-The best way to achieve quick turnaround is often
-to put a subset of data in a temporary database
-and run our queries against that,
-or to fill a small database with synthesized records.
-For example,
-instead of trying our queries against an actual database of 20 million Australians,
-we could run it against a sample of ten thousand,
-or write a small program to generate ten thousand random (but plausible) records
-and use that.
-    
-</div>
+> ### Growing Queries {.box}
+> 
+> What we have just done is how most people "grow" their SQL queries.
+> We started with something simple that did part of what we wanted,
+> then added more clauses one by one,
+> testing their effects as we went.
+> This is a good strategy&mdash;in fact,
+> for complex queries it's often the *only* strategy&mdash;but
+> it depends on quick turnaround,
+> and on us recognizing the right answer when we get it.
+>     
+> The best way to achieve quick turnaround is often
+> to put a subset of data in a temporary database
+> and run our queries against that,
+> or to fill a small database with synthesized records.
+> For example,
+> instead of trying our queries against an actual database of 20 million Australians,
+> we could run it against a sample of ten thousand,
+> or write a small program to generate ten thousand random (but plausible) records
+> and use that.
 
 ### Summary {.keypoints}
 
@@ -793,14 +761,14 @@ and use that.
   the character '%' can be used any number of times in the pattern
   to mean "match zero or more characters".
 
-Expression		Value
---------------------	--------------------
-`'a' like 'a'`		`True`
-`'a' like '%a'`		`True`
-`'b' like '%a'`		`False`
-`'alpha' like 'a%'`	`True`
-`'alpha' like 'a%p%'`	`True`
-`'beta' like 'a%p%'`	`False`
+Expression              Value
+--------------------    --------------------
+`'a' like 'a'`          `True`
+`'a' like '%a'`         `True`
+`'b' like '%a'`         `False`
+`'alpha' like 'a%'`     `True`
+`'alpha' like 'a%p%'`   `True`
+`'beta' like 'a%p%'`    `False`
 
   The expression `*column-name* not like *pattern*`
   inverts the test.
@@ -810,15 +778,11 @@ Expression		Value
 
 ## Calculating New Values {#s:calc}
 
-<div class="understand">
-
-### Learning Objectives
-
-* Write queries that do arithmetic using the values in individual records.
-
-Duration: 5 minutes.
-
-</div>
+> ### Learning Objectives {.objectives}
+> 
+> * Write queries that do arithmetic using the values in individual records.
+> 
+> Duration: 5 minutes.
 
 After carefully reading the expedition logs,
 Gina realizes that the radiation measurements they report
@@ -856,12 +820,12 @@ and round to two decimal places as follows:
 select taken, round(5*(reading-32)/9, 2) from Survey where quant='temp';
 ~~~~
 
---------------------	--------------------
-734			-29.72
-735			-32.22
-751			-28.06
-752			-26.67
---------------------	--------------------
+--------------------    --------------------
+734                     -29.72
+735                     -32.22
+751                     -28.06
+752                     -26.67
+--------------------    --------------------
   
 We can also combine values from different fields,
 for example by using the string concatenation operator `||`:
@@ -878,33 +842,29 @@ Valentina Roerich
 Frank Danforth
 --------------------
   
-<div class="box">
-
-### A Note on Names
-
-It may seem strange to use `personal` and `family` as field names
-instead of `first` and `last`,
-but it's a necessary first step toward handling cultural differences.
-For example,
-consider the following rules:
-    
-Full Name			Alphabetized Under	Reason
---------------------		--------------------	--------------------
-Liu Xiaobo			Liu			Chinese family names come first
-Leonardo da Vinci		Leonardo		"da Vinci" just means "from Vinci"
-Catherine de Medici		Medici			family name
-Jean de La Fontaine		La Fontaine		family name is "La Fontaine"
-Juan Ponce de Leon		Ponce de Leon		full family name is "Ponce de Leon"
-Gabriel Garcia Marquez		Garcia Marquez		double-barrelled Spanish surnames
-Wernher von Braun		von *or* Braun		depending on whether he was in Germany or the US
-Elizabeth Alexandra May Windsor	Elizabeth		monarchs alphabetize by the name under which they reigned
-Thomas a Beckett		Thomas			and saints according to the names by which they were canonized
-    
-Clearly,
-even a two-part division into "personal" and "family"
-isn't enough...
-
-</div>
+> ### A Note on Names {.box}
+> 
+> It may seem strange to use `personal` and `family` as field names
+> instead of `first` and `last`,
+> but it's a necessary first step toward handling cultural differences.
+> For example,
+> consider the following rules:
+>     
+> Full Name                     Alphabetized Under      Reason
+> --------------------          --------------------    --------------------
+> Liu Xiaobo                    Liu                     Chinese family names come first
+> Leonardo da Vinci             Leonardo                "da Vinci" just means "from Vinci"
+> Catherine de Medici           Medici                  family name
+> Jean de La Fontaine           La Fontaine             family name is "La Fontaine"
+> Juan Ponce de Leon            Ponce de Leon           full family name is "Ponce de Leon"
+> Gabriel Garcia Marquez                Garcia Marquez          double-barrelled Spanish surnames
+> Wernher von Braun             von *or* Braun          depending on whether he was in Germany or the US
+> Elizabeth Alexandra May Windsor       Elizabeth               monarchs alphabetize by the name under which they reigned
+> Thomas a Beckett              Thomas                  and saints according to the names by which they were canonized
+>     
+> Clearly,
+> even a two-part division into "personal" and "family"
+> isn't enough...
 
 ### Summary {.keypoints}
 
@@ -925,26 +885,26 @@ isn't enough...
 select * from Person where ident='dyer' union select * from Person where ident='roe';
 ~~~~
 
---------------------	--------------------	--------------------
-dyer			William			Dyer
-roe			Valentina			Roerich
---------------------	--------------------	--------------------
+--------------------    --------------------    --------------------
+dyer                    William                 Dyer
+roe                     Valentina                       Roerich
+--------------------    --------------------    --------------------
         
   Use `union` to create a consolidated list of salinity measurements
   in which Roerich's, and only Roerich's,
   have been corrected as described in the previous challenge.
   The output should be something like:
 
---------------------	--------------------
-619			0.13
-622			0.09
-734			0.05
-751			0.1
-752			0.09
-752			0.416
-837			0.21
-837			0.225
---------------------	--------------------
+--------------------    --------------------
+619                     0.13
+622                     0.09
+734                     0.05
+751                     0.1
+752                     0.09
+752                     0.416
+837                     0.21
+837                     0.225
+--------------------    --------------------
 
 * The site identifiers in the `Visited` table have two parts
   separated by a '-':
@@ -977,17 +937,13 @@ MSK-4
 
 ## Ordering Results {#s:sort}
 
-<div class="understand">
-
-### Learning Objectives
-
-* Write queries that order results according to fields' values.
-* Write queries that order results according to calculated values.
-* Explain why it is possible to sort records using the values of fields that are not displayed.
-
-Duration: 5 minutes.
-
-</div>
+> ### Learning Objectives {.objectives}
+> 
+> * Write queries that order results according to fields' values.
+> * Write queries that order results according to calculated values.
+> * Explain why it is possible to sort records using the values of fields that are not displayed.
+> 
+> Duration: 5 minutes.
 
 As we mentioned earlier,
 database records are not stored in any particular order.
@@ -1046,29 +1002,29 @@ within each group of equal `taken` values:
 select taken, person from Survey order by taken asc, person desc;
 ~~~~
 
---------------------	--------------------
-619			dyer
-619			dyer
-622			dyer
-622			dyer
-734			pb
-734			pb
-734			lake
-735			pb
-735         		
-735         		
-751			pb
-751			pb
-751			lake
-752			roe
-752			lake
-752			lake
-752			lake
-837			roe
-837			lake
-837			lake
-844			roe
---------------------	--------------------
+--------------------    --------------------
+619                     dyer
+619                     dyer
+622                     dyer
+622                     dyer
+734                     pb
+734                     pb
+734                     lake
+735                     pb
+735                     
+735                     
+751                     pb
+751                     pb
+751                     lake
+752                     roe
+752                     lake
+752                     lake
+752                     lake
+837                     roe
+837                     lake
+837                     lake
+844                     roe
+--------------------    --------------------
   
 This is easier to understand if we also remove duplicates:
   
@@ -1076,21 +1032,21 @@ This is easier to understand if we also remove duplicates:
 select <span class="highlight">distinct</span> taken, person from Survey order by taken asc, person desc;
 ~~~~
 
---------------------	--------------------
-619			dyer
-622			dyer
-734			pb
-734			lake
-735			pb
-735         		
-751			pb
-751			lake
-752			roe
-752			lake
-837			roe
-837			lake
-844			roe
---------------------	--------------------
+--------------------    --------------------
+619                     dyer
+622                     dyer
+734                     pb
+734                     lake
+735                     pb
+735                     
+751                     pb
+751                     lake
+752                     roe
+752                     lake
+837                     roe
+837                     lake
+844                     roe
+--------------------    --------------------
 
 Since sorting happens before columns are filtered,
 we can sort by a field that isn't actually displayed:
@@ -1122,13 +1078,13 @@ once per record):
 select random(), ident from Person;
 ~~~~
 
---------------------	--------------------
--6309766557809954936	dyer
--2098461436941487136	pb
--2248225962969032314	lake
-6062184424509295966	roe
--1268956870222271271	danforth
---------------------	--------------------
+--------------------    --------------------
+-6309766557809954936    dyer
+-2098461436941487136    pb
+-2248225962969032314    lake
+6062184424509295966     roe
+-1268956870222271271    danforth
+--------------------    --------------------
   
 So to randomize the order of our query results,
 e.g., when doing clinical trials,
@@ -1194,20 +1150,16 @@ Our query pipeline now has four stages
 
 ## Missing Data {#s:null}
 
-<div class="understand">
-
-### Learning Objectives
-
-* Explain what databases use the special value `NULL` to represent.
-* Explain why databases should *not* uses their own special values (like 9999 or "N/A") to represent missing or unknown data.
-* Explain what atomic and aggregate calculations involving `NULL` produce, and why.
-* Write queries that include or exclude records containing `NULL`.
-
-Duration: 10-20 minutes
-(depending on whether or not the instructor includes an anecdote about
-what happens when you *don't* take missing data into account).
-
-</div>
+> ### Learning Objectives {.objectives}
+> 
+> * Explain what databases use the special value `NULL` to represent.
+> * Explain why databases should *not* uses their own special values (like 9999 or "N/A") to represent missing or unknown data.
+> * Explain what atomic and aggregate calculations involving `NULL` produce, and why.
+> * Write queries that include or exclude records containing `NULL`.
+> 
+> Duration: 10-20 minutes
+> (depending on whether or not the instructor includes an anecdote about
+> what happens when you *don't* take missing data into account).
 
 Real-world data is never complete&mdash;there are always holes.
 Databases represent these holes using special value called `null`.
@@ -1226,28 +1178,24 @@ its date is null:
 select * from Visited;
 ~~~~
 
---------------------	--------------------	--------------------
-619			DR-1			1927-02-08
-622			DR-1			1927-02-10
-734			DR-3			1939-01-07
-735			DR-3			1930-01-12
-751			DR-3			1930-02-26
-752			DR-3            	
-837			MS-4			1932-01-14
-844			DR-1			1932-03-22
---------------------	--------------------	--------------------
+--------------------    --------------------    --------------------
+619                     DR-1                    1927-02-08
+622                     DR-1                    1927-02-10
+734                     DR-3                    1939-01-07
+735                     DR-3                    1930-01-12
+751                     DR-3                    1930-02-26
+752                     DR-3                    
+837                     MS-4                    1932-01-14
+844                     DR-1                    1932-03-22
+--------------------    --------------------    --------------------
   
-<div class="box">
-
-### Displaying Nulls
-
-Different databases display nulls differently.
-Unfortunately,
-SQLite's default is to print nothing at all,
-which makes nulls easy to overlook
-(particularly if they're in the middle of a long row).
-
-</div>
+> ### Displaying Nulls {.box}
+> 
+> Different databases display nulls differently.
+> Unfortunately,
+> SQLite's default is to print nothing at all,
+> which makes nulls easy to overlook
+> (particularly if they're in the middle of a long row).
 
 Null doesn't behave like other values.
 If we select the records that come before 1930:
@@ -1256,10 +1204,10 @@ If we select the records that come before 1930:
 select * from Visited where dated<'1930-00-00';
 ~~~~
 
---------------------	--------------------	--------------------
-619			DR-1			1927-02-08
-622			DR-1			1927-02-10
---------------------	--------------------	--------------------
+--------------------    --------------------    --------------------
+619                     DR-1                    1927-02-08
+622                     DR-1                    1927-02-10
+--------------------    --------------------    --------------------
   
 we get two results,
 and if we select the ones that come during or after 1930:
@@ -1268,13 +1216,13 @@ and if we select the ones that come during or after 1930:
 select * from Visited where dated>='1930-00-00';
 ~~~~
 
---------------------	--------------------	--------------------
-734			DR-3			1939-01-07
-735			DR-3			1930-01-12
-751			DR-3			1930-02-26
-837			MS-4			1932-01-14
-844			DR-1			1932-03-22
---------------------	--------------------	--------------------
+--------------------    --------------------    --------------------
+734                     DR-3                    1939-01-07
+735                     DR-3                    1930-01-12
+751                     DR-3                    1930-02-26
+837                     MS-4                    1932-01-14
+844                     DR-1                    1932-03-22
+--------------------    --------------------    --------------------
   
 we get five,
 but record #752 isn't in either set of results.
@@ -1316,9 +1264,9 @@ we must use a special test `is null`:
 select * from Visited where dated is NULL;
 ~~~~
 
---------------------	--------------------
-752			DR-3            
---------------------	--------------------
+--------------------    --------------------
+752                     DR-3            
+--------------------    --------------------
   
 or its inverse `is not null`:
   
@@ -1326,15 +1274,15 @@ or its inverse `is not null`:
 select * from Visited where dated is not NULL;
 ~~~~
 
---------------------	--------------------	--------------------
-619			DR-1			1927-02-08
-622			DR-1			1927-02-10
-734			DR-3			1939-01-07
-735			DR-3			1930-01-12
-751			DR-3			1930-02-26
-837			MS-4			1932-01-14
-844			DR-1			1932-03-22
---------------------	--------------------	--------------------
+--------------------    --------------------    --------------------
+619                     DR-1                    1927-02-08
+622                     DR-1                    1927-02-10
+734                     DR-3                    1939-01-07
+735                     DR-3                    1930-01-12
+751                     DR-3                    1930-02-26
+837                     MS-4                    1932-01-14
+844                     DR-1                    1932-03-22
+--------------------    --------------------    --------------------
   
 Null values cause headaches wherever they appear.
 For example,
@@ -1346,12 +1294,12 @@ It's natural to write the query like this:
 select * from Survey where quant='sal' and person!='lake';
 ~~~~
 
---------------------	--------------------	--------------------	--------------------
-619			dyer			sal			0.13
-622			dyer			sal			0.09
-752			roe			sal			41.6
-837			roe			sal			22.5
---------------------	--------------------	--------------------	--------------------
+--------------------    --------------------    --------------------    --------------------
+619                     dyer                    sal                     0.13
+622                     dyer                    sal                     0.09
+752                     roe                     sal                     41.6
+837                     roe                     sal                     22.5
+--------------------    --------------------    --------------------    --------------------
   
 but this query filters omits the records
 where we don't know who took the measurement.
@@ -1366,13 +1314,13 @@ we need to add an explicit check:
 select * from Survey where quant='sal' and (person!='lake' <span class="highlight">or person is null</span>);
 ~~~~
 
---------------------	--------------------	--------------------	--------------------
-619			dyer			sal			0.13
-622			dyer			sal			0.09
-735						sal			0.06
-752			roe			sal			41.6
-837			roe			sal			22.5
---------------------	--------------------	--------------------	--------------------
+--------------------    --------------------    --------------------    --------------------
+619                     dyer                    sal                     0.13
+622                     dyer                    sal                     0.09
+735                                             sal                     0.06
+752                     roe                     sal                     41.6
+837                     roe                     sal                     22.5
+--------------------    --------------------    --------------------    --------------------
 
   
 We still have to decide whether this is the right thing to do or not.
@@ -1380,50 +1328,46 @@ If we want to be absolutely sure that
 we aren't including any measurements by Lake in our results,
 we need to exclude all the records for which we don't know who did the work.
   
-<div class="box">
-
-### What Happens When You Forget
-
-Several years ago,
-I was helping a group who were looking at
-the spread of drug-resistant tuberculosis (DRTB)
-in industrialized countries.
-In particular,
-they wanted to know if it was spreading faster among less affluent people.
-    
-We tackled the problem by combining two data sets.
-The first gave us skin and blood test results for DRTB
-along with patients' postal codes
-(the only identifying information we were allowed---we didn't even have gender).
-The second was Canadian census data that gave us
-median income per postal code.
-Since a PC is about 300-800 people,
-we felt justified in joining the first with the second
-to estimate incomes for people with positive and negative test results.
-    
-To our surprise,
-we didn't find a correlation between income and infection.
-We were just about to publish when someone spotted the mistake I'd made.
-    
-Question: Who *doesn't* have a postal code?
-    
-Answer: Homeless people.
-    
-When I did the join,
-I was throwing away homeless people,
-which introduced a statistically significant error in my results.
-But I couldn't just set the income of anyone without a postal code to zero,
-because our sample included another set of people without postal codes:
-16-21 year olds whose addresses were suppressed
-because they had tested positive for sexually-transmitted diseases.
-    
-At this point the problem is no longer a database issue,
-but rather a question of statistics.
-The takeaway is,
-checking your queries when you're programming is as important as
-checking your samples when you're doing chemistry.
-
-</div>
+> ### What Happens When You Forget {.box}
+> 
+> Several years ago,
+> I was helping a group who were looking at
+> the spread of drug-resistant tuberculosis (DRTB)
+> in industrialized countries.
+> In particular,
+> they wanted to know if it was spreading faster among less affluent people.
+>     
+> We tackled the problem by combining two data sets.
+> The first gave us skin and blood test results for DRTB
+> along with patients' postal codes
+> (the only identifying information we were allowed---we didn't even have gender).
+> The second was Canadian census data that gave us
+> median income per postal code.
+> Since a PC is about 300-800 people,
+> we felt justified in joining the first with the second
+> to estimate incomes for people with positive and negative test results.
+>     
+> To our surprise,
+> we didn't find a correlation between income and infection.
+> We were just about to publish when someone spotted the mistake I'd made.
+>     
+> Question: Who *doesn't* have a postal code?
+>     
+> Answer: Homeless people.
+>     
+> When I did the join,
+> I was throwing away homeless people,
+> which introduced a statistically significant error in my results.
+> But I couldn't just set the income of anyone without a postal code to zero,
+> because our sample included another set of people without postal codes:
+> 16-21 year olds whose addresses were suppressed
+> because they had tested positive for sexually-transmitted diseases.
+>     
+> At this point the problem is no longer a database issue,
+> but rather a question of statistics.
+> The takeaway is,
+> checking your queries when you're programming is as important as
+> checking your samples when you're doing chemistry.
 
 ### Summary {.keypoints}
 
@@ -1456,18 +1400,14 @@ checking your samples when you're doing chemistry.
 
 ## Aggregation {#s:aggregate}
 
-<div class="understand">
-
-### Learning Objectives
-
-* Write queries that combine values from many records to create a single aggregate value.
-* Write queries that put records into groups based on their values.
-* Write queries that combine values group by group.
-* Explain what is displayed for *unaggregated* fields when some fields are aggregated.
-
-Duration: 10 minutes.
-
-</div>
+> ### Learning Objectives {.objectives}
+> 
+> * Write queries that combine values from many records to create a single aggregate value.
+> * Write queries that put records into groups based on their values.
+> * Write queries that combine values group by group.
+> * Explain what is displayed for *unaggregated* fields when some fields are aggregated.
+> 
+> Duration: 10 minutes.
 
 Gina now wants to calculate ranges and averages for her data.
 She knows how to select all of the dates from the `Visited` table:
@@ -1555,9 +1495,9 @@ find the range of sensible salinity measurements:
 select min(reading), max(reading) from Survey where quant='sal' and reading<=1.0;
 ~~~~
 
---------------------	--------------------
-0.05			0.21
---------------------	--------------------
+--------------------    --------------------
+0.05                    0.21
+--------------------    --------------------
   
 We can also combine aggregated results with raw results,
 although the output might surprise you:
@@ -1566,9 +1506,9 @@ although the output might surprise you:
 select person, count(*) from Survey where quant='sal' and reading<=1.0;
 ~~~~
 
---------------------	--------------------
-lake			7
---------------------	--------------------
+--------------------    --------------------
+lake                    7
+--------------------    --------------------
   
 Why does Lake's name appear rather than Roerich's or Dyer's?
 The answer is that when it has to aggregate a field,
@@ -1658,16 +1598,12 @@ select min(dated) from Visited <span class="highlight">where dated is not null</
 
 ## Grouping {#s:grouping}
 
-<div class="understand">
-
-### Learning Objectives
-
-* Group results to be aggregated separately.
-* Explain when grouping occurs in the processing pipeline.
-
-Duration: 5 minutes.
-
-</div>
+> ### Learning Objectives {.objectives}
+> 
+> * Group results to be aggregated separately.
+> * Explain when grouping occurs in the processing pipeline.
+> 
+> Duration: 5 minutes.
 
 Aggregating all records at once doesn't always make sense.
 For example,
@@ -1681,9 +1617,9 @@ from  Survey
 where quant='rad';
 ~~~~
 
---------------------	--------------------	--------------------
-roe			8			6.56
---------------------	--------------------	--------------------
+--------------------    --------------------    --------------------
+roe                     8                       6.56
+--------------------    --------------------    --------------------
   
 because the database manager selects a single arbitrary scientist's name
 rather than aggregating separately for each scientist.
@@ -1697,9 +1633,9 @@ where quant='rad'
 and   person='dyer';
 ~~~~
 
---------------------	--------------------	--------------------
-dyer			2			8.81
---------------------	--------------------	--------------------
+--------------------    --------------------    --------------------
+dyer                    2                       8.81
+--------------------    --------------------    --------------------
   
 but this would be tedious,
 and if she ever had a data set with fifty or five hundred scientists,
@@ -1716,12 +1652,12 @@ where    quant='rad'
 group by person;
 ~~~~
 
---------------------	--------------------	--------------------
-dyer			2			8.81
-lake			2			1.82
-pb			3			6.66
-roe			1			11.25
---------------------	--------------------	--------------------
+--------------------    --------------------    --------------------
+dyer                    2                       8.81
+lake                    2                       1.82
+pb                      3                       6.66
+roe                     1                       11.25
+--------------------    --------------------    --------------------
   
 `group by` does exactly what its name implies:
 groups all the records with the same value for the specified field together
@@ -1749,19 +1685,19 @@ from     Survey
 group by person, quant;
 ~~~~
 
---------------------	--------------------	--------------------	--------------------
-			sal			1			0.06
-			temp			1			-26.0
-dyer			rad			2			8.81
-dyer			sal			2			0.11
-lake			rad			2			1.82
-lake			sal			4			0.11
-lake			temp			1			-16.0
-pb			rad			3			6.66
-pb			temp			2			-20.0
-roe			rad			1			11.25
-roe			sal			2			32.05
---------------------	--------------------	--------------------	--------------------
+--------------------    --------------------    --------------------    --------------------
+                        sal                     1                       0.06
+                        temp                    1                       -26.0
+dyer                    rad                     2                       8.81
+dyer                    sal                     2                       0.11
+lake                    rad                     2                       1.82
+lake                    sal                     4                       0.11
+lake                    temp                    1                       -16.0
+pb                      rad                     3                       6.66
+pb                      temp                    2                       -20.0
+roe                     rad                     1                       11.25
+roe                     sal                     2                       32.05
+--------------------    --------------------    --------------------    --------------------
   
 Note that we have added `person` to the list of fields displayed,
 since the results wouldn't make much sense otherwise.
@@ -1777,17 +1713,17 @@ group by person, quant
 order by person, quant;
 ~~~~
 
---------------------	--------------------	--------------------	--------------------
-dyer			rad			2			8.81
-dyer			sal			2			0.11
-lake			rad			2			1.82
-lake			sal			4			0.11
-lake			temp			1			-16.0
-pb			rad			3			6.66
-pb			temp			2			-20.0
-roe			rad			1			11.25
-roe			sal			2			32.05
---------------------	--------------------	--------------------	--------------------
+--------------------    --------------------    --------------------    --------------------
+dyer                    rad                     2                       8.81
+dyer                    sal                     2                       0.11
+lake                    rad                     2                       1.82
+lake                    sal                     4                       0.11
+lake                    temp                    1                       -16.0
+pb                      rad                     3                       6.66
+pb                      temp                    2                       -20.0
+roe                     rad                     1                       11.25
+roe                     sal                     2                       32.05
+--------------------    --------------------    --------------------    --------------------
   
 Looking more closely,
 this query:
@@ -1840,19 +1776,15 @@ Our query processing pipeline now looks like
 
 ## Combining Data {#s:join}
 
-<div class="understand">
-
-### Learning Objectives
-
-* Explain what primary keys and foreign keys are.
-* Write queries that combine information from two or more tables by matching keys.
-* Write queries using aliases for table names.
-* Explain why the `tablename.fieldname` notation is needed when tables are joined.
-* Explain the logical sequence of operations that occurs when two or more tables are joined.
-
-Duration: 20 minutes (and expect to have to walk through an example step-by-step).
-
-</div>
+> ### Learning Objectives {.objectives}
+> 
+> * Explain what primary keys and foreign keys are.
+> * Write queries that combine information from two or more tables by matching keys.
+> * Write queries using aliases for table names.
+> * Explain why the `tablename.fieldname` notation is needed when tables are joined.
+> * Explain the logical sequence of operations that occurs when two or more tables are joined.
+> 
+> Duration: 20 minutes (and expect to have to walk through an example step-by-step).
 
 In order to submit her data to a web site
 that aggregates historical meteorological data,
@@ -1872,32 +1804,32 @@ let's start by joining the `Site` and `Visited` tables:
 select * from Site join Visited;
 ~~~~
 
---------------------	--------------------	--------------------	--------------------	--------------------	--------------------
-DR-1			-49.85			-128.57			619			DR-1			1927-02-08
-DR-1			-49.85			-128.57			622			DR-1			1927-02-10
-DR-1			-49.85			-128.57			734			DR-3			1939-01-07
-DR-1			-49.85			-128.57			735			DR-3			1930-01-12
-DR-1			-49.85			-128.57			751			DR-3			1930-02-26
-DR-1			-49.85			-128.57			752			DR-3			
-DR-1			-49.85			-128.57			837			MS-4			1932-01-14
-DR-1			-49.85			-128.57			844			DR-1			1932-03-22
-DR-3			-47.15			-126.72			619			DR-1			1927-02-08
-DR-3			-47.15			-126.72			622			DR-1			1927-02-10
-DR-3			-47.15			-126.72			734			DR-3			1939-01-07
-DR-3			-47.15			-126.72			735			DR-3			1930-01-12
-DR-3			-47.15			-126.72			751			DR-3			1930-02-26
-DR-3			-47.15			-126.72			752			DR-3			
-DR-3			-47.15			-126.72			837			MS-4			1932-01-14
-DR-3			-47.15			-126.72			844			DR-1			1932-03-22
-MS-4			-48.87			-123.4			619			DR-1			1927-02-08
-MS-4			-48.87			-123.4			622			DR-1			1927-02-10
-MS-4			-48.87			-123.4			734			DR-3			1939-01-07
-MS-4			-48.87			-123.4			735			DR-3			1930-01-12
-MS-4			-48.87			-123.4			751			DR-3			1930-02-26
-MS-4			-48.87			-123.4			752			DR-3			
-MS-4			-48.87			-123.4			837			MS-4			1932-01-14
-MS-4			-48.87			-123.4			844			DR-1			1932-03-22
---------------------	--------------------	--------------------	--------------------	--------------------	--------------------
+--------------------    --------------------    --------------------    --------------------    --------------------    --------------------
+DR-1                    -49.85                  -128.57                 619                     DR-1                    1927-02-08
+DR-1                    -49.85                  -128.57                 622                     DR-1                    1927-02-10
+DR-1                    -49.85                  -128.57                 734                     DR-3                    1939-01-07
+DR-1                    -49.85                  -128.57                 735                     DR-3                    1930-01-12
+DR-1                    -49.85                  -128.57                 751                     DR-3                    1930-02-26
+DR-1                    -49.85                  -128.57                 752                     DR-3                    
+DR-1                    -49.85                  -128.57                 837                     MS-4                    1932-01-14
+DR-1                    -49.85                  -128.57                 844                     DR-1                    1932-03-22
+DR-3                    -47.15                  -126.72                 619                     DR-1                    1927-02-08
+DR-3                    -47.15                  -126.72                 622                     DR-1                    1927-02-10
+DR-3                    -47.15                  -126.72                 734                     DR-3                    1939-01-07
+DR-3                    -47.15                  -126.72                 735                     DR-3                    1930-01-12
+DR-3                    -47.15                  -126.72                 751                     DR-3                    1930-02-26
+DR-3                    -47.15                  -126.72                 752                     DR-3                    
+DR-3                    -47.15                  -126.72                 837                     MS-4                    1932-01-14
+DR-3                    -47.15                  -126.72                 844                     DR-1                    1932-03-22
+MS-4                    -48.87                  -123.4                  619                     DR-1                    1927-02-08
+MS-4                    -48.87                  -123.4                  622                     DR-1                    1927-02-10
+MS-4                    -48.87                  -123.4                  734                     DR-3                    1939-01-07
+MS-4                    -48.87                  -123.4                  735                     DR-3                    1930-01-12
+MS-4                    -48.87                  -123.4                  751                     DR-3                    1930-02-26
+MS-4                    -48.87                  -123.4                  752                     DR-3                    
+MS-4                    -48.87                  -123.4                  837                     MS-4                    1932-01-14
+MS-4                    -48.87                  -123.4                  844                     DR-1                    1932-03-22
+--------------------    --------------------    --------------------    --------------------    --------------------    --------------------
   
 `join` creates
 the [cross product](glossary.html#cross-product)
@@ -1922,16 +1854,16 @@ we're only interested in combinations that have the same site name:
 select * from Site join Visited <span class="highlight">on Site.name=Visited.site</span>;
 ~~~~
 
---------------------	--------------------	--------------------	--------------------	--------------------	--------------------
-DR-1			-49.85			-128.57			619			DR-1			1927-02-08
-DR-1			-49.85			-128.57			622			DR-1			1927-02-10
-DR-1			-49.85			-128.57			844			DR-1			1932-03-22
-DR-3			-47.15			-126.72			734			DR-3			1939-01-07
-DR-3			-47.15			-126.72			735			DR-3			1930-01-12
-DR-3			-47.15			-126.72			751			DR-3			1930-02-26
-DR-3			-47.15			-126.72			752			DR-3			
-MS-4			-48.87			-123.4			837			MS-4			1932-01-14
---------------------	--------------------	--------------------	--------------------	--------------------	--------------------
+--------------------    --------------------    --------------------    --------------------    --------------------    --------------------
+DR-1                    -49.85                  -128.57                 619                     DR-1                    1927-02-08
+DR-1                    -49.85                  -128.57                 622                     DR-1                    1927-02-10
+DR-1                    -49.85                  -128.57                 844                     DR-1                    1932-03-22
+DR-3                    -47.15                  -126.72                 734                     DR-3                    1939-01-07
+DR-3                    -47.15                  -126.72                 735                     DR-3                    1930-01-12
+DR-3                    -47.15                  -126.72                 751                     DR-3                    1930-02-26
+DR-3                    -47.15                  -126.72                 752                     DR-3                    
+MS-4                    -48.87                  -123.4                  837                     MS-4                    1932-01-14
+--------------------    --------------------    --------------------    --------------------    --------------------    --------------------
   
 `on` does the same job as `where`:
 it only keeps records that pass some test.
@@ -1963,16 +1895,16 @@ from   Site join Visited
 on     Site.name=Visited.site;
 ~~~~
 
---------------------	--------------------	--------------------
--49.85			-128.57			1927-02-08
--49.85			-128.57			1927-02-10
--49.85			-128.57			1932-03-22
--47.15			-126.72			
--47.15			-126.72			1930-01-12
--47.15			-126.72			1930-02-26
--47.15			-126.72			1939-01-07
--48.87			-123.4			1932-01-14
---------------------	--------------------	--------------------
+--------------------    --------------------    --------------------
+-49.85                  -128.57                 1927-02-08
+-49.85                  -128.57                 1927-02-10
+-49.85                  -128.57                 1932-03-22
+-47.15                  -126.72                 
+-47.15                  -126.72                 1930-01-12
+-47.15                  -126.72                 1930-02-26
+-47.15                  -126.72                 1939-01-07
+-48.87                  -123.4                  1932-01-14
+--------------------    --------------------    --------------------
   
 If joining two tables is good,
 joining many tables must be better.
@@ -1990,25 +1922,25 @@ on     Site.name=Visited.site
 and    Visited.dated is not null</span>;
 ~~~~
 
---------------------	--------------------	--------------------	--------------------	--------------------
--49.85			-128.57			1927-02-08		rad			9.82
--49.85			-128.57			1927-02-08		sal			0.13
--49.85			-128.57			1927-02-10		rad			7.8
--49.85			-128.57			1927-02-10		sal			0.09
--47.15			-126.72			1939-01-07		rad			8.41
--47.15			-126.72			1939-01-07		sal			0.05
--47.15			-126.72			1939-01-07		temp			-21.5
--47.15			-126.72			1930-01-12		rad			7.22
--47.15			-126.72			1930-01-12		sal			0.06
--47.15			-126.72			1930-01-12		temp			-26.0
--47.15			-126.72			1930-02-26		rad			4.35
--47.15			-126.72			1930-02-26		sal			0.1
--47.15			-126.72			1930-02-26		temp			-18.5
--48.87			-123.4			1932-01-14		rad			1.46
--48.87			-123.4			1932-01-14		sal			0.21
--48.87			-123.4			1932-01-14		sal			22.5
--49.85			-128.57			1932-03-22		rad			11.25
---------------------	--------------------	--------------------	--------------------	--------------------
+--------------------    --------------------    --------------------    --------------------    --------------------
+-49.85                  -128.57                 1927-02-08              rad                     9.82
+-49.85                  -128.57                 1927-02-08              sal                     0.13
+-49.85                  -128.57                 1927-02-10              rad                     7.8
+-49.85                  -128.57                 1927-02-10              sal                     0.09
+-47.15                  -126.72                 1939-01-07              rad                     8.41
+-47.15                  -126.72                 1939-01-07              sal                     0.05
+-47.15                  -126.72                 1939-01-07              temp                    -21.5
+-47.15                  -126.72                 1930-01-12              rad                     7.22
+-47.15                  -126.72                 1930-01-12              sal                     0.06
+-47.15                  -126.72                 1930-01-12              temp                    -26.0
+-47.15                  -126.72                 1930-02-26              rad                     4.35
+-47.15                  -126.72                 1930-02-26              sal                     0.1
+-47.15                  -126.72                 1930-02-26              temp                    -18.5
+-48.87                  -123.4                  1932-01-14              rad                     1.46
+-48.87                  -123.4                  1932-01-14              sal                     0.21
+-48.87                  -123.4                  1932-01-14              sal                     22.5
+-49.85                  -128.57                 1932-03-22              rad                     11.25
+--------------------    --------------------    --------------------    --------------------    --------------------
   
 @@@id="a:keys"
 
@@ -2051,13 +1983,13 @@ and we can use those record numbers in queries:
 select rowid, * from Person;
 ~~~~
 
---------------------	--------------------	--------------------	--------------------
-1			dyer			William			Dyer
-2			pb			Frank			Pabodie
-3			lake			Anderson		Lake
-4			roe			Valentina		Roerich
-5			danforth		Frank			Danforth
---------------------	--------------------	--------------------	--------------------
+--------------------    --------------------    --------------------    --------------------
+1                       dyer                    William                 Dyer
+2                       pb                      Frank                   Pabodie
+3                       lake                    Anderson                Lake
+4                       roe                     Valentina               Roerich
+5                       danforth                Frank                   Danforth
+--------------------    --------------------    --------------------    --------------------
   
 ### Summary {.keypoints}
 
@@ -2086,21 +2018,17 @@ select rowid, * from Person;
 
 ## Creating and Modifying Tables {#s:create}
 
-<div class="understand">
-
-### Understand:
-
-* Write queries that create database tables with fields of common types.
-* Write queries that specify the primary and foreign key relationships of tables.
-* Write queries that specify whether field values must be unique and/or are allowed to be `null`.
-* Write queries that erase database tables.
-* Write queries that add records to database tables.
-* Write queries that delete specific records from tables.
-* Explain what referential integrity is, and how a database can become inconsistent as data is changed.
-
-Duration: 10 minutes.
-
-</div>
+> ### Learning Objectives {.box}
+> 
+> * Write queries that create database tables with fields of common types.
+> * Write queries that specify the primary and foreign key relationships of tables.
+> * Write queries that specify whether field values must be unique and/or are allowed to be `null`.
+> * Write queries that erase database tables.
+> * Write queries that add records to database tables.
+> * Write queries that delete specific records from tables.
+> * Explain what referential integrity is, and how a database can become inconsistent as data is changed.
+> 
+> Duration: 10 minutes.
 
 So far we have only looked at how to get information out of a database,
 both because that is more frequent than adding information,
@@ -2133,12 +2061,12 @@ but it's better not to have to rely on it.
 Different database systems support different data types for table columns,
 but most provide the following:
 
---------------------	--------------------
-`integer`		A signed integer.
-`real`			A floating point value.
-`text`			A string.
-`blob`			Any "binary large object" such as an image or audio file.
---------------------	--------------------
+--------------------    --------------------
+`integer`               A signed integer.
+`real`                  A floating point value.
+`text`                  A string.
+`blob`                  Any "binary large object" such as an image or audio file.
+--------------------    --------------------
 
 Most databases also support Booleans and date/time values;
 SQLite uses the integers 0 and 1 for the former,
@@ -2155,13 +2083,13 @@ For example,
 a better definition for the `Survey` table would be:
   
     create table Survey(
-	taken   integer not null, <span class="comment">-- where reading taken</span>
-	person  text,             <span class="comment">-- may not know who took it</span>
-	quant   real not null,    <span class="comment">-- the quantity measured</span>
-	reading real not null,    <span class="comment">-- the actual reading</span>
-	primary key(taken, quant),
-	foreign key(taken) references Visited(ident),
-	foreign key(person) references Person(ident)
+        taken   integer not null, <span class="comment">-- where reading taken</span>
+        person  text,             <span class="comment">-- may not know who took it</span>
+        quant   real not null,    <span class="comment">-- the quantity measured</span>
+        reading real not null,    <span class="comment">-- the actual reading</span>
+        primary key(taken, quant),
+        foreign key(taken) references Visited(ident),
+        foreign key(person) references Person(ident)
     );
 
 Once again,
@@ -2222,23 +2150,19 @@ using [cascading delete](glossary.html#cascading-delete).
 However,
 this technique is outside the scope of this chapter.
   
-<div class="box" id="a:hybrid">
-
-### Other Ways to Do It
-
-Many applications use a hybrid storage model
-instead of putting everything into a database:
-the actual data (such as astronomical images) is stored in files,
-while the database stores the files' names,
-their modification dates,
-the region of the sky they cover,
-their spectral characteristics,
-and so on.
-This is also how most music player software is built:
-the database inside the application keeps track of the MP3 files,
-but the files themselves live on disk.
-
-</div>
+> ### Other Ways to Do It {#a:hybrid .box}
+> 
+> Many applications use a hybrid storage model
+> instead of putting everything into a database:
+> the actual data (such as astronomical images) is stored in files,
+> while the database stores the files' names,
+> their modification dates,
+> the region of the sky they cover,
+> their spectral characteristics,
+> and so on.
+> This is also how most music player software is built:
+> the database inside the application keeps track of the MP3 files,
+> but the files themselves live on disk.
 
 ### Summary {.keypoints}
 
@@ -2285,17 +2209,13 @@ but the files themselves live on disk.
 
 ## Transactions
 
-<div class="understand">
-
-### Learning Objectives
-
-* Explain what a race condition is.
-* Explain why database operations sometimes have to be placed ina transaction to ensure correct behavior.
-* Explain what it means to commit a transaction.</li>
-
-Duration: 10 minutes.
-
-</div>
+> ### Learning Objectives {.objectives}
+> 
+> * Explain what a race condition is.
+> * Explain why database operations sometimes have to be placed ina transaction to ensure correct behavior.
+> * Explain what it means to commit a transaction.</li>
+> 
+> Duration: 10 minutes.
 
 Suppose we have another table in our database that shows
 which pieces of equipment have been borrowed by which scientists:
@@ -2304,11 +2224,11 @@ which pieces of equipment have been borrowed by which scientists:
 select * from Equipment;
 ~~~~
 
---------------------	--------------------
-dyer			CX-211 oscilloscope
-pb			Greenworth balance
-lake			Cavorite damping plates
---------------------	--------------------
+--------------------    --------------------
+dyer                    CX-211 oscilloscope
+pb                      Greenworth balance
+lake                    Cavorite damping plates
+--------------------    --------------------
     
 (We should actually give each piece of equipment a unique ID,
 and use that ID here instead of the full name,
@@ -2358,24 +2278,20 @@ will be as if the transaction had never happened.
 Changes are only stored permanently
 when we [commit](glossary.html#commit) them at the end of the transaction.
   
-<div class="box">
-
-### Transactions and Commits
-
-We first used the term "transaction" in
-[our discussion of version control](svn.html#b:basics:transaction).
-That's not a coincidence:
-behind the scenes,
-tools like Subversion are using many of the same algorithms as database managers
-to ensure that either everything happens consistently
-or nothing happens at all.
-We [use the term "commit"](svn.html#a:commit) for the same reason:
-just as our changes to local files aren't written back to the version control repository
-until we commit them,
-our (apparent) changes to a database aren't written to disk
-until we say so.
-
-</div>
+> ### Transactions and Commits {.box}
+> 
+> We first used the term "transaction" in
+> [our discussion of version control](svn.html#b:basics:transaction).
+> That's not a coincidence:
+> behind the scenes,
+> tools like Subversion are using many of the same algorithms as database managers
+> to ensure that either everything happens consistently
+> or nothing happens at all.
+> We [use the term "commit"](svn.html#a:commit) for the same reason:
+> just as our changes to local files aren't written back to the version control repository
+> until we commit them,
+> our (apparent) changes to a database aren't written to disk
+> until we say so.
 
 Transactions serve another purpose as well.
 Suppose there is another table in the database called `Exposure`
@@ -2386,11 +2302,11 @@ higher-than-normal levels of radiation:
 select * from Exposure;
 ~~~~
 
---------------------	--------------------
-pb			4
-dyer			1
-lake			5
---------------------	--------------------
+--------------------    --------------------
+pb                      4
+dyer                    1
+lake                    5
+--------------------    --------------------
   
 After going through the journal entries for 1932,
 Gina wants to add two days to Lake's count:
@@ -2415,10 +2331,10 @@ To see why,
 let's break the two queries into their respective read and write steps
 and place them side by side:
 
---------------------		--------------------  
-`X = read Exposure('lake', __)`	`Y = read Exposure('lake', __)`
-`write Exposure('lake', X+2)`	`write Exposure('lake', Y+1)`
---------------------		--------------------  
+--------------------            --------------------  
+`X = read Exposure('lake', __)` `Y = read Exposure('lake', __)`
+`write Exposure('lake', X+2)`   `write Exposure('lake', Y+1)`
+--------------------            --------------------  
   
 The database can only actually do one thing at once,
 so it must put these four operations into some sequential order.
@@ -2426,22 +2342,22 @@ That order has to respect the original order within each column,
 but the database can interleave the two columns any way it wants.
 If it orders them like this:
   
---------------------		--------------------  
-`X = read Exposure('lake', __)`	`X` is 5
-`write Exposure('lake', X+2)`	database contains 7
-`Y = read Exposure('lake', __)`	`Y` is 7
-`write Exposure('lake', Y+1)`	database contains 8
---------------------		--------------------  
+--------------------            --------------------  
+`X = read Exposure('lake', __)` `X` is 5
+`write Exposure('lake', X+2)`   database contains 7
+`Y = read Exposure('lake', __)` `Y` is 7
+`write Exposure('lake', Y+1)`   database contains 8
+--------------------            --------------------  
   
 then all is well.
 But what if it interleaves the operations like this:
   
---------------------		--------------------  
-`X = read Exposure('lake', __)`	`X` is 5
-`Y = read Exposure('lake', __)`	`Y` is 5
-`write Exposure('lake', X+2)`	database contains 7
-`write Exposure('lake', Y+1)`	database contains 6
---------------------		--------------------  
+--------------------            --------------------  
+`X = read Exposure('lake', __)` `X` is 5
+`Y = read Exposure('lake', __)` `Y` is 5
+`write Exposure('lake', X+2)`   database contains 7
+`write Exposure('lake', Y+1)`   database contains 6
+--------------------            --------------------  
   
 This ordering puts the initial value, 5, into both `X` and `Y`.
 It then writes 7 back to the database (the third statement),
@@ -2482,17 +2398,13 @@ every transaction will appear to have had the entire database to itself.
 
 ## Programming With Databases {#s:programming}
 
-<div class="understand">
-
-### Learning Objectives
-
-* Write a Python program that queries a database and processes the results.
-* Explain what an SQL injection attack is.
-* Write a program that safely interpolates values into queries.
-
-Duration: 20 minutes.
-
-</div>
+> ### Learning Objectives {.objectives}
+> 
+> * Write a Python program that queries a database and processes the results.
+> * Explain what an SQL injection attack is.
+> * Write a program that safely interpolates values into queries.
+> 
+> Duration: 20 minutes.
 
 To end this chapter,
 let's have a look at how to access a database from
@@ -2559,16 +2471,12 @@ only to reopen it a few microseconds later to do another operation.
 Instead,
 it's normal to create one connection that stays open for the lifetime of the program.
   
-<div class="box">
-
-### What Are The u's For?
-
-You may have noticed that
-each of the strings in our output has a lower-case 'u' in front of it.
-That is Python's way of telling us that the string is stored in
-[Unicode](glossary.html#unicode).
-    
-</div>
+> ### What Are The u's For? {.box}
+> 
+> You may have noticed that
+> each of the strings in our output has a lower-case 'u' in front of it.
+> That is Python's way of telling us that the string is stored in
+> [Unicode](glossary.html#unicode).
 
 Queries in real applications will often depend on values provided by users.
 For example,

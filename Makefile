@@ -85,4 +85,4 @@ sterile : tidy
 markdown : temp.html
 
 temp.html : db.md
-	pandoc --toc -r markdown+header_attributes -t html5 --section-divs -o temp.html db.md
+	pandoc --ascii --toc -r markdown+header_attributes -t html5 --section-divs -o temp.html db.md
