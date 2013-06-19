@@ -170,16 +170,19 @@ but that handful accounts for most of what scientists do.
 a simple database that stores some of the data
 Gina extracted from the logs of those long-ago expeditions.
 It contains four tables:
-  
+
+<div class="sqltable">  
 Table                   Purpose
 --------------------    --------------------
 `Person`                People who took readings.
 `Site`                  Locations of observation sites.
 `Visited`               When readings were taken at specific sites.
 `Survey`                The actual measurement values.
+</div>
 
 **Person**
 
+<div class="sqltable">
 ident                   personal                family
 --------------------    --------------------    --------------------
 dyer                    William                 Dyer
@@ -187,9 +190,11 @@ pb                      Frank                   Pabodie
 lake                    Anderson                Lake
 roe                     Valentina               Roerich
 danforth                Frank                   Danforth
+</div>
 
 **Survey**
 
+<div class="sqltable">
 taken                   person                  quant                   reading
 --------------------    --------------------    --------------------    --------------------
 619                     dyer                    rad                     9.82
@@ -213,17 +218,21 @@ taken                   person                  quant                   reading
 837                     lake                    sal                     0.21
 837                     roe                     sal                     22.5
 844                     roe                     rad                     11.25
+</div>
 
 **Site**
 
+<div class="sqltable">
 name                    lat                     long
 --------------------    --------------------    --------------------
 DR-1                    -49.85                  -128.57
 DR-3                    -47.15                  -126.72
 MSK-4                   -48.87                  -123.4
+</div>
 
 **Visited**
 
+<div class="sqltable">
 ident                   site                    dated
 --------------------    --------------------    --------------------
 619                     DR-1                    1927-02-08
@@ -234,6 +243,7 @@ ident                   site                    dated
 752                     DR-3                    NULL
 837                     MSK-4                   1932-01-14
 844                     DR-1                    1932-03-22
+</div>
 
 <figcaption>Figure 1: Survey Database</figcaption>
 
@@ -248,13 +258,15 @@ Our query and its output look like this:
   
     sqlite> select family, personal from Person;
 
-<table class="db">
-  <tr><td>Dyer</td><td>William</td></tr>
-  <tr><td>Pabodie</td><td>Frank</td></tr>
-  <tr><td>Lake</td><td>Anderson</td></tr>
-  <tr><td>Roerich</td><td>Valentina</td></tr>
-  <tr><td>Danforth</td><td>Frank</td></tr>
-</table>
+<div class="sqltable">
+--------------------    --------------------
+Dyer                    William
+Pabodie                 Frank
+Lake                    Anderson
+Roerich                 Valentina
+Danforth                Frank
+--------------------    --------------------
+</div>
 
 The semi-colon at the end of the query
 tells the database manager that the query is complete and ready to run.
@@ -267,6 +279,7 @@ to show us that it's waiting for more input:
        ...> from Person
        ...> ;
 
+<div class="sqltable">
 --------------------    --------------------
 Dyer                    William
 Pabodie                 Frank
@@ -274,6 +287,7 @@ Lake                    Anderson
 Roerich                 Valentina
 Danforth                Frank
 --------------------    --------------------
+</div>
 
 From now on,
 we won't bother to display the prompt(s) with our commands.
@@ -287,9 +301,9 @@ we won't bother to display the prompt(s) with our commands.
 > so we could write them all in upper case,
 > or even like this:
 > 
-> ~~~~ {.sql}
+> ``` {.sql}
 > SeLeCt famILY, PERSonal frOM PERson;
-> ~~~~
+> ```
 > 
 > But please don't:
 > large SQL queries are hard enough to read
@@ -334,10 +348,11 @@ but we can control that in various ways.
 For example,
 we could swap the columns in the output by writing our query as:
   
-~~~~ {.sql}
+``` {.sql}
 select personal, family from Person;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------
 William                 Dyer
 Frank                   Pabodie
@@ -345,13 +360,15 @@ Anderson                Lake
 Valentina               Roerich
 Frank                   Danforth
 --------------------    --------------------
+</div>
   
 or even repeat columns:
   
-~~~~ {.sql}
+``` {.sql}
 select ident, ident, ident from Person;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------
 dyer                    dyer                    dyer
 pb                      pb                      pb
@@ -359,16 +376,18 @@ lake                    lake                    lake
 roe                     roe                     roe
 danforth                danforth                danforth
 --------------------    --------------------    --------------------
+</div>
   
 We will see ways to rearrange the rows [later](#s:sort).
   
 As a shortcut, we can select all of the columns in a table
 using the wildcard `*`:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Person;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------
 dyer                    William                 Dyer
 pb                      Frank                   Pabodie
@@ -376,6 +395,7 @@ lake                    Anderson                Lake
 roe                     Valentina               Roerich
 danforth                Frank                   Danforth
 --------------------    --------------------    --------------------
+</div>
   
 ### Summary {.keypoints}
 
@@ -416,10 +436,11 @@ if we select the quantitites that have been measured
 from the `survey` table,
 we get this:
   
-~~~~ {.sql}
+``` {.sql}
 select quant from Survey;
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 rad
 sal
@@ -443,30 +464,34 @@ sal
 sal
 rad
 --------------------
+</div>
   
 We can eliminate the redundant output
 to make the result more readable
 by adding the `distinct` keyword
 to our query:
   
-~~~~ {.sql}
+``` {.sql}
 select distinct quant from Survey;
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 rad
 sal
 temp
 --------------------
+</div>
   
 If we select more than one column&mdash;for example,
 both the survey site ID and the quantity measured&mdash;then
 the distinct pairs of values are returned:
   
-~~~~ {.sql}
+``` {.sql}
 select distinct taken, quant from Survey;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------
 619                     rad
 619                     sal
@@ -488,6 +513,7 @@ select distinct taken, quant from Survey;
 837                     sal
 844                     rad
 --------------------    --------------------
+</div>
   
 Notice in both cases that duplicates are removed
 even if they didn't appear to be adjacent in the database.
@@ -509,6 +535,7 @@ they're just displayed that way.
 
     $ sqlite3 survey.db 'select * from Person;'
 
+<div class="sqltable">
 --------------------    --------------------    --------------------
 dyer                    William                 Dyer
 pb                      Frank                   Pabodie
@@ -516,6 +543,7 @@ lake                    Anderson                Lake
 roe                     Valentina               Roerich
 danforth                Frank                   Danforth
 --------------------    --------------------    --------------------
+</div>
 
   Fill in the missing commands in the pipeline below
   so that the output contains no redundant values.
@@ -545,15 +573,17 @@ suppose we want to see when a particular site was visited.
 We can select these records from the `Visited` table
 by using a `where` clause in our query:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Visited where site='DR-1';
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------
 619                     DR-1                    1927-02-08
 622                     DR-1                    1927-02-10
 844                     DR-1                    1932-03-22
 --------------------    --------------------    --------------------
+</div>
   
 The database manager executes this query in two stages
 ([Figure 4](#f:pipeline_where)).
@@ -572,27 +602,31 @@ This processing order means that
 we can filter records using `where`
 based on values in columns that aren't then displayed:
   
-~~~~ {.sql}
+``` {.sql}
 select ident from Visited where site='DR-1';
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 619
 622
 844
 --------------------
+</div>
   
 We can use many other Boolean operators to filter our data.
 For example,
 we can ask for all information from the DR-1 site collected since 1930:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Visited where (site='DR-1') and (dated>='1930-00-00');
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------
 844                     DR-1                    1932-03-22
 --------------------    --------------------    --------------------
+</div>
   
 (The parentheses around the individual tests aren't strictly required,
 but they help make the query easier to read.)
@@ -621,10 +655,11 @@ but they help make the query easier to read.)
 If we want to find out what measurements were taken by either Lake or Roerich,
 we can combine the tests on their names using `or`:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Survey where person='lake' or person='roe';
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------    --------------------
 734                     lake                    sal                     0.05
 751                     lake                    sal                     0.1
@@ -637,14 +672,16 @@ select * from Survey where person='lake' or person='roe';
 837                     roe                     sal                     22.5
 844                     roe                     rad                     11.25
 --------------------    --------------------    --------------------    --------------------
+</div>
   
 Alternatively,
 we can use `in` to see if a value is in a specific set:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Survey where person in ('lake', 'roe');
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------    --------------------
 734                     lake                    sal                     0.05
 751                     lake                    sal                     0.1
@@ -657,16 +694,18 @@ select * from Survey where person in ('lake', 'roe');
 837                     roe                     sal                     22.5
 844                     roe                     rad                     11.25
 --------------------    --------------------    --------------------    --------------------
+</div>
   
 We can combine `and` with `or`,
 but we need to be careful about which operator is executed first.
 If we *don't* use parentheses,
 we get this:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Survey where quant='sal' and person='lake' or person='roe';
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------    --------------------
 734                     lake                    sal                     0.05
 751                     lake                    sal                     0.1
@@ -676,15 +715,17 @@ select * from Survey where quant='sal' and person='lake' or person='roe';
 837                     roe                     sal                     22.5
 844                     roe                     rad                     11.25
 --------------------    --------------------    --------------------    --------------------
+</div>
   
 which is salinity measurements by Lake,
 and *any* measurement by Roerich.
 We probably want this instead:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Survey where quant='sal' and <span class="highlight">(</span>person='lake' or person='roe'<span class="highlight">)</span>;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------    --------------------
 734                     lake                    sal                     0.05
 751                     lake                    sal                     0.1
@@ -693,15 +734,17 @@ select * from Survey where quant='sal' and <span class="highlight">(</span>perso
 837                     lake                    sal                     0.21
 837                     roe                     sal                     22.5
 --------------------    --------------------    --------------------    --------------------
+</div>
   
 Finally,
 we can use `distinct` with `where`
 to give a second level of filtering:
   
-~~~~ {.sql}
+``` {.sql}
 select distinct person, quant from Survey where person='lake' or person='roe';
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------
 lake                    sal
 lake                    rad
@@ -709,6 +752,7 @@ lake                    temp
 roe                     sal
 roe                     rad
 --------------------    --------------------
+</div>
   
 But remember:
 `distinct` is applied to the values displayed in the chosen columns,
@@ -792,10 +836,11 @@ Rather than modifying the stored data,
 she can do this calculation on the fly
 as part of her query:
   
-~~~~ {.sql}
+``` {.sql}
 select 1.05 * reading from Survey where quant='rad';
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 10.311
 8.19
@@ -806,6 +851,7 @@ select 1.05 * reading from Survey where quant='rad';
 1.533
 11.8125
 --------------------
+</div>
   
 When we run the query,
 the expression `1.05 * reading` is evaluated for each row.
@@ -817,24 +863,27 @@ For example,
 we can convert temperature readings from Fahrenheit to Celsius
 and round to two decimal places as follows:
   
-~~~~ {.sql}
+``` {.sql}
 select taken, round(5*(reading-32)/9, 2) from Survey where quant='temp';
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------
 734                     -29.72
 735                     -32.22
 751                     -28.06
 752                     -26.67
 --------------------    --------------------
+</div>
   
 We can also combine values from different fields,
 for example by using the string concatenation operator `||`:
   
-~~~~ {.sql}
+``` {.sql}
 select personal || ' ' || family from Person;
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 William Dyer
 Frank Pabodie
@@ -842,6 +891,7 @@ Anderson Lake
 Valentina Roerich
 Frank Danforth
 --------------------
+</div>
   
 > ### A Note on Names {.box}
 > 
@@ -882,20 +932,23 @@ Frank Danforth
 
 * The `union` operator combines the results of two queries:
 
-~~~~ {.sql}
+``` {.sql}
 select * from Person where ident='dyer' union select * from Person where ident='roe';
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------
 dyer                    William                 Dyer
 roe                     Valentina                       Roerich
 --------------------    --------------------    --------------------
+</div>
         
   Use `union` to create a consolidated list of salinity measurements
   in which Roerich's, and only Roerich's,
   have been corrected as described in the previous challenge.
   The output should be something like:
 
+<div class="sqltable">
 --------------------    --------------------
 619                     0.13
 622                     0.09
@@ -906,19 +959,22 @@ roe                     Valentina                       Roerich
 837                     0.21
 837                     0.225
 --------------------    --------------------
+</div>
 
 * The site identifiers in the `Visited` table have two parts
   separated by a '-':
 
-~~~~ {.sql}
+``` {.sql}
 select distinct site from Visited;
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 DR-1
 DR-3
 MSK-4
 --------------------
+</div>
   
   Some major site identifiers are two letters long and some are three.
   The "in string" function `instr(X, Y)`
@@ -954,10 +1010,11 @@ we often want to sort them in a different way,
 e.g., by the name of the project instead of by the name of the scientist.
 We can do this in SQL by adding an `order by` clause to our query:
   
-~~~~ {.sql}
+``` {.sql}
 select reading from Survey where quant='rad' order by reading;
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 1.46
 2.19
@@ -968,6 +1025,7 @@ select reading from Survey where quant='rad' order by reading;
 9.82
 11.25
 --------------------
+</div>
   
 By default,
 results are sorted in ascending order
@@ -975,10 +1033,11 @@ results are sorted in ascending order
 from least to greatest).
 We can sort in the opposite order using `desc` (for "descending"):
   
-~~~~ {.sql}
+``` {.sql}
 select reading from Survey where quant='rad' order by reading desc;
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 11.25
 9.82
@@ -989,6 +1048,7 @@ select reading from Survey where quant='rad' order by reading desc;
 2.19
 1.46
 --------------------
+</div>
   
 (And if we want to make it clear that we're sorting in ascending order,
 we can use `asc` instead of `desc`.)
@@ -999,10 +1059,11 @@ this query sorts results first in ascending order by `taken`,
 and then in descending order by `person`
 within each group of equal `taken` values:
     
-~~~~ {.sql}
+``` {.sql}
 select taken, person from Survey order by taken asc, person desc;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------
 619                     dyer
 619                     dyer
@@ -1026,13 +1087,15 @@ select taken, person from Survey order by taken asc, person desc;
 837                     lake
 844                     roe
 --------------------    --------------------
+</div>
   
 This is easier to understand if we also remove duplicates:
   
-~~~~ {.sql}
+``` {.sql}
 select <span class="highlight">distinct</span> taken, person from Survey order by taken asc, person desc;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------
 619                     dyer
 622                     dyer
@@ -1048,14 +1111,16 @@ select <span class="highlight">distinct</span> taken, person from Survey order b
 837                     lake
 844                     roe
 --------------------    --------------------
+</div>
 
 Since sorting happens before columns are filtered,
 we can sort by a field that isn't actually displayed:
   
-~~~~ {.sql}
+``` {.sql}
 select reading from Survey where quant='rad' order by taken;
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 9.82
 7.8
@@ -1066,6 +1131,7 @@ select reading from Survey where quant='rad' order by taken;
 1.46
 11.25
 --------------------
+</div>
   
 We can also sort results by the value of an expression.
 In SQLite,
@@ -1075,10 +1141,11 @@ each time it is called
 (i.e.,
 once per record):
   
-~~~~ {.sql}
+``` {.sql}
 select random(), ident from Person;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------
 -6309766557809954936    dyer
 -2098461436941487136    pb
@@ -1086,15 +1153,17 @@ select random(), ident from Person;
 6062184424509295966     roe
 -1268956870222271271    danforth
 --------------------    --------------------
+</div>
   
 So to randomize the order of our query results,
 e.g., when doing clinical trials,
 we can sort them by the value of this function:
   
-~~~~ {.sql}
+``` {.sql}
 select ident from Person order by random();
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 danforth
 pb
@@ -1102,11 +1171,13 @@ dyer
 lake
 roe
 --------------------
+</div>
 
-~~~~ {.sql}
+``` {.sql}
 select ident from Person order by random();
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 roe
 dyer
@@ -1114,6 +1185,7 @@ pb
 lake
 danforth
 --------------------
+</div>
   
 Our query pipeline now has four stages
 ([Figure 5](#f:pipeline_sort_distinct)):
@@ -1175,10 +1247,11 @@ There are eight records,
 but #752 doesn't have a date&mdash;or rather,
 its date is null:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Visited;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------
 619                     DR-1                    1927-02-08
 622                     DR-1                    1927-02-10
@@ -1189,6 +1262,7 @@ select * from Visited;
 837                     MS-4                    1932-01-14
 844                     DR-1                    1932-03-22
 --------------------    --------------------    --------------------
+</div>
   
 > ### Displaying Nulls {.box}
 > 
@@ -1201,22 +1275,25 @@ select * from Visited;
 Null doesn't behave like other values.
 If we select the records that come before 1930:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Visited where dated<'1930-00-00';
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------
 619                     DR-1                    1927-02-08
 622                     DR-1                    1927-02-10
 --------------------    --------------------    --------------------
+</div>
   
 we get two results,
 and if we select the ones that come during or after 1930:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Visited where dated>='1930-00-00';
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------
 734                     DR-3                    1939-01-07
 735                     DR-3                    1930-01-12
@@ -1224,6 +1301,7 @@ select * from Visited where dated>='1930-00-00';
 837                     MS-4                    1932-01-14
 844                     DR-1                    1932-03-22
 --------------------    --------------------    --------------------
+</div>
   
 we get five,
 but record #752 isn't in either set of results.
@@ -1250,31 +1328,34 @@ and so on.
 In particular,
 comparing things to null with = and != produces null:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Visited where dated=NULL;
-~~~~
+```
 
-~~~~ {.sql}
+``` {.sql}
 select * from Visited where dated!=NULL;
-~~~~
+```
   
 To check whether a value is `null` or not,
 we must use a special test `is null`:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Visited where dated is NULL;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------
 752                     DR-3            
 --------------------    --------------------
+</div>
   
 or its inverse `is not null`:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Visited where dated is not NULL;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------
 619                     DR-1                    1927-02-08
 622                     DR-1                    1927-02-10
@@ -1284,6 +1365,7 @@ select * from Visited where dated is not NULL;
 837                     MS-4                    1932-01-14
 844                     DR-1                    1932-03-22
 --------------------    --------------------    --------------------
+</div>
   
 Null values cause headaches wherever they appear.
 For example,
@@ -1291,16 +1373,18 @@ suppose we want to find the all of salinity measurements
 that weren't taken by Dyer.
 It's natural to write the query like this:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Survey where quant='sal' and person!='lake';
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------    --------------------
 619                     dyer                    sal                     0.13
 622                     dyer                    sal                     0.09
 752                     roe                     sal                     41.6
 837                     roe                     sal                     22.5
 --------------------    --------------------    --------------------    --------------------
+</div>
   
 but this query filters omits the records
 where we don't know who took the measurement.
@@ -1311,10 +1395,11 @@ so the record isn't kept in our results.
 If we want to keep these records
 we need to add an explicit check:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Survey where quant='sal' and (person!='lake' <span class="highlight">or person is null</span>);
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------    --------------------
 619                     dyer                    sal                     0.13
 622                     dyer                    sal                     0.09
@@ -1322,6 +1407,7 @@ select * from Survey where quant='sal' and (person!='lake' <span class="highligh
 752                     roe                     sal                     41.6
 837                     roe                     sal                     22.5
 --------------------    --------------------    --------------------    --------------------
+</div>
 
   
 We still have to decide whether this is the right thing to do or not.
@@ -1413,10 +1499,11 @@ we need to exclude all the records for which we don't know who did the work.
 Gina now wants to calculate ranges and averages for her data.
 She knows how to select all of the dates from the `Visited` table:
   
-~~~~ {.sql}
+``` {.sql}
 select dated from Visited;
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 1927-02-08
 1927-02-10
@@ -1427,6 +1514,7 @@ select dated from Visited;
 1932-01-14
 1932-03-22
 --------------------
+</div>
   
 but to combine them,
 she must use an [aggregation function](glossary.html#aggregation-function)
@@ -1434,21 +1522,25 @@ such as `min` or `max`.
 Each of these functions takes a set of records as input,
 and produces a single record as output:
   
-~~~~ {.sql}
+``` {.sql}
 select min(dated) from Visited;
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 1927-02-08
 --------------------
+</div>
 
-~~~~ {.sql}
+``` {.sql}
 select max(dated) from Visited;
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 1939-01-07
 --------------------
+</div>
   
 `min` and `max` are just two of
 the aggregation functions built into SQL.
@@ -1456,29 +1548,35 @@ Three others are `avg`,
 `count`,
 and `sum`:
   
-~~~~ {.sql}
+``` {.sql}
 select avg(reading) from Survey where quant='sal';
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 7.20333333333
 --------------------
+</div>
 
-~~~~ {.sql}
+``` {.sql}
 select count(reading) from Survey where quant='sal';
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 9
 --------------------
+</div>
 
-~~~~ {.sql}
+``` {.sql}
 select sum(reading) from Survey where quant='sal';
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 64.83
 --------------------
+</div>
   
 We used `count(reading)` here,
 but we could just as easily have counted `quant`
@@ -1492,24 +1590,28 @@ We can,
 for example,
 find the range of sensible salinity measurements:
   
-~~~~ {.sql}
+``` {.sql}
 select min(reading), max(reading) from Survey where quant='sal' and reading<=1.0;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------
 0.05                    0.21
 --------------------    --------------------
+</div>
   
 We can also combine aggregated results with raw results,
 although the output might surprise you:
   
-~~~~ {.sql}
+``` {.sql}
 select person, count(*) from Survey where quant='sal' and reading<=1.0;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------
 lake                    7
 --------------------    --------------------
+</div>
   
 Why does Lake's name appear rather than Roerich's or Dyer's?
 The answer is that when it has to aggregate a field,
@@ -1523,9 +1625,9 @@ Another important fact is that when there are no values to aggregate,
 aggregation's result is "don't know"
 rather than zero or some other arbitrary value:
   
-~~~~ {.sql}
+``` {.sql}
 select person, max(reading), sum(reading) from Survey where quant='missing';
-~~~~
+```
   
 One final important feature of aggregation functions is that
 they are inconsistent with the rest of SQL in a very useful way.
@@ -1542,23 +1644,27 @@ for aggregation functions to ignore null values
 and only combine those that are non-null.
 This behavior lets us write our queries as:
   
-~~~~ {.sql}
+``` {.sql}
 select min(dated) from Visited;
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 1927-02-08
 --------------------
+</div>
   
 instead of always having to filter explicitly:
   
-~~~~ {.sql}
+``` {.sql}
 select min(dated) from Visited <span class="highlight">where dated is not null</span>;
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 1927-02-08
 --------------------
+</div>
   
 ### Summary {.keypoints}
 
@@ -1612,31 +1718,35 @@ suppose Gina suspects that there is a systematic bias in her data,
 and that some scientists' radiation readings are higher than others.
 We know that this doesn't work:
   
-~~~~ {.sql}
+``` {.sql}
 select person, count(reading), round(avg(reading), 2)
 from  Survey
 where quant='rad';
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------
 roe                     8                       6.56
 --------------------    --------------------    --------------------
+</div>
   
 because the database manager selects a single arbitrary scientist's name
 rather than aggregating separately for each scientist.
 Since there are only five scientists,
 she could write five queries of the form:
   
-~~~~ {.sql}
+``` {.sql}
 select person, count(reading), round(avg(reading), 2)
 from  Survey
 where quant='rad'
 and   person='dyer';
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------
 dyer                    2                       8.81
 --------------------    --------------------    --------------------
+</div>
   
 but this would be tedious,
 and if she ever had a data set with fifty or five hundred scientists,
@@ -1646,19 +1756,21 @@ What we need to do is
 tell the database manager to aggregate the hours for each scientist separately
 using a `group by` clause:
   
-~~~~ {.sql}
+``` {.sql}
 select   person, count(reading), round(avg(reading), 2)
 from     Survey
 where    quant='rad'
 group by person;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------
 dyer                    2                       8.81
 lake                    2                       1.82
 pb                      3                       6.66
 roe                     1                       11.25
 --------------------    --------------------    --------------------
+</div>
   
 `group by` does exactly what its name implies:
 groups all the records with the same value for the specified field together
@@ -1680,12 +1792,13 @@ To get the average reading by scientist and quantity measured,
 for example,
 we just add another field to the `group by` clause:
   
-~~~~ {.sql}
+``` {.sql}
 select   person, quant, count(reading), round(avg(reading), 2)
 from     Survey
 group by person, quant;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------    --------------------
                         sal                     1                       0.06
                         temp                    1                       -26.0
@@ -1699,6 +1812,7 @@ pb                      temp                    2                       -20.0
 roe                     rad                     1                       11.25
 roe                     sal                     2                       32.05
 --------------------    --------------------    --------------------    --------------------
+</div>
   
 Note that we have added `person` to the list of fields displayed,
 since the results wouldn't make much sense otherwise.
@@ -1706,14 +1820,15 @@ since the results wouldn't make much sense otherwise.
 Let's go one step further and remove all the entries
 where we don't know who took the measurement:
   
-~~~~ {.sql}
+``` {.sql}
 select   person, quant, count(reading), round(avg(reading), 2)
 from     Survey
 where    person is not null
 group by person, quant
 order by person, quant;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------    --------------------
 dyer                    rad                     2                       8.81
 dyer                    sal                     2                       0.11
@@ -1725,6 +1840,7 @@ pb                      temp                    2                       -20.0
 roe                     rad                     1                       11.25
 roe                     sal                     2                       32.05
 --------------------    --------------------    --------------------    --------------------
+</div>
   
 Looking more closely,
 this query:
@@ -1801,10 +1917,11 @@ The SQL command to do this is `join`.
 To see how it works,
 let's start by joining the `Site` and `Visited` tables:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Site join Visited;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------    --------------------    --------------------    --------------------
 DR-1                    -49.85                  -128.57                 619                     DR-1                    1927-02-08
 DR-1                    -49.85                  -128.57                 622                     DR-1                    1927-02-10
@@ -1831,6 +1948,7 @@ MS-4                    -48.87                  -123.4                  752     
 MS-4                    -48.87                  -123.4                  837                     MS-4                    1932-01-14
 MS-4                    -48.87                  -123.4                  844                     DR-1                    1932-03-22
 --------------------    --------------------    --------------------    --------------------    --------------------    --------------------
+</div>
   
 `join` creates
 the [cross product](glossary.html#cross-product)
@@ -1851,10 +1969,11 @@ To do that,
 we add a clause specifying that
 we're only interested in combinations that have the same site name:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Site join Visited <span class="highlight">on Site.name=Visited.site</span>;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------    --------------------    --------------------    --------------------
 DR-1                    -49.85                  -128.57                 619                     DR-1                    1927-02-08
 DR-1                    -49.85                  -128.57                 622                     DR-1                    1927-02-10
@@ -1865,6 +1984,7 @@ DR-3                    -47.15                  -126.72                 751     
 DR-3                    -47.15                  -126.72                 752                     DR-3                    
 MS-4                    -48.87                  -123.4                  837                     MS-4                    1932-01-14
 --------------------    --------------------    --------------------    --------------------    --------------------    --------------------
+</div>
   
 `on` does the same job as `where`:
 it only keeps records that pass some test.
@@ -1890,12 +2010,13 @@ We can now use the same dotted notation
 to select the three columns we actually want
 out of our join:
   
-~~~~ {.sql}
+``` {.sql}
 select <span class="highlight">Site.lat, Site.long, Visited.dated</span>
 from   Site join Visited
 on     Site.name=Visited.site;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------
 -49.85                  -128.57                 1927-02-08
 -49.85                  -128.57                 1927-02-10
@@ -1906,6 +2027,7 @@ on     Site.name=Visited.site;
 -47.15                  -126.72                 1939-01-07
 -48.87                  -123.4                  1932-01-14
 --------------------    --------------------    --------------------
+</div>
   
 If joining two tables is good,
 joining many tables must be better.
@@ -1915,14 +2037,15 @@ simply by adding more `join` clauses to our query,
 and more `on` tests to filter out combinations of records
 that don't make sense:
 
-~~~~ {.sql}
+``` {.sql}
 select Site.lat, Site.long, Visited.dated, <span class="highlight">Survey.quant, Survey.reading</span>
 from   Site join Visited join Survey
 on     Site.name=Visited.site
 <span class="highlight">and    Visited.ident=Survey.taken
 and    Visited.dated is not null</span>;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------    --------------------    --------------------
 -49.85                  -128.57                 1927-02-08              rad                     9.82
 -49.85                  -128.57                 1927-02-08              sal                     0.13
@@ -1942,6 +2065,7 @@ and    Visited.dated is not null</span>;
 -48.87                  -123.4                  1932-01-14              sal                     22.5
 -49.85                  -128.57                 1932-03-22              rad                     11.25
 --------------------    --------------------    --------------------    --------------------    --------------------
+</div>
   
 <a id="a:keys"></a>
 We can tell which records from `Site`, `Visited`, and `Survey`
@@ -1979,10 +2103,11 @@ As the query below demonstrates,
 SQLite automatically numbers records as they're added to tables,
 and we can use those record numbers in queries:
   
-~~~~ {.sql}
+``` {.sql}
 select rowid, * from Person;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------    --------------------    --------------------
 1                       dyer                    William                 Dyer
 2                       pb                      Frank                   Pabodie
@@ -1990,6 +2115,7 @@ select rowid, * from Person;
 4                       roe                     Valentina               Roerich
 5                       danforth                Frank                   Danforth
 --------------------    --------------------    --------------------    --------------------
+</div>
   
 ### Summary {.keypoints}
 
@@ -2061,12 +2187,14 @@ but it's better not to have to rely on it.
 Different database systems support different data types for table columns,
 but most provide the following:
 
+<div class="sqltable">
 --------------------    --------------------
 `integer`               A signed integer.
 `real`                  A floating point value.
 `text`                  A string.
 `blob`                  Any "binary large object" such as an image or audio file.
 --------------------    --------------------
+</div>
 
 Most databases also support Booleans and date/time values;
 SQLite uses the integers 0 and 1 for the former,
@@ -2126,13 +2254,15 @@ But what if we removed Anderson Lake instead?
 Our `Survey` table would still contain seven records
 of measurements he'd taken:
   
-~~~~ {.sql}
+``` {.sql}
 select count(*) from Survey where person='lake';
-~~~~
+```
 
+<div class="sqltable">
 --------------------
 7
 --------------------
+</div>
   
 That's never supposed to happen:
 `Survey.person` is a foreign key into the `Person` table,
@@ -2220,15 +2350,17 @@ this technique is outside the scope of this chapter.
 Suppose we have another table in our database that shows
 which pieces of equipment have been borrowed by which scientists:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Equipment;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------
 dyer                    CX-211 oscilloscope
 pb                      Greenworth balance
 lake                    Cavorite damping plates
 --------------------    --------------------
+</div>
     
 (We should actually give each piece of equipment a unique ID,
 and use that ID here instead of the full name,
@@ -2298,15 +2430,17 @@ Suppose there is another table in the database called `Exposure`
 that records the number of days each scientist was exposed to
 higher-than-normal levels of radiation:
   
-~~~~ {.sql}
+``` {.sql}
 select * from Exposure;
-~~~~
+```
 
+<div class="sqltable">
 --------------------    --------------------
 pb                      4
 dyer                    1
 lake                    5
 --------------------    --------------------
+</div>
   
 After going through the journal entries for 1932,
 Gina wants to add two days to Lake's count:
@@ -2416,17 +2550,17 @@ but the concepts are the same.
 Here's a short Python program that selects latitudes and longitudes
 from an SQLite database stored in a file called `survey.db`:
 
-~~~~ {.python}  
+``` {.python}  
 import sqlite3
 connection = sqlite3.connect("survey.db")
 cursor = connection.cursor()
 cursor.execute("select site.lat, site.long from site;")
 results = cursor.fetchall()
 for r in results:
-print r
+    print r
 cursor.close()
 connection.close()
-~~~~
+```
 
 The program starts by importing the `sqlite3` library.
 If we were connecting to MySQL, DB2, or some other database,
@@ -2483,7 +2617,7 @@ For example,
 a program might take a user ID as a command-line parameter
 and display the user's full name:
 
-~~~~ {.python}  
+``` {.python}  
 import sys
 import sqlite3
 
@@ -2499,7 +2633,7 @@ print results[0][0], results[0][1]
 
 cursor.close()
 connection.close()
-~~~~
+```
 
 The variable `query` holds the statement we want to execute
 with a `%s` format string where we want to insert
@@ -2514,9 +2648,9 @@ but it is very carefully chosen garbage.
 If we insert this string into our query,
 the result is:
 
-~~~~ {.sql}  
+``` {.sql}  
 select personal, family from Person where ident='dyer'; drop table Survey; select '';
-~~~~
+```
 
 Whoops:
 if we execute this,
@@ -2536,23 +2670,23 @@ We can do this by using a [prepared statement](glossary.html#prepared-statement)
 instead of formatting our statements as strings.
 Here's what our example program looks like if we do this:
 
-~~~~ {.python}
-    import sys
-    import sqlite3
+``` {.python}
+import sys
+import sqlite3
 
-    query = "select personal, family from Person where ident=?;"
-    user_id = sys.argv[1]
+query = "select personal, family from Person where ident=?;"
+user_id = sys.argv[1]
 
-    connection = sqlite3.connect("survey.db")
-    cursor = connection.cursor()
+connection = sqlite3.connect("survey.db")
+cursor = connection.cursor()
 
-    cursor.execute(query, [user_id])
-    results = cursor.fetchall()
-    print results[0][0], results[0][1]
+cursor.execute(query, [user_id])
+results = cursor.fetchall()
+print results[0][0], results[0][1]
 
-    cursor.close()
-    connection.close()
-~~~~
+cursor.close()
+connection.close()
+```
 
 The key changes are in the query string and the `execute` call.
 Instead of formatting the query ourselves,
