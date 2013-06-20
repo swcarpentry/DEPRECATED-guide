@@ -124,13 +124,15 @@ depends on most of the [basic Python material](python.html).
 
 ## Selecting {#s:select}
 
-> ### Learning Objectives {.objectives}
-> 
-> * Explain the difference between a table, a database, and a database manager.
-> * Explain the difference between a field and a record.
-> * Select specific fields from specific tables, and display them in a specific order.
-> 
-> Duration: 15 minutes (not including time required to download database file and connect to it)
+### Learning Objectives {.objectives}
+
+* Explain the difference between a table, a database, and a database manager.
+* Explain the difference between a field and a record.
+* Select specific fields from specific tables, and display them in a specific order.
+
+Duration: 15 minutes (not including time required to download database file and connect to it)
+
+### Lesson
 
 A [relational database](glossary.html#relational-database)
 is a way to store and manipulate information
@@ -171,18 +173,21 @@ a simple database that stores some of the data
 Gina extracted from the logs of those long-ago expeditions.
 It contains four tables:
 
-<div class="sqltable">  
+<div class="db">  
+
 Table                   Purpose
 --------------------    --------------------
 `Person`                People who took readings.
 `Site`                  Locations of observation sites.
 `Visited`               When readings were taken at specific sites.
 `Survey`                The actual measurement values.
+
 </div>
 
 **Person**
 
-<div class="sqltable">
+<div class="db">
+
 ident                   personal                family
 --------------------    --------------------    --------------------
 dyer                    William                 Dyer
@@ -190,11 +195,13 @@ pb                      Frank                   Pabodie
 lake                    Anderson                Lake
 roe                     Valentina               Roerich
 danforth                Frank                   Danforth
+
 </div>
 
 **Survey**
 
-<div class="sqltable">
+<div class="db">
+
 taken                   person                  quant                   reading
 --------------------    --------------------    --------------------    --------------------
 619                     dyer                    rad                     9.82
@@ -218,21 +225,25 @@ taken                   person                  quant                   reading
 837                     lake                    sal                     0.21
 837                     roe                     sal                     22.5
 844                     roe                     rad                     11.25
+
 </div>
 
 **Site**
 
-<div class="sqltable">
+<div class="db">
+
 name                    lat                     long
 --------------------    --------------------    --------------------
 DR-1                    -49.85                  -128.57
 DR-3                    -47.15                  -126.72
 MSK-4                   -48.87                  -123.4
+
 </div>
 
 **Visited**
 
-<div class="sqltable">
+<div class="db">
+
 ident                   site                    dated
 --------------------    --------------------    --------------------
 619                     DR-1                    1927-02-08
@@ -243,6 +254,7 @@ ident                   site                    dated
 752                     DR-3                    NULL
 837                     MSK-4                   1932-01-14
 844                     DR-1                    1932-03-22
+
 </div>
 
 <figcaption>Figure 1: Survey Database</figcaption>
@@ -258,7 +270,8 @@ Our query and its output look like this:
   
     sqlite> select family, personal from Person;
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------
 Dyer                    William
 Pabodie                 Frank
@@ -266,6 +279,7 @@ Lake                    Anderson
 Roerich                 Valentina
 Danforth                Frank
 --------------------    --------------------
+
 </div>
 
 The semi-colon at the end of the query
@@ -279,7 +293,8 @@ to show us that it's waiting for more input:
        ...> from Person
        ...> ;
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------
 Dyer                    William
 Pabodie                 Frank
@@ -287,6 +302,7 @@ Lake                    Anderson
 Roerich                 Valentina
 Danforth                Frank
 --------------------    --------------------
+
 </div>
 
 From now on,
@@ -352,7 +368,8 @@ we could swap the columns in the output by writing our query as:
 select personal, family from Person;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------
 William                 Dyer
 Frank                   Pabodie
@@ -360,6 +377,7 @@ Anderson                Lake
 Valentina               Roerich
 Frank                   Danforth
 --------------------    --------------------
+
 </div>
   
 or even repeat columns:
@@ -368,7 +386,8 @@ or even repeat columns:
 select ident, ident, ident from Person;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------
 dyer                    dyer                    dyer
 pb                      pb                      pb
@@ -376,6 +395,7 @@ lake                    lake                    lake
 roe                     roe                     roe
 danforth                danforth                danforth
 --------------------    --------------------    --------------------
+
 </div>
   
 We will see ways to rearrange the rows [later](#s:sort).
@@ -387,7 +407,8 @@ using the wildcard `*`:
 select * from Person;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------
 dyer                    William                 Dyer
 pb                      Frank                   Pabodie
@@ -395,6 +416,7 @@ lake                    Anderson                Lake
 roe                     Valentina               Roerich
 danforth                Frank                   Danforth
 --------------------    --------------------    --------------------
+
 </div>
   
 ### Summary {.keypoints}
@@ -423,11 +445,13 @@ or as:
 
 ## Removing Duplicates {#s:distinct}
 
-> ### Learning Objectives {.objectives}
-> 
-> * Write queries that only display distinct results once.
-> 
-> Duration: 5 minutes.
+### Learning Objectives {.objectives}
+
+* Write queries that only display distinct results once.
+
+Duration: 5 minutes.
+
+### Lesson
 
 Data is often redundant,
 so queries often return redundant information.
@@ -440,7 +464,8 @@ we get this:
 select quant from Survey;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 rad
 sal
@@ -464,6 +489,7 @@ sal
 sal
 rad
 --------------------
+
 </div>
   
 We can eliminate the redundant output
@@ -475,12 +501,14 @@ to our query:
 select distinct quant from Survey;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 rad
 sal
 temp
 --------------------
+
 </div>
   
 If we select more than one column&mdash;for example,
@@ -491,7 +519,8 @@ the distinct pairs of values are returned:
 select distinct taken, quant from Survey;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------
 619                     rad
 619                     sal
@@ -513,6 +542,7 @@ select distinct taken, quant from Survey;
 837                     sal
 844                     rad
 --------------------    --------------------
+
 </div>
   
 Notice in both cases that duplicates are removed
@@ -535,7 +565,8 @@ they're just displayed that way.
 
     $ sqlite3 survey.db 'select * from Person;'
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------
 dyer                    William                 Dyer
 pb                      Frank                   Pabodie
@@ -543,6 +574,7 @@ lake                    Anderson                Lake
 roe                     Valentina               Roerich
 danforth                Frank                   Danforth
 --------------------    --------------------    --------------------
+
 </div>
 
   Fill in the missing commands in the pipeline below
@@ -555,14 +587,16 @@ danforth                Frank                   Danforth
 
 ## Filtering {#s:filter}
 
-> ### Learning Objectives {.objectives}
-> 
-> * Write queries that select records based on the values of their fields.
-> * Write queries that select records using combinations of several tests on their fields' values.
-> * Build up complex filtering criteria incrementally.
-> * Explain the logical order in which filtering by field value and displaying fields takes place.
-> 
-> Duration: 5-10 minutes.
+### Learning Objectives {.objectives}
+
+* Write queries that select records based on the values of their fields.
+* Write queries that select records using combinations of several tests on their fields' values.
+* Build up complex filtering criteria incrementally.
+* Explain the logical order in which filtering by field value and displaying fields takes place.
+
+Duration: 5-10 minutes.
+
+### Lesson
 
 One of the most powerful features of a database is
 the ability to [filter](glossary.html#filter) data,
@@ -577,12 +611,14 @@ by using a `where` clause in our query:
 select * from Visited where site='DR-1';
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------
 619                     DR-1                    1927-02-08
 622                     DR-1                    1927-02-10
 844                     DR-1                    1932-03-22
 --------------------    --------------------    --------------------
+
 </div>
   
 The database manager executes this query in two stages
@@ -606,12 +642,14 @@ based on values in columns that aren't then displayed:
 select ident from Visited where site='DR-1';
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 619
 622
 844
 --------------------
+
 </div>
   
 We can use many other Boolean operators to filter our data.
@@ -622,10 +660,12 @@ we can ask for all information from the DR-1 site collected since 1930:
 select * from Visited where (site='DR-1') and (dated>='1930-00-00');
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------
 844                     DR-1                    1932-03-22
 --------------------    --------------------    --------------------
+
 </div>
   
 (The parentheses around the individual tests aren't strictly required,
@@ -659,7 +699,8 @@ we can combine the tests on their names using `or`:
 select * from Survey where person='lake' or person='roe';
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------    --------------------
 734                     lake                    sal                     0.05
 751                     lake                    sal                     0.1
@@ -672,6 +713,7 @@ select * from Survey where person='lake' or person='roe';
 837                     roe                     sal                     22.5
 844                     roe                     rad                     11.25
 --------------------    --------------------    --------------------    --------------------
+
 </div>
   
 Alternatively,
@@ -681,7 +723,8 @@ we can use `in` to see if a value is in a specific set:
 select * from Survey where person in ('lake', 'roe');
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------    --------------------
 734                     lake                    sal                     0.05
 751                     lake                    sal                     0.1
@@ -694,6 +737,7 @@ select * from Survey where person in ('lake', 'roe');
 837                     roe                     sal                     22.5
 844                     roe                     rad                     11.25
 --------------------    --------------------    --------------------    --------------------
+
 </div>
   
 We can combine `and` with `or`,
@@ -705,7 +749,8 @@ we get this:
 select * from Survey where quant='sal' and person='lake' or person='roe';
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------    --------------------
 734                     lake                    sal                     0.05
 751                     lake                    sal                     0.1
@@ -715,6 +760,7 @@ select * from Survey where quant='sal' and person='lake' or person='roe';
 837                     roe                     sal                     22.5
 844                     roe                     rad                     11.25
 --------------------    --------------------    --------------------    --------------------
+
 </div>
   
 which is salinity measurements by Lake,
@@ -722,10 +768,11 @@ and *any* measurement by Roerich.
 We probably want this instead:
   
 ``` {.sql}
-select * from Survey where quant='sal' and <span class="highlight">(</span>person='lake' or person='roe'<span class="highlight">)</span>;
+select * from Survey where quant='sal' and (person='lake' or person='roe');
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------    --------------------
 734                     lake                    sal                     0.05
 751                     lake                    sal                     0.1
@@ -734,6 +781,7 @@ select * from Survey where quant='sal' and <span class="highlight">(</span>perso
 837                     lake                    sal                     0.21
 837                     roe                     sal                     22.5
 --------------------    --------------------    --------------------    --------------------
+
 </div>
   
 Finally,
@@ -744,7 +792,8 @@ to give a second level of filtering:
 select distinct person, quant from Survey where person='lake' or person='roe';
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------
 lake                    sal
 lake                    rad
@@ -752,6 +801,7 @@ lake                    temp
 roe                     sal
 roe                     rad
 --------------------    --------------------
+
 </div>
   
 But remember:
@@ -823,11 +873,13 @@ Expression              Value
 
 ## Calculating New Values {#s:calc}
 
-> ### Learning Objectives {.objectives}
-> 
-> * Write queries that do arithmetic using the values in individual records.
-> 
-> Duration: 5 minutes.
+### Learning Objectives {.objectives}
+
+* Write queries that do arithmetic using the values in individual records.
+
+Duration: 5 minutes.
+
+### Lesson
 
 After carefully reading the expedition logs,
 Gina realizes that the radiation measurements they report
@@ -840,7 +892,8 @@ as part of her query:
 select 1.05 * reading from Survey where quant='rad';
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 10.311
 8.19
@@ -851,6 +904,7 @@ select 1.05 * reading from Survey where quant='rad';
 1.533
 11.8125
 --------------------
+
 </div>
   
 When we run the query,
@@ -867,13 +921,15 @@ and round to two decimal places as follows:
 select taken, round(5*(reading-32)/9, 2) from Survey where quant='temp';
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------
 734                     -29.72
 735                     -32.22
 751                     -28.06
 752                     -26.67
 --------------------    --------------------
+
 </div>
   
 We can also combine values from different fields,
@@ -883,7 +939,8 @@ for example by using the string concatenation operator `||`:
 select personal || ' ' || family from Person;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 William Dyer
 Frank Pabodie
@@ -891,6 +948,7 @@ Anderson Lake
 Valentina Roerich
 Frank Danforth
 --------------------
+
 </div>
   
 > ### A Note on Names {.box}
@@ -936,11 +994,13 @@ Frank Danforth
 select * from Person where ident='dyer' union select * from Person where ident='roe';
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------
 dyer                    William                 Dyer
 roe                     Valentina                       Roerich
 --------------------    --------------------    --------------------
+
 </div>
         
   Use `union` to create a consolidated list of salinity measurements
@@ -948,7 +1008,8 @@ roe                     Valentina                       Roerich
   have been corrected as described in the previous challenge.
   The output should be something like:
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------
 619                     0.13
 622                     0.09
@@ -959,6 +1020,7 @@ roe                     Valentina                       Roerich
 837                     0.21
 837                     0.225
 --------------------    --------------------
+
 </div>
 
 * The site identifiers in the `Visited` table have two parts
@@ -968,12 +1030,14 @@ roe                     Valentina                       Roerich
 select distinct site from Visited;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 DR-1
 DR-3
 MSK-4
 --------------------
+
 </div>
   
   Some major site identifiers are two letters long and some are three.
@@ -994,13 +1058,15 @@ MSK-4
 
 ## Ordering Results {#s:sort}
 
-> ### Learning Objectives {.objectives}
-> 
-> * Write queries that order results according to fields' values.
-> * Write queries that order results according to calculated values.
-> * Explain why it is possible to sort records using the values of fields that are not displayed.
-> 
-> Duration: 5 minutes.
+### Learning Objectives {.objectives}
+
+* Write queries that order results according to fields' values.
+* Write queries that order results according to calculated values.
+* Explain why it is possible to sort records using the values of fields that are not displayed.
+
+Duration: 5 minutes.
+
+### Lesson
 
 As we mentioned earlier,
 database records are not stored in any particular order.
@@ -1014,7 +1080,8 @@ We can do this in SQL by adding an `order by` clause to our query:
 select reading from Survey where quant='rad' order by reading;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 1.46
 2.19
@@ -1025,6 +1092,7 @@ select reading from Survey where quant='rad' order by reading;
 9.82
 11.25
 --------------------
+
 </div>
   
 By default,
@@ -1037,7 +1105,8 @@ We can sort in the opposite order using `desc` (for "descending"):
 select reading from Survey where quant='rad' order by reading desc;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 11.25
 9.82
@@ -1048,6 +1117,7 @@ select reading from Survey where quant='rad' order by reading desc;
 2.19
 1.46
 --------------------
+
 </div>
   
 (And if we want to make it clear that we're sorting in ascending order,
@@ -1063,7 +1133,8 @@ within each group of equal `taken` values:
 select taken, person from Survey order by taken asc, person desc;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------
 619                     dyer
 619                     dyer
@@ -1087,15 +1158,17 @@ select taken, person from Survey order by taken asc, person desc;
 837                     lake
 844                     roe
 --------------------    --------------------
+
 </div>
   
 This is easier to understand if we also remove duplicates:
   
 ``` {.sql}
-select <span class="highlight">distinct</span> taken, person from Survey order by taken asc, person desc;
+select distinct taken, person from Survey order by taken asc, person desc;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------
 619                     dyer
 622                     dyer
@@ -1111,6 +1184,7 @@ select <span class="highlight">distinct</span> taken, person from Survey order b
 837                     lake
 844                     roe
 --------------------    --------------------
+
 </div>
 
 Since sorting happens before columns are filtered,
@@ -1120,7 +1194,8 @@ we can sort by a field that isn't actually displayed:
 select reading from Survey where quant='rad' order by taken;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 9.82
 7.8
@@ -1131,6 +1206,7 @@ select reading from Survey where quant='rad' order by taken;
 1.46
 11.25
 --------------------
+
 </div>
   
 We can also sort results by the value of an expression.
@@ -1145,7 +1221,8 @@ once per record):
 select random(), ident from Person;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------
 -6309766557809954936    dyer
 -2098461436941487136    pb
@@ -1153,6 +1230,7 @@ select random(), ident from Person;
 6062184424509295966     roe
 -1268956870222271271    danforth
 --------------------    --------------------
+
 </div>
   
 So to randomize the order of our query results,
@@ -1163,7 +1241,8 @@ we can sort them by the value of this function:
 select ident from Person order by random();
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 danforth
 pb
@@ -1171,13 +1250,15 @@ dyer
 lake
 roe
 --------------------
+
 </div>
 
 ``` {.sql}
 select ident from Person order by random();
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 roe
 dyer
@@ -1185,6 +1266,7 @@ pb
 lake
 danforth
 --------------------
+
 </div>
   
 Our query pipeline now has four stages
@@ -1223,16 +1305,18 @@ Our query pipeline now has four stages
 
 ## Missing Data {#s:null}
 
-> ### Learning Objectives {.objectives}
-> 
-> * Explain what databases use the special value `NULL` to represent.
-> * Explain why databases should *not* uses their own special values (like 9999 or "N/A") to represent missing or unknown data.
-> * Explain what atomic and aggregate calculations involving `NULL` produce, and why.
-> * Write queries that include or exclude records containing `NULL`.
-> 
-> Duration: 10-20 minutes
-> (depending on whether or not the instructor includes an anecdote about
-> what happens when you *don't* take missing data into account).
+### Learning Objectives {.objectives}
+
+* Explain what databases use the special value `NULL` to represent.
+* Explain why databases should *not* uses their own special values (like 9999 or "N/A") to represent missing or unknown data.
+* Explain what atomic and aggregate calculations involving `NULL` produce, and why.
+* Write queries that include or exclude records containing `NULL`.
+
+Duration: 10-20 minutes
+(depending on whether or not the instructor includes an anecdote about
+what happens when you *don't* take missing data into account).
+
+### Lesson
 
 Real-world data is never complete&mdash;there are always holes.
 Databases represent these holes using special value called `null`.
@@ -1251,7 +1335,8 @@ its date is null:
 select * from Visited;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------
 619                     DR-1                    1927-02-08
 622                     DR-1                    1927-02-10
@@ -1262,6 +1347,7 @@ select * from Visited;
 837                     MS-4                    1932-01-14
 844                     DR-1                    1932-03-22
 --------------------    --------------------    --------------------
+
 </div>
   
 > ### Displaying Nulls {.box}
@@ -1279,11 +1365,13 @@ If we select the records that come before 1930:
 select * from Visited where dated<'1930-00-00';
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------
 619                     DR-1                    1927-02-08
 622                     DR-1                    1927-02-10
 --------------------    --------------------    --------------------
+
 </div>
   
 we get two results,
@@ -1293,7 +1381,8 @@ and if we select the ones that come during or after 1930:
 select * from Visited where dated>='1930-00-00';
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------
 734                     DR-3                    1939-01-07
 735                     DR-3                    1930-01-12
@@ -1301,6 +1390,7 @@ select * from Visited where dated>='1930-00-00';
 837                     MS-4                    1932-01-14
 844                     DR-1                    1932-03-22
 --------------------    --------------------    --------------------
+
 </div>
   
 we get five,
@@ -1343,10 +1433,12 @@ we must use a special test `is null`:
 select * from Visited where dated is NULL;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------
 752                     DR-3            
 --------------------    --------------------
+
 </div>
   
 or its inverse `is not null`:
@@ -1355,7 +1447,8 @@ or its inverse `is not null`:
 select * from Visited where dated is not NULL;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------
 619                     DR-1                    1927-02-08
 622                     DR-1                    1927-02-10
@@ -1365,6 +1458,7 @@ select * from Visited where dated is not NULL;
 837                     MS-4                    1932-01-14
 844                     DR-1                    1932-03-22
 --------------------    --------------------    --------------------
+
 </div>
   
 Null values cause headaches wherever they appear.
@@ -1377,13 +1471,15 @@ It's natural to write the query like this:
 select * from Survey where quant='sal' and person!='lake';
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------    --------------------
 619                     dyer                    sal                     0.13
 622                     dyer                    sal                     0.09
 752                     roe                     sal                     41.6
 837                     roe                     sal                     22.5
 --------------------    --------------------    --------------------    --------------------
+
 </div>
   
 but this query filters omits the records
@@ -1396,10 +1492,11 @@ If we want to keep these records
 we need to add an explicit check:
   
 ``` {.sql}
-select * from Survey where quant='sal' and (person!='lake' <span class="highlight">or person is null</span>);
+select * from Survey where quant='sal' and (person!='lake' or person is null);
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------    --------------------
 619                     dyer                    sal                     0.13
 622                     dyer                    sal                     0.09
@@ -1407,6 +1504,7 @@ select * from Survey where quant='sal' and (person!='lake' <span class="highligh
 752                     roe                     sal                     41.6
 837                     roe                     sal                     22.5
 --------------------    --------------------    --------------------    --------------------
+
 </div>
 
   
@@ -1487,14 +1585,16 @@ we need to exclude all the records for which we don't know who did the work.
 
 ## Aggregation {#s:aggregate}
 
-> ### Learning Objectives {.objectives}
-> 
-> * Write queries that combine values from many records to create a single aggregate value.
-> * Write queries that put records into groups based on their values.
-> * Write queries that combine values group by group.
-> * Explain what is displayed for *unaggregated* fields when some fields are aggregated.
-> 
-> Duration: 10 minutes.
+### Learning Objectives {.objectives}
+
+* Write queries that combine values from many records to create a single aggregate value.
+* Write queries that put records into groups based on their values.
+* Write queries that combine values group by group.
+* Explain what is displayed for *unaggregated* fields when some fields are aggregated.
+
+Duration: 10 minutes.
+
+### Lesson
 
 Gina now wants to calculate ranges and averages for her data.
 She knows how to select all of the dates from the `Visited` table:
@@ -1503,7 +1603,8 @@ She knows how to select all of the dates from the `Visited` table:
 select dated from Visited;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 1927-02-08
 1927-02-10
@@ -1514,6 +1615,7 @@ select dated from Visited;
 1932-01-14
 1932-03-22
 --------------------
+
 </div>
   
 but to combine them,
@@ -1526,20 +1628,24 @@ and produces a single record as output:
 select min(dated) from Visited;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 1927-02-08
 --------------------
+
 </div>
 
 ``` {.sql}
 select max(dated) from Visited;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 1939-01-07
 --------------------
+
 </div>
   
 `min` and `max` are just two of
@@ -1552,30 +1658,36 @@ and `sum`:
 select avg(reading) from Survey where quant='sal';
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 7.20333333333
 --------------------
+
 </div>
 
 ``` {.sql}
 select count(reading) from Survey where quant='sal';
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 9
 --------------------
+
 </div>
 
 ``` {.sql}
 select sum(reading) from Survey where quant='sal';
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 64.83
 --------------------
+
 </div>
   
 We used `count(reading)` here,
@@ -1594,10 +1706,12 @@ find the range of sensible salinity measurements:
 select min(reading), max(reading) from Survey where quant='sal' and reading<=1.0;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------
 0.05                    0.21
 --------------------    --------------------
+
 </div>
   
 We can also combine aggregated results with raw results,
@@ -1607,10 +1721,12 @@ although the output might surprise you:
 select person, count(*) from Survey where quant='sal' and reading<=1.0;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------
 lake                    7
 --------------------    --------------------
+
 </div>
   
 Why does Lake's name appear rather than Roerich's or Dyer's?
@@ -1648,22 +1764,26 @@ This behavior lets us write our queries as:
 select min(dated) from Visited;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 1927-02-08
 --------------------
+
 </div>
   
 instead of always having to filter explicitly:
   
 ``` {.sql}
-select min(dated) from Visited <span class="highlight">where dated is not null</span>;
+select min(dated) from Visited where dated is not null;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 1927-02-08
 --------------------
+
 </div>
   
 ### Summary {.keypoints}
@@ -1705,12 +1825,14 @@ select min(dated) from Visited <span class="highlight">where dated is not null</
 
 ## Grouping {#s:grouping}
 
-> ### Learning Objectives {.objectives}
-> 
-> * Group results to be aggregated separately.
-> * Explain when grouping occurs in the processing pipeline.
-> 
-> Duration: 5 minutes.
+### Learning Objectives {.objectives}
+
+* Group results to be aggregated separately.
+* Explain when grouping occurs in the processing pipeline.
+
+Duration: 5 minutes.
+
+### Lesson
 
 Aggregating all records at once doesn't always make sense.
 For example,
@@ -1724,10 +1846,12 @@ from  Survey
 where quant='rad';
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------
 roe                     8                       6.56
 --------------------    --------------------    --------------------
+
 </div>
   
 because the database manager selects a single arbitrary scientist's name
@@ -1742,10 +1866,12 @@ where quant='rad'
 and   person='dyer';
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------
 dyer                    2                       8.81
 --------------------    --------------------    --------------------
+
 </div>
   
 but this would be tedious,
@@ -1763,13 +1889,15 @@ where    quant='rad'
 group by person;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------
 dyer                    2                       8.81
 lake                    2                       1.82
 pb                      3                       6.66
 roe                     1                       11.25
 --------------------    --------------------    --------------------
+
 </div>
   
 `group by` does exactly what its name implies:
@@ -1798,7 +1926,8 @@ from     Survey
 group by person, quant;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------    --------------------
                         sal                     1                       0.06
                         temp                    1                       -26.0
@@ -1812,6 +1941,7 @@ pb                      temp                    2                       -20.0
 roe                     rad                     1                       11.25
 roe                     sal                     2                       32.05
 --------------------    --------------------    --------------------    --------------------
+
 </div>
   
 Note that we have added `person` to the list of fields displayed,
@@ -1828,7 +1958,8 @@ group by person, quant
 order by person, quant;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------    --------------------
 dyer                    rad                     2                       8.81
 dyer                    sal                     2                       0.11
@@ -1840,6 +1971,7 @@ pb                      temp                    2                       -20.0
 roe                     rad                     1                       11.25
 roe                     sal                     2                       32.05
 --------------------    --------------------    --------------------    --------------------
+
 </div>
   
 Looking more closely,
@@ -1893,15 +2025,17 @@ Our query processing pipeline now looks like
 
 ## Combining Data {#s:join}
 
-> ### Learning Objectives {.objectives}
-> 
-> * Explain what primary keys and foreign keys are.
-> * Write queries that combine information from two or more tables by matching keys.
-> * Write queries using aliases for table names.
-> * Explain why the `tablename.fieldname` notation is needed when tables are joined.
-> * Explain the logical sequence of operations that occurs when two or more tables are joined.
-> 
-> Duration: 20 minutes (and expect to have to walk through an example step-by-step).
+### Learning Objectives {.objectives}
+
+* Explain what primary keys and foreign keys are.
+* Write queries that combine information from two or more tables by matching keys.
+* Write queries using aliases for table names.
+* Explain why the `tablename.fieldname` notation is needed when tables are joined.
+* Explain the logical sequence of operations that occurs when two or more tables are joined.
+
+Duration: 20 minutes (and expect to have to walk through an example step-by-step).
+
+### Lesson
 
 In order to submit her data to a web site
 that aggregates historical meteorological data,
@@ -1921,7 +2055,8 @@ let's start by joining the `Site` and `Visited` tables:
 select * from Site join Visited;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------    --------------------    --------------------    --------------------
 DR-1                    -49.85                  -128.57                 619                     DR-1                    1927-02-08
 DR-1                    -49.85                  -128.57                 622                     DR-1                    1927-02-10
@@ -1948,6 +2083,7 @@ MS-4                    -48.87                  -123.4                  752     
 MS-4                    -48.87                  -123.4                  837                     MS-4                    1932-01-14
 MS-4                    -48.87                  -123.4                  844                     DR-1                    1932-03-22
 --------------------    --------------------    --------------------    --------------------    --------------------    --------------------
+
 </div>
   
 `join` creates
@@ -1970,10 +2106,11 @@ we add a clause specifying that
 we're only interested in combinations that have the same site name:
   
 ``` {.sql}
-select * from Site join Visited <span class="highlight">on Site.name=Visited.site</span>;
+select * from Site join Visited on Site.name=Visited.site;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------    --------------------    --------------------    --------------------
 DR-1                    -49.85                  -128.57                 619                     DR-1                    1927-02-08
 DR-1                    -49.85                  -128.57                 622                     DR-1                    1927-02-10
@@ -1984,6 +2121,7 @@ DR-3                    -47.15                  -126.72                 751     
 DR-3                    -47.15                  -126.72                 752                     DR-3                    
 MS-4                    -48.87                  -123.4                  837                     MS-4                    1932-01-14
 --------------------    --------------------    --------------------    --------------------    --------------------    --------------------
+
 </div>
   
 `on` does the same job as `where`:
@@ -2011,12 +2149,13 @@ to select the three columns we actually want
 out of our join:
   
 ``` {.sql}
-select <span class="highlight">Site.lat, Site.long, Visited.dated</span>
+select Site.lat, Site.long, Visited.dated
 from   Site join Visited
 on     Site.name=Visited.site;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------
 -49.85                  -128.57                 1927-02-08
 -49.85                  -128.57                 1927-02-10
@@ -2027,6 +2166,7 @@ on     Site.name=Visited.site;
 -47.15                  -126.72                 1939-01-07
 -48.87                  -123.4                  1932-01-14
 --------------------    --------------------    --------------------
+
 </div>
   
 If joining two tables is good,
@@ -2038,14 +2178,15 @@ and more `on` tests to filter out combinations of records
 that don't make sense:
 
 ``` {.sql}
-select Site.lat, Site.long, Visited.dated, <span class="highlight">Survey.quant, Survey.reading</span>
+select Site.lat, Site.long, Visited.dated, Survey.quant, Survey.reading
 from   Site join Visited join Survey
 on     Site.name=Visited.site
-<span class="highlight">and    Visited.ident=Survey.taken
-and    Visited.dated is not null</span>;
+and    Visited.ident=Survey.taken
+and    Visited.dated is not null;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------    --------------------    --------------------
 -49.85                  -128.57                 1927-02-08              rad                     9.82
 -49.85                  -128.57                 1927-02-08              sal                     0.13
@@ -2065,6 +2206,7 @@ and    Visited.dated is not null</span>;
 -48.87                  -123.4                  1932-01-14              sal                     22.5
 -49.85                  -128.57                 1932-03-22              rad                     11.25
 --------------------    --------------------    --------------------    --------------------    --------------------
+
 </div>
   
 <a id="a:keys"></a>
@@ -2107,7 +2249,8 @@ and we can use those record numbers in queries:
 select rowid, * from Person;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------    --------------------    --------------------
 1                       dyer                    William                 Dyer
 2                       pb                      Frank                   Pabodie
@@ -2115,6 +2258,7 @@ select rowid, * from Person;
 4                       roe                     Valentina               Roerich
 5                       danforth                Frank                   Danforth
 --------------------    --------------------    --------------------    --------------------
+
 </div>
   
 ### Summary {.keypoints}
@@ -2144,17 +2288,19 @@ select rowid, * from Person;
 
 ## Creating and Modifying Tables {#s:create}
 
-> ### Learning Objectives {.box}
-> 
-> * Write queries that create database tables with fields of common types.
-> * Write queries that specify the primary and foreign key relationships of tables.
-> * Write queries that specify whether field values must be unique and/or are allowed to be `null`.
-> * Write queries that erase database tables.
-> * Write queries that add records to database tables.
-> * Write queries that delete specific records from tables.
-> * Explain what referential integrity is, and how a database can become inconsistent as data is changed.
-> 
-> Duration: 10 minutes.
+### Learning Objectives {.box}
+
+* Write queries that create database tables with fields of common types.
+* Write queries that specify the primary and foreign key relationships of tables.
+* Write queries that specify whether field values must be unique and/or are allowed to be `null`.
+* Write queries that erase database tables.
+* Write queries that add records to database tables.
+* Write queries that delete specific records from tables.
+* Explain what referential integrity is, and how a database can become inconsistent as data is changed.
+
+Duration: 10 minutes.
+
+### Lesson
 
 So far we have only looked at how to get information out of a database,
 both because that is more frequent than adding information,
@@ -2187,13 +2333,15 @@ but it's better not to have to rely on it.
 Different database systems support different data types for table columns,
 but most provide the following:
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------
 `integer`               A signed integer.
 `real`                  A floating point value.
 `text`                  A string.
 `blob`                  Any "binary large object" such as an image or audio file.
 --------------------    --------------------
+
 </div>
 
 Most databases also support Booleans and date/time values;
@@ -2211,10 +2359,10 @@ For example,
 a better definition for the `Survey` table would be:
   
     create table Survey(
-        taken   integer not null, <span class="comment">-- where reading taken</span>
-        person  text,             <span class="comment">-- may not know who took it</span>
-        quant   real not null,    <span class="comment">-- the quantity measured</span>
-        reading real not null,    <span class="comment">-- the actual reading</span>
+        taken   integer not null, -- where reading taken
+        person  text,             -- may not know who took it
+        quant   real not null,    -- the quantity measured
+        reading real not null,    -- the actual reading
         primary key(taken, quant),
         foreign key(taken) references Visited(ident),
         foreign key(person) references Person(ident)
@@ -2258,10 +2406,12 @@ of measurements he'd taken:
 select count(*) from Survey where person='lake';
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------
 7
 --------------------
+
 </div>
   
 That's never supposed to happen:
@@ -2339,13 +2489,15 @@ this technique is outside the scope of this chapter.
 
 ## Transactions
 
-> ### Learning Objectives {.objectives}
-> 
-> * Explain what a race condition is.
-> * Explain why database operations sometimes have to be placed ina transaction to ensure correct behavior.
-> * Explain what it means to commit a transaction.</li>
-> 
-> Duration: 10 minutes.
+### Learning Objectives {.objectives}
+
+* Explain what a race condition is.
+* Explain why database operations sometimes have to be placed ina transaction to ensure correct behavior.
+* Explain what it means to commit a transaction.</li>
+
+Duration: 10 minutes.
+
+### Lesson
 
 Suppose we have another table in our database that shows
 which pieces of equipment have been borrowed by which scientists:
@@ -2354,12 +2506,14 @@ which pieces of equipment have been borrowed by which scientists:
 select * from Equipment;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------
 dyer                    CX-211 oscilloscope
 pb                      Greenworth balance
 lake                    Cavorite damping plates
 --------------------    --------------------
+
 </div>
     
 (We should actually give each piece of equipment a unique ID,
@@ -2434,12 +2588,14 @@ higher-than-normal levels of radiation:
 select * from Exposure;
 ```
 
-<div class="sqltable">
+<div class="db">
+
 --------------------    --------------------
 pb                      4
 dyer                    1
 lake                    5
 --------------------    --------------------
+
 </div>
   
 After going through the journal entries for 1932,
@@ -2532,13 +2688,15 @@ every transaction will appear to have had the entire database to itself.
 
 ## Programming With Databases {#s:programming}
 
-> ### Learning Objectives {.objectives}
-> 
-> * Write a Python program that queries a database and processes the results.
-> * Explain what an SQL injection attack is.
-> * Write a program that safely interpolates values into queries.
-> 
-> Duration: 20 minutes.
+### Learning Objectives {.objectives}
+
+* Write a Python program that queries a database and processes the results.
+* Explain what an SQL injection attack is.
+* Write a program that safely interpolates values into queries.
+
+Duration: 20 minutes.
+
+### Lesson
 
 To end this chapter,
 let's have a look at how to access a database from

@@ -1,48 +1,70 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <link rel="shortcut icon" type="image/x-icon" href="logo/favicon.png" />
-    <link rel="stylesheet" id="twentytwelve-fonts-css" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext" type="text/css" media="all">
-    <link href="css/bootstrap/bootstrap.css" rel="stylesheet" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="css/bootstrap/bootstrap-responsive.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="css/swc.css" />
-    <link rel="stylesheet" type="text/css" href="css/swc-bootstrap.css" />
-    <meta http-equiv="last-modified" content="$date$" />
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <meta name="title" content="$title$" />
-  </head>
-  <body>
-    <div class="container shadow">
-      <div class="banner">
-        <a href="index.html" title="Software Carpentry Home">
-          <img src="logo/software-carpentry-banner.png" alt="Software Carpentry banner" />
-        </a>
-      </div>
-
-      <div class="row-fluid">
-        <div class="span10 offset1">
-          <h1 class="title">$title$</h1>
-        </div>
-      </div>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"$if(lang)$ lang="$lang$" xml:lang="$lang$"$endif$>
+<head>
+  <link rel="shortcut icon" type="image/x-icon" href="logo/favicon.png" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" id="twentytwelve-fonts-css" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext" type="text/css" media="all">
+  <link href="css/bootstrap/bootstrap.css" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="css/bootstrap/bootstrap-responsive.css" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="css/swc.css" />
+  <link rel="stylesheet" type="text/css" href="css/swc-bootstrap.css" />
+  <meta http-equiv="last-modified" content="$date-meta$" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+$for(author-meta)$
+  <meta name="author" content="$author-meta$" />
+$endfor$
+$if(date-meta)$
+  <meta name="date" content="$date-meta$" />
+$endif$
+  <title>$if(title-prefix)$$title-prefix$ - $endif$$pagetitle$</title>
+  <style type="text/css">code{white-space: pre;}</style>
+$if(quotes)$
+  <style type="text/css">q { quotes: "“" "”" "‘" "’"; }</style>
+$endif$
+$if(highlighting-css)$
+  <style type="text/css">
+$highlighting-css$
+  </style>
+$endif$
+$for(css)$
+  <link rel="stylesheet" href="$css$" $if(html5)$$else$type="text/css" $endif$/>
+$endfor$
+$if(math)$
+  $math$
+$endif$
+$for(header-includes)$
+  $header-includes$
+$endfor$
+</head>
+<body>
+<div class="row-fluid">
+  <div class="span10 offset1">
+$for(include-before)$
+$include-before$
+$endfor$
+$if(title)$
+<div id="$idprefix$header">
+<h1 class="title">$title$</h1>
+$for(author)$
+<h2 class="author">$author$</h2>
+$endfor$
+$if(date)$
+<h3 class="date">$date$</h3>
+$endif$
+</div>
+$endif$
+$if(toc)$
+<div id="$idprefix$TOC">
+$toc$
+</div>
+$endif$
 $body$
-      <div class="footer">
-        <p>
-          Copyright &copy; Software Carpentry, 2012-13.
-          See the <a href="license.html">license</a> for terms of re-use.
-        </p>
-      </div>
-
-    </div>
-
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script src="js/bootstrap/bootstrap.min.js"></script>
-
-  </body>
+$for(include-after)$
+$include-after$
+$endfor$
+</div>
+</div>
+</body>
 </html>
