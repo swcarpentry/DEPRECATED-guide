@@ -435,13 +435,17 @@ danforth                Frank                   Danforth
 
 * Many people format queries as:
 
+    ```
     SELECT personal, family FROM person;
+    ```
 
-or as:
+    or as:
 
+    ```
     select Personal, Family from PERSON;
+    ```
 
-  what style do you find easiest to read, and why?
+    What style do you find easiest to read, and why?
 
 ## Removing Duplicates {#s:distinct}
 
@@ -563,27 +567,31 @@ they're just displayed that way.
   you can run a single query by passing it to the interpreter
   right after the path to the database file:
 
+    ```
     $ sqlite3 survey.db 'select * from Person;'
+    ```
 
-<div class="db">
+    <div class="db">
 
---------------------    --------------------    --------------------
-dyer                    William                 Dyer
-pb                      Frank                   Pabodie
-lake                    Anderson                Lake
-roe                     Valentina               Roerich
-danforth                Frank                   Danforth
---------------------    --------------------    --------------------
+    --------------------    --------------------    --------------------
+    dyer                    William                 Dyer
+    pb                      Frank                   Pabodie
+    lake                    Anderson                Lake
+    roe                     Valentina               Roerich
+    danforth                Frank                   Danforth
+    --------------------    --------------------    --------------------
 
-</div>
+    </div>
 
-  Fill in the missing commands in the pipeline below
-  so that the output contains no redundant values.
+    Fill in the missing commands in the pipeline below
+    so that the output contains no redundant values.
 
+    ```
     $ sqlite3 survey.db 'select person, quant from Survey;' | ____ | ____
+    ```
 
-  Do you think this is less efficient, just as efficient, or more efficient
-  that using `distinct` for large data?
+    Do you think this is less efficient, just as efficient, or more efficient
+    that using `distinct` for large data?
 
 ## Filtering {#s:filter}
 
@@ -841,10 +849,12 @@ not to the entire rows as they are being processed.
 * Gina wants to select all sites that lie within 30&deg; of the equator.
   Her query is:
 
+    ``` {.sql}
     select * from Site where (lat > -30) or (lat < 30);
+    ``` {.sql}
 
-  Explain why this is wrong,
-  and rewrite the query so that it is correct.
+    Explain why this is wrong,
+    and rewrite the query so that it is correct.
 
 * Normalized salinity readings are supposed to be between 0.0 and 1.0.
   Write a query that selects all records from `Survey`
@@ -856,20 +866,20 @@ not to the entire rows as they are being processed.
   the character '%' can be used any number of times in the pattern
   to mean "match zero or more characters".
 
-Expression              Value
---------------------    --------------------
-`'a' like 'a'`          `True`
-`'a' like '%a'`         `True`
-`'b' like '%a'`         `False`
-`'alpha' like 'a%'`     `True`
-`'alpha' like 'a%p%'`   `True`
-`'beta' like 'a%p%'`    `False`
+    Expression              Value
+    --------------------    --------------------
+    `'a' like 'a'`          `True`
+    `'a' like '%a'`         `True`
+    `'b' like '%a'`         `False`
+    `'alpha' like 'a%'`     `True`
+    `'alpha' like 'a%p%'`   `True`
+    `'beta' like 'a%p%'`    `False`
 
-  The expression `*column-name* not like *pattern*`
-  inverts the test.
-  Using `like`,
-  write a query that finds all the records in `Visited`
-  that *aren't* from sites labelled 'DR-something'.
+    The expression `*column-name* not like *pattern*`
+    inverts the test.
+    Using `like`,
+    write a query that finds all the records in `Visited`
+    that *aren't* from sites labelled 'DR-something'.
 
 ## Calculating New Values {#s:calc}
 
@@ -990,65 +1000,65 @@ Frank Danforth
 
 * The `union` operator combines the results of two queries:
 
-``` {.sql}
-select * from Person where ident='dyer' union select * from Person where ident='roe';
-```
+    ``` {.sql}
+    select * from Person where ident='dyer' union select * from Person where ident='roe';
+    ```
 
-<div class="db">
+    <div class="db">
 
---------------------    --------------------    --------------------
-dyer                    William                 Dyer
-roe                     Valentina                       Roerich
---------------------    --------------------    --------------------
+    --------------------    --------------------    --------------------
+    dyer                    William                 Dyer
+    roe                     Valentina                       Roerich
+    --------------------    --------------------    --------------------
 
-</div>
+    </div>
         
-  Use `union` to create a consolidated list of salinity measurements
-  in which Roerich's, and only Roerich's,
-  have been corrected as described in the previous challenge.
-  The output should be something like:
+    Use `union` to create a consolidated list of salinity measurements
+    in which Roerich's, and only Roerich's,
+    have been corrected as described in the previous challenge.
+    The output should be something like:
 
-<div class="db">
+    <div class="db">
 
---------------------    --------------------
-619                     0.13
-622                     0.09
-734                     0.05
-751                     0.1
-752                     0.09
-752                     0.416
-837                     0.21
-837                     0.225
---------------------    --------------------
+    --------------------    --------------------
+    619                     0.13
+    622                     0.09
+    734                     0.05
+    751                     0.1
+    752                     0.09
+    752                     0.416
+    837                     0.21
+    837                     0.225
+    --------------------    --------------------
 
-</div>
+    </div>
 
 * The site identifiers in the `Visited` table have two parts
   separated by a '-':
 
-``` {.sql}
-select distinct site from Visited;
-```
+    ``` {.sql}
+    select distinct site from Visited;
+    ```
 
-<div class="db">
+    <div class="db">
 
---------------------
-DR-1
-DR-3
-MSK-4
---------------------
+    --------------------
+    DR-1
+    DR-3
+    MSK-4
+    --------------------
 
-</div>
+    </div>
   
-  Some major site identifiers are two letters long and some are three.
-  The "in string" function `instr(X, Y)`
-  returns the 1-based index of the first occurrence of string Y in string X,
-  or 0 if Y does not exist in X.
-  The substring function `substr(X, I)`
-  returns the substring of X starting at index I.
-  Use these two functions to produce a list of unique major site identifiers.
-  (For this data,
-  the list should contain only "DR" and "MSK").
+    Some major site identifiers are two letters long and some are three.
+    The "in string" function `instr(X, Y)`
+    returns the 1-based index of the first occurrence of string Y in string X,
+    or 0 if Y does not exist in X.
+    The substring function `substr(X, I)`
+    returns the substring of X starting at index I.
+    Use these two functions to produce a list of unique major site identifiers.
+    (For this data,
+    the list should contain only "DR" and "MSK").
 
 * Pabodie's journal notes that all his temperature measurements
   are in &deg;F,
@@ -1298,10 +1308,12 @@ Our query pipeline now has four stages
   sorted by when they were taken.
   The query:
 
+    ``` {.sql}
     select * from Survey where quant='rad' order by taken;
+    ```
 
-  produces the correct answer for the data used in our examples.
-  Explain when and why it might produce the wrong answer.
+    produces the correct answer for the data used in our examples.
+    Explain when and why it might produce the wrong answer.
 
 ## Missing Data {#s:null}
 
@@ -1568,10 +1580,12 @@ we need to exclude all the records for which we don't know who did the work.
 
 * What do you expect the query:
 
+    ``` {.sql}
     select * from Visited where dated in ('1927-02-08', null);
+    ```
 
-  to produce?
-  What does it actually produce?
+    to produce?
+    What does it actually produce?
 
 * Some database designers prefer to use
   a [sentinel value](glossary.html#sentinel-value)
@@ -1808,9 +1822,11 @@ select min(dated) from Visited where dated is not null;
   and the average of all the radiation readings.
   She writes the query:
 
+    ``` {.sql}
     select reading-avg(reading) from Survey where quant='rad';
+    ```
 
-  What does this actually produce, and why?
+    What does this actually produce, and why?
 
 * The function `group_concat(field, separator)`
   concatenates all the values in a field
@@ -1819,9 +1835,11 @@ select min(dated) from Visited where dated is not null;
   Use this to produce a one-line list of scientists' names,
   such as:
 
+    ``` {.sql}
     William Dyer, Frank Pabodie, Anderson Lake, Valentina Roerich, Frank Danforth
+    ```
 
-  Can you find a way to order the list by surname?
+    Can you find a way to order the list by surname?
 
 ## Grouping {#s:grouping}
 
@@ -2015,10 +2033,12 @@ Our query processing pipeline now looks like
   [Figure 7](#f:pipeline_grouping)
   for the following query:
 
+    ``` {.sql}
     select   min(reading), max(reading) from Survey
     where    taken in (734, 735)
     and      quant='temp'
     group by taken, quant;
+    ```
 
 * How can the query in the previous challenge be simplified
   without changing its result?
@@ -2276,8 +2296,10 @@ select rowid, * from Person;
 
 * Describe in your own words what the following query produces:
 
+    ``` {.sql}
     select Site.name from Site join Visited
     on Site.lat<-49.0 and Site.name=Visited.site and Visited.dated>='1932-00-00';
+    ```
 
 * Why does the `Person` table have an `ident` field?
   Why do we not just use scientists' names in the `Survey` table?
@@ -2464,17 +2486,19 @@ this technique is outside the scope of this chapter.
   containing temperature readings by Robert Olmstead,
   which is formatted like this:
 
+    ```
     Taken,Temp
     619,-21.5
     622,-15.5
+    ```
 
-  Write a small Python program that reads this file in
-  and prints out the SQL `insert` statements needed
-  to add these records to the survey database.
-  Note: you will need to add an entry for Olmstead
-  to the `Person` table.
-  If you are testing your program repeatedly,
-  you may want to investigate SQL's `insert or replace` command.
+    Write a small Python program that reads this file in
+    and prints out the SQL `insert` statements needed
+    to add these records to the survey database.
+    Note: you will need to add an entry for Olmstead
+    to the `Person` table.
+    If you are testing your program repeatedly,
+    you may want to investigate SQL's `insert or replace` command.
 
 * SQLite has several administrative commands that aren't part of the SQL standard.
   One of them is `.dump`,
@@ -2600,8 +2624,10 @@ lake                    5
   
 After going through the journal entries for 1932,
 Gina wants to add two days to Lake's count:
-  
-    update Exposure set days = days + 2 where person='lake';
+
+``` {.sql}  
+update Exposure set days = days + 2 where person='lake';
+```
 
 However,
 her labmate has been doing through the journal entries for 1933
@@ -2609,8 +2635,10 @@ to help Gina meet a paper deadline.
 At the same moment as Gina runs her command,
 her labmate runs this
 to add one more day to Lake's exposure:
-  
-    update Exposure set days = days + 1 where person='lake';
+
+``` {.sql}
+update Exposure set days = days + 1 where person='lake';
+```
 
 After both operations have completed,
 the database should show that Lake was exposed for eight days

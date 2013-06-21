@@ -81,7 +81,7 @@ sterile : tidy
 
 #------------------------------------------------------------
 
-## testing Markdown
+## markdown     : test Pandoc Markdown translation
 markdown : build/temp.html
 
 build/temp.html : db.md templates/_md.html $(STATIC_DST)
