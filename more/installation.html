@@ -1,0 +1,617 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../common/scb.css" type="text/css" />
+    <title>Software Carpentry / Packaging and Installation</title>
+    <meta name="id" content="$Id: installation.html 2293 2011-11-02 13:24:49Z gvw $" />
+    <meta name="type" content="interlude" />
+  </head>
+  <body class="chapter">
+    <div class="header">
+      <a href="index.html"><img src="../img/logo/software-carpentry-banner.jpg" alt="Software Carpentry logo" class="logo" /></a>
+      <h1>Packaging and Installation</h1>
+    </div>
+
+    <!--
+        Unix-style install is just harder; space-vs-time tradeoff, where it's disk space vs. human time.
+        Example: installing Pandoc to turn LaTeX into EPUB was:
+        - apt-get install ghc
+        - but it's the wrong version
+        - so install 7 from source
+        - then install the Haskell platform
+        - which won't work without OpenGL
+        - then use cabal to get Pandoc
+    -->
+
+    <p>
+      As the saying goes,
+      there's good news,
+      and there's bad news.
+      The good news is that our collaborators in New Zealand
+      have written a new version of their laser jello simulator.
+      It has all the features we've been asking for:
+      better resolution at high densities,
+      a more sophisticated reflectance model,
+      and best of all,
+      it's now available in grape.
+    </p>
+
+    <p>
+      The bad news is that
+      we need to install their software
+      before we can start using it.
+      The last time we tried to do it,
+      it was two days before the cluster was back in working order.
+      Not only did our first attempt fail,
+      it somehow broke the protein folding package
+      that two other grad students were using.
+    </p>
+
+    <p>
+      This chapter will look at why installing software is so difficult,
+      and at what we can do to make it hurt a little less.
+      In order to do that,
+      we'll examine what actually happens when we install a program,
+      and at how people package software to make it installable.
+      Hopefully,
+      knowing this will also help you debug things
+      the next time an installation goes sour for you.
+    </p>
+
+    <section id="s:maual">
+
+      <h2>Doing It By Hand</h2>
+
+      <p>
+        Method #1: mail someone the files.
+      </p>
+
+      <p>
+        Method #2: create an archive and mail that.
+      </p>
+
+      <p>
+        Method #3: create an archive and put it on the web.
+      </p>
+
+    </section>
+
+    <section id="s:make">
+
+      <h2>Ad Hoc Automation</h2>
+
+      <p>
+        Method #4: automate the creation of the archive.
+      </p>
+
+      <p>
+        Method #5: include a script to copy files into the right places.
+      </p>
+
+      <p>
+        Method #6: ad hoc checks for dependencies.
+      </p>
+
+    </section>
+
+    <section id="s:compile">
+
+      <h2>Mummy, Where Do Programs Come From?</h2>
+
+      <p>
+        The first thing we need to understand is
+        how programs in low-level languages like C and Fortran work.
+        Instead of translating code on the fly into something a machine can execute,
+        like Python or MATLAB,
+        these languages separate compilation from execution.
+        When a program is compiled,
+        its source code is translated into machine instructions.
+      </p>
+
+      <p class="fixme">diagram</p>
+
+      <p>
+        But what if the program's source is stored in several files?
+        One possibility would be to compile everything at once,
+        every time,
+        but this would take a long time,
+        and most of the work would be redundant.
+        Instead,
+        compilers translate each soruce file into
+        an <a class="dfn" href="glossary.html#object-file">object file</a>
+        containing machine instructions for the code in that file,
+        and <em>only</em> that file.
+        To create the final program,
+        these files are <a class="dfn" href="glossary.html#linking">linked</a> together
+        to create a single program file.
+        For example,
+        if <code>gui.c</code> contains a call to a function <code>extrapolate</code>,
+        and that function is in the file <code>statistics.c</code>,
+        linking is the stage that tells the caller where to find the callee.
+        <span class="fixme">diagram</span>
+      </p>
+
+      <p>
+        Of course,
+        most people don't write their own statistics routines
+        (at least, most sensible people don't).
+        To allow people to share commonly-used code,
+        object files are grouped together to create libraries,
+        which are put in standard locations like the <code>/lib</code> directory.
+        These are then linked into programs exactly like the user's own object files
+        <span class="fixme">picture</span>
+      </p>
+
+      <p>
+        This model is called <a class="dfn" href="glossary.html#static-linking">static linking</a>,
+        and while it's simple,
+        it may mean that there are dozens or hundreds of copies of a particular library
+        linked into different applications on a single system <span class="fixme">picture</span>.
+        This isn't as costly as it used to be&mdash;disk space
+        is cheap, and getting cheaper every day&mdash;but
+        it makes upgrading software very hard.
+        Suppose someone finds a bug in a statistics function;
+        they can fix the code,
+        compile it,
+        and install the new library on every computer in the world,
+        but programs that have statically linked the old version will still be buggy,
+        because they each include a copy of the old code
+        <span class="fixme">picture</span>.
+      </p>
+
+      <p>
+        The obvious way to avoid this problem is to have
+        only one version of any particular library on any particular computer.
+        The contents of that library aren't copied into programs;
+        instead,
+        when a program is linked to the library,
+        the linker inserts a reference to the shared library <span class="fixme">picture</span>.
+        When the program is run,
+        the operating system looks up the shared objects it needs
+        and loads them into memory&mdash;in essense,
+        it delays part of linking to run-time <span class="fixme">diagram</span>.
+        A library of this kind is called a
+        <a class="dfn" href="glossary.html#shared-library">shared library</a>;
+        shared library files usually have a <code>.so</code> extension (for "shared object") on Unix
+        or a <code>.dll</code> extension (for "dynamic link library") on Windows.
+      </p>
+
+      <p>
+        The next thing we need to understand is
+        how the operating system finds programs,
+        and how programs find their shared libraries.
+        The Unix command shell is the oldest programming environment in widespread use today,
+        so we will start by describing how it runs programs.
+        When we type a command like:
+      </p>
+
+<pre>
+$ skim
+</pre>
+
+      <p class="continue">
+        the shell fetches the current value of the environment variable <code>PATH</code>,
+        which will look something like <code>/home/aturing/bin:/usr/local/bin:/usr/bin:/bin</code>.
+        It splits that string on colons to create a list like
+        <code>["/home/aturing/bin", "/usr/local/bin", "/usr/bin", "/bin"]</code>.
+        (We're using Python's list notation here for convenience;
+        the shell is probably written in some other language,
+        but the principle is the same.)
+        It then looks at each of those strings, in order.
+        If that string is the name of a directory,
+        and if that directory contains a file called <code>skim</code>,
+        and if that file is marked as executable,
+        then the shell runs it.
+      </p>
+
+      <p class="fixme">diagram</p>
+
+      <p>
+        This might seem a bit roundabout,
+        but it accomplishes three things.
+        First,
+        it encourages people to group programs together
+        by putting them in a small number of directories.
+        Second,
+        it makes it easy to add new directories to the set of places the system searches.
+        If our lab has a bunch of shared tools,
+        for example,
+        we can put them all in <code>/lab/tools</code>,
+        and then everyone just has to add one directory to their path to get them.
+      </p>
+
+      <p>
+        The third thing that <code>PATH</code> does may not be so obvious,
+        but is crucial in practice.
+        The directories in <code>PATH</code> are always searched in order,
+        so if there are several programs called <code>skim</code> on our system,
+        which one actually gets run is determined by the order of directories in <code>PATH</code>.
+      </p>
+
+      <p>
+        For example,
+        imagine that we are using a shell script called <code>churn</code>
+        in the <code>/lab</code> directory
+        that runs <code>skim</code> and <code>stir</code>:
+      </p>
+
+<pre>
+# /lab/churn
+for filename in */*.dat
+do
+    skim $filename &gt; ./skimmed.tmp
+    for count in $(seq 1 10)
+    do
+        stir $count &lt; skimmed.tmp &gt; $filename.$count.out
+    done
+done
+</pre>
+
+      <p class="continue">
+        We want to test it with a new version of <code>skim</code>,
+        but still use the old version of <code>stir</code>
+        (which is in <code>/lab/stir</code>).
+        We could copy and edit the shell script,
+        but it's easier to just modify our path
+        so that our version of <code>skim</code>
+        comes before the version in <code>/lab</code>:
+      </p>
+
+<pre>
+$ echo $PATH
+<span class="out">/lab:/usr/local/bin:/usr/bin:/bin</span>
+$ which skim
+<span class="out">/lab/skim</span>
+$ export PATH=$HOME/development/bin:$PATH
+$ which skim
+<span class="out">/home/ghopper/development/bin/skim</span>
+</pre>
+
+      <p>
+        This probably seems pretty obscure,
+        but a variation on it is often used
+        when several different versions of a program
+        need to live side by side.
+        Suppose,
+        for example,
+        that Bhargan is weeks away from submitting her thesis;
+        she has been using version 4 of <code>skim</code>,
+        and wants to keep doing so.
+        Fan, on the other hand,
+        is just starting his thesis,
+        and wants to use the features in the newer version 6.
+        They can install whatever they like on their laptops without any conflict,
+        but what should Stefan (their sys admin) install on the cluster
+        where they're running their day-long processing jobs?
+      </p>
+
+      <p>
+        One answer is for him to install both, in different directories.
+        If he puts the old version in <code>/local/skim4/skim</code>,
+        and the newer in <code>/local/skim6/skim</code>,
+        then all each grad student has to do is make sure the right directory is in their path.
+      </p>
+
+      <div class="box">
+        <p class="boxtitle">
+          Shared Libraries
+        </p>
+
+        <p>
+          On Unix,
+          the operating system looks for <code>.so</code> files
+          (i.e., shared libraries)
+          in much the same way as it looks for programs.
+          A few locations,
+          like <code>/lib</code> and <code>/usr/lib</code>,
+          are always searched,
+          but we can add more directories to the search path by defining the variable
+          <code>LD_LIBRARY_PATH</code>.
+          Like <code>PATH</code>,
+          it is a colon-separated list of directories,
+          and,
+          like <code>PATH</code>,
+          entries are searched in order.
+        </p>
+
+      </div>
+
+      <p class="fixme">/etc, .rc, and the registry</p>
+
+      <div class="box">
+        <p class="boxtitle">
+          File Type Associations
+        </p>
+        
+        <p class="fixme">
+          Explain how file type associations work on Unix and Windows.
+        </p>
+      </div>
+
+    </section>
+
+    <section id="s:design">
+
+      <h2>There's More Than One Way To Do It</h2>
+
+      <p>
+        There are basically three ways to deal with the issues discussed above.
+        The first approach,
+        which is more popular on Windows and Mac OS,
+        is to make applications completely self-contained,
+        i.e.,
+        each has its own copy of every library and configuration file it needs.
+        The second school of thought,
+        which is more common on Linux-based systems,
+        encourages components like SO and DLL files to be shared between applications.
+        The third approach is to give up on pre-compiled software entirely,
+        and to always download and compile the source when installing.
+      </p>
+
+      <p>
+        Each approach has its strengths and weaknesses.
+        If each program is a standalone appliance,
+        then installing or removing it should not disturb anything else in the system.
+        On the other hand,
+        it may mean that there are dozens of redundant copies of a particular library
+        on the system.
+        This isn't as big a cost as it used to be&mdash;disk space
+        is cheap, and getting cheaper every day&mdash;but
+        it makes it hard or impossible to upgrade a library
+        when a new security patch is released.
+      </p>
+
+      <p>
+        Having only one copy of a particular library avoids this problem,
+        but at the cost of introducing complexity elsewhere.
+        First,
+        installing an application might involve
+        finding and installing particular versions of dozens of other libraries.
+        These days,
+        these dependencies can usually fetched from
+        a central repository that contains thousands of packages,
+        but finding a version that is compatible with everything else on the system
+        can be a headache.
+        This is why Linux distributions use complex package management systems
+        like <code>dpkg</code> and <code>RPM</code> to track dependencies
+        and (hopefully) prevent installation of incompatible versions of a single library.
+      </p>
+
+      <p>
+        Building from source is equally fraught.
+        First,
+        a lot of useful software isn't open source,
+        so source code might not be available.
+        Second,
+        building from source doesn't really make the problem of incompatible versions go away.
+        Suppose that a C program called <code>analyzer</code> uses a library called <code>statistics</code>,
+        which is also used by <code>simulator</code>.
+        Both <code>statistics</code> and <code>simulator</code> have been under very active development,
+        and are now at version 6 and version 4 respectively.
+        Unfortunately,
+        <code>analyzer</code> hasn't been updated in two years,
+        so it's still relying on version 5 of <code>statistics</code>.
+        Most of the functions in <code>statistics</code> haven't changed,
+        but a couple now require an extra parameter,
+        and one key data structure has an extra field per record.
+        We <em>could</em> download both version 5 and version 6 of <code>statistics</code>,
+        but both of them want to put their header files in <code>/usr/local/include/statistics</code>.
+        The only way to get them to live side by side is
+        to edit the 200-line installation shell script before running it.
+        The odds of succeeding first time are slim,
+        and we could all too easily wind up spending hours trying to undo our first (failed) attempts.
+      </p>
+
+      <div class="box">
+
+        <p class="boxtitle">
+          Why Versions Conflict
+        </p>
+
+        <p>
+          The root of all these problems is that software developers routinely violate
+          the Liskov Substitution Principle.
+          When we <a class="crossref" href="oop.html#liskov-substitution-principle">introduced it</a>
+          in the chapter on object-oriented programming,
+          we said it mean that
+          it should be possible to use an instance of a child class
+          anywhere that instances of any of its parent classes can be used.
+          In particular,
+          a child class C that is derived from a parent class P respects the LSP if:
+        </p>
+
+        <ol>
+          <li>
+            no method of C rejects input that the corresponding method in P would accept, and
+          </li>
+          <li>
+            no method of C produces output that the corresponding method in P could not produce.
+          </li>
+        </ol>
+
+        <p>
+          Exactly the same rules apply to old and new versions of software:
+          if the new version accepts all the input the old one did,
+          and doesn't produce any output the old one couldn't have produced,
+          then at least things will continue to run if we make the substition.
+          Of course,
+          in order for them to run <em>correctly</em>,
+          the new version must respect the semantics of the old.
+          If the old version of <code>mean</code> calculated the arithmetic mean of the elements in a vector,
+          but the new one calculates the geometric mean,
+          it's unlikely that programs using it will behave as we want.
+        </p>
+
+        <p>
+          Unfortunately,
+          it's impossible to determine whether two classes (or two versions of a class) respect the LSP&mdash;it
+          is equivalent to something called the Halting Problem,
+          and Alan Turing proved in 1936 that a general algorithm for solving it cannot exist.
+          In practice,
+          though,
+          if we have a comprehensive suite of tests for a library,
+          we can check whether the new version passes all the tests the old one did,
+          and that's usually good enough.
+          What's more,
+          any changes to tests from the old version to the new one
+          are a good signal of what might break in our code.
+        </p>
+
+      </div>
+
+    </section>
+
+    <section id="s:manage">
+
+      <h2>Managing Packages Systematically</h2>
+
+      <p>
+        Method #7: use a package manager.
+      </p>
+
+      <table>
+        <tr>
+          <td colspan="2">From http://en.wikipedia.org/wiki/Package_management_system:</td>
+        </tr>
+        <tr>
+          <th>Package Management System</th>
+          <th>Installer</th>
+        </tr>
+        <tr>
+          <td>Typically part of the operating system.</td>
+          <td>Each product comes bundled with its own installer.</td>
+        </tr>
+        <tr>
+          <td>Uses a single installation database.</td>
+          <td>Performs its own installation, sometimes recording information about that installation in a registry.</td>
+        </tr>
+        <tr>
+          <td>Can verify and manage all packages on the system.</td>
+          <td>Only works with its bundled product.</td>
+        </tr>
+        <tr>
+          <td>Single package management system vendor.</td>
+          <td>Multiple installer vendors.</td>
+        </tr>
+        <tr>
+          <td>Single package format.</td>
+          <td>Multiple installation formats.</td>
+        </tr>
+      </table>
+
+      <p>From http://en.wikipedia.org/wiki/Installer</p>
+
+      <ul>
+        <li>Silent installation: Installation that does not display messages or windows during its progress. "Silent installation" is not the same as "unattended installation", though it is often improperly termed as such.</li>
+        <li>Unattended installation: Installation that is performed without user interaction during its progress or, in a stricter sense, with no user present at all, except eventually for the initial launch of the process. An installation process usually requires a user who "attends" it to make choices at request: accepting an EULA, specifying preferences and passwords, etc. In graphical environments, installers that offer a wizard-based interface are common. However these installers may also provide command line switches that allow performing unattended installations.  Some unattended installations can be driven by a script providing answers to the various choices such as the answer file which can be used when installing Microsoft Windows on a large number of machines.</li>
+        <li>Self installation: Unattended installation, without the need of initial launch of the process (i.e. Vodafone Mobile Connect USB Modem or Huawei E220's Mobile Partner software that self-installs from the USB port).</li>
+        <li>Headless installation: Installation performed without using a monitor connected to the destination computer (in particular, on a computer with no video output at all). This can be an (attended) installation performed from another machine connected via LAN or via a serial cable.  Unattended and headless installations are common tasks for system administrators.</li>
+        <li>Clean installation: Given the complexity of a typical installation there are many factors that may interfere with its successful completion. In particular files that are leftover from old installations of the same program or an unstable situation of the operating system may all act to prevent a given program from installing and working correctly. An installation performed in absence of such interfering factors (which may vary from program to program) is called a clean installation. In particular, a clean operating system installation can be performed by formatting its destination partition before the actual installation process.</li>
+        <li>Flat installation: An installation of a program performed from a copy (called a flat copy) of its original media contents (mostly CDs or DVDs) to a hard drive, rather than directly from the media. This may help in some situations where the target machine isn't able to cope with random access reads from CD/DVD at the same time as performing the CPU-intensive tasks often required by an installation, or where the target machine does not have an appropriate physical drive.</li>
+        <li>Network Installation: An installation of a program from a shared network drive. This may simply be a copy of the original media (as in a Flat Installation), but frequently, software publishers which offer site licenses for institutional customers provide a version intended for installation over a network.</li>
+      </ul>
+
+      <p>Need to talk about virtualenv, VMware, and the like.</p>
+
+    </section>
+
+    <div class="box">
+      <p class="boxtitle">
+        Version Numbers
+      </p>
+
+      <p>
+        The usual way to keep track of software is to use version numbers.
+        When a number like "6.2.3.1407" is attached to a piece of software,
+        it generally means:
+      </p>
+
+      <ol>
+        <li>major version 6</li>
+        <li>minor version 2</li>
+        <li>patch 3</li>
+        <li>build 1407</li>
+      </ol>
+
+      <p>
+        The major version number is only incremented when significant changes are made.
+        In practice, "significant" means
+        "changes that make it impossible for older versions to inter-operate".
+        This can include changes to the interface that violate the LSP,
+        including changes that mean old versions can't read
+        the new version's data or configuration files.
+        In practice,
+        major version numbers are often under the control of the marketing department&mdash;if
+        a competitor releases a new major version,
+        we pretty much have to as well.
+      </p>
+
+      <p>
+        Minor version numbers are what most people think of as releases.
+        If we have added a few new features,
+        changed part of the GUI,
+        etc.,
+        we increment the minor version number
+        so that your customers can talk intelligently about which version they have.
+      </p>
+
+      <p>
+        Patches are things that don't have their own installers.
+        If, for example,
+        we need to change one HTML form or one DLL,
+        we will often just mail that out to customers,
+        along with instructions about where to put it,
+        rather than creating a new installer.
+        We should still give it a number,
+        though,
+        and make an entry in the release log
+        (a file that records exactly what was shipped to whom, when).
+      </p>
+
+      <p>
+        The build number is incremented every time we create
+        a new version of the product to test.
+        Build numbers are never reset,
+        i.e.,
+        we don't go from 5.2.2.1001 to 6.0.0.0,
+        but from 5.2.2.1001 to 6.0.0.1002 and so on.
+        Build numbers are what developers care about,
+        and are often marked with labels in the version control system.
+      </p>
+
+      <p>
+        Finally, groups will sometimes identify pre-releases as "beta 1", "beta 2", and so on,
+        as in "6.2 beta 2".
+        Again, this label is usually attached to a particular build after the fact&mdash;we
+        wait until testing shows that build #1017 is good enough to send out,
+        then tag it in version control.
+      </p>
+
+      <p>
+        A four-part numbering scheme is more than you need for personal projects.
+        We can usually get away with just two numbers:
+        one to identify major changes,
+        and another to identify minor fixes that don't affect the interface.
+        Another scheme that works well is to use major.build,
+        i.e., "5.1017".
+      </p>
+
+    </div>
+
+    <div class="footer">
+      <table>
+        <tr>
+          <td valign="middle">
+            <img src="../img/logo/creative-commons-attribution-license.png" alt="CC-A license" />
+          </td>
+          <td valign="middle">
+            This material is provided under the
+            <a href="http://creativecommons.org/licenses/by/3.0/legalcode">Creative Commons Attribution</a> license.
+            <br/>
+            Please contact <a href="mailto:info@software-carpentry.org">info@software-carpentry.org</a> for details.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,701 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../common/scb.css" type="text/css" />
+    <title>Software Carpentry / Images and Sound</title>
+    <meta name="id" content="$Id: media.html 2293 2011-11-02 13:24:49Z gvw $" />
+    <meta name="type" content="chapter" />
+  </head>
+  <body class="chapter">
+    <div class="header">
+      <a href="index.html"><img src="../img/logo/software-carpentry-banner.jpg" alt="Software Carpentry logo" class="logo" /></a>
+      <h1>Images and Sound</h1>
+    </div>
+
+    <div class="toc">
+      <ol>
+        <li><a href="#s:image">Basic Image Manipulation</a></li>
+        <li><a href="#s:imageop">Image Operations</a></li>
+        <li><a href="#s:stars">Counting Stars</a></li>
+        <li><a href="#s:summary">Summing Up</a></li>
+      </ol>
+    </div>
+
+    <p class="fixme">lead in with star-counting example</p>
+
+    <p class="fixme">how to tie it to audio?</p>
+
+    <p>
+      Pictures predate writing by tens of thousands of years,
+      and speech probably predates both by half a million or more.
+      They are more complicated to represent in a computer than text,
+      but if we have the right libraries,
+      and know how to use them,
+      we can do a lot with just a few lines of code.
+      We will use the Python Imaging Library (PIL) and audiolab for our examples,
+      but other languages have tools that work in similar ways.
+    </p>
+
+    <p>
+      One thing we <em>won't</em> look at in this chapter is video.
+      <span class="fixme">explain why not</span>
+    </p>
+
+    <section id="s:image">
+
+      <h2>Basic Image Manipulation</h2>
+
+      <p>
+        Let's start by loading an image file into memory.
+        We import the <code>Image</code> module from PIL,
+        then create an in-memory copy of the image data using <code>Image.open</code>.
+        Its argument is the path to the image file we want to load,
+        and its result is an object that holds the image data:
+      </p>
+
+<pre src="../src/media/load-image.py">
+&gt;&gt;&gt; <span class="in">from PIL import Image</span>
+&gt;&gt;&gt; <span class="in">pic = Image.open('ngc1333-noao.jpg')</span>
+</pre>
+
+      <p>
+        We can now look at the image's properties:
+      </p>
+
+<pre src="../src/media/load-image.py">
+&gt;&gt;&gt; <span class="in">pic.format</span>
+<span class="out">'JPEG'</span>
+&gt;&gt;&gt; <span class="in">pic.size</span>
+<span class="out">(640, 480)</span>
+</pre>
+
+      <p class="continue">
+        Its format is <code>JPEG</code>,
+        which is probably still the most widely used image format around,
+        and it is 640 pixels wide (x-axis) and 480 pixels tall (y-axis).
+      </p>
+
+      <p>
+        We need to talk a bit about coordinate systems before we go any further.
+        As you would expect,
+        image libraries use (x, y) coordinates to identify pixel locations.
+        What you might not expect is that (0, 0) is the upper left corner of the image,
+        rather than the lower left.
+        This is a holdover from the days when images were displayed on analog devices like cathode ray tubes,
+        which drew that pixel first.
+      </p>
+
+      <p>
+        To get the value of the pixel at a particular location,
+        we simply use the picture object's <code>getpixel</code> method:
+      </p>
+
+<pre src="../src/media/load-image.py">
+colors = pic.getpixel((0, 0))
+</pre>
+
+      <p class="continue">
+        Notice that this method takes one argument&mdash;a tuple of two values&mdash;rather than
+        taking the x and y coordinates separately.
+        <span class="fixme">explain why coords are single objects (tuples)</span>
+      </p>
+
+      <p>
+        Now,
+        what kind of value does <code>getpixel</code> return,
+        i.e.,
+        how are colors represented?
+        By default,
+        this is done using the RGB color system,
+        which stores the red, green, and blue values of each pixel in one byte each.
+        This color model is the other coordinate system we need to understand
+        in order to work with images.
+        The three axes represent the primary colors,
+        while secondary colors are combinations of maximum values.
+        And each actual color is a coordinate in this cube.
+        This is an additive color model:
+        the color we see is the sum of the individual color values,
+        each of which can range between 0 and 255
+        (which is the maximum integer that can be stored in an 8-bit byte).
+        Black is (0, 0, 0), i.e., nothing of any color.
+        White is the maximum value of all three colors,
+        which is (255, 255, 255).
+      </p>
+
+      <p>
+        Let's find the brightest pixel in the image,
+        which we might need to do as part of normalizing the image's color values.
+        The first thing we have to do is figure out what we mean by "brightest":
+        is a pixel with a lot of red but no green or blue
+        brighter than a pixel with some green and blue but no red?
+        To keep things simple,
+        we'll just add up each pixel's color values to approximate its overall luminance.
+      </p>
+
+      <p>
+        Our code is then a straightforward double loop:
+        the outer loop goes through possible values of x, while the inner goes through possible values for y.
+        When we find a pixel whose luminance is greater than the greatest seen so far,
+        we record its value and coordinates:
+      </p>
+
+<pre src="../src/media/brightest.py">
+xsize, ysize = pic.size
+bx, by, max_val = 0, 0, 0
+
+for x in range(xsize):
+    for y in range(ysize):
+        r, g, b = pic.getpixel((x, y))
+        if r + g + b &gt; max_val:
+            bx, by, total = x, y, r + g + b
+
+print (bx, by), total
+</pre>
+
+      <p class="continue">
+        This simple piece of code tells us that the brightest pixel is at (59, 345),
+        and that its total luminance is 758.
+        By comparison,
+        the greatest possible value is 3&times;255, or 765.
+      </p>
+
+      <p>
+        Now, how fast was that program?
+        We normally wouldn't bother asking this question unless we were sure performance was a problem,
+        but modern cameras produce gigapixels of information,
+        and doing anything a few billion times is likely to be slow.
+      </p>
+
+      <p>
+        First, we'll put our code in a function (as we should have done in the first place):
+      </p>
+
+<pre src="../src/media/brightest-time.py">
+def brightest(pic):
+    '''Find the brightest pixel in an image.'''
+
+    xsize, ysize = pic.size
+    bx, by, max_val = 0, 0, 0
+
+    for x in range(xsize):
+        for y in range(ysize):
+            r, g, b = pic.getpixel((x, y))
+            if r + g + b &gt; max_val:
+                bx, by, total = x, y, r + g + b
+
+    return (bx, by), total
+</pre>
+
+      <p class="continue">
+        Next, we'll import a function called <code>time</code> from the <code>time</code> library.
+        Each time this function is called,
+        it returns the current value of the computer's clock in seconds,
+        measured since the rather arbitrary zero date of January 1, 1970.
+        To find out how long a function takes to run,
+        we just call <code>time</code> before and after calling the function,
+        and take the difference between the two values:
+      </p>
+
+<pre src="../src/media/brightest-time.py">
+from time import time
+
+def elapsed(func, picture):
+   start = time()
+   result = func(picture)
+   return time() - start, result
+</pre>
+
+      <p>
+        Here, we've put that logic in a function called <code>elapsed</code>,
+        which takes a function and a picture as arguments,
+        applies the function to the picture,
+        and returns the elapsed time along with whatever the function itself returned.
+        If we use <code>elapsed</code> to run <code>brightest</code>,
+        we find that it takes 0.63 seconds to find the brightest pixel.
+        That's pretty fast, but we can do better.
+      </p>
+
+      <p>
+        The trick is to unpack the pixels making up the image
+        so that we can loop over them directly.
+        This picture shows how the pixels are unpacked row by row to create the vector:
+        <span class="fixme">need to explain this better</span>
+      </p>
+
+      <p class="fixme">picture of unpacked pixels</p>
+
+      <p>
+        Let's ignore coordinates for a moment
+        and simply find the luminance of the brightest pixel.
+        This function, <code>faster</code>,
+        uses <code>picture.getdata</code> to unpack
+        the row-and-column representation of the image to create a vector of pixels.
+        and then loops over that:
+      </p>
+
+<pre src="../src/funclib/brightest-faster.py">
+def faster(picture):
+    max_val = 0
+    for (r, g, b) in picture.getdata():
+        if r + g + b &gt; max_val:
+            max_val = r + g + b
+    return max_val
+</pre>
+
+      <p>
+        This function is more than nine times faster than its predecessor,
+        primarily because we are not translating between (x, y) coordinates
+        and pixel locations in memory over and over again,
+        and partly because the <code>getdata</code> method unpacks the pixels
+        to make them more accessible.
+        <span class="fixme">when is this worthwhile, i.e., amortize cost?</span>
+        As an exercise,
+        modify this function so that it returns the (x, y) coordinates of the brightest pixel
+        by counting pixels inside the loop
+        and converting that count back to x and y values after the loop is over,
+        and see how much it slows the function down.
+      </p>
+
+      <p>
+        Speeding things up by a factor of nine is worthwhile,
+        but having to calculate pixels' (x, y) coordinates afterward is a pain.
+        A useful compromise between the two is to call <code>picture.load</code>,
+        which unpacks the picture's pixels in memory
+        so that we can index the picture as if it was an array:
+      </p>
+
+<pre src="../src/media/brightest-load.py">
+def inbetween(picture):
+    xsize, ysize = picture.size
+    temp = picture.load()
+    bx, by, max_val = 0, 0, 0
+    for x in range(xsize):
+        for y in range(ysize):
+            r, g, b = temp[x, y]
+            if r + g + b &gt; max_val:
+                bx, by, total = x, y, r + g + b
+    return (bx, by), total
+</pre>
+
+      <p>
+        This version of our pixel finder runs in 0.13 seconds:
+        half the speed of the vector version,
+        but still almost five times faster than the original.
+        Which of the three forms you should use in a particular situation
+        depends on what information you need from the image,
+        and how big the images you're working with are.
+        <span class="fixme">that's pretty wimpy advice</span>
+      </p>
+
+      <p>
+        One of the things an astronomer might want to do with an image like this
+        is count how many stars it contains.
+        Let's start by converting the image to black and white
+        so that which pixels belong to stars and which don't is unambiguous.
+        We will use black for stars and white for background,
+        since it's easier to see black-on-white than the reverse.
+      </p>
+
+      <p>
+        Our function, <code>monochrome</code>,
+        loops over the pixels in the loaded image,
+        replacing the RGB values of each with either black or white
+        depending on whether its total luminance is above or below some threshold passed in by the user:
+      </p>
+
+<pre src="../src/media/monochrome.py">
+def monochrome(picture, threshold):
+    '''Convert an image to black and white.'''
+
+    black = (  0,   0,   0)
+    white = (255, 255, 255)
+    xsize, ysize = picture.size
+    temp = picture.load()
+
+    for x in range(xsize):
+        for y in range(ysize):
+            r, g, b = temp[x, y]
+            if r + g + b &gt;= threshold:
+                temp[x, y] = black
+            else:
+                temp[x, y] = white
+</pre>
+
+      <p>
+        Let's run our function with 200 + 200 + 200 as a threshold,
+        and use <code>pic.save</code> to save the result in a file.
+        Remember, this threshold is a scalar, not an RGB triple&mdash;we
+        are looking for pixels whose total color value is 600 or greater:
+      </p>
+
+<pre src="../src/media/monochrome.py">
+if __name__ == '__main__':
+    pic = Image.open(sys.argv[1])
+    monochrome(pic, 200 + 200 + 200)
+    pic.save(sys.argv[2])
+</pre>
+
+      <p>
+        The output is a lot of speckles that are only a couple of pixels wide,
+        and a few larger dots representing larger, brighter objects:
+      </p>
+
+      <p class="fixme">monochrome star field</p>
+
+      <p class="continue">
+        With this in hand, we can start counting stars.
+        <span class="fixme">continuity break: star counting is next but one</span>
+      </p>
+
+    </section>
+
+    <section id="s:imageop">
+
+      <h2>Image Operations</h2>
+
+      <p>
+        In the previous section,
+        we operated on images by looping over them pixel by pixel.
+        You can always fall back on this when you need to,
+        but most image libraries provide built-in support for common operations.
+        Using these will save you time in two ways:
+        they will usually be a lot faster than anything you could easily write,
+        and someone else will have already debugged them.
+      </p>
+
+      <p>
+        Here's a quick example that shows what kinds of operations are available.
+        Along with the core <code>Image</code> module, we import <code>ImageFilter</code> from the Python Imaging Library.
+        We then load an image from a file and apply three filters to it.
+        Each of these filters is identified by a symbolic name, such as <code>ImageFilter.CONTOUR</code> for a contouring filter.
+        We save the results in files with names derived from the original file's name,
+        and then for good measure use the <code>transpose</code> method with <code>Image.FLIP_LEFT_RIGHT</code> as an argument
+        to flip the image left-to-right.
+      </p>
+
+      <p>
+        Here are the results:
+        a blurred image,
+        one that has high-contrast contour lines enhanced,
+        one that appears embossed,
+        and the left-to-right inverse of the original.
+        No matter which way you look at her, she's a cute kid.
+      </p>
+
+      <p>
+        Of course, much of the time we want to rescale an image, or work with a subsection of it.
+        The hardest part of doing this is often figuring out the coordinates of the regions we're operating on.
+      </p>
+
+      <p>
+        This program opens an image and extracts its size,
+        then does some very simple arithmetic to figure out how large an image half that size would be.
+        It then uses the image's <code>resize</code> method to create a new image that is half as tall and half as wide as the original.
+      </p>
+
+      <p>
+        Going the other way, it calculates the dimensions for an image twice as large as the original,
+        and uses <code>Image.new</code> to create a blank image of this size.
+        The first argument to <code>Image.new</code>, <code>RGB</code>,
+        tells the library to store red/green/blue color values for each pixel.
+        Other options would allow us to create monochrome images or other more exotic formats.
+      </p>
+
+      <p>
+        Next, the program goes into a 4&times;4 loop: 4&times;4, because twice something divided by half of that same something is 4.
+        Inside the inner loop,
+        it calculates the coordinates of the upper left and lower right corners of a box big enough to hold one copy of the half-sized image.
+        (Remember, PIL's coordinate system puts (0, 0) in the upper left corner, not the lower left.)
+        The inner loop then pastes a copy of the half-sized image into the double sized image, using the box's coordinates to place it.
+      </p>
+
+      <p>
+        The result is the tiled contact sheet shown here.
+        If we had a series of images of the same size,
+        we could almost as easily have pasted them together to create one picture made up of sixteen copies of others.
+      </p>
+
+      <p>
+        Here's another simple image processing program that draws directly on top of pictures.
+        It starts by defining the width of the border we're going to draw and the shade of gray we're going to use,
+        and then opens up an image and gets its size.
+      </p>
+
+      <p>
+        The program then creates a helper object around the picture by calling <code>ImageDraw.Draw</code>.
+        This helper is the thing that knows how to draw boxes, circles, and other shapes;
+        PIL keeps that logic in a separate object so that programs that don't need it don't have to load it.
+        Other libraries may make the drawing methods part of the picture object,
+        or keep them in an entirely separate library altogether.
+        No matter where they are, the basic functionality is likely to be the same.
+      </p>
+
+      <p>
+        Now that it has a drawing tool,
+        the program can create four rectangles,
+        each ten pixels wide along one border of the image,
+        and then save the modified picture.
+        As you can see, the result is a framed version of our original picture.
+        As an exercise, try combining the ideas from the previous examples to put a frame around an entire picture
+        so that the output is 20 pixels wider and taller than the input.
+      </p>
+
+      <p>
+        Instead of thinking about an image as a bunch of pixels,
+        each of which has red/green/blue values,
+        it's often more useful to think of it in terms of three parallel planes of color,
+        each of which contains a single intensity value for either red, green, or blue.
+        This program loads an image,
+        then uses the <code>split</code> method to separate its color components into separate monochrome images,
+        which it saves in three separate files.
+        (The call to <code>load</code> shouldn't be necessary,
+        since this program doesn't ever operate on individual pixels,
+        but is needed to work around a bug in version 1.1.7 of PIL.)
+        The result is light where each color signal is strongest, and dark where it is weakest.
+        For example, the purple in the baby's shirt shows up bright in blue, but darker in red and green.
+      </p>
+
+      <p>
+        One reason to split a picture by color is to operate on those colors independently.
+        This program decreases the amount of red in an image using a point function,
+        which is simply any Python function that takes a single color component value as input,
+        and returns a new one as output.
+        The library knows how to apply such functions to every pixel in an image very efficiently,
+        so it's worth trying to cast algorithms in terms of such functions.
+      </p>
+
+      <p>
+        Our example function simply multiplies its argument by half.
+        If we pass this function to the image's <code>point</code> method, the library cuts every value in that image by 50%.
+        We can then call <code>merge</code> to recombine the three color planes to create a new image.
+        Just as when we create an entirely new image, we have to specify that the color model is <code>RGB</code>.
+        As you'd expect, reducing the amount of red makes the image look more blue-green.
+      </p>
+
+      <p>
+        As an exercise, try leaving the red alone and increasing the blue and green&mdash;does the result look different, and if so, why?
+      </p>
+
+      <p>
+        For our last example, let's highlight a region in an image as shown here.
+        There are two ways to do this.
+        The first is to color the pixels, which we will leave as an exercise.
+        The second is to blend a square of the desired size into the original.
+        If we do this, the new value for each affected pixel is the average of the original values of the two images.
+      </p>
+
+      <p>
+        As always, the first step is to figure out the coordinates of the region we are highlighting.
+        If the overall picture's size is <code>major_x</code> by <code>major_y</code>,
+        and the highlight's size is <code>highlight_x</code> by <code>highlight_y</code>,
+        a little math gives us the coordinates shown here.
+      </p>
+
+      <p>
+        With that calculation done, the code is simple.
+        First, we get the images and their sizes.
+        (We'll leave writing the <code>get</code> function as an exercise: it's only three lines of Python.)
+        We then use the image sizes to calculate the coordinates of the region we're highlighting.
+      </p>
+
+      <p>
+        Using that box, we can crop a region out of the main image.
+        We then call <code>Image.blend</code> to combine the cropped sub-image with the smaller image we're using as a highlighter.
+        (In this case, that will be a simple white square, since blending anything with white lightens it up.)
+        Note that when we blend two images together,
+        they must have the same size:
+        the imaging library won't make guesses about what to do if the two images don't align exactly.
+        Finally, we can paste the blended region back into the original image as shown here to get our final picture.
+      </p>
+
+      <p>
+        The Python Imaging Library provides all the functions needed for basic image processing.
+        If you need to do more sophisticated things,
+        there is also OpenCV, which is implemented in C++, but has a Python interface.
+        Because the two were implemented separately,
+        you may need to convert PIL images to OpenCV images and vice versa,
+        but that's a lot less painful than writing your contour convexity detectors.
+      </p>
+
+    </section>
+
+    <section id="s:stars">
+
+      <h2>Counting Stars</h2>
+
+      <p span="fixme">Rethink this example, or move it into a chapter on its own</p>
+
+      <p>
+        Now let's go back to our star-counting problem.
+        As we saw in the previous section,
+        we can use PIL to convert a color image into a monochrome image
+        in which black represents bright pixels and white represents background.
+        Our question is, how many stars are there?
+        Counting the number of black pixels would be easy, but we want to know how many joined-up blobs of black pixels we have.
+      </p>
+
+      <p>
+        A blob is just a set of pixels that are adjacent to one another.
+        We could use several rules to determine what "adjacent" means,
+        but the simplest is 4-way connectivity:
+        pixels are adjacent if they are directly above, below, left, or right from each other, not if they are touching diagonally.
+      </p>
+
+      <p>
+        We want to count each such blob once.
+        So we'll scan the image left to right, top to bottom.
+        Each time we find a new blob, we'll increment our count.
+      </p>
+
+      <p>
+        But how do we tell whether the pixel we're looking at is part of a new blob or not?
+        One way is to mark the pixels we've already seen by turning them red.
+        If the pixel we're looking at touches one that has already been turned red,
+        then it's part of a blob we have already counted.
+        We'll turn it red to show that we have looked at it,
+        but we won't count it as a star,
+        since it belongs to a star we've already counted.
+      </p>
+
+      <p>
+        A picture will make this clearer.
+        We scan the image until we find a black pixel, and mark it as seen by turning it red.
+        Nothing above it or to its left is already red.
+        It must be the first pixel in a new blob, so we increment our star counter and keep scanning.
+      </p>
+
+      <p>
+        This pixel does have a red predecessor (the one we just colored in), so it's not the start of a new star.
+      </p>
+
+      <p>
+        Eventually, we have colored in all of this star, and we move on to the next.
+      </p>
+
+      <p>
+        But there's a problem:
+        the pixel shown here is definitely part of our second star,
+        but neither of the pixels above it or to its left has already been colored in,
+        because the pixel that connects it to the rest of its star is to its right.
+        We can fix this by looking in more directions, as shown here:
+        if there are any colored pixels in the row above this one, or to its right, it isn't the start of a new star.
+        Unfortunately, our new rule still gives the wrong answer in cases like this one, where two stars touch on a diagonal corner.
+      </p>
+
+      <p>
+        We could try to patch our algorithm again by changing our rule
+        and considering blobs that are connected on diagonals as part of a single star,
+        but this <em>still</em> gives the wrong answer in some cases.
+        In fact,
+        any algorithm that only looks at the immediate neighbors of a pixel will give the wrong answer in some cases:
+        we have to back up and reconsider our approach entirely.
+      </p>
+
+      <p>
+        Instead of trying to decide whether pixels are connected one by one,
+        let's use <dfn>flood fill</dfn> to color in all the pixels in a star when it is first encountered.
+        As before, we scan the image until we find a black pixel, then mark it red.
+        Instead of continuing our scan right away, we look at the newly-filled pixel's four neighbors.
+        For each one that is currently black&mdash;i.e., that is part of this star, but hasn't yet been colored in&mdash;we fill it in,
+        then immediately look at its neighbors to find other pixels that need coloring in.
+        We keep doing this until the whole star is colored, and only then re-start our scan to find other blobs.
+      </p>
+
+      <p>
+        Here's our main function.
+        As before, it scans the image top to bottom and left to right using a nested loop.
+        When it finds a black pixel,
+        it increments the count of the number of stars seen,
+        then calls <code>fill</code> to fill in all the pixels connected to that one.
+      </p>
+
+      <p>
+        The <code>fill</code> function works by keeping a list of pixels that need to be looked at,
+        but haven't yet been filled in.
+        Such a list is often called a <dfn>job list</dfn> or <dfn>work queue</dfn>.
+        In this case,
+        it is simply a list of the (x,y) coordinates of pixels that are neighbors of ones we have already examined.
+      </p>
+
+      <p>
+        The <code>fill</code> function keeps looping until there's nothing left in this list.
+        On each pass through the loop, it takes the (x,y) coordinates of a pixel from the queue.
+        If that pixel is black, <code>fill</code> colors it red and adds its neighbors to the queue.
+      </p>
+
+      <p>
+        Here's what the function looks like.
+        It begins by putting the (x,y) coordinates of the first pixel into the queue.
+        While there are still pixels to process,
+        it gets the (x,y) coordinates of the next pixel in the queue and removes that pair from the queue.
+        If the pixel is currently black,
+        <code>fill</code> turns it red to mark it as having been seen,
+        then adds the pixel to its left to the work queue (unless this pixel is on the left border of the image).
+        <code>fill</code> then does the same for the pixel to the right, above, and below the current one.
+        This ensures that everything next to this pixel will eventually be looked at.
+      </p>
+
+      <p>
+        Here's the <code>fill</code> algorithm in action.
+        Our initial pixel is (1, 2).
+        We turn it red, and put its four neighbors in the queue.
+        The next three loops aren't very interesting, since the pixels left, above, and right of our starting point aren't black.
+        On the fourth pass, though, when our queue only contains one lonely pixel,
+        we find that it is black, so we fill it in, and put its neighbors in the queue.
+      </p>
+
+      <p>
+        The next time around the loop, we will look at our starting point (1, 2) a second time.
+        This is wasteful, so as an exercise, rewrite <code>fill</code> so that it never examines a pixel twice.
+        There are at least two ways to do this; see if you can find and implement both.
+      </p>
+
+      <p>
+        Another way to write flood fill is to use a <dfn>recursive algorithm</dfn>.
+        This keeps the work to be done on the call stack, instead of maintaining an explicit work queue.
+      </p>
+
+      <p>
+        Here's the recursive version of fill.
+        It starts by checking the pixel it has been asked to look at.
+        If that pixel is not black, this <code>fill</code> returns immediately: there is nothing for it to do.
+        If the pixel is black, <code>fill</code> turns it red,
+        and then calls <code>fill</code> on its left-hand neighbor (if it has one).
+        It then goes on to call <code>fill</code> for the right-hand, top, and bottom neighbors as well.
+      </p>
+
+      <p>
+        This has the same effect as using an explicit work queue.
+        Each call to <code>fill</code> takes care of one pixel,
+        then calls <code>fill</code> again to take care of the neighbors.
+        While novices find the work queue approach more intuitive,
+        experienced programmers tend to prefer recursion, since it is usually simpler to reason about.
+      </p>
+
+    </section>
+
+    <section id="s:summary">
+
+      <h2>Summing Up</h2>
+
+      <p class="fixme">sum up</p>
+
+    </section>
+
+    <div class="footer">
+      <table>
+        <tr>
+          <td valign="middle">
+            <img src="../img/logo/creative-commons-attribution-license.png" alt="CC-A license" />
+          </td>
+          <td valign="middle">
+            This material is provided under the
+            <a href="http://creativecommons.org/licenses/by/3.0/legalcode">Creative Commons Attribution</a> license.
+            <br/>
+            Please contact <a href="mailto:info@software-carpentry.org">info@software-carpentry.org</a> for details.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </body>
+</html>

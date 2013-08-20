@@ -1,0 +1,739 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../common/scb.css" type="text/css" />
+    <title>Software Carpentry / Parallel Programming</title>
+    <meta name="id" content="$Id: parallel.html 2293 2011-11-02 13:24:49Z gvw $" />
+    <meta name="type" content="chapter" />
+  </head>
+  <body class="chapter">
+    <div class="header">
+      <a href="index.html"><img src="../img/logo/software-carpentry-banner.jpg" alt="Software Carpentry logo" class="logo" /></a>
+      <h1>Parallel Programming</h1>
+    </div>
+
+    <blockquote>
+      <p class="quotation">
+        Speed, it seems to me, provides the one genuinely modern pleasure.
+      </p>
+      <p class="attribution">
+        &mdash; Aldous Huxley, 1949
+      </p>
+    </blockquote>
+
+    <div class="toc">
+      <p class="fixme">table of contents</p>
+    </div>
+
+    <p class="fixme">
+      Intro to parallelism
+    </p>
+
+    <section id="s:subprocess">
+
+      <h2>Running Processes</h2>
+
+      <p>
+        Use subprocess to spawn a program or command and to control inputs and outputs.
+      </p>
+
+      <p>
+        The spawned process is a separate process; it does not block the calling process (examples later).
+      </p>
+
+      <p class="fixme">diagram</p>
+
+      <p>
+        Later slides discuss how to co-ordinate the two processes.
+      </p>
+
+      <p>
+        A shell script can do the same but subprocess gives you more control over the inputs and outputs. It also integrates well into a program.
+      </p>
+
+      <p>
+        The older Python method os.system provides a simple way of running an external application but it does not provide access to input and output.
+      </p>
+
+      <p>
+        There are many options but you do not need them all.
+      </p>
+
+      <p>
+        This is a prime example of an API that has been made so flexible in order to handle a range of less common cases that it obscures the more common or simple cases.
+      </p>
+
+<pre>
+class subprocess.Popen(args, bufsize=0, executable=None, stdin=None,
+                       stdout=None, stderr=None, preexec_fn=None,
+                       close_fds=False, shell=False, cwd=None,
+                       env=None, universal_newlines=False,
+                       startupinfo=None, creationflags=0)
+</pre>
+
+      <p>
+        You only need to use args, stdin, stdout, stderr in most cases
+      </p>
+
+      <p>
+        Because there are so many arguments, it is safer to use named arguments rather than positional arguments (examples later)
+      </p>
+
+      <p>
+        Executable and arguments.
+      </p>
+
+      <p>
+        args should be a string, or a list of program arguments. The list is normally easier
+      </p>
+
+      <p>
+        The program to execute is the first item in the args sequence and the arguments follow, in the same order you would use if calling the program from the command line.
+      </p>
+
+      <p>
+        Two points to note when using the sequence of program arguments:
+      </p>
+
+      <ol>
+        <li>
+          Options (such as -input) and arguments (such as eggs.txt) that are separated by whitespace if you ran the process from the command line go in separate list elements.
+        </li>
+        <li>
+          Arguments that need quoting or backslash escaping when used in the command line (such as filenames containing spaces) are single list elements.
+        </li>
+      </ol>
+
+      <p>
+        The shell and executable arguments allow you to vary how the process is called. If you are interested, look them up in the documentation.
+      </p>
+
+      <p>
+        If you are not using shell=True (and you should not normally do so)then be aware that glob expansion (e.g. *.dat) is carried out by the command shell and so you cannot use that as an argument.
+      </p>
+
+      <p>
+        First Example - incomplete
+      </p>
+
+      <p>
+        The equivalent of grep -i -n "hello world" test.txt
+      </p>
+
+<pre>
+import subprocess
+proc = subprocess.Popen(args=['grep', '-i', '-n', 'hello world', 'test.txt'])
+</pre>
+
+      <p>
+        stdin, stdout, and stderr
+      </p>
+
+      <p>
+        stdin, stdout, and stderr specify the spawned process's standard input, standard output and standard error file handles, respectively.
+      </p>
+
+      <p>
+        Some valid values (there are other options) are:
+      </p>
+
+      <ol>
+        <li>
+          an existing file object (call open() to get one, examples later)
+        </li>
+        <li>
+          None: means that the spawned process uses the same stdin, stdout or stderr as the calling process.
+        </li>
+      </ol>
+
+      <p>
+        For example, if stdout and stderr are set to None then any output from the spawned process will go to the command line (or if redirected, to a file) along with any other output from the calling process.
+      </p>
+
+      <p>
+        Best not to set stdin=None if both the calling program and the spawned program want to read input as it is unclear which one will win.
+      </p>
+
+      <p>
+        Additionally, stderr can be subprocess.STDOUT, which indicates that the stderr data from the spawned process should be captured into the same file handle as for stdout.
+      </p>
+
+      <p>
+        Examples of these uses are shown below.
+      </p>
+
+      <p>
+        Example of simple I/O with files
+      </p>
+
+      <p>
+        This example directs the contents of a file to the grep command
+      </p>
+
+<pre>
+import subprocess
+import time
+in_file = open('test.txt', 'r')
+proc = subprocess.Popen(args=['grep', '-i', '-n', 'hello world'], stdin=in_file)
+time.sleep(5) # Delay long enough for the file to be read
+in_file.close()
+</pre>
+
+      <p>
+        Because stdout is not set, the results will be output to the command line.  This example is awkward because the calling process does not know when the spawned process has finished reading the input file. We can sleep() but we don't know how long to wait.
+      </p>
+
+      <p>
+        Use of proc.wait()
+      </p>
+
+      <p>
+        We can improve the previous example by using the wait() method. This does not return until the spawned process has completed.
+      </p>
+
+<pre>
+import subprocess
+in_file = open('test.txt', 'r')
+proc = subprocess.Popen(args=['grep', '-i', '-n', 'hello world'], stdin=in_file)
+proc.wait()
+in_file.close()
+</pre>
+
+      <p>
+        This will work because grep can complete based on the file input.
+      </p>
+
+      <p>
+        Supplying input from the calling process 1
+      </p>
+
+      <p>
+        By setting stdin to subprocess.PIPE, you can supply data directly by calling proc.stdin.write()
+      </p>
+
+      <p>
+        This is useful where the calling process generates data and you don't want to  write it to an intermediate file.
+      </p>
+
+      <p>
+        You generate EOF by calling close() on proc.stdin
+      </p>
+
+<pre>
+import subprocess
+process = subprocess.Popen( args=['grep', '-i', '-n', 'hello world'],
+    stdin=subprocess.PIPE)
+line1 = 'Lorus ipsem\n'
+line2 = 'hello world\n'
+process.stdin.write(line1)
+process.stdin.write(line2)
+process.stdin.close()
+retcode = process.wait()
+</pre>
+
+      <p>
+        Use of communicate()
+      </p>
+
+      <p>
+        If you have all of the input data in one lump then you can call proc.communicate() rather than proc.stdin.write()
+      </p>
+
+      <p>
+        This has the advantage that it returns the stdout and stderr content.
+      </p>
+
+      <p>
+        Set stdin (and probably stdout and stderr) to subprocess.PIPE
+      </p>
+
+<pre>
+import subprocess
+proc = subprocess.Popen(args=['grep', '-i', '-n', 'hello world'],
+    stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+in_buff = 'line 1\nhello people\nhello world\n'
+out_tuple = proc.communicate(input=in_buff)
+proc.wait()
+</pre>
+
+      <p>
+        The input must be completely supplied in one buffer. communicate() then returns a tuple (stdoutdata, stderrdata)
+      </p>
+
+      <p>
+        If you are using subprocess to manipulate data that you generate then this can be very useful
+      </p>
+
+      <p>
+        Reading stdout
+      </p>
+
+      <p>
+        You can also call read() on proc.stdout However, read() is a blocking call - the call to write will not return until there is some data.
+      </p>
+
+      <p>
+        It is tricky to provide stdin from the calling process and also read() on stdout because of the risk of deadlock (explained later). It is easier if either stdin or stdout is associated with a file.
+      </p>
+
+      <p>
+        You can combine them if you can predict the behaviour of the spawned process or you might need to use threads, but that is an advanced topic. 
+      </p>
+
+      <p>
+        Checking progress and terminating the spawned process
+      </p>
+
+      <p>
+        proc.wait() is convenient if you want the calling process to wait for the spawned process to complete. If you want the two processes to run in parallel for more complex uses then proc.poll() and proc.terminate() are useful.
+      </p>
+
+      <p>
+        proc.poll() This method checks if the spawned process has terminated. If the process is still running then it returns None immediately, otherwise it returns the return code. Use this if the spawned process depends on input outside of the calling process. For example, if the spawned process was monitoring sensors.
+      </p>
+
+      <p>
+        proc.terminate() This prematurely stops the spawned process. It sends a signal (similar to typing control-C) to the spawned process. You could use this if you are receiving output and it has gone wrong or if you are supplying input and you have a problem.
+      </p>
+
+      <p>
+        Errors
+      </p>
+
+      <p>
+        The most scary type of error occurs when your script just freezes and goes unresponsive. It can also be very difficult to debug. There are two likely causes:
+      </p>
+
+      <ol>
+
+        <li>
+          Incomplete input
+          Check that input is available and complete.
+          If using subprocess.PIPE then remember to close it.
+          Try providing input via a file instead.
+        </li>
+
+        <li>
+          Blocking read of output
+          If reading output via subprocess.PIPE then remember that the calls block until
+          data is available. It is easy to deadlock whereby the calling process waits
+          for output and the spawned process waits for input at the same time.
+        </li>
+
+      </ol>
+
+      <p>
+        If the spawned process completes but you don't get the result you expect then check the return code. Not all programs provide helpful error codes but it is worth checking.
+      </p>
+
+      <p>
+        Execution environment
+      </p>
+
+      <p>
+        You can change the current directory for the program by using the cwd argument and the current directory will be set to this before it is executed. For example, if you open("fred.txt", "r") the spawned program will look for "fred.txt" in the new directory.
+      </p>
+
+      <p>
+        Note that this directory is not considered when searching the executable, so you cannot specify the program's path relative to cwd.
+      </p>
+
+    </section>
+
+    <section id="s:taskfarm">
+
+      <h2>Task Farming</h2>
+
+      <p>
+        To start this chapter,
+        let's have a look at the simplest way to use lots of hardware to solve a problem: task farming.
+        Let's go back to our invasion percolation example.
+        Suppose that we need to generate at least a thousand fractals in order to calculate meaningful statistics.
+        If we have ten processors, we could simply tell each to run the program a hundred times.
+        And if we have a hundred processors, each one could run the program ten times.
+      </p>
+
+      <p>
+        However, this probably won't be the most efficient use of our resources.
+        By their very nature, random fractals vary considerably:
+        on a 1000&times;1000 grid,
+        one might fill three or four times as many cells as another,
+        which means one run of the program could be three or four times longer than another.
+        If each processor does a lot of simulation, the law of large numbers says that these differences will average out.
+        If each processor is only doing a handful of simulations, though, the odds of some being lucky and others being unlucky increase.
+      </p>
+
+      <p>
+        Since we don't want processors lying idle while there are still jobs to do,
+        we can use a strategy called <dfn>task farming</dfn> to allocate work on demand.
+        Here's how it works.
+        The program consists of one master process and as many worker processes as there are processors.
+        When the program starts up, the master gives each worker its first job.
+      </p>
+
+      <p>
+        As soon as a worker finishes a job, it asks the master for another.
+        One worker might do several easy jobs while another does a single hard one,
+        but that's exactly what we want:
+        all of the processors stay busy until there's nothing left to do.
+      </p>
+
+      <p>
+        Allocating work on demand like this isn't guaranteed to give us the shortest overall runtime,
+        but in practice,
+        we can't achieve that anyway:
+        without actually running the jobs,
+        we can't know how long they will take,
+        so we don't have the information we would need to build an optimal schedule.
+        On-demand allocation <em>does</em> usually give us very good schedules.
+        It is also straightforward to implement and well suited to a very typical case in scientific computing:
+        parameter sampling.
+        <span class="fixme">explain parameter sampling</span>
+      </p>
+
+      <p>
+        One thing we need to think about is where results are collected.
+        We can't simply print the dimension of each fractal to standard output:
+        if we're going to analyze our data,
+        we need to pull those values back to a single location.
+        In some systems, workers send their results back to the master as part of their request for another job.
+        In others, a separate collector process gathers results.
+      </p>
+
+      <p>
+        In reality,
+        running our simulation for a particular grid size and a single range of random cell values probably wouldn't be enough.
+        We would probably need to vary the grid size to estimate the fractal dimension of the filled region,
+        and also vary the range of cell values to see what effect that has.
+        (After all, some kinds of rock are inherently more porous than others.)
+        Instead of just a thousand jobs,
+        we might therefore have a thousand at each of fifty grid sizes,
+        for each of twenty cell value ranges,
+        making a million jobs in total:
+      </p>
+
+<pre>
+def params(start, step, num):
+    return range(start, start + num*step, step)
+
+for grid_size in params(50, 50, 50):
+    for value_range in params(2, 1, 20):
+        for i in range(1000):
+            run_simulation(grid_size, value_range)
+</pre>
+
+      <p>
+        So when is task farming <em>not</em> effective?
+        As per Amdahl's Law, it isn't worthwhile if startup time outweighs processing time.
+        The total running time per worker is roughly
+        t<sub>worker</sub> = t<sub>init</sub> + (N/W)(t<sub>nextjob</sub> + t<sub>runjob</sub>),
+        where t<sub>init</sub> is the time to send the program itself and any static data it requires to the worker,
+        t<sub>nextjob</sub> is the time to unload the result of one job and get another,
+        and t<sub>runjob</sub> is the running time per job.
+      </p>
+
+      <p>
+        To see how these startup costs might make task farming uneconomical consider two cases,
+        think about what happens when we render an animated movie.
+        The rendering program itself is probably hundreds of megabytes in size,
+        and the models describing the elements of the scene can be even larger.
+        It may take several seconds to move this data from the master to each of the workers.
+        If each worker then renders a section of a single image,
+        there won't be any actual speedup
+        because most workers will have spent almost all their time waiting for what they need to get started.
+      </p>
+
+      <p>
+        This problem can be solved in two ways.
+        First, workers don't have to get the program and its data directly from the master:
+        they can get it from another worker that has already been initialized.
+        Provided we never have two or more processors fighting to use the same piece of wire at the same time,
+        we can initialize 2<sup>K</sup> processors in K timesteps.
+        Turning it around, we can initialize W workers in log<sub>2</sub>(W) timesteps.
+        The code is a bit more complicated, but it only has to be written and debugged once.
+      </p>
+
+      <p>
+        The second way to make task farming cost-effective is to change the problem we're trying to solve.
+        Instead of having each worker render part of one frame,
+        we can have each worker render several entire frames in an animated sequence.
+        This strategy raises efficiency by increasing the time per job for a constant startup time.
+      </p>
+
+      <p class="fixme">
+        task farming example
+      </p>
+
+      <p class="fixme">
+        show how to do it with shell scripts and SSH
+      </p>
+
+    </section>
+
+    <section id="s:mpi">
+
+      <p>
+        Hi, and welcome to the first episode of the Software Carpentry lectures on MPI.
+        In this episode, we'll explain what MPI is, and what it's good for.
+      </p>
+
+      <p>
+        As computing tasks get larger and larger&mdash;whether we want to do bigger and bigger simulations,
+        or analyze larger and larger piles of data&mdash;our needs can quickly exceed the capabilities of any one computer.
+        We might want to do bigger problems, requiring more memory or storage than is available on one machine;
+        we might need the computation to go a lot faster than it would on one computer, so we need access to more processors;
+        or we might just want to do <em>more</em> computations than is feasible on one computer&mdash;running
+        enormous parameter sweeps that would take months or years on one desktop computer, for instance.
+      </p>
+
+      <p>
+        <a class="dfn" href="glossary.html#message-passing">Message passing</a>
+        is one programming model which has proven very useful for arranging computations on multiple computers.
+        In message passing, each process has its own data which can't be seen by the other processes.
+        When data needs to be communicated, the processes send and recieve messages from each other.
+      </p>
+
+      <p>
+        From these basic communications primitives, scientific programmers can build up multi-computer computations.
+        By the way, when multiple computers are used together like this,
+        it's common to refer to the separate independant computers as <a class="dfn" href="glossary.html#node">nodes</a>.
+        A given node likely has more than one processor, just as your desktop or laptop might.
+      </p>
+
+      <p>
+        MPI is a standard library for message passing.
+        It is ubiquitous&mdash;widely and easily available, and quite possibly already installed on whatever computers you have access to.
+        It runs on the world's largest supercomputers, but it can also run efficiently and usefully on your laptop or desktop.
+        Nearly every big academic or commercial package for simulation or data analysis that uses multiple nodes simultaneously uses MPI,
+        directly or indirectly.
+      </p>
+
+      <p>
+        So if message passing is just sending and receiving messages between computers, why do we bother with MPI?
+        This just sounds like network communications,
+        and there are already dozens of libraries out there to handle such things;
+        why do we need another?
+        First, the MPI interface is designed, and implemented, with performance in mind.
+        Secondly, the MPI interface will take advantage of the fastest network transport available to it when sending messages.
+        So for instance,
+        for communicating to different processes within a node,
+        it will use shared memory to send and recieve messages rather than network communications.
+        On fast interconnects within a high-performance computer cluster,
+        it already knows how to take advantage of things like Infiniband or Myrinet communications to processes on other nodes.
+        And only if all else fails will it use the standard internet TCP/IP.
+        This represents a huge body of networking code for many interfaces and protocols that you don't have to implement yourself.
+      </p>
+
+      <p>
+        MPI enforces other guarantees,
+        like guaranteeing messages arrive (rather than being lost and requiring retries),
+        and that messages arrive in order.
+        This enormously simplifies programming.
+      </p>
+
+      <p>
+        In the end,
+        MPI is designed for multi-node technical computing,
+        and means we can spend our time figuring out how to decompose our scientific problem, rather than having to worry about network protocols.
+        It is based on a standards process,
+        and is the most widely used interface of its type,
+        widely and easily available
+        In addition,
+        and of particular interest to those of us doing technical computing,
+        it comes with specialized routines for collective communications of the sort frequently needed in science or enginnering computations.
+      </p>
+
+      <p>
+        The usual message passing stuff is "point to point" communications,
+        where the communications is one-to-one.
+        One process has some data,
+        which it sends it to another process,
+        possibly on another node.
+        This is useful,
+        particularly since we don't have to worry about network capabilities,
+        but there are other modes of communication that are frequently needed for parallel computations.
+      </p>
+
+      <p>
+        For instance, it's often useful to <a class="dfn" href="glossary.html#broadcast">broadcast</a> data,
+        which is a one-to-many operation.
+        One process has a piece of data,
+        and broadcasts it to many,
+        or even all,
+        of the other participating processes.
+      </p>
+
+      <p>
+        A close relative of broadcast is <a class="dfn" href="glossary.html#scatter">scatter</a>,
+        where one process divides values between many others.
+        The inverse of scatter is <a class="dfn" href="glossary.html#gather">gather</a>,
+        in which many processes have different parts of the overall picture,
+        which are then brought together in one process.
+      </p>
+
+      <p>
+        Finally,
+        there is <a class="dfn" href="glossary.html#reduce">reduction</a>,
+        which combines communication and computation.
+        Many useful sorts of operations&mdash;finding a global minimum, maximum, sum, or product&mdash;are
+        fundamentally reduction operations.
+        Consider doing a global sum.
+        Each process calculates its partial sum,
+        and then these are combined into a global sum in one process.
+      </p>
+
+      <p>
+        It's often said that MPI is a very low-level way to program,
+        abstracting away networking details and providing global operations sounds fairly high-level.
+        So which is it?
+        Compared to other networking libraries, it's quite high level:
+        we don't have to think about transport details,
+        and it implements those nice collective operations.
+      </p>
+
+      <p>
+        But from a techincal computing point of view,
+        it's still very low level.
+        We're concerned with doing things like fluid simulations or bioinformatics.
+        Using MPI means we have to figure out how to break up the problem amongst multiple computers,
+        and write code for each communication that has to occur between them.
+      </p>
+
+      <p>
+        So should we use MPI to do everything?
+        No.
+        It's probably the best choice for doing a single large computation across similar machines across a reliable network,
+        such as a number of desktops in a lab, or in a specialized computer cluster.
+        But it would be a nightmare to try to use to write a distributed chat client,
+        or BitTorrent network&mdash;if it were possible to do so at all.
+        Message passing type approaches can work very well for such systems&mdash;Erlang
+        is an example of a programming language using message passing that is very good at these sorts of tasks.
+        But MPI is <em>not</em>.
+        Clients constantly connecting and disconnecting introduces a lot of complexity that MPI isn't designed to handle.
+      </p>
+
+      <p>
+        At the other extreme,
+        if you have lots of independent computations,
+        and you just want to parcel them out to run in parallel as a task farm,
+        MPI can work for that,
+        but it's quite a big tool to use for a fairly simple task&mdash;other approaches are easier.
+      </p>
+
+      <p>
+        So now that we know what MPI is&mdash;and isn't&mdash;how would we go about using it?
+        MPI is an interface to a library.
+        So it consists of function calls and constants that can be used from many programming languages.
+        It comes with <a class="dfn" href="glossary.html#binding">bindings</a>&mdash;i.e.,
+        native way to access those functions and constants&mdash;for Fortran and C.
+        There are many third parties who have taken these tools and built very useful bindings for other languages,
+        such as Python, R, and others.
+      </p>
+
+      <p>
+        The basic workflow for using MPI is to build your tool using the libraries and the appropriate bindings,
+        and run the resulting program with a utility called <code>mpiexec</code>.
+        To see how this works,
+        make sure you already have MPI installed.
+        If you're using a computer system where other people routinely run multi-node jobs,
+        it probably is.
+        But you can also run MPI programs on your own desktop or laptop quite simply.
+      </p>
+
+      <p>
+        If you don't already have it,
+        it's easy enough to install.
+        There are two main MPI distributions at the moment: OpenMPI and MPICH2.
+        Both are excellent open source implementations of the MPI standard interface.
+        There's a friendly rivalry between the two groups,
+        ensuring that development proceeds quickly and neither implementation has
+        significant performance advantages over the other for very long.
+        Both are very good,
+        and while they each have their strengths,
+        when starting out there's no a priori reason to prefer one over the other.
+        So to start, whichever one is easiest to install&mdash;say,
+        whichever you can first find binary installers for your operating system&mdash;is a fine choice.
+      </p>
+
+      <p>
+        So now that you've got MPI installed,
+        let's try testing the installation and running something simple.
+        In the Linux or Mac OS X terminal,
+        or on Windows with Cygwin,
+        the <code>hostname</code> command simply prints the name of the host it is run on.
+        Running it on my laptop, it produces output like this:
+      </p>
+
+      <p class="fixme">output</p>
+
+      <p>
+        We can run <code>hostname</code> with MPI's <code>mpiexec</code>.
+        Runing <code>mpiexec -n 4 hostname</code> gives me the same output four times;
+        it should do the same for you.
+      </p>
+
+      <p>
+        So what just happened here?
+        Running <code>mpiexec -n 4 hostname</code> tells <code>mpiexec</code> to launch four processes on your computer,
+        and in each of those four processes,
+        to run the <code>hostname</code> program.
+        Each ran independently,
+        in its own environment,
+        and as a result,
+        we were informed of our computer's host name four times.
+        We can do the same thing with <code>-n 8</code>,
+        or <code>-n 27</code>,
+        or <code>-n 93</code>,
+        and we'll get that many outputs.
+      </p>
+
+      <p>
+        For performance reasons,
+        with MPI on any given node we usually run at most as many process<em>es</em> as there process<em>ors</em>.
+        Of course, the real power of MPI is being able to use multiple computers.
+        If we have access to other computers that you can login to
+        without passwords&mdash;say by using SSH keys&mdash;this is easy to do.
+        We create a file with the list of machines to use,
+        and specify that list of hosts using the <code>-machinefile</code> option to <code>mpiexec</code>.
+        Here, we're launching 4 processes, on a list of 3 hosts.
+      </p>
+
+      <p class="fixme">example</p>
+
+      <p>
+        <code>mpiexec</code> again launches four processes,
+        this time split up as evenly as it can manage over the three hosts.
+        Each of these processes then run <code>hostname</code>,
+        and print its output.
+        This is admittedly a toy example,
+        but running <code>hostname</code> with <code>mpiexec</code> is a useful way of making sure
+        that MPI is distributing processes across hosts the way you think it is.
+      </p>
+
+      <p>
+        Of course,
+        <code>hostname</code> isn't a real MPI program;
+        an actual MPI program would be launched with knowledge of the existence of the other processes,
+        and knowing which in the list of processes it is.
+        We'll learn how to write simple but real MPI programs using Python in our next section.
+      </p>
+
+    </section>
+
+    <div class="footer">
+      <table>
+        <tr>
+          <td valign="middle">
+            <img src="../img/logo/creative-commons-attribution-license.png" alt="CC-A license" />
+          </td>
+          <td valign="middle">
+            This material is provided under the
+            <a href="http://creativecommons.org/licenses/by/3.0/legalcode">Creative Commons Attribution</a> license.
+            <br/>
+            Please contact <a href="mailto:info@software-carpentry.org">info@software-carpentry.org</a> for details.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </body>
+</html>

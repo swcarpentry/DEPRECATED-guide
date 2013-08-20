@@ -1,0 +1,1032 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="scb.css" type="text/css" />
+    <title>Software Carpentry / Automating Tasks with Make</title>
+    <meta name="id" content="$Id: make.html 3247 2012-11-24 00:59:21Z gvw $" />
+    <meta name="type" content="chapter" />
+  </head>
+  <body class="chapter">
+    <div class="header">
+      <a href="index.html"><img src="img/logo/software-carpentry-banner-with-hammer-380x80.png" alt="Software Carpentry logo" class="logo" /></a>
+      <h1>Automating Tasks with Make</h1>
+    </div>
+
+    <ol class="toc">
+      <li><a href="s:basics">Basics</a></li>
+      <li><a href="s:patterns">Patterns</a></li>
+      <li><a href="s:rules">Rules</a></li>
+      <li><a href="s:macros">Macros</a></li>
+      <li><a href="s:summary">Summing Up</a></li>
+    </ol>
+
+    <p><span class="fixbig">Introduce a motivating example, like rebuilding experimental results and putting them on the web.</span></p>
+
+    <p>
+      Here's a typical working day for our robot.
+      The first thing it wants to do when it sits down in the morning is re-draw Figure 8 for the paper it's writing.
+      In order to do that, it needs to re-calculate the data (since it has some new numbers from a colleague back home).
+      In order to do <em>that</em>, it needs to recompile its statistics program, because it found and fixed a bug yesterday afternoon.
+      Oh, and it needs to update the version of Java installed on the machine it's using:
+      it has the right one on its laptop, but not on the machine it's using in the lab.
+      And it needs to re-install the graph-drawing tool that turns its data into a nicely-formatted chart suitable for publication.
+      That also requires a Java update, and it'll have to free up some disk space, too,
+      since <em>someone</em>'s MP3 collection is taking up 99.8% of available space.
+    </p>
+
+    <p>
+      And so it goes: everything it wants to do seems to require something else to be done first.
+      Until eventually, it finds himiself saying, "Right, so I need to shave the yak&hellip;"
+      We won't go that far with him, though&mdash;not today.
+    </p>
+
+    <p>
+      Instead, here's that set of jobs once again.
+      We can think of this set as a <a class="dfn" href="gloss.html#graph">graph</a>.
+    </p>
+
+    <p>
+      The things he needs to do&mdash;the <a class="dfn" href="gloss.html#task">tasks</a>&mdash;are the graph's nodes.
+      The <a class="dfn" href="gloss.html#dependency">dependencies</a> between the tasks are the graph's edges.
+      Since the robot can only do one thing at a time,
+      it needs to find an ordering on these tasks such that everything a given task depends on is done before it.
+    </p>
+
+    <p>
+      This pattern arises over and over again.
+      Each time we collect new data, we need to recalculate our summary statistics.
+      Each time our source files change, we need to recompile our program
+      (if, that is, we're using a compiled language like Java, C++, or Fortran).
+      And when someone writes a new paper, or receives an award, we need to update our research group's web site.
+      If there are more than a dozen or so tasks, it can be hard or impossible to manually keep track of what depends on what,
+      and what is up-to-date and what isn't, i.e., what's been done and what still needs to be done.
+    </p>
+
+    <p>
+      This is where tools like Make come in.
+      One of the fundametal rules of computing is that anything worth repeating is worth automating.
+      If we need to do the same tasks over and over again, we should use a <a class="dfn" href="gloss.html#build-manager">build manager</a> to handle the details.
+    </p>
+
+    <p>
+      We describe dependencies in a <a class="dfn" href="gloss.html#build-file">build file</a>, which is usually just a plain text file in some specialized format.
+      We also describe how to update things,
+      i.e., what commands to run when something's dependencies have been satisfied and it's ready to be refreshed itself.
+      And that's all: the build manager handles everything else.
+      In particular, it keeps track of what's up to date, and what's ready to be updated.
+    </p>
+
+    <p>
+      The most widely used build manager on Unix and its derivatives is called Make.
+      And note that we said "most widely used", not "most popular".
+      Make was invented by a summer intern at Bell Labs in 1975.
+      (He went on to become a vice president at IBM and Google, which shows you how far a good program can take you.)
+      Over 35 years, Make has grown into a little programming language.
+      A very cryptic little language, without a debugger, whose conventions and rules only make sense if you understand the Unix shell.
+    </p>
+
+    <p>
+      The good news is, GNU Make (the de facto standard version of Make) is fast, free, and well-documented.
+      And many other tools know how to work with Make.
+      In particular, many integrated development environments can manage Make's build files more or less automatically,
+      shielding users from the ugly details.
+    </p>
+
+    <p>
+      In this chapter, we'll look at Make's basic features, and a few of its advanced facilities as well.
+      A companion lecture to this one explores a newer build manager called SCons.
+      It is more powerful and more flexible than Make, but isn't nearly as widely used (yet).
+      Java users should also look at Apache Ant, the standard build manager for Java.
+      It hides many of the platform-specific details that bedevil Make, but requires users to write XML files to get things done.
+    </p>
+
+    <section id="s:basics">
+
+      <h2>Basics</h2>
+
+      <p>
+        To illustrate how Make works, here's the dependency tree for the paper that the robot is working on.
+        <code>paper.pdf</code> depends on <code>paper.wdp</code> (the raw word processor file),
+        and on <code>figure-1.svg</code> and <code>figure-2.svg</code>.
+        <code>figure-1.svg</code> depends on <code>summary-1.dat</code>,
+        which in turn depends on <code>data-1-1.dat</code>, <code>data-1-2.dat</code>, and so on,
+        while <code>figure-2.svg</code> depends on files with similar names.
+      </p>
+
+      <p>
+        In order to create <code>paper.pdf</code>, we have to run the command <code>wdp2pdf paper.wdp</code>.
+        For the purpose of this lecture, it doesn't matter what <code>wdp2pdf</code> actually does.
+        All we need to know is that if <code>paper.wdp</code> or either of the figure SVG's change, we need to re-run this command.
+      </p>
+
+      <p>
+        To create <code>figure-1.svg</code>, we run <code>sgr -N -r summary-1.dat</code> and send the output to <code>figure-1.svg</code>.
+        Again, it doesn't matter for now what the <code>sgr</code> command actually is.
+        What matters is that we need to run it whenever <code>figure-1.svg</code> is out of date,
+        i.e., whenever it is older than the <code>summary-1.dat</code> file it depends on.
+        Finally, in order to update <code>summary-1.dat</code>, we need to run our own little script, <code>stats.py</code>,
+        with all the files named <code>data-1-something.dat</code> as input.
+        We don't know in advance how many of these there will be: we could conceivably have dozens or hundreds of raw data files to summarize.
+      </p>
+
+      <p>
+        That little program <code>stats.py</code> adds one more wrinkle to our example problem.
+        We're constantly updating it as we think of new ways to process our raw data files.
+        We're also finding and fixing bugs more often than we'd like.
+        Each time it changes, we should probably update <code>summary-1.dat</code>,
+        just in case a new feature or bug fix changes the summary values.
+        We should therefore include <code>stats.py</code> in the list of things <code>summary-1.dat</code> depends on,
+        so that changes to <code>stats.py</code> will trigger recalculation of <code>summary-1.dat</code>.
+      </p>
+
+      <p>
+        This is all a bit much to digest at once, so let's look at the simplest piece.
+        How can we get Make to re-create <code>figure-1.svg</code> automatically whenever <code>summary-1.dat</code> changes?
+      </p>
+
+      <p>
+        Let's start by going into the directory containing the files we're using in the paper,
+        and use the <code>ls</code> command to get a listing of what's there.
+        The <code>-t</code> flag to <code>ls</code> tells it to list things by age, with the youngest file first and the oldest last:
+      </p>
+
+<pre>
+$ <span class="in">ls -t *.dat *.svg</span>
+<span class="out">summary-1.dat    figure-1.svg</span>
+$
+</pre>
+
+      <p class="continue">
+        This listing tells us that our data file <code>summary-1.dat</code> is newer than the SVG file that depends on it,
+        so the SVG file needs to be re-created.
+        Using our favorite editor, let's create a file called <code>hello.mk</code> and put these three lines in it.
+      </p>
+
+<pre>
+<span class="comment"># hello.mk</span>
+figure-1.svg : summary-1.dat
+        sgr -N -r summary-1.dat > figure-1.svg 
+</pre>
+
+      <p>
+        A configuration file for Make like this one is called a <a class="dfn" href="gloss.html#makefile">Makefile</a>.
+        The first line, starting with <code>#</code>, is a comment.
+        (Our comments should be more meaningful than just the name of the file.)
+        The second and third lines are a <a class="dfn" href="gloss.html#rule">rule</a> that tell Make what we want to do.
+      </p>
+
+      <p>
+        The filename on the left of the colon in the first line is the <a class="dfn" href="gloss.html#target">target</a> of the rule.
+        The rule tells Make how to update or re-create this file.
+        The target's <a class="dfn" href="gloss.html#prerequisite">prerequisites</a>&mdash;the things it depends on&mdash;are listed to the right of the colon.
+        In our case, <code>figure-1.svg</code> only has one prerequisite, <code>summary-1.dat</code>.
+      </p>
+
+      <p>
+        The second line of the rule is its <a class="dfn" href="gloss.html#action">action</a>.
+        This tells Make what shell command or commands to run to bring the target up to date if it is older than any of its prerequisites.
+        This rule only has one command, but a rule can contain any number.
+      </p>
+
+      <p>
+        One thing to note is that the actions in rules <em>must</em> be indented with a single tab character.
+        Make will not accept spaces, or mixes of spaces and tabs.
+        (As we said in the introduction, it was written by a summer intern in 1975, and sometimes that shows.)
+      </p>
+
+      <p>
+        Now that we've created our Makefile, we can tell Make to obey its instructions by running <code>gmake</code> from the command line:
+      </p>
+
+<pre>
+$ <span class="in">gmake -f hello.mk</span>
+<span class="out">sgr -N -r summary-1.dat > figure-1.svg</span>
+$
+</pre>
+
+      <p class="continue">
+        Many systems make <code>make</code> an alias for <code>gmake</code>,
+        so if the latter doesn't work for you, try the former name as well.
+        The arguments <code>-f hello.mk</code> tell Make that we want it to use the commands in the file <code>hello.mk</code>.
+        If we don't tell it what file to look in,
+        it looks for a file called <code>Makefile</code> in the current directory and uses that if it exists.
+      </p>
+
+      <p>
+        Make's output shows us that it has run the command we wanted it to.
+        It did this because at least one prerequisite for <code>figure-1.svg</code> was newer than <code>figure-1.svg</code> itself.
+        By default, Make uses the time a file was last modified as its age.
+        (Opening a file in an editor to view it doesn't change this timestamp, but any change to its contents will.)
+        Since <code>summary-1.dat</code>'s timestamp was younger than <code>figure-1.svg</code>'s,
+        Make ran the shell command we gave it and created a new version of <code>figure-1.svg</code>.
+      </p>
+
+      <p>
+        Let's run Make again:
+      </p>
+
+<pre>
+$ <span class="in">gmake -f hello.mk</span>
+$
+</pre>
+
+      <p class="continue">
+        This time, it doesn't execute any commands.
+        This happened&mdash;or didn't&mdash;because the target is newer than its prerequisites.
+        Since there's nothing to bring up to date, Make doesn't change anything.
+      </p>
+
+      <p>
+        If we were only allowed one rule per file,
+        Make wouldn't be any simpler than typing commands by hand or putting them in little shell scripts.
+        Luckily, Make allows us to put any number of rules in a single configuration file.
+        Here is another Makefile called <code>double.mk</code> with rules to re-create
+        both <code>figure-1.svg</code> and <code>figure-2.svg</code>.
+        These rules are identical except for the 1's and 2's in the filenames; we'll see later how to combine these rules into one.
+      </p>
+
+<pre>
+<span class="comment"># double.mk</span>
+
+figure-1.svg : summary-1.dat
+        sgr -N -r summary-1.dat > figure-1.svg
+
+figure-2.svg : summary-2.dat
+        sgr -N -r summary-2.dat > figure-2.svg
+</pre>
+
+      <p>
+        Let's pretend we've just updated our data files by running <code>touch *.dat</code>.
+        (The Unix <code>touch</code> command doesn't change the contents of files, but updates their timestamps as if they had been modified.)
+        Now, when we run Make, it re-creates <code>figure-1.svg</code> again&mdash;and then stops:
+      </p>
+
+<pre>
+$ <span class="in">touch *.dat</span>
+$ <span class="in">gmake -f double.mk</span>
+<span class="out">sgr -N -r summary-1.dat > figure-1.svg</span>
+$
+</pre>
+
+      <p>
+        Why wasn't <code>figure-2.svg</code> re-created?
+        The answer is that Make uses the first rule in the Makefile as its <a class="dfn" href="gloss.html#default-rule">default rule</a>.
+        Unless it's told otherwise, it only executes this rule.
+        If we want Make to rebuild <code>figure-2.svg</code>, we have to tell it so explicitly.
+        We use <code>-f double.mk</code> to tell Make what Makefile to use,
+        and then give it the name of the target we want it to handle:
+      </p>
+
+<pre>
+$ <span class="in">gmake -f double.mk figure-2.svg</span>
+<span class="out">sgr -N -r summary-2.dat > figure-2.svg</span>
+$
+</pre>
+
+      <p>
+        Again, building things one at a time like this is slightly better than typing individual commands, but only slightly.
+        To get Make to build everything at once, we have to introduce a <a class="dfn" href="gloss.html#phony-target">phony target</a>.
+        This is just a target name that doesn't correspond to any actual file.
+        Since it doesn't actually exist, it can't ever be up to date, but other things can still depend on it.
+        Here's our third Makefile, <code>phony.mk</code>:
+      </p>
+
+<pre>
+<span class="comment"># phony.mk</span>
+
+all : figure-1.svg figure-2.svg
+
+figure-1.svg : summary-1.dat
+        sgr -N -r summary-1.dat > figure-1.svg
+
+figure-2.svg : summary-2.dat
+        sgr -N -r summary-2.dat > figure-2.svg
+</pre>
+
+      <p>
+        We've introduced a phony target called <code>all</code>, which depends on <code>figure-1.svg</code> and <code>figure-2.svg</code>.
+        Since there's no file called <code>all</code> in the current directory,
+        if we type <code>make all</code>,
+        Make will decide that the <code>all</code> target is out of date.
+        And since <code>all</code> depends on <code>figure-1.svg</code> and <code>figure-2.svg</code>,
+        Make will go and update them both, which is exactly what we want.
+      </p>
+
+      <p>
+        Let's <code>touch</code> our data files again, and run <code>make -f phony.mk all</code>.
+        Sure enough, Make runs the <code>sgr</code> command twice to re-create both figures:
+      </p>
+
+<pre>
+$ <span class="in">touch *.dat</span>
+$ <span class="in">gmake -f phony.mk</span>
+<span class="out">sgr -N -r summary-1.dat > figure-1.svg
+sgr -N -r summary-2.dat > figure-2.svg</span>
+$
+</pre>
+
+      <p>
+        One thing to note is that the order in which commands are executed is arbitrary.
+        Make could decide to update <code>figure-2.svg</code> first, rather than <code>figure-1.svg</code>,
+        because there's no dependency to respect between the two.
+        Make could also update them in parallel if it had more than one processor to use&mdash;we'll return to this idea later.
+      </p>
+
+      <p>
+        Something else this example shows us is that a single thing can be a target in one rule, and a prerequisite in others.
+        The dependencies between the files mentioned in the Makefile make up a directed graph.
+        In order for Make to run, this graph must not contain any cycles.
+        For example, if X depends on Y, Y depends on Z, and Z depends on X,
+        everything depends on something else, so there is nothing Make can build first.
+        If it detects a cycle in a Makefile, Make will print an error message and stop.
+        Unfortunately, whether or not a cycle exists depends on which files exist,
+        and Make's error message is usually not particularly informative.
+      </p>
+
+    </section>
+
+    <section id="s:patterns">
+
+      <h2>Patterns</h2>
+
+      <p>
+        Let's go back to our paper and look at another part of our dependency graph.
+        <code>summary-1.dat</code> depends on all of the files <code>data-1-1.dat</code>, <code>data-1-2.dat</code>, and so on.
+        The number of files isn't fixed: there could be one, a dozen, or a thousand.
+        Writing a rule for exactly three files is easy&mdash;we just have one target and multiple prerequisites on a single line:
+      </p>
+
+<pre>
+<span class="comment"># multiple.mk</span>
+
+summary-1.dat : data-1-1.dat data-1-2.dat data-1-3.dat
+        stats.py summary-1.dat data-1-1.dat data-1-2.dat data-1-3.dat
+</pre>
+
+      <p>
+        But how do we generalize that to any number of files?
+        And how can we get rid of the repeated filenames?
+        Writing <code>data-1-1.dat data-1-2.dat data-1-3.dat</code> twice is just asking for trouble:
+        sooner or later, we'll add a file to one line but forget to update the other.
+        We need a way to express the idea, "All the files named <code>data-1-something.dat</code>,"
+        even when we don't know in advance how many of these there will be.
+        We'd also like to figure out what to do about <code>figure-2.svg</code> and the files it depends on.
+        The rules are exactly the same as those for <code>figure-1.svg</code> and its prerequisites;
+        duplicating them is just asking for trouble.
+      </p>
+
+      <p>
+        Let's start with the case of three files <code>data-1-1.dat</code>, <code>data-1-2.dat</code>, and <code>data-1-3.dat</code>.
+        As we have seen,
+        it's easy to write a Make rule to update <code>summary-1.dat</code> whenever any of these or the <code>stats.py</code> script change.
+      </p>
+
+      <p>
+        We'd like to do better, though, so let's replace the action in the rule:
+      </p>
+
+<pre>
+<span class="comment"># target-variable.mk</span>
+
+summary-1.dat : data-1-1.dat data-1-2.dat data-1-3.dat
+<span class="highlight">        stats.py $@ data-1-1.dat data-1-2.dat data-1-3.dat</span>
+</pre>
+
+      <p class="continue">
+        Instead of naming <code>summary-1.dat</code> in the rule's action, we use the rather cryptic shorthand <code>$@</code>.
+        This is one of Make's <a class="dfn" href="gloss.html#automatic-variable">automatic variables</a>,
+        and it means "the target of the current rule".
+        In this rule, for example, it means <code>summary-1.dat</code>.
+        (And no, there isn't a more readable long form of the name: it's just another of Make's many warts.)
+      </p>
+
+      <p>
+        Using <code>$@</code> instead of repeating the target's name shortens our rule somewhat,
+        but writing the many prerequisite filenames twice is still redundant.
+        Let's fix that by replacing our shortened rule command like this:
+      </p>
+
+<pre>
+<span class="comment"># variables.mk</span>
+
+summary-1.dat : data-1-1.dat data-1-2.dat data-1-3.dat
+<span class="highlight">        stats.py $@ $^</span>
+</pre>
+
+      <p>
+        <code>$^</code> is another automatic variable: it means "all the prerequisites of this rule".
+        In this case it's the three raw data files,
+        so when Make expands the variables in <code>stats.py $@ $^</code>,
+        we get back our original command.
+      </p>
+
+      <p>
+        There are other automatic variables as well:
+        for example, <code>$&lt;</code> means "the first prerequisite in the list",
+        and <code>$?</code> means "all prerequisites that are out of date".
+        Don't worry if you can't remember them:
+        everyone except the most passionate Make user writes them on a sticky note and puts it on their terminal.
+      </p>
+
+      <p>
+        Using the automatic variables <code>$@</code> and <code>$^</code> eliminates the redundancy in our rule,
+        but doesn't solve the problem of handling an arbitrary number of prerequisite filenames.
+        We expect to have more than three data files before this project is done, and as we said before,
+        we don't want to have to rewrite our Makefile each time we run our experiment.
+        What we really want is something like the shell's <code>*</code> wildcard, which matches any number of characters:
+      </p>
+
+<pre>
+<span class="comment"># wildcard.mk</span>
+
+summary-1.dat : data-1-*.dat
+        stats.py $@ $^
+</pre>
+
+      <p>
+        This actually works:
+        if use <code>data-1-*.dat</code> as the rule's prerequisite, it behaves just like the corresponding shell wildcard.
+        When we do this, we <em>must</em> use <code>$^</code> to refer to the rule's prerequisites in the action:
+        we don't know exactly what filenames will match,
+        so we have to rely on Make to put them in an automatic variable for us on a rule-by-rule basis.
+      </p>
+
+      <p>
+        Here are our dependency tree and our entire Makefile so far:
+      </p>
+
+<pre>
+paper.pdf : paper.wdp figure-1.svg figure-2.svg
+        wdp2pdf $&lt;
+
+figure-1.svg : summary-1.dat
+        sgr -N -r $@ $^
+
+figure-2.svg : summary-2.dat
+        sgr -N -r $@ $^
+
+summary-1.dat : data-1-*.dat
+        stats.py $@ $^
+
+summary-2.dat : data-2-*.dat
+        stats.py $@ $^
+</pre>
+
+      <p class="continue">
+        There is still some redundancy:
+        we have exactly the same logical rules for our two data series,
+        but have to write them down separately because the '1' and '2' in their names are different.
+      </p>
+
+      <p>
+        We'll see how to fix this in the next section.
+        Before then, though, we have one more problem to address.
+        Our existing Makefile doesn't capture the fact that <code>summary-1.dat</code> and <code>summary-2.dat</code>
+        depend on <code>stats.py</code> as well as on their corresponding raw data files.
+        We could try to fix this by adding <code>stats.py</code> to their prerequisite lists:
+      </p>
+
+<pre>
+paper.pdf : paper.wdp figure-1.svg figure-2.svg
+        wdp2pdf $&lt;
+
+figure-1.svg : summary-1.dat
+        sgr -N -r $@ $^
+
+figure-2.svg : summary-2.dat
+        sgr -N -r $@ $^
+
+summary-1.dat : stats.py data-1-*.dat
+        stats.py $@ $^
+
+summary-2.dat : stats.py data-2-*.dat
+        stats.py $@ $^
+</pre>
+
+      <p class="continue">
+        If we do this, though, <code>stats.py</code> will appear in the value of the automatic variable <code>$^</code> for those two rules.
+        This means that when we run <code>stats.py</code>,
+        our command line will be <code>stats.py summary-1.dat stats.py data-1-1.dat data-1-2.dat</code> and so on,
+        i.e., we'll be telling <code>stats.py</code> to process itself as a data file, which is almost certainly a bad idea.
+        We could "fix" this by having <code>stats.py</code> ignore files that end in <code>.py</code>, but it would be an ugly hack.
+      </p>
+
+      <p>
+        A second option would be to move the dependency down, and pretend that the raw data files depend on <code>stats.py</code>:
+      </p>
+
+<pre>
+figure-2.svg : summary-2.dat
+        sgr -N -r $@ $^
+
+summary-1.dat : data-1-*.dat
+        stats.py $@ $^
+
+summary-2.dat : data-2-*.dat
+        stats.py $@ $^
+
+data-1-1.dat : stats.py
+        touch $@
+
+data-1-2.dat : stats.py
+        touch $@
+</pre>
+
+      <p class="continue">
+        This is called a <a class="dfn" href="gloss.html#false-dependency">false dependency</a>.
+        The raw data files don't really have to be updated when <code>stats.py</code> is changed,
+        but with this false dependency in our Makefile,
+        Make will update the timestamps on the raw data files when <code>stats.py</code> changes,
+        which will in turn trigger an update of the summary files.
+      </p>
+
+      <p>
+        False dependencies do solve some problems, but not this one:
+        if we go down this road, we have to list all our raw data files explicitly once again, which is what we're trying to avoid.
+        Our third option is
+        to add additional rules for <code>summary-1.dat</code> and <code>summary-2.dat</code>
+        that add <code>stats.py</code> as a prerequisite,
+        but don't have any actions:
+      </p>
+
+<pre>
+paper.pdf : paper.wdp figure-1.svg figure-2.svg
+        wdp2pdf $&lt;
+
+figure-1.svg : summary-1.dat
+        sgr -N -r $@ $^
+
+figure-2.svg : summary-2.dat
+        sgr -N -r $@ $^
+
+summary-1.dat : data-1-*.dat
+        stats.py $@ $^
+
+summary-2.dat : data-2-*.dat
+        stats.py $@ $^
+
+summary-1.dat : stats.py
+summary-2.dat : stats.py
+</pre>
+
+      <p class="continue">
+        When Make sees multiple rules for the same target,
+        it uses the union of all those rules' prerequisites as the target's actual set of prerequisites.
+        However, the automatic variable <code>$^</code> in the rule is still just that rule's prerequisite list.
+        It's a bit of a hack, but it means that our command line has exactly what we want it to have.
+      </p>
+
+    </section>
+
+    <section id="s:rules">
+
+      <h2>Rules</h2>
+
+      <p>
+        Our Makefile is better than it was, but still contains a lot of redundancy.
+        The rules for <code>figure-1.svg</code> and <code>figure-2.svg</code> are identical except for the '1' and '2' in their names,
+        as are the rules for <code>summary-1.dat</code> and <code>summary-2.dat</code>.
+      </p>
+
+      <p>
+        We'd like to "fold" the rules for the figures together for two reasons.
+        First, if we add a third figure, we don't want to have to duplicate rules a third time.
+        Second, if we ever want to change the way we generate figures, we'd like to make that change once, in one place:
+        if we have to make it in several places, the odds are good we'll forget one,
+        and then waste time trying to figure out why some of our commands aren't running.
+      </p>
+
+      <p>
+        The way to do this in Make is to use a <a class="dfn" href="gloss.html#pattern-rule">pattern rule</a> to capture the common idea.
+        Here's our Makefile rewritten to use such a rule:
+      </p>
+
+<pre>
+<span class="comment"># pattern-rule.mk</span>
+
+figure-%.svg : summary-%.dat
+        sgr -N -r $@ $^
+
+summary-1.dat : data-1-*.dat
+        stats.py $@ $^
+
+summary-2.dat : data-2-*.dat
+        stats.py $@ $^
+
+summary-1.dat : stats.py
+summary-2.dat : stats.py
+</pre>
+
+      <p>
+        In this rule, <code>%</code> is a wildcard.
+        When it is expanded, it has the same value on both sides of the rule:
+        if it matches '1' on the left, it must match '1' on the right as well.
+        <code>%</code> only means something to Make, though.
+        It doesn't have a value in the rule's action, which is handed off to the shell for execution.
+        So in the action, we have to use the automatic variables <code>$@</code> and <code>$^</code> as before.
+      </p>
+
+      <p>
+        Let's try running our modified Makefile:
+      </p>
+
+<pre>
+$ <span class="in">make -f pattern-rule.mk</span>
+<span class="out">stats.py summary-1.dat data-1-1.dat data-1-2.dat data-1-3.dat</span>
+$
+</pre>
+
+      <p>
+        <code>summary-1.dat</code> is updated, but not <code>summary-2.dat</code> or either of the figure files.
+        The reason the other commands didn't run is that pattern rules don't create dependencies:
+        they just tell Make what to do <em>if</em> there's a dependency.
+        In other words, <em>if</em> Make decides it wants to create <code>figure-1.svg</code>, it can use our pattern rule,
+        but we still have to tell Make to care about <code>figure-1.svg</code>.
+        Let's do this by putting the rule for <code>paper.pdf</code> back in our Makefile:
+      </p>
+
+<pre>
+<span class="comment"># use-pattern.mk</span>
+
+paper.pdf : paper.wdp figure-1.svg figure-2.svg
+        wdp2pdf $&lt;
+
+figure-%.svg : summary-%.dat
+        sgr -N -r $@ $^
+
+summary-1.dat : data-1-*.dat
+        stats.py $@ $^
+
+summary-2.dat : data-2-*.dat
+        stats.py $@ $^
+
+summary-1.dat : stats.py
+summary-2.dat : stats.py
+</pre>
+
+      <p>
+        Here, <code>paper.pdf</code> depends on <code>figure-1.svg</code> and <code>figure-2.svg</code>.
+        Make now knows that it needs these figures.
+        Since there aren't specific rules for them, it uses the pattern rule instead.
+      </p>
+
+      <p>
+        It's tempting to go one step further, and make <code>paper.pdf</code> depend on <code>figure-*.svg</code>:
+      </p>
+
+<pre>
+paper.pdf : paper.wdp <span class="highlight">figure-*.svg</span>
+        wdp2pdf $&lt;
+</pre>
+
+      <p class="continue">
+        This doesn't work, though.
+        The reason is that the figure files may not exist when Make starts to run&mdash;after all, Make creates them.
+        In that case, <code>figure-*.svg</code> will expand to nothing,
+        so Make would mistakenly believe that <code>paper.pdf</code> depended only on <code>paper.wdp</code>.
+        This kind of bug can be very hard to figure out,
+        and while Make does have a debugger (called <a href="http://gmd.sourceforge.net/">GMD</a>),
+        it's not an easy tool for beginners to use.
+      </p>
+
+      <p>
+        Our raw data files <em>do</em> always exist, though, so we can get rid of some more redundancy by folding these two rules into one
+        using the <code>*</code> wildcard:
+      </p>
+
+<pre>
+<span class="comment"># all-patterns.mk</span>
+
+paper.pdf : paper.wdp figure-1.svg figure-2.svg
+        wdp2pdf $&lt;
+
+figure-%.svg : summary-%.dat
+        sgr -N -r $@ $^
+
+<span class="highlight">summary-%.dat : data-%-*.dat
+        stats.py $@ $^</span>
+
+summary-1.dat : stats.py
+summary-2.dat : stats.py
+</pre>
+
+      <p class="continue">
+        It's safe to do this because Make isn't responsible for creating <code>data-1-whatever.dat</code> and <code>data-2-whatever.dat</code>:
+        there's no possibility of the <code>*</code> missing things because it's evaluated when Make starts running.
+      </p>
+
+      <p>
+        Just as a reminder, the <code>%</code> is a Make wildcard:
+        it matches the same thing on the left and right side of a pattern rule.
+        <code>*</code> is a shell wildcard:
+        it matches zero or more characters in a filename when it's evaluated.
+      </p>
+
+      <p>
+        We cannot get rid of the last bit of redundancy by making <code>summary-%.dat</code> depend on <code>stats.py</code>.
+        Even with this pattern rule, the summary files only depend on the corresponding raw data files, not on <code>stats.py</code>.
+        The reason is that when Make sees two or more pattern rules that could match a filename,
+        it uses the first and ignores the other.
+        It's another wart, and another source of hard-to-find headaches in Makefiles.
+      </p>
+
+      <p>
+        If we really want to avoid making <code>summary-1.dat</code> and <code>summary-2.dat</code> depend on <code>stats.py</code> separately,
+        the only way is to go back to using false dependencies.
+        This Makefile tells Make to update the timestamps on the raw data files using <code>touch</code> whenever <code>stats.py</code> changes.
+        Doing this indirectly triggers the re-creation of the summary files&mdash;it does what we want, just in a roundabout way.
+      </p>
+
+<pre>
+<span class="comment"># false-dependencies.mk</span>
+
+paper.pdf : paper.wdp figure-1.svg figure-2.svg
+        wdp2pdf $&lt;
+
+figure-%.svg : summary-%.dat
+        sgr -N -r $@ $^
+
+summary-%.dat : data-%-*.dat
+        stats.py $@ $^
+
+<span class="highlight">data-*-*.dat : stats.py
+        touch $@</span>
+</pre>
+
+    </section>
+
+    <section id="s:macros">
+
+      <h2>Macros</h2>
+
+      <p>
+        Just when we thought we were done writing our Makefile, our supervisor reminded us that all papers must conform to the university's new style rules.
+        That means that <code>paper.pdf</code> has one more dependency: the official university style file <code>euphoric.wps</code>.
+        Unfortunately, on our laptop, that file lives in <code>C:\papers</code>,
+        but on the machine we use in the lab, it's in <code>/lib/styles</code>.
+      </p>
+
+      <p>
+        We could create a directory called <code>/lib/styles</code> on our laptop,
+        and put a copy of <code>euphoric.wps</code> there,
+        but the university also has a style guide for diagrams, which is in a file called <code>euphoric.fig</code>.
+        Once again, on our laptop, it's installed in <code>C:\papers</code>,
+        but it's in <code>/lib/styles</code> in the lab.
+        How should we handle this difference?
+      </p>
+
+      <p>
+        If we start with the Makefile we've written so far,
+        the brute-force approach is to just add the style files to our commands:
+      </p>
+
+<pre>
+paper.pdf : paper.wdp figure-1.svg figure-2.svg
+        wdp2pdf <span class="highlight">--style c:/papers/euphoric.wps</span> $&lt;
+
+figure-%.svg : summary-%.dat
+        sgr -N -r <span class="highlight">-s c:/papers/euphoric.fig</span> $@ $^
+
+summary-%.dat : data-%-*.dat
+        stats.py $@ $^
+
+data-*-*.dat : stats.py
+        touch $@
+</pre>
+
+      <p>
+        There's some redundancy here, though: we are specifying the same directory twice.
+        And notice that we haven't explicitly listed <code>euphoric.wps</code> or <code>euphoric.fig</code>
+        as prerequisites of <code>paper.pdf</code>,
+        or of the two figure we're generating.
+        Some people would include them, just to be safe,
+        but it's more common not to list dependencies on "system" files
+        like libraries, style files, and so on.
+      </p>
+
+      <p>
+        Now, how do we handle the fact that these two paths need to be different when we're re-creating our paper in the lab?
+        The first option is to use copy and paste, and write two completely separate Makefiles.
+        What we really mean, though, is write <em>and maintain</em>, and that's why this is a bad idea.
+        As soon as we have two of anything, we'll eventually update one but forget to update the other.
+        Makefiles are already hard enough to debug;
+        any "solution" that adds more complexity and risk isn't really a solution at all.
+      </p>
+
+      <p>
+        Our second option is to put everything in one Makefile, and then to comment out the bits intended for the machine we <em>aren't</em> on,
+        but this is also problematic.
+        First, we have to make sure we always comment and uncomment lines consistently.
+        If we uncomment the line for creating the paper on our laptop, for example, but forget to uncomment the line for building the figures,
+        we're going to have another debugging headache.
+      </p>
+
+      <p>
+        Commenting and uncommenting lines also makes life more difficult for our version control system.
+        If we update our Makefile from version control, then change the commenting on a few lines,
+        the version control system will want to save those changes in the repository the next time we commit.
+        We probably don't actually want to do that, since it would mean that the next time we updated on the other machine, its Makefile would be overwritten.
+      </p>
+
+      <p>
+        The third option&mdash;the right one&mdash;is to refactor our Makefile to make the problem go away entirely.
+        We can do this by defining a <a class="dfn" href="gloss.html#macro">macro</a>, just as we would define a constant or variable in a program.
+        Here's our Makefile with a macro defined and used:
+      </p>
+
+<pre>
+<span class="comment"># with-macro.mk</span>
+
+<span class="highlight">STYLE_DIR=c:/papers/</span>
+
+paper.pdf : paper.wdp figure-1.svg figure-2.svg
+        wdp2pdf --style <span class="highlight">${STYLE_DIR}</span>/euphoric.wps $&lt;
+
+figure-%.svg : summary-%.dat
+        sgr -N -r -s <span class="highlight">${STYLE_DIR}</span>/euphoric.fig $@ $^
+
+summary-%.dat : data-%-*.dat
+        stats.py $@ $^
+
+data-*-*.dat : stats.py
+        touch $@
+</pre>
+
+      <p>
+        The definition looks like definitions in most programming languages:
+        the macro is called <code>STYLE_DIR</code>, and its value is <code>c:/papers/</code>.
+        To use the macro, we put a dollar sign in front of it (just as we would do in the shell) and wrap its name in curly brackets.
+        This tells Make to insert the macro's value, so that these two directory paths are what we want on our laptop.
+      </p>
+
+      <p>
+        This is certainly a step forward:
+        now, when we want to move our Makefile from one machine to another, we only have to change one definition in one place.
+        However, while we no longer have to worry about consistency,
+        we're still making changes to a file that's under version control that we <em>don't</em> want written back to the repository.
+      </p>
+
+      <div class="box">
+        <h3>Parenthesizing Macros in Make</h3>
+
+        <p>
+          we have to put curly brackets or parentheses around a macro's name when we use it&mdash;we can't just write <code>$MACRO</code>.
+          If we do, Make will interpret it as <code>$M</code> (a reference to the macro <code>M</code>) followed by "ACRO".
+          Since we probably don't have a macro called <code>M</code>, <code>$M</code> will expand to the empty string,
+          so <code>$MACRO</code> without parentheses will just be "ACRO".
+          Why?
+          To make a long story short, it's another wart left over from its history.
+          Almost everyone trips over it occasionally, and as with other bugs, it can be very hard to track down.
+        </p>
+
+      </div>
+
+      <p>
+        It's common practice to use macros to define all the flags that tools need, so that if a tool is invoked in two or more actions,
+        it's passed a consistent set of flags.
+        Here, for example, we're defining <code>STYLE_DIR</code> to point to the directory holding our style files,
+        then using that definition in two other macros:
+      </p>
+
+<pre>
+<span class="comment"># with-lots-of-macros.mk</span>
+
+STYLE_DIR=c:/papers/
+WDP2PDF_FLAGS=--style ${STYLE_DIR}/euphoric.wps
+SGR_FLAGS=-N -r -s ${STYLE_DIR}/euphoric.fig
+
+paper.pdf : paper.wdp figure-1.svg figure-2.svg
+        wdp2pdf ${WDP2PDF_FLAGS} $&lt;
+
+figure-%.svg : summary-%.dat
+        sgr ${SGR_FLAGS} $@ $^
+
+summary-%.dat : data-%-*.dat
+        stats.py $@ $^
+
+data-*-*.dat : stats.py
+        touch $@
+</pre>
+
+      <p>
+        The first, <code>WPD2PDF_FLAGS</code>,
+        is the single flag and argument we want to pass to the tool that turns our word processor file into a PDF.
+        The second, <code>SGR_FLAGS</code>, combines <code>STYLE_DIR</code> with a couple of other flags
+        to build the arguments for the tool that turns data files into SVG diagrams.
+      </p>
+
+      <p>
+        We are now ready to solve our original problem.
+        Let's move the definition of <code>STYLE_DIR</code>&mdash;the macro that changes from machine to machine&mdash;out of our main Makefile,
+        and into a Makefile of its own called <code>config.mk</code>:
+      </p>
+
+<pre>
+<span class="comment"># config.mk</span>
+
+STYLE_DIR=c:/papers/
+</pre>
+
+      <p class="continue">
+        We can then include that file in our main Makefile using Make's <code>include</code> command.
+        Our other macros and commands can then use the definition of <code>STYLE_DIR</code> just as if it had been defined in the main Makefile:
+      </p>
+
+<pre>
+<span class="comment"># with-include.mk</span>
+<span class="highlight">include config.mk</span>
+
+WDP2PDF_FLAGS=--style ${STYLE_DIR}/euphoric.wps
+SGR_FLAGS=-N -r -s ${STYLE_DIR}/euphoric.fig
+
+paper.pdf : paper.wdp figure-1.svg figure-2.svg
+        wdp2pdf ${WDP2PDF_FLAGS} $&lt;
+
+figure-%.svg : summary-%.dat
+        sgr ${SGR_FLAGS} $@ $^
+
+summary-%.dat : data-%-*.dat
+        stats.py $@ $^
+
+data-*-*.dat : stats.py
+        touch $@
+</pre>
+
+      <p>
+        Once we've tested this to make sure it works, we can copy <code>config.mk</code> to create two files that we'll put in version control.
+        The first, <code>config-home.mk</code>, defines <code>STYLE_DIR</code> for use on our laptop.
+        The second, <code>config-lab.mk</code>, defines it for use in the lab.
+        These two files are only changed when they need to be (i.e., when the style files move, or their names change).
+        We then copy one or the other on the machine we're using to create the file <code>config.mk</code>
+        that our main Makefile actually includes.
+        <span class="fixbig">only need to do this once per machine when things change</span>
+      </p>
+
+      <p>
+        For example, here's what we have in the <code>paper</code> directory on our home machine when we do a fresh checkout from version control.
+        Along with our data files and the word processor file, we have our main Makefile and the two machine-specific configuration makefiles.
+        So we copy <code>config-home.mk</code> to create <code>config.mk</code>.
+        Meanwhile, when we check out in the lab, we copy <code>config-lab.mk</code> to create <code>config.mk</code>.
+        Our main Makefile is now happy in both cases because the file it's including now exists,
+        and has the right definition of <code>STYLE_DIR</code>.
+      </p>
+
+      <p>
+        We can also solve this problem by defining <code>STYLE_DIR</code> on the command line each time we run Make.
+        To do this, we use the <code>-D</code> flag, and specify the macro's name and the value we want to give it:
+      </p>
+
+<pre>
+$ <span class="in">make -DSTYLE_DIR=/lib/styles -f Makefile</span>
+</pre>
+
+      <p>
+        This is almost always a bad idea, though.
+        We have to remember to type the definition each time,
+        and we have to type it <em>correctly</em> each time.
+        This isn't too bad with just one definition, but is infeasible when there are half a dozen.
+        There's also no record in the Makefile itself of the flag, which makes life harder for other people who want to re-create our paper.
+        How do they know what to type?
+      </p>
+
+    </section>
+
+    <section id="s:summary">
+
+      <h2>Summing Up</h2>
+
+      <p>
+        There are many other approaches to handling platform dependence in builds that we won't go into in this lecture.
+        One of the most popular, which is used by tools like CMake and GNU's Autoconf and Automake,
+        is to write a higher-level specification for the build that can then be compiled to create Makefiles
+        or build files for other tools like integrated development environments.
+        The main benefit of doing this is that these tools can manage, and even automatically discover,
+        the difference between machines, so that we don't ever have to worry about them.
+        The downside is that these higher-level build files are even harder to debug than Makefiles.
+      </p>
+
+      <p>
+        Remember: a build file is a program.
+        Automating tasks with build files can save you endless hours,
+        but you have to treat them with the same respect you would give any other program.
+      </p>
+
+    </section>
+
+    <div class="footer">
+      <table>
+        <tr>
+          <td valign="middle">
+            <img src="img/logo/creative-commons-attribution-license.png" alt="CC-A license" />
+          </td>
+          <td valign="middle">
+            This material is provided under the
+            <a href="http://creativecommons.org/licenses/by/3.0/legalcode">Creative Commons Attribution</a> license.
+            <br/>
+            Please contact <a href="mailto:info@software-carpentry.org">info@software-carpentry.org</a> for details.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </body>
+</html>

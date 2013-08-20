@@ -1,0 +1,1739 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../common/scb.css" type="text/css" />
+    <title>Software Carpentry / Desktop User Interfaces</title>
+    <meta name="id" content="$Id: gui.html 2293 2011-11-02 13:24:49Z gvw $" />
+    <meta name="type" content="chapter" />
+  </head>
+  <body class="chapter">
+    <div class="header">
+      <a href="index.html"><img src="../img/logo/software-carpentry-banner.jpg" alt="Software Carpentry logo" class="logo" /></a>
+      <h1>Desktop User Interfaces</h1>
+    </div>
+
+    <div class="toc">
+      <ol>
+        <li><a href="#s:basics">Hello, GUI</a></li>
+        <li><a href="#s:interaction">It's Alive!</a></li>
+        <li><a href="#s:mvc">Models, Views, and Controllers</a></li>
+        <li><a href="#s:oop">Objects</a></li>
+        <li><a href="#s:layout">Controlling Layout</a></li>
+        <li><a href="#s:slider">Continuous Control</a></li>
+        <li><a href="#s:animation">Animation</a></li>
+        <li><a href="#s:dla">Diffusion-Limited Aggregation</a></li>
+        <li><a href="#s:summary">Summing Up</a></li>
+      </ol>
+    </div>
+
+    <p>
+      Leave a bunch of programmers alone long enough,
+      and they will inevitably start talking about the first computers they ever used.
+      I started on punchards&mdash;I was in the very last class at Queen's University
+      to use their aging Burroughs B5000 in the fall of 1980,
+      and I remember how liberating it was when I got to switch to a teletype,
+      and then to an interactive terminal
+      (one of 15 connected to a machine somewhat less powerful than the watch I now wear).
+    </p>
+
+    <p>
+      By the time I graduated in 1984,
+      text-only interfaces were on their way out.
+      Several companies were producing Unix workstations that ran X Windows,
+      and the first Macintosh computers appeared in January of that year.
+      Die-hards sneered at their WIMP interfaces (windows, icons, mice, and pointers),
+      and said that <em>real</em> programmers didn't point,
+      they typed,
+      but that was usually a case of
+      <a class="dfn" href="glossary.html#stockholm-syndrome">Stockholm Syndrome</a>.
+      Graphical interfaces actually were easier to learn and use,
+      and did make people more productive.
+    </p>
+
+    <p>
+      At least,
+      well-designed graphical interfaces did.
+      The last twenty-five years have shown that designing a good user interface isn't easy,
+      and that bad ones can all too easily make hard problems worse.
+      We have also learned that programming user interfaces
+      is fundamentally different from programming command-line user interfaces:
+      where a command-line program tells the computer what to do,
+      the computer tells a GUI what to do,
+      and that requires some new tools and approaches.
+      As we'll see in a <a href="web.html">later chapter</a>,
+      this is also how the web is programmed,
+      so everything we cover here will help us prepare for that.
+    </p>
+
+    <p>
+      We are not going to delve deeply into desktop GUI construction in this chapter
+      for three reasons:
+    </p>
+
+    <ol>
+      <li>
+        Desktop GUIs are pass&eacute;&mdash;for all but
+        the most compute- and data-intensive applications,
+        the right answer today is to build a web interface.
+      </li>
+      <li>
+        The Tkinter toolkit that comes with Python is close to obsolete.
+        We will use it because it illustrates key ideas,
+        and doesn't require any extra installation,
+        but if you really are going to build a desktop GUI,
+        you should investigate alternatives like <a href="http://www.wxpython.org">wxPython</a>.
+      </li>
+      <li>
+        Writing a GUI is much easier than designing one,
+        and we simply don't have time in this course
+        to teach user interface design.
+        If you are going to create a user interface of any kind,
+        please read Jeff Johnson's
+        <a class="cite" href="bibliography.html#johnson-gui-bloopers">GUI Bloopers</a>
+        and
+        <a class="cite" href="bibliography.html#johnson-designing-mind">Designing With the Mind in Mind</a>.
+      </li>
+    </ol>
+
+    <section id="s:basics">
+
+      <h2>Hello, GUI</h2>
+
+      <p>
+        Let's start by getting something simple on the screen:
+      </p>
+
+<pre src="../src/gui/hello.py">
+from Tkinter import Tk
+root = Tk()
+root.title("Science!")
+root.mainloop()
+</pre>
+
+      <p class="continue">
+        Here's what those four lines do:
+      </p>
+
+      <ol>
+        <li>
+          The GUI framework we are using, Tkinter, comes with Python.
+          We only need one thing from it for this example,
+          so we import that.
+        </li>
+        <li>
+          Every application must have a root object,
+          which will contain everything else in the GUI.
+          We create that object by calling <code>Tk()</code>,
+          and assign the result to the variable <code>root</code>.
+          As soon as this statement is executed,
+          a window appears on our screen
+          (which you can verify by typing these lines in
+          one by one
+          at an interactive Python prompt).
+        </li>
+        <li>
+          This root object has many (many) properties;
+          by assigning values to them,
+          we can change the GUI's color scheme,
+          the window's borders,
+          and so on.
+          Here,
+          we are changing the text that will appear in the title bar
+          at the top of the window's frame.
+          Again,
+          if you are typing in this example interactively,
+          you will see the window's title change
+          as soon as this line is executed.
+        </li>
+        <li>
+          Finally,
+          we need to hand control of our application over to the computer.
+          This is the most complicated concept in this entire chapter,
+          so we will defer discussion of it to our next example.
+        </li>
+      </ol>
+
+      <p>
+        When we run this program,
+        it produces a window that looks something like this:
+      </p>
+
+      <img src="../img/gui/hello.png" alt="A Simple Window" />
+
+      <p class="continue">
+        The exact appearance will depend on which operating system you are using,
+        but the features will be the same.
+      </p>
+
+      <p>
+        There's not much point putting a window on the screen
+        without putting something in it.
+        Let's add a few lines to our GUI:
+      </p>
+
+<pre src="../src/gui/textview.py">
+from Tkinter import Tk, Label
+
+root = Tk()
+root.title("Quotation")
+
+quote = '''Science has proof without any certainty.
+Creationists have certainty without any proof.
+-- Ashley Montague'''
+
+label = Label(root, text=quote)
+label.pack()
+
+root.mainloop()
+</pre>
+
+      <p class="continue">
+        Along with <code>Tk</code>,
+        we are now importing a <a class="dfn" href="glossary.html#widget">widget</a>
+        called <code>Label</code>.
+        Widgets are the basic elements that make up GUIs,
+        such as buttons,
+        sliders,
+        and (in this case) text displays.
+        Creating a GUI is mostly a matter of choosing and connecting widgets,
+        although that's a bit like saying that
+        drawing is mostly about choosing and placing ink.
+      </p>
+
+      <p>
+        The next two lines of the program
+        create the root object and give it a title as before.
+        After that comes the quotation that we're going to display,
+        which is just a multi-line string.
+        Line 10 is more interesting:
+        there,
+        we create a new text label by calling <code>Label</code>.
+        The first argument is the root object of our application;
+        in general,
+        whenever we create a GUI widget,
+        we must specify what that widget is contained in.
+        Here,
+        the text display is going directly into the main window.
+      </p>
+
+      <p>
+        The second argument to <code>Label</code> is
+        the text we want to display.
+        We pass this by name using <code>text=quote</code>,
+        rather than by position,
+        because labels (and most other widgets)
+        have a bewildering variety of parameters and options.
+        For example,
+        we could specify the font, foreground color, background color,
+        border thickness, border style (plain, dashed, and so on),
+        and many other properties of our text widget.
+        If we tried to pass parameters by position,
+        the call would look something like:
+      </p>
+
+<pre>
+label = Label(root, None, None, None, None, CENTER, CENTER,
+              DEFAULT, None, DEFAULT, quote, None, None, ...)
+</pre>
+
+      <p class="continue">
+        and so on.
+        Cases like this are why keyword arguments were added
+        to languages like Python:
+        they make life simpler and safer.
+      </p>
+
+      <p>
+        Next is the rather odd line <code>label.pack()</code>.
+        It tells Tkinter how to pack widgets together.
+        It can also take a variety of options,
+        some of which we'll see in the next example;
+        for now,
+        we will just let it do what it does by default.
+        Finally,
+        we call <code>root.mainloop</code>,
+        and see this:
+      </p>
+
+      <img src="../img/gui/textview.png" alt="Displaying Text" />
+
+      <p>
+        If we want pictures instead of text,
+        we can use a <code>Canvas</code> widget.
+        As its name suggests,
+        this widget is used for drawing things:
+        we can create lines,
+        circles,
+        and other shapes on it.
+        Here,
+        for example,
+        we are creating a red square on a black background:
+      </p>
+
+<pre src="../src/gui/canvas.py">
+from Tkinter import Tk, Canvas
+
+root = Tk()
+
+canvas = Canvas(root, width=100, height=100, background="black")
+canvas.pack()
+
+canvas.create_rectangle(40, 40, 60, 60, fill="red")
+
+root.mainloop()
+</pre>
+
+      <img src="../img/gui/canvas.png" alt="A Red Square on a Canvas" />
+
+      <p>
+        If we can display text and drawings,
+        can we also display images?
+        That turns out to be a bit trickier
+        because we have to weld two libraries together:
+        Python's imaging library
+        (which was discussed in the chapter on <a href="media.html">multimedia programming</a>)
+        and Tkinter.
+        We also have to make sure that the TkImage package is installed:
+        it's an optional part of Tkinter that knows how to manage image files.
+        But other than that,
+        the program is much like the one we just wrote:
+      </p>
+
+<pre src="../src/gui/picview.py">
+import sys
+from Tkinter import Tk, Canvas, NW
+import Image
+import ImageTk
+
+assert len(sys.argv) == 2, "Need a filename"
+
+image = Image.open(sys.argv[1]) 
+
+root = Tk()
+root.title(sys.argv[1])
+canvas = Canvas(root, width=image.size[0], height=image.size[1])
+canvas.pack()
+
+photo = ImageTk.PhotoImage(image)
+canvas.create_image(0, 0, anchor=NW, image=photo)
+
+root.mainloop()
+</pre>
+
+      <p class="continue">
+        After importing the things we'll need,
+        and checking that the user has given us a filename as a command-line parameter,
+        we create an image object in memory by calling <code>Image</code>.
+        We then create the Tkinter root object as usual,
+        but instead of putting a <code>Label</code> in it,
+        we create a <code>Canvas</code>.
+        We have specified the <code>Canvas</code>'s size
+        so that it will be exactly as large as it needs to be to hold the image.
+      </p>
+
+      <p>
+        Now come the statements that connect our two libraries together.
+        First,
+        we use <code>ImageTk.PhotoImage</code> to wrap the picture we loaded from disk
+        in a Tkinter widget.
+        <span class="fixme">explain wrapping</span>
+        We then use <code>canvas.create_image</code> to put the image in the canvas.
+        Its first two arguments, 0 and 0,
+        specify that we're putting the picture in the corner of the canvas.
+        The <code>anchor=NW</code> argument tells Tkinter how to anchor the image:
+        by default,
+        it would use its center as the anchor point.
+        <span class="fixme">explain</span>
+      </p>
+
+      <p>
+        Here's what the whole thing looks like when we run it:
+      </p>
+
+      <img src="../img/gui/picview.png" alt="Displaying Images" />
+
+    </section>
+
+    <section id="s:interaction">
+
+      <h2>It's Alive!</h2>
+
+      <p>
+        All the interfaces we have built so far have been static.
+        Let's make something a bit more interactive:
+      </p>
+
+<pre src="../src/gui/button.py">
+import sys
+from Tkinter import Tk, Label, Button
+
+def quit():
+    sys.exit(0)
+
+root = Tk()
+
+label = Label(root, text="Click the button below")
+label.pack()
+
+button = Button(root, text="quit", command=quit)
+button.pack()
+
+root.mainloop()
+</pre>
+
+      <p class="continue">
+        After the usual imports,
+        we define a function called <code>quit</code>
+        that calls <code>sys.exit</code> to end the program.
+        We then create the root Tk object for our application
+        and put a text label in it as before.
+        Next,
+        though,
+        we create a new kind of widget: a button.
+        Its first argument is the application's root object;
+        its second is the text that is to be displayed on the button,
+        and the third&mdash;the <code>command</code> argument&mdash;tells Tkinter
+        what we want it to do when the button is clicked.
+      </p>
+
+      <p>
+        Now let's run <code>root.mainloop</code>:
+      </p>
+
+      <img src="../img/gui/button.png" alt="A Simple Button" />
+
+      <p class="continue">
+        Sure enough,
+        it displays our label and our button.
+        What's different is that the button has a behavior:
+        when we click it,
+        the application shuts itself down.
+      </p>
+
+      <p>
+        But how does this work?
+        Who actuall calls the function <code>quit</code> when the button is clicked?
+        The answer is hidden in <code>root.mainloop()</code>,
+        and is the most important idea in this chapter.
+      </p>
+
+      <p>
+        In the programs we have seen so far,
+        we have been in charge of what happens when:
+        execution starts at the top of our file,
+        and commands are run as they are encountered.
+        If we want to use functions from a library,
+        we call them:
+      </p>
+
+      <p class="fixme">picture of top-down vs. bottom-up</p>
+
+      <p>
+        In a GUI,
+        on the other hand,
+        we give control to an <a class="dfn" href="glossary.html#event-loop">event loop</a>,
+        and <em>it</em> calls <em>our</em> code,
+        inverting the arrangement shown above.
+        The event loop watches the mouse and keyboard for events
+        such as keys being pressed or the cursor moving.
+        Each time something happens,
+        the event loop figures out which part of our program
+        is responsible for handling that event.
+        For example,
+        if we click a mouse button,
+        the event loop figures out what GUI widget the cursor is on,
+        looks up the function we specified when we created that widget,
+        and calls that function.
+      </p>
+
+      <p>
+        In order for us to be able to plug out code into the GUI framework,
+        the framework must be able to call the functions we provide.
+        In order for it to be able to do that,
+        our functions must have the right "shape",
+        i.e.,
+        take the right number and kind of parameters,
+        and return the right kind of result.
+        It's very much like hardware interfaces:
+        as long as something has a USB port,
+        anything with a USB interface can connect to it,
+        but only if that interface obeys all the rules that the port expects.
+      </p>
+
+      <p>
+        Coming back to Tkinter,
+        the contract between widgets and their command functions is
+        as simple as it could be:
+        the function must take no arguments,
+        so that the widget can call it without passing anything in.
+        (After all,
+        how would the widget know what to pass in?)
+        In most cases,
+        though,
+        we actually will want to pass some data into the command function.
+        How to arrange this is
+        the subject of the next two sections.
+      </p>        
+
+    </section>
+
+    <section id="s:mvc">
+
+      <h2>Models, Views, and Controllers</h2>
+
+      <p>
+        The first step in passing data into command functions involves
+        the second most important idea in this chapter:
+        the separation between <a class="dfn" href="glossary.html#model">models</a>,
+        <a class="dfn" href="glossary.html#view">views</a>,
+        and <a class="dfn" href="glossary.html#controller">controllers</a>
+        (collectively referred to as <a class="dfn" href="glossary.html#mvc">MVC</a>).
+        The model is the data being manipulated by a program:
+        the patient records,
+        astronomical observations,
+        or whatever else that the program reads and writes.
+        The view is how the program presents that data:
+        the windows, sliders, buttons, and so on
+        that the user actually sees.
+        Finally,
+        the controller is the "verbs" in the program:
+        it's what interprets input from the view widgets,
+        reads or updates the model data,
+        and tells the view to update itself.
+      </p>
+
+      <p class="fixme">MVC picture</p>
+
+      <p>
+        MVC is the dominant
+        <a class="dfn" href="glossary.html#design-pattern">design pattern</a>
+        in user interface design.
+        Over many years,
+        programmers have learned that keeping these three things separate
+        makes software easier to build, test, update, and re-use.
+        For example,
+        if we want to create a new version of a program
+        to run on a handheld device instead of a desktop computer,
+        all we should need to change is the views;
+        neither the control logic nor the models should need to be touched.
+        Similarly,
+        if someone decides that a person's immediate family
+        should be allowed access to their medical records
+        in the event they are incapacitated,
+        we should only have to change something in the controller
+        (which is the decision-making part of the program).
+      </p>
+
+      <p>
+        MVC is such a powerful idea that
+        it is built into most GUI frameworks
+        (and most modern web programming frameworks as well,
+        which we will see in <a href="web.html">a later chapter</a>).
+        To see how it works in practice,
+        here is a simple program in which
+        clicking on one widget (a button)
+        changes what's displayed in another (a text label).
+      </p>
+
+<pre src="../src/gui/counter.py">
+from Tkinter import Tk, Label, Button, IntVar
+
+root = Tk()
+root.title("Counter")
+
+counter = IntVar()
+counter.set(0)
+
+def increment():
+    global counter
+    counter.set(counter.get() + 1)
+
+label = Label(root, textvariable=counter)
+label.pack()
+
+button = Button(root, text="add one", command=increment)
+button.pack()
+
+root.mainloop()
+</pre>
+
+      <p>
+        When we first run this program, it displays:
+      </p>
+
+      <img src="../img/gui/counter-01.png" alt="Initial State of Counter" />
+
+      <p class="continue">
+        Each time we click the button,
+        the counter goes up by one.
+        After three clicks,
+        it displays:
+      </p>        
+
+      <img src="../img/gui/counter-02.png" alt="Counter After Clicks" />
+
+      <p>
+        Let's look at how this works.
+        The highlighted parts of the code below are
+        things we have seen before:
+        we import what we need from the library,
+        create the root object,
+        add a text label and button to it,
+        and run the main event loop
+        (which is what watches for button clicks):
+      </p>
+
+<pre src="../src/gui/counter.py">
+<span class="highlight">from Tkinter import Tk, Label, Button, IntVar
+
+root = Tk()
+root.title("Counter")</span>
+
+counter = IntVar()
+counter.set(0)
+
+def increment():
+    global counter
+    counter.set(counter.get() + 1)
+
+<span class="highlight">label = Label(root, </span>textvariable=counter)
+<span class="highlight">label.pack()
+
+button = Button(root, text="add one", command=increment)
+button.pack()
+
+root.mainloop()</span>
+</pre>
+
+      <p>
+        The six lines in this program that are new
+        are what connect the button and text label.
+        We start by creating an
+        <a class="dfn" href="glossary.html#active-variable">active variable</a>
+        called <code>counter</code>,
+        which is an instance of Tkinter's <code>IntVar</code> class:
+      </p>
+
+<pre src="../src/gui/counter.py">
+counter = IntVar()
+counter.set(0)
+</pre>
+
+      <p class="continue">
+        An active variable stores the same kind of value as a regular integer
+        (or float, or string&mdash;there are several kinds).
+        However,
+        it can do something that plain data cannot:
+        it can notify GUI widgets when its value changes.
+        When we create our text label,
+        we pass the counter variable to it to it,
+        which is what makes a connection between the two:
+      </p>
+
+<pre src="../src/gui/counter.py">
+label = Label(root, textvariable=counter)
+</pre>
+
+      <p class="continue">
+        Now,
+        whenever <code>counter</code>'s value changes,
+        it will poke <code>label</code>,
+        which will automatically update the text it is displaying
+        to show that new value.
+      </p>
+
+      <p>
+        The final step is to make the button update <code>counter</code>'s value.
+        As before,
+        we do this by writing a function
+        that the framework will call
+        every time the button is clicked.
+        Our first guess is:
+      </p>
+
+<pre>
+def increment(counter):
+    counter.set(counter.get() + 1)
+</pre>
+
+      <p class="continue">
+        but this won't work:
+        in order for the framework to call our functions,
+        those functions have to take no arguments.
+      </p>
+
+      <p>
+        The solution isn't pretty.
+        Python lets us specify that a variable isn't actually local to a function,
+        but is global instead.
+        We can use that in our <code>increment</code> function
+        to get around the "must have no arguments" problem:
+      </p>
+
+<pre src="../src/gui/counter.py">
+def increment():
+    global counter
+    counter.set(counter.get() + 1)
+</pre>
+
+      <p>
+        This works,
+        but it's error-prone in two ways.
+        First,
+        if we ever decide to change the name of the variable,
+        we'll have to look through all the command functions in our program
+        to see if any of them refer to it using <code>global</code> statements.
+        If we miss even one,
+        our program may break.
+      </p>
+
+      <p>
+        Second,
+        using a <code>global</code> statement prevents us from
+        re-using our <code>increment</code> function elsewhere.
+        If we wanted two counters side by side,
+        each controlled by a separate button,
+        we would have to write two almost-identical functions,
+        each one managing a different global <code>IntVar</code>.
+        Duplicating code is always a bad idea,
+        so in the next section we will see how to avoid doing this.
+      </p>
+
+      <p>
+        Before we do that, though,
+        let's analyze the program we just wrote in terms of MVC.
+        Its model is a single integer value stored in an <code>IntVar</code>;
+        its view consists of a button and a text display,
+        and its controller is the function <code>increment</code>.
+      </p>
+
+      <div class="box">
+        <p class="boxtitle">
+          Observers and Observables
+        </p>
+
+        <p class="fixme">
+          Explain how active variables work:
+          observer/observable instead of GUI events.
+        </p>
+      </div>
+
+    </section>
+
+    <section id="s:oop">
+
+      <h2>Objects</h2>
+
+      <p>
+        In order to get rid of that ugly <code>global</code> statement,
+        we will make use of <a href="oop.html">classes and objects</a>.
+        (In fact,
+        GUIs are one of the problems that object-oriented programming was invented to solve
+        back in the 1970s.)
+        Here's an object-oriented version of our simple click-to-quit application:
+      </p>
+
+<pre src="../src/gui/button-class.py">
+import sys
+from Tkinter import Tk, Label, Button
+
+class Application(object):
+
+    def __init__(self, root):
+        self.label = Label(root, text="Click the button below")
+        self.label.pack()
+        self.button = Button(root, text="quit", command=self.quit)
+        self.button.pack()
+
+    def quit(self):
+        sys.exit(0)
+
+if __name__ == "__main__":
+    root = Tk()
+    app = Application(root)
+    root.mainloop()
+</pre>
+
+      <p>
+        As in the original,
+        we start by importing the things we need from the library.
+        We finish by creating a root application object,
+        building an instance of a class called <code>Application</code> around it,
+        and running <code>mainloop</code>.
+      </p>
+
+      <p>
+        What's interesting is the stuff in the middle&mdash;that <code>Application</code> class.
+        Its constructor, <code>__init__</code>,
+        creates the button and label,
+        but makes them members of the object it's constructing.
+        Instead of giving the button a naked function to call,
+        the constructor gives it <code>self.quit</code>,
+        i.e.,
+        the method <code>quit</code> (as defined by this class)
+        but operating implicitly on <code>self</code>
+        (the object being constructed).
+        It's a small change,
+        but a crucial one,
+        because now <code>quit</code> has access to all the members of its object.
+      </p>
+
+      <p>
+        Here's how the same approach simplifies our counter GUI:
+      </p>
+
+<pre src="../src/gui/counter-class.py">
+from Tkinter import Tk, Label, Button, IntVar
+
+class Application(object):
+
+    def __init__(self, root):
+        self.counter = IntVar()
+        self.counter.set(0)
+
+        self.label = Label(root, textvariable=self.counter)
+        self.label.pack()
+
+        self.button = Button(root, text="add one", command=self.increment)
+        self.button.pack()
+
+    def increment(self):
+        self.counter.set(self.counter.get() + 1)
+
+if __name__ == "__main__":
+    root = Tk()
+    root.title("Counter")
+    app = Application(root)
+    root.mainloop()
+</pre>
+
+      <p>
+        Once again,
+        the application's model and view are created in the class's constructor,
+        and its controller is one of that class's methods.
+        There is no need for the <code>global</code> statement
+        because <code>increment</code> can now "see" counter
+        as a member of the object it is being called for&mdash;the variable <code>self</code>
+        is implicitly a container for everything that was previously outside the function.
+      </p>
+
+      <p>
+        Here's how this approach simplifies our lives.
+        If we want to add another button to decrement the counter,
+        we add a method to our class that subtracts one from the counter
+        (without letting it become negative),
+        then pass that method to the second button when we create it:
+      </p>
+
+<pre src="../src/gui/counter-double.py">
+from Tkinter import Tk, Label, Button, IntVar
+
+class Application(object):
+
+    def __init__(self, root):
+        self.counter = IntVar()
+        self.counter.set(0)
+
+        self.label = Label(root, textvariable=self.counter)
+        self.label.pack()
+
+        self.up = Button(root, text="up", command=self.increment)
+        self.up.pack()
+
+        self.down = Button(root, text="down", command=self.decrement)
+        self.down.pack()
+
+    def increment(self):
+        self.counter.set(self.counter.get() + 1)
+
+    def decrement(self):
+        self.counter.set(max(0, self.counter.get() - 1))
+
+if __name__ == "__main__":
+    root = Tk()
+    root.title("Counter")
+    app = Application(root)
+    root.mainloop()
+</pre>
+
+      <p class="continue">
+        After a few clicks,
+        the resulting GUI looks like this:
+      </p>
+
+      <img src="../img/gui/counter-double.png" alt="Double-Button Counter" />
+
+      <p>
+        Notice that the two buttons never interact directly with each other
+        or with the text label showing the counter's current value.
+        Instead,
+        the buttons update the model,
+        which tells the label to update itself.
+        Again,
+        experience has shown that this makes it much easier
+        to test, debug, and extend the application.
+        As a rule,
+        views should never interact directly with each other,
+        or with models:
+        instead,
+        views should pass information to controllers,
+        which should update models,
+        which should then tell views to redisplay themselves.
+      </p>
+
+    </section>
+
+    <section id="s:layout">
+
+      <h2>Controlling Layout</h2>
+
+      <p>
+        As we said in the introduction,
+        one chapter isn't enough to teach you
+        how to design a usable interface&mdash;for that,
+        you should check out Jeff Johnson's
+        <a class="cite" href="bibliography.html#johnson-gui-bloopers">two</a>
+        <a class="cite" href="bibliography.html#johnson-designing-mind">books</a>
+        and others like them.
+        What we <em>can</em> show you is how better design is implemented.
+      </p>
+
+      <p>
+        Let's start by rearranging the buttons on our simple up-and-down counter:
+      </p>
+
+<pre src="../src/gui/counter-side.py">
+from Tkinter import Tk, Label, Button, IntVar
+
+class Application(object):
+
+    def __init__(self, root):
+        self.counter = IntVar()
+        self.counter.set(0)
+
+        self.label = Label(root, textvariable=self.counter)
+        self.label.pack(side="left")
+
+        self.up = Button(root, text="up", command=self.increment)
+        self.up.pack(<span class="highlight">side="left"</span>)
+
+        self.down = Button(root, text="down", command=self.decrement)
+        self.down.pack(<span class="highlight">side="left"</span>)
+
+    def increment(self):
+        self.counter.set(self.counter.get() + 1)
+
+    def decrement(self):
+        self.counter.set(max(0, self.counter.get() - 1))
+
+if __name__ == "__main__":
+    root = Tk()
+    root.title("Counter")
+    app = Application(root)
+    root.mainloop()
+</pre>
+
+      <p>
+        The <code>side="left"</code> argument to the button's <code>pack</code> method
+        (or any other widget's <code>pack</code> method)
+        tells Tkinter to pack those buttons along their left edge,
+        instead of stacking them (which is the default).
+        We could equally well pack them along their right or bottom edges,
+        or mix different directions
+        (which often yields surprising results).
+      </p>
+
+      <p>
+        We can change the appearance of the widgets themselves
+        in a wide variety of ways.
+        Here,
+        for example,
+        we are making the buttons different colors,
+        and using a large, bold, italic version of Helvetica
+        to display the counter's current value:
+      </p>
+
+<pre src="../src/gui/counter-color.py">
+class Application(object):
+
+    def __init__(self, root):
+        ...
+        self.label = Label(root,
+                           width=5,
+                           font=("Helvetica", 20, "bold italic"),
+                           textvariable=self.counter)
+        self.label.pack(side="left")
+
+        self.up = Button(root,
+                         text="up",
+                         background="RED",
+                         command=self.increment)
+        self.up.pack(side="left")
+
+        self.down = Button(root,
+                           text="down",
+                           background="GREEN",
+                           command=self.decrement)
+        self.down.pack(side="left")
+</pre>
+
+        <p class="continue">
+          The result is:
+        </p>
+
+        <img src="../img/gui/counter-color.png" alt="Colored Counter" />
+
+        <p>
+          It's very easy to abuse these settings:
+          putting primary red and green side by side,
+          for example,
+          is going to cause headaches
+          (and make the application less usable by the 5-10% of men
+          who are partially or fully color-blind.
+        </p>
+
+    </section>
+
+    <section id="s:slider">
+
+      <h2>Continuous Control</h2>
+
+      <p>
+        Let's leave our brightly-colored headaches behind
+        and get back to how we build GUIs.
+        We have seen how to use wrapped-up integers as models;
+        here's an example that uses a wrapped-up floating-point number instead:
+      </p>
+
+<pre src="../src/gui/slider.py">
+from Tkinter import *
+
+class Application(object):
+
+    def __init__(self, root):
+        self.value = DoubleVar()
+        self.slider = Scale(root, from_=0, to=100, orient=HORIZONTAL,
+                            variable=self.value)
+        self.slider.pack()
+        self.button = Button(root, text="reset", command=self.reset)
+        self.button.pack()
+
+    def reset(self):
+        self.value.set(0.0)
+
+if __name__ == "__main__":
+    root = Tk()
+    app = Application(root)
+    root.mainloop()
+</pre>
+
+      <p class="continue">
+        It produces:
+      </p>
+
+      <img src="../img/gui/slider.png" alt="Simple Slider Application" />
+
+      <p>
+        By now,
+        you should be able to figure out how these pieces work.
+        The model is a <code>DoubleVar</code>
+        (so called because it wraps a double-precision floating point number).
+        The view has two elements:
+        a slider,
+        which we'll come back to in a second,
+        and a button that re-sets the model to 0.
+        The actual resetting is done by the controller, <code>reset</code>.
+      </p>
+
+      <p>
+        The slider is created by calling <code>Scale</code>.
+        Its values run from 0 to 100
+        (we have to use <code>from_</code> with an underscore
+        instead of <code>from</code> without
+        because the latter is a keyword in Python,
+        which means it can't be used as a parameter name).
+        The <code>orient</code> parameter tells Tkinter to lay the slider out horizontally,
+        while the <code>variable</code> parameter tells it what active variable to update
+        as the slider is moved.
+      </p>
+
+      <p>
+        What makes this example really interesting is that when the button is clicked,
+        and <code>reset</code> is called,
+        the slider automatically repositions itself to 0.
+        That happens because it isn't just notifying the model <code>self.value</code> of its changes:
+        it is also watching the model for changes that it (the slider) should reflect.
+        This is how MVC works:
+        once things express an interest in each other,
+        changes made by one view are automatically reflected in others.
+      </p>
+
+      <p>
+        Let's put what we've learned together
+        to create something that we can actually interact with.
+        Our goal is to move a cursor around in two dimensions;
+        we might use this in a drawing application,
+        or to select regions from images.
+        When it's done,
+        our application will look like this:
+      </p>
+
+      <img src="../img/gui/cursor.png" alt="Moving a Cursor Around" />
+
+      <p class="continue">
+        Moving the X and Y sliders makes the cursor
+        (the red square on the gray drawing canvas)
+        move in the corresponding direction.
+        It's pretty simple-minded,
+        but it illustrates some useful ideas.
+      </p>
+
+      <p>
+        In outline,
+        our application has the same structure that we've seen before:
+      </p>
+
+<pre src="../src/gui/cursor.py">
+from Tkinter import *
+
+class Application(object):
+
+    ...initialize model data and construct widgets...
+
+    ...update views when controllers make changes to models...
+
+if __name__ == "__main__":
+    root = Tk()
+    app = Application(root)
+    root.mainloop()
+</pre>
+
+      <p>
+        Let's start by creating the GUI's graphical elements,
+        i.e.,
+        its views:
+      </p>
+
+<pre src="../src/gui/cursor.py">
+class Application(object):
+
+    SIZE = 200
+    WIDTH = 5
+
+    def __init__(self, root):
+        self.x_slider = Scale(root, label="X", from_=0, to=self.SIZE, ...)
+        self.x_slider.pack(side=LEFT)
+
+        self.y_slider = Scale(root, label="Y", from_=0, to=self.SIZE, ...)
+        self.y_slider.pack(side=LEFT)
+
+        self.canvas = Canvas(root, width=self.SIZE, height=self.SIZE, background="gray")
+        self.canvas.pack(side=LEFT)
+
+    ...other methods...
+</pre>
+
+      <p class="continue">
+        Again, this should look familiar:
+        we have created two sliders and a drawing canvas,
+        and packed them side by side.
+        We haven't connected the sliders to anything
+        (which is what the "..." is meant to show),
+        but before we do so,
+        we need to figure out how we're actually going to draw and erase our cursor.
+      </p>
+
+      <p>
+        The wrong way to handle the cursor is
+        to draw a red rectangle to show its position,
+        then overdraw that rectangle with a gray one to hide it
+        and draw a new red one to show it again
+        whenever we want to move it.
+        The reason this is wrong is that
+        Tkinter creates objects to keep track of the things it has drawn:
+        if we draw a red rectangle,
+        then a gray one on top of it,
+        then another red rectangle somewhere else,
+        we have created three objects in memory,
+        only one of which we can see:
+      </p>
+
+      <p class="fixme">picture</p>
+
+      <p class="continue">
+        The right way to do this is
+        to tell the canvas to delete the rectangle object that represents the cursor,
+        then create a new rectangle object to show the cursor's new location.
+        Let's add a couple of integers to our application
+        to keep track of the cursor's current position,
+        and a couple of methods to display it:
+      </p>
+
+<pre src="../src/gui/cursor.py">
+    def __init__(self, root):
+        self.x = self.SIZE/2
+        self.y = self.SIZE/2
+
+        ...create sliders and canvas as before...
+
+        self.cursor = self.draw("red")
+
+    def redraw(self):
+        self.canvas.delete(self.cursor)
+        self.cursor = self.draw("red")
+        self.canvas.update()
+
+    def draw(self, color):
+        return self.canvas.create_rectangle(self.x-self.WIDTH, self.y-self.WIDTH,
+                                            self.x+self.WIDTH, self.y+self.WIDTH,
+                                            fill=color)
+</pre>
+
+      <p class="continue">
+        The constructor creates a member variable called <code>self.cursor</code>
+        to hold onto the rectangle object that shows the cursor's position.
+        This object is created and returned by the <code>draw</code> method,
+        which simply asks the canvas to create a rectangle
+        at <code>(self.x, self.y)</code>.
+        The <code>redraw</code> method deletes this object,
+        draws a new one,
+        then asks the canvas to redisplay itself by calling its <code>update</code> method.
+        We have to do this explicitly because
+        our canvas isn't watching any active variables,
+        and isn't going to be tickled by the event loop
+        as a result of any user actions.
+      </p>
+
+      <p>
+        All right:
+        we now have our views (two sliders, a canvas, and the rectangle in <code>self.cursor</code>)
+        and our models (a pair of integers).
+        The last step is to create some controllers to bind them together.
+        Since we're not using active variables for our models,
+        let's tell the sliders to call particular application methods
+        whenever their state changes.
+        While we're there,
+        let's set each slider's initial state
+        to reflect the value of the corresponding model variable:
+      </p>
+
+<pre src="../src/gui/cursor.py">
+    def __init__(self, root):
+        self.x = self.SIZE/2
+        self.y = self.SIZE/2
+
+        self.x_slider = Scale(root, label="X", from_=0, to=self.SIZE,
+                              <span class="highlight">command=self.change_x</span>)
+        <span class="highlight">self.x_slider.set(self.x)</span>
+        self.x_slider.pack(side=LEFT)
+
+        self.y_slider = Scale(root, label="Y", from_=0, to=self.SIZE,
+                              <span class="highlight">command=self.change_y</span>)
+        <span class="highlight">self.y_slider.set(self.y)</span>
+        self.y_slider.pack(side=LEFT)
+
+        self.canvas = Canvas(root, width=self.SIZE, height=self.SIZE, background="gray")
+        self.canvas.pack(side=LEFT)
+
+        self.cursor = self.draw("red")
+</pre>
+
+      <p class="continue">
+        Remember what we said earlier about contracts?
+        The contract between a slider and the function or method it calls specifies that
+        the slider's new value will be passed in as a string.
+        It's not a particularly sensible rule,
+        but we're stuck with it,
+        so our <code>change_x</code> and <code>change_y</code> methods
+        have to convert their arguments to integers
+        before updating our model variables:
+      </p>
+
+<pre src="../src/gui/cursor.py">
+    def change_x(self, value):
+        self.x = int(value)
+        self.redraw()
+
+    def change_y(self, value):
+        self.y = int(value)
+        self.redraw()
+</pre>
+
+      <p class="continue">
+        Notice how these methods work:
+        they update the model (<code>self.x</code> or <code>self.y</code>),
+        then tell the views to update themselves by calling <code>redraw</code>.
+        The controllers don't make any assumptions about how the views work,
+        or even what the views are:
+        if we want to change the way we display the cursor,
+        we won't have to change the controller logic at all.
+        Again,
+        experience has shown that this is the best way to build a GUI&mdash;in fact,
+        the only way to build it
+        if we want to be able to debug and extend it
+        without endless hours of painful work.
+      </p>
+
+    </section>
+
+    <section id="s:animation">
+
+      <h2>Animation</h2>
+
+      <p>
+        Let's look at one more topic before working through an extended example.
+        This is our old friend the click-to-quit application,
+        but with a new twist.
+        We are using a <code>StringVar</code> as a model,
+        and are displaying its value with a <code>Label</code>.
+        Pressing the button will quit the application&mdash;but
+        what do the highlighted lines do?
+      </p>
+
+<pre src="../src/gui/timer.py">
+import sys
+from Tkinter import Tk, Label, Button, StringVar
+
+class Application(object):
+
+    def __init__(self, root):
+        self.root = root
+
+        self.labeltext = StringVar()
+
+        self.label = Label(root, textvariable=self.labeltext)
+        self.label.pack()
+
+        self.button = Button(root, text="quit", command=self.quit)
+        self.button.pack()
+
+<span class="highlight">        self.seconds = -1
+        self.changetext()</span>
+
+    def quit(self):
+        sys.exit(0)
+
+<span class="highlight">    def changetext(self):
+        self.seconds += 1
+        self.labeltext.set(str(self.seconds))
+        self.root.after(1000, self.changetext)</span>
+
+if __name__ == "__main__":
+    root = Tk()
+    app = Application(root)
+    root.mainloop()
+</pre>
+
+      <p>
+        The answer is,
+        they give the application a sense of passing time.
+        Every computer contains a clock,
+        and we can ask the operating system to send us a signal
+        whenever that clock reaches a certain value
+        (or equivalently, after a certain amount of time has passed&mdash;if
+        we know what time it is now,
+        the two are interchangeable).
+        If we want to do this with Tkinter,
+        we use <code>root.after</code>;
+        its first argument is the number of milliseconds to wait,
+        and its second is a function of no arguments
+        that the framework should call
+        once that much time has passed.
+      </p>
+
+      <p>
+        We can do anything we want in that function.
+        Here,
+        we are adding one to <code>self.seconds</code>,
+        then assigning its value to <code>self.labeltext</code>,
+        which automatically refreshes the label's display.
+        We then set another alarm for another 1000 milliseconds in the future
+        so that our clock will tick again;
+        if we didn't,
+        we would only get one alarm signal,
+        and the GUI would only update once.
+      </p>
+
+      <p>
+        Finally,
+        notice that we intiialzie <code>self.seconds</code> to -1.
+        We want our clock to start at zero,
+        and since our <code>changetext</code> method increments then displays,
+        we have to start one tick back from the first value we intend to display.
+      </p>
+
+    </section>
+
+    <section id="s:dla">
+
+      <h2>Diffusion-Limited Aggregation</h2>
+
+      <p>
+        Let's close this chapter by building a simple graphical simulation
+        of <a class="dfn" href="glossary.html#dla">diffusion-limited aggregation</a>.
+        DLA is the process by which randomly-moving particles clump together
+        to form crystals, cinders, and other aggregates.
+        Our model is very simple:
+        we start with a 2D grid whose center cell has been marked as filled.
+        We then release a particle on the edge of the grid
+        and move it randomly
+        until it either hits that central cell
+        or falls off the edge of the grid.
+        We keep releasing particles
+        until the growing clump in the middle hits the boundary of the grid.
+      </p>
+
+      <p>
+        Here's an outline of our program,
+        which takes the grid size (in cells) and a random seed as command-line arguments,
+        and displays the DLA as it grows:
+      </p>
+
+<pre src="../src/gui/dla.py">
+...imports...
+
+...constants...
+
+class Grid(object):
+    ...a two-dimensional grid of cells...
+
+class Speck(object):
+    ...a moving particle...
+
+class Application(object):
+    ...the application as a whole...
+
+def main(args):
+    grid_size = int(args[0])
+    seed = int(args[1])
+    random.seed(seed)
+
+    print "#", grid_size, seed
+
+    root = Tk()
+    app = Application(root, grid_size)
+    app.evolve()
+
+    return root
+
+if __name__ == "__main__":
+    root = main(sys.argv[1:])
+    root.mainloop()
+</pre>
+
+      <p>
+        The grid is the easiest class to write,
+        since we've built one before.
+        Along with a constructor that builds the usual list of lists,
+        it has <code>__getitem__</code> and <code>__setitem__</code> methods
+        (so that we can refer to cells as <code>grid[0, 3]</code>,
+        an <code>on_grid</code> method to check whether coordinates are in range,
+        and a <code>random_edge_cell</code> method
+        that picks a cell at random on the edge of the grid.
+        This is application-specific:
+        picking a random edge cell isn't something that
+        a general-purpose grid would need to know how to do,
+        but we need it for this program.
+      </p>
+
+<pre src="../src/gui/dla.py">
+class Grid(object):
+
+    Offsets = ((0, 1), (0, -1), (1, 0), (-1, 0))
+
+    def __init__(self, size):
+        self.size = size
+        self.data = []
+        for i in range(size):
+            self.data.append([False] * size)
+
+    def __getitem__(self, where):
+        x, y = where
+        assert self.on_grid(x, y)
+        return self.data[x][y]
+
+    def __str__(self):
+        temp = []
+        for y in range(self.size-1, -1, -1):
+            row = []
+            for x in range(self.size):
+                if self[x, y]:
+                    row.append("X")
+                else:
+                    row.append(".")
+            temp.append("".join(row))
+        return "\n".join(temp)
+
+    def on_grid(self, x, y):
+        return (0 &lt;= x &lt; self.size) and (0 &lt;= y &lt; self.size)
+
+    def random_edge_cell(self):
+        r = random.randint(1, self.size-2)
+        dx, dy = random.choice(self.Offsets)
+        options = [r, 0, self.size-1]
+        x = options[dx]
+        y = options[dy]
+        return x, y
+</pre>
+
+      <div class="box">
+        <p class="boxtitle">
+          Too Clever By Half
+        </p>
+
+        <p class="fixme">
+          Trace execution of <code>random_edge_cell</code>,
+          explain the trick with <code>options</code>,
+          then ask readers to clean it up.
+        </p>
+      </div>
+
+      <p>
+        Next,
+        let's write the application.
+        (We should actually have done this first,
+        then figured out from it what methods the grid class needed.)
+        Its constructor figures out how large cells are in pixels,
+        then creates the <code>Grid</code> that will store our model
+        and the Tkinter canvas that will be our view.
+        It also creates an instance of a class called <code>Colorizer</code>
+        that we haven't written yet;
+        its job will be to generate a different color for each filled-in cell,
+        which will help us see how it's growing.
+      </p>
+
+<pre src="../src/gui/dla.py">
+class Application(object):
+
+    def __init__(self, root, grid_size):
+        root.title("Diffusion-Limited Aggregation")
+        self.cell_size = WINDOW / grid_size
+        self.grid = Grid(grid_size)
+        self.canvas = Canvas(root, width=WINDOW, height=WINDOW)
+        self.canvas.create_rectangle(0, 0, WINDOW, WINDOW, fill=BACKGROUND)
+        self.canvas.pack()
+        self.colorizer = Colorizer()
+</pre>
+
+      <p>
+        In good top-down fashion,
+        the next thing we write is the main simulation.
+        It starts by marking the center cell,
+        then repeatedly generates a new speck and moves it around
+        until it either sticks or falls off the grid:
+      </p>
+
+<pre src="../src/gui/dla.py">
+    def evolve(self):
+        # Fill in center cell.
+        self.mark(Speck(self.grid, (self.grid.size/2, self.grid.size/2)),
+                  self.colorizer.next())
+
+        # Fill until the edge.
+        number = 0
+        while True:
+            speck = Speck(self.grid)
+            self.fill(speck.x, speck.y, "red")
+            while speck.on_grid() and not speck.stuck():
+                speck.move()
+            if speck.on_grid():
+                print "%d,+%d" % (number, speck.steps)
+                self.mark(speck, self.colorizer.next())
+                if speck.on_edge():
+                    break
+            else:
+                print "%d,-%d" % (number, speck.steps)
+            number += 1
+</pre>
+
+      <p class="continue">
+        Notice that we're printing one line for each speck
+        to show how many steps it took for it to stick (positive)
+        or leave the grid (negative).
+        This will give us an idea of how efficient our simulation is.
+      </p>
+
+      <p>
+        <code>evolve</code> depends on two grid methods
+        called <code>fill</code> and <code>mark</code>
+        that we haven't written yet.
+        The first fills in a location on the canvas;
+        the second marks a cell in the grid as being filled,
+        and then also fills it in on the canvas.
+        Their implementation is pretty simple:
+      </p>
+
+<pre src="../src/gui/dla.py">
+    def mark(self, speck, color):
+        grid = speck.grid
+        grid[speck.x, speck.y] = True
+        self.fill(speck.x, speck.y, color)
+
+    def fill(self, x, y, color):
+        x *= self.cell_size
+        y *= self.cell_size
+        self.canvas.create_rectangle(x, y,
+                                     x + self.cell_size, y + self.cell_size,
+                                     fill=color)
+        self.canvas.update()
+</pre>
+
+      <p>
+        That's all the application needs for now,
+        but we have two other classes to write.
+        The one that generates a sequence of colors is easiest,
+        so let's do that first:
+      </p>
+
+<pre src="../src/gui/dla.py">
+class Colorizer(object):
+
+    STEP = 2
+
+    def __init__(self):
+        self.red = 128 - self.STEP
+        self.green = 192
+        self.blue = 256 - self.STEP
+
+    def next(self):
+        self.red = (self.red + self.STEP) % 256
+        self.blue = (self.blue + self.STEP) % 256
+        return "#%02x%02x%02x" % (self.red, self.green, self.blue)
+</pre>
+
+      <p>
+        Finally,
+        we have our speck:
+      </p>
+
+<pre src="../src/gui/dla.py">
+class Speck(object):
+
+    def __init__(self, grid, coords=None):
+        self.grid = grid
+        if coords is None:
+            self.x, self.y = grid.random_edge_cell()
+        else:
+            assert len(coords) == 2
+            self.x, self.y = coords
+        self.steps = 0
+
+    def on_grid(self):
+        return self.grid.on_grid(self.x, self.y)
+
+    def stuck(self):
+        for ox, oy in self.grid.Offsets:
+            x = self.x + ox
+            y = self.y + oy
+            if self.grid.on_grid(x, y) and self.grid[x, y]:
+                return True
+        return False
+
+    def move(self):
+        x, y = random.choice(self.grid.Offsets)
+        self.x += x
+        self.y += y
+        self.steps += 1
+
+    def on_edge(self):
+        return (self.x == 0) or (self.x == self.grid.size-1) or \
+               (self.y == 0) or (self.y == self.grid.size-1)
+</pre>
+
+      <p>
+        Several things are worth noticing about this class:
+      </p>
+
+      <ol>
+
+        <li>
+          The constructor records the grid the speck is on.
+          It optionally takes some initial coordinates;
+          if none are provided,
+          it asks the grid to choose a random location on its edge,
+          and puts itself there.
+        </li>
+
+        <li>
+          The <code>on_grid</code> method doesn't do any calculations itself.
+          Instead,
+          it asks the grid whether the speck's (x,y) coordinates are in bounds.
+          This means that when the grid is asking a speck,
+          "Are you in bounds?"
+          the speck is turning around and asking the grid,
+          "Are my (x,y) coordinates in bounds?"
+        </li>
+
+        <li>
+          The <code>stuck</code> and <code>move</code> methods don't make any assumptions
+          about whether grid cells are 4-way or 8-way connected.
+          Instead,
+          they rely on the grid having a list of offsets,
+          each of which is a legal "move" on the grid.
+          This makes it easy to change our rules later if we want.
+        </li>
+
+      </ol>
+
+      <p>
+        Here's what our DLA looks like on a 100&times;100 grid:
+      </p>
+
+      <img src="../img/gui/dla.png" alt="Diffusion-Limited Aggregation" />
+
+      <p class="continue">
+        The blue-green cells are the DLA itself,
+        while the red cells on the border show where specks were introduced.
+        (Notice that we're not introducing them at the corners&mdash;modifying
+        the application to do this,
+        <em>without</em> being twice as likely to introduce a cell in a corner
+        as in any other edge location,
+        is left as an exercise.)
+      </p>
+
+      <p>
+        The good news is,
+        this works.
+        The bad news is,
+        it's very inefficient.
+        If we look at the textual output for this particular run,
+        we'll see that 707 cells stuck together to make the DLA,
+        while another 47,730 were introduced
+        but fell off the edge without sticking.
+        In other words,
+        only 1.5% of our specks contributed to the final result.
+        Looking a bit deeper,
+        cells that wandered off took an average of 55 steps to do so,
+        while cells that stuck took a whopping 890 step on average to hit the DLA.
+        If we want to run a large number of large simulations,
+        we'll need to find a way to make this more efficient,
+        but that's a matter for a <a href="performance.html">later chapter</a>.
+      </p>
+
+    </section>
+
+    <section id="s:summary">
+
+      <h2>Summing Up</h2>
+
+      <p class="fixme">sum up</p>
+
+    </section>
+
+    <div class="footer">
+      <table>
+        <tr>
+          <td valign="middle">
+            <img src="../img/logo/creative-commons-attribution-license.png" alt="CC-A license" />
+          </td>
+          <td valign="middle">
+            This material is provided under the
+            <a href="http://creativecommons.org/licenses/by/3.0/legalcode">Creative Commons Attribution</a> license.
+            <br/>
+            Please contact <a href="mailto:info@software-carpentry.org">info@software-carpentry.org</a> for details.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,1090 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../common/scb.css" type="text/css" />
+    <title>Software Carpentry / Security</title>
+    <meta name="id" content="$Id: security.html 2298 2011-11-16 15:07:32Z gvw $" />
+    <meta name="type" content="chapter" />
+  </head>
+  <body class="chapter">
+    <div class="header">
+      <a href="index.html"><img src="../img/logo/software-carpentry-banner.jpg" alt="Software Carpentry logo" class="logo" /></a>
+      <h1>Security</h1>
+    </div>
+
+    <div class="toc">
+      <ol>
+        <li><a href="#s:basics">Basics</a></li>
+        <li><a href="#s:framework">A Framework for Security</a></li>
+        <li><a href="#s:examples">Examples</a></li>
+        <li><a href="#s:action">Keep Calm and Carry On</a></li>
+        <li><a href="#s:summary">Summing Up</a></li>
+      </ol>
+    </div>
+
+    <p>
+      In November 2009,
+      two weeks before the Copenhagen Summit on climate change,
+      a person or persons unknown hacked into computers
+      at the Climate Research Unit in East Anglia
+      and copied several thousand emails and other files.
+      Climate change denialists then used selective quotations from those emails
+      to "prove" that global warming was a scientific conspiracy.
+      Six separate investigations found no evidence for fraud or scientific misconduct,
+      but the damage had been done:
+      to this day,
+      denialists continue to cite the incident as proof for their delusions.
+    </p>
+
+    <p>
+      Incidents like this have become a staple of film and TV,
+      just as the theft personal information
+      for hundreds of thousands of credit card holders
+      has become a regular item on the evening news.
+      In fact,
+      <a class="dfn" href="glossary.html#data-theft">data theft</a>
+      is just one of the threats we all face.
+      While they don't get as much publicity,
+      several others are just as worrying:
+    </p>
+
+    <ol>
+      <li>
+        Attackers can steal your credentials,
+        rather than your data,
+        and then use those credentials to impersonate you.
+        <span class="fixme">identity theft</span>
+      </li>
+      <li>
+        Attackers can corrupt data,
+        i.e.,
+        change information that's already present
+        or add new, falsified information.
+        <span class="fixme">data injection: how do we know CRU's data is still valid?</span>
+      </li>
+      <li>
+        Anyone with access to large volumes of data&mdash;which
+        these days means government agencies and large corporations&mdash;can
+        correlate seemingly innocuous information from one database
+        with information from another database,
+        thereby shredding privacy.
+        <span class="fixme">privacy</span>
+      </li>
+    </ol>
+
+    <p>
+      And the list goes on.
+      These days,
+      many attackers aren't after the data on your machine per se
+      (although they're happy to harvest credit cards numbers and the like if they can).
+      Instead,
+      they install <a class="dfn" href="glossary.html#malware">malware</a>
+      that runs silently in the background,
+      turning your computer into an obedient zombie.
+      Networks of compromised computers,
+      called <a class="dfn" href="glossary.html#botnet">botnets</a>,
+      are used to send spam email,
+      automatically click on ads,
+      or flood targeted sites with so much traffic that they become unusable.
+      <span class="fixme">DDOS</span>
+    </p>
+
+    <p>
+      Computer crime predates the Internet,
+      but as computers have become more tightly networked,
+      it has become possible for attackers from anywhere in the world
+      to try their luck against computers anywhere else.
+      And just as in the natural world,
+      it seems that every time a new kind of computing platform appears,
+      new "diseases" and "parasites" quickly evolve&mdash;right now,
+      for example,
+      we are witnessing the emergence of new computer viruses that target cell phones
+      and <a href="http://en.wikipedia.org/wiki/Stuxnet">industrial machinery</a>.
+      This chapter will try to dispel some Hollywood myths about computer security,
+      and give you some ideas about how vulnerable you actually are
+      and what you can do about it.
+    </p>
+
+    <section id="s:basics">
+
+      <h2>Basics</h2>
+
+      <p>
+        Let's start with a few definitions.
+        A <a class="dfn" href="glossary.html#hacker">hacker</a>
+        is a human criminal who attacks computer systems.
+        (And please ignore the howls of outrage from the back of the room:
+        yes, the word originally meant a computer hobbyist,
+        and we should call the criminals "crackers",
+        but we have about as much chance of winning that fight
+        as we do of bringing "thee" and "thou" back into common usage.)
+        Unlike the popular stereotype,
+        hackers are usually not geeky teenage "graffiti artists"
+        operating out of their parents' basement,
+        although people fitting that description can and do download and run
+        pre-packaged attack software.
+      </p>
+
+      <p>
+        Similarly,
+        hackers rarely carry out attacks by typing madly at a keyboard in real time,
+        because such "live attacks" are generally not cost-effective.
+        <a class="dfn" href="glossary.html#social-engineering">Social engineering</a> attacks
+        (such as calling the data center and begging the sys admin
+        to please, please, please re-set your password
+        or your boss is going to fire you)
+        are a much more productive use of human criminals' time.
+      </p>
+
+      <p>
+        A <a class="dfn" href="glossary.html#virus">virus</a>
+        is a piece of software that infects a target computer and tries to propagate itself.
+        In this context,
+        "infection" means copying itself to the target computer,
+        for example by modifying the Python interpreter
+        to do the following the first time it is run each day:
+      </p>
+
+      <ol>
+        <li>
+          email all the addresses in your address book to the hacker's server;
+        </li>
+        <li>
+          zip up a copy of itself;
+        </li>
+        <li>
+          attach that copy to an email message;
+          and
+        </li>
+        <li>
+          send that message to half a dozen randomly-chosen people from your address book
+          with the subject line
+          "Evidence of photosynthesis on Mars!"
+        </li>
+      </ol>
+
+      <p class="continue">
+        If any of them double-click that attachment
+        without first running it through a virus scanner,
+        or if the virus scanner's database isn't up to date
+        so that it can recognize this attack,
+        the program will try to modify the Python interpreter on its new host,
+        and the cycle of infection will continue.
+      </p>
+
+      <p>
+        It is important to understand that a virus isn't just a buggy program,
+        though viruses often exploit bugs in programs to attack computers.
+        They also often exploit features,
+        or the interactions between features,
+        that might make sense on their own,
+        but are dangerous in combination.
+        For example,
+        it's perfectly reasonable for double-clicking an attachment to open it.
+        It's also reasonable for "opening" a program to run it,
+        for a program you've run to modify your Python installation,
+        and for Python to be able to send email.
+        It's when those are put together that the trouble starts.
+      </p>
+
+      <div class="box">
+        <p class="boxtitle">
+          What Anti-Virus Software Does
+        </p>
+
+        <p class="fixme">
+          Explain what anti-virus software does.
+          No, your Mac/Linux machine is <em>not</em> magically immune to all viruses.
+        </p>
+      </div>
+
+      <p>
+        Tricking someone into running an infectious program
+        is one way for a virus spread.
+        Double-clicking isn't always necessary:
+        for example,
+        viruses can spread via USB drives,
+        again by exploiting a feature that's meant to be helpful.
+        The usual way to install software before the Internet was ubiquitous
+        was from a floppy disk or CD.
+        To facilitate this,
+        the operating system would automatically look for,
+        and run,
+        a specially-named program on the disk when it was first inserted.
+        That feature was carried over to USB drives when they first appeared
+        (because as far as the operating system is concerned,
+        it's just another special case of "removable media").
+        If that special startup program is corrupted in some way,
+        it can infect the host computer.
+        If its author is very clever,
+        it can infect the programs that create new disks and format USBs
+        to continue its spread.
+      </p>
+
+      <p>
+        Of course,
+        attackers don't have to get us to plug a USB into our computer
+        to infect us in a networked world.
+        As we discussed in the chapter on <a href="web.html">web programming</a>,
+        programs communicate by sending and receiving messages via sockets.
+        In order to connect to the right program on another computer,
+        a program must know what port that other program is listening on,
+        which means that particular programs almost always listen to particular ports
+        (port 25 for email,
+        port 80 for web servers,
+        and <a href="http://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers">so on</a>).
+        There are a <em>lot</em> of service programs running on any given computer&mdash;try
+        running the command <code>ps -A</code> to see just how many&mdash;and
+        it only takes a few lines of code to find out
+        which ports they are listening to:
+      </p>
+
+<pre src="../src/security/portscan.py">
+from socket import *
+
+targetIP = gethostbyname('localhost')
+for i in range(20, 1025):
+    s = socket(AF_INET, SOCK_STREAM)
+    if s.connect_ex((targetIP, i)) == 0:
+        print 'port %d is open' % i
+    s.close()
+<span class="out">port 631 is open</span>
+</pre>
+
+      <p class="continue">
+        Once attackers knows which ports are open,
+        they can try target the programs that normally listen on those ports.
+        By design,
+        those programs will accept connections from the outside world&mdash;that's
+        their whole reason for existing&mdash;so
+        an attacker has a chance of breaking in
+        even if a human being doesn't do anything.
+      </p>
+
+      <div class="box">
+        <p class="boxtitle">
+          What a Firewall Does
+        </p>
+
+        <p class="fixme">
+          Explain what anti-virus software does.
+          No, your Mac/Linux machine is <em>not</em> magically immune to all viruses.
+        </p>
+      </div>
+
+      <p>
+        The story keeps getting worse.
+        You might think that text files,
+        images,
+        and other data files that don't contain runnable code
+        would be safe,
+        and you would usually be right.
+        However,
+        we never interact with those files directly&mdash;we must always use
+        some kind of software to open, view, edit, and save them,
+        and those programs can be exploited.
+        For example,
+        let's take a look at what happens when you open the file <code>virus.jpg</code>
+        using the <code>HackMe</code> image viewing program.
+        The first thing <code>HackMe</code> does is copy the contants of <code>virus.jpg</code> into memory:
+      </p>
+
+      <p class="fixme">picture</p>
+
+      <p class="continue">
+        However,
+        the bytes in <code>virus.jpg</code> aren't actually pixel values.
+        Instead,
+        they consist of a few million random values
+        plus a few hundred bytes' worth of computer instructions:
+      </p>
+
+      <p class="fixme">picture</p>
+
+      <p class="continue">
+        The random values are padding
+        to position the computer instructions at a specific location in memory,
+        which just happens to be where <code>HackMe</code>'s error-handling functions
+        are supposed to be located.
+        When <code>HackMe</code> starts trying to display the random values,
+        it realizes that they don't actually make up a JPEG-format image,
+        so it jumps to its error-handling function&mdash;which
+        is exactly what has been overwritten
+        by those carefully-placed instructions.
+        The end result is that instead of displaying an image,
+        <code>HackMe</code> runs a small program
+        that downloads and installs an actual virus.
+      </p>
+
+      <div class="box">
+        <p class="boxtitle">
+          Not Everything is a Virus
+        </p>
+
+        <p>
+          Not everything that's dangerous (or just annoying) on the Internet is a virus.
+          One example is so-called <a class="dfn" href="glossary.html#adware">adware</a>,
+          which is software that automatically displays ads.
+          Adware can be built into legitimate software&mdash;many
+          "free" programs are supported by ad revenue&mdash;or
+          it can arrive in the form of browser pop-up windows.
+          <span class="fixme">more about this</span>
+        </p>
+      </div>
+
+    </section>
+
+    <section id="s:framework">
+
+      <h2>A Framework for Security</h2>
+
+      <p>
+        Faced with so much variety,
+        a scientist's first instinct is to find a way to organize it.
+        One simple conceptual framework divides security into:
+      </p>
+
+      <ol>
+        <li>
+          <a class="dfn" href="glossary.html#authentication">Authentication</a>
+          is how you establish your identity.
+          It can be based on something you know (like a password),
+          something you have (like a physical key),
+          or something you are (a physical characteristic like a fingerprint).
+        </li>
+        <li>
+          <a class="dfn" href="glossary.html#authorization">Authorization</a>
+          refers to the rules that establish who can do what.
+          It consists of policies such as,
+          "Only the user herself and the system administrator
+          can inspect the user's experimental data."
+          Authorization rules are usually described as noun-verb
+          ("the user" and "inspect experimental data"),
+          and are often phrased in terms of users'
+          <a class="dfn" href="glossary.html#role">roles</a>,
+          such as "system administrator",
+          rather than referring to specific individuals.
+        </li>
+        <li>
+          <a class="dfn" href="glossary.html#access-control">Access control</a>
+          is how those rules are enforced.
+          Access control for a biology lab might include
+          needing a PIN to open the lab door,
+          needing a key to unlock a padlocked refrigerator,
+          and so on.
+        </li>
+      </ol>
+
+      <p>
+        Some security features can fall under multiple headings:
+        for example,
+        the PIN to unlock the lab door is both an authentication mechanism
+        ("I am a member of the lab group")
+        and an access control mechanism.
+        This framework's real purpose, though,
+        is to help us think about vulnerabilities.
+        In order to break in,
+        an attacker must compromise one or more of these aspects of the system,
+        i.e.,
+        they must fool the system into thinking they are someone they aren't (authentication),
+        make the system believe they have rights they don't actually have (authorization),
+        or get around the measures intended to enforce those rules (access control).
+      </p>
+
+      <p>
+        Before we look at some actual attacks,
+        there are two other features of real security systems
+        that must be kept in mind.
+        The first is <a class="dfn" href="glossary.html#audit">auditing</a>,
+        which is the ability to see who did what when.
+        If and when security breaches occur,
+        audit trails are essential to figuring out what happened
+        so that we can repair the damage
+        and fix things to prevent another break-in.
+        A good auditing system creates a log of every interaction a user has with the system;
+        it doesn't have to be at the keystroke and mouse-motion level
+        (that much data would probably overwhelm our bandwidth and storage capabilities),
+        but the system should make a note
+        every time someone logs in, logs out, or views or modifies data.
+      </p>
+
+      <p>
+        The final important aspect of security
+        is unfortunately the one that's most often neglected:
+        usability.
+        If people find something hard to use,
+        they will either find a way around it:
+      </p>
+
+      <p class="fixme">picture of tire tracks around a gate</p>
+
+      <p class="continue">
+        or not use the system at all.
+        For example,
+        if the system requires people to choose passwords that are 24 characters long,
+        and further requires that at least 10 of those characters be punctuation,
+        and that no recognize words appear anywhere in the password,
+        people will either write those passwords down
+        (which means they can be stolen)
+        or call the help desk asking for a re-set so often
+        that attackers can easily mount a social engineering attack.
+        As another example,
+        email systems have allowed people to add a digital signature to messages for almost 20 years,
+        but as <a class="papercite" href="bibliography.html#whitten-tygar-johnny-cant-encrypt">Whitten and Tygar</a>
+        showed in 1991,
+        actually doing this is so hard that even expert programmers have trouble figuring it out.
+      </p>
+
+    </section>
+
+    <section id="s:examples">
+
+      <h2>Examples</h2>
+
+      <p>
+        As an example of how to use this framework,
+        let's consider a fictitious application called WebDTR
+        which provides a password-protected web interface
+        to a database of drug trial results.
+        The database contains the patients' medical histories,
+        keyed by their health care ID,
+        along with a detailed record of dosage over time
+        and various lab test results.
+        To access the database,
+        a scientist must have a user ID and a password.
+        How many ways could we get the data?
+      </p>
+
+      <p>
+        <strong>Steal the server that the database is stored on.</strong>
+        It's as simple as it is effective,
+        provided the machine that we can identify the machine in question.
+        This is an attack on access control:
+        unauthorized personnel should not be able to get their hands on
+        a machine holding sensitive information.
+      </p>
+
+      <p>
+        <strong>Steal a scientist's laptop.</strong>
+        This is also an access control attack.
+        Most people store their passwords in their browser;
+        if you can steal a computer from someone who has legitimate access to the database,
+        and has done this,
+        you'll be able to get in until either the saved password expires
+        (which can take months)
+        or the scientist in question thinks to tell the system administrator about the theft
+        (which can also take months).
+        And if the scientist has downloaded data to use locally
+        (for example,
+        so that she can do some analysis while she's flying to New Zealand for a conference),
+        we will be able to browse that data
+        without ever going near a network.
+      </p>
+
+      <p>
+        Most operating systems offer the option to encrypt the hard drive,
+        but that isn't really a remedy for this attack.
+        Invariably,
+        users are only prompted for the hard disk's password
+        when the computer reboots,
+        but users do that less frequently with every passing year.
+        (I haven't rebooted this laptop in over two months&mdash;I
+        just close the lid and let it put itself to sleep.)
+        The failure-in-practice of drive encryption is
+        a prime example of the tension between security and usability:
+        we <em>could</em> require users to re-enter the drive's password every few minutes,
+        but most users would quickly either switch off the feature
+        or stop using encryption.
+      </p>
+
+      <p>
+        <strong>Guess a user's password.</strong>
+        If we know the IDs of one or more users,
+        we can try to authenticate ourselves as them.
+        And if we're successful,
+        this doesn't just give us access to the data:
+        it also leaves a false trail incriminating the person we logged in as.
+        Rules about passwords having to be a certain length,
+        needing to have a certain number of special characters,
+        and not containing dictionary words are all meant to foil this kind of attack.
+        <span class="fixme"><a href="http://xkcd.com/936/">XKCD cartoon</a></span>
+      </p>
+
+      <p>
+        To help make this kind of attack more difficult,
+        systems should <em>never</em> store passwords as plain text.
+        Instead,
+        every stored copy should be encrypted using a one-way encryption function,
+        i.e.,
+        one that cannot be reversed to recover the actual password.
+        That way,
+        even if the stored passwords are stolen,
+        attackers cannot use them
+        (although they can then try dictionary attacks at leisure).
+        <span class="fixme">dictionary attacks</span>
+      </p>
+
+      <p>
+        Another counter-measure systems can use is
+        to not confirm identities for bad passwords.
+        If an attacker tries to log in as "gerty" with the password "c0ri",
+        and the system says,
+        "Authentication failed,"
+        the attacker has learned almost nothing.
+        If the system says,
+        "Wrong password for user gerty",
+        on the other hand,
+        the attacker now knows that there <em>is</em> a user named "gerty",
+        and can concentrate their efforts on finding the associated password.
+      </p>
+
+      <div class="box">
+        <p class="boxtitle">
+          How to Encrypt Passwords
+        </p>
+
+        <p class="fixme">
+          Salting.
+        </p>
+      </div>
+
+      <p>
+        <strong>Steal a user's password by listening to unencrypted network traffic.</strong>
+        This attack uses a failure in access control
+        to engineer a failure in authentication.
+        By default,
+        the messages between a user's browser and a web server are unencrypted:
+        anyone who can snoop the traffic on the network can read the data.
+        Strongly-encrypted connections using HTTPS (the 's' on the end means "secure") prevent this,
+        but in the web's early days,
+        most computers weren't powerful enough to encrypt and decrypt everything
+        without a noticeable slowdown,
+        so even today,
+        most web traffic is unencrypted.
+        This isn't necessarily harmful&mdash;I don't care
+        if someone can see the stories I'm downloading from
+        <a href="http://newscientist.com"><cite>New Scientist</cite></a>
+        or some other news site&mdash;but if the site designer doesn't use HTTPS for sign-on,
+        then the user's password will be sent in clear text.
+      </p>
+
+      <p>
+        <strong>Steal the data itself by listening to the network.</strong>
+        As mentioned above,
+        cleartext is the default for communicating with web sites.
+        Even if a site designer encrypts the sign-on process,
+        he or she might not encrypt transmission of the actual data.
+        Snooping on this might not give attackers exactly the records they want,
+        but then again,
+        it might,
+        and they might be after any data at all
+        rather than specific patients' information.
+      </p>
+
+      <p class="fixme">replay attacks</p>
+
+      <p>
+        <strong>Get a data file by constructing a URL containing a full path.</strong>
+        Most of what we view now on the web is dynamically generated:
+        going to a URL invokes a program on the server,
+        and that program creates the HTML page for us.
+        In the web's early days, though,
+        pages were usually stored as files on disk,
+        and the paths to those files were part of their URLs.
+        That capability is still built into most web servers:
+        if we tell the server to serve files out of the directory <code>/webstuff/files</code>,
+        then when it receives the URL <code>http://example.com/index.html</code>,
+        it sends back the file <code>/webstuff/files/index.html</code>.
+      </p>
+
+      <p>
+        But what if we send the URL <code>http://example.com/../index.html</code>?
+        If the web server is simply concatenating paths,
+        it will produce <code>/webstuff/files/../index.html</code>,
+        which is the same as <code>/webstuff/index.html</code>.
+        That probably doesn't exist,
+        and even if it does,
+        it probabliy doesn't contain anything sensitive,
+        but we can push this trick a little further and try
+        <code>http://example.com/../../etc/passwd</code>,
+        which becomes <code>/webstuff/files/../../etc/passwd</code>,
+        or <code>/etc/passwd</code>&mdash;which on Unix systems
+        is the user password file.
+        We almost certainly don't want to give attackers a chance to copy that...
+      </p>
+
+      <p>
+        This attack tries to exploit two weaknesses in access control.
+        First,
+        the web server shouldn't try to read anything that isn't in or below
+        the <code>/webstuff/files</code> folder it was configured with.
+        Once it constructs a path to a file,
+        it should normalize the path,
+        then check that the result is actually in the area it's supposed to work with.
+      </p>
+
+      <p>
+        Second,
+        the web server shouldn't have permission to read anything
+        except the files in its configured area.
+        We can ensure this by setting <a href="shell.html#perm">file permissions</a>
+        so that the web server (which is just a process, owned by a particular user)
+        can only read files that it owns,
+        not files owned by anyone else.
+      </p>
+
+      <p>
+        <strong>Fool the server into thinking login has occurred when it hasn't.</strong>
+        We can try other attacks
+        by crafting URLs to fool the web server or the applications it is managing.
+        For example,
+        suppose that after you log into WebDTR
+        you see a URL like <code>http://example.com/webdtr/u/gerty</code>.
+        Knowing this,
+        attackers might try to see what happens if they go to URLs like
+        <code>http://example.com/webdtr/u/carl</code> instead.
+        If WebDTR is badly written,
+        it might assume that if there's a valid user ID in a URL,
+        the person has logged in.
+        This is both an authentication failure
+        (because it hasn't required the user to prove their identity)
+        and an authorization failure
+        (because it isn't checking that the user is logged in).
+      </p>
+
+      <p>
+        Putting the user's ID in the URL,
+        and then relying on that for proof of authentication,
+        is only slightly more naive than
+        relying on an ID buried in the web page itself.
+        HTML allows forms to have input fields of type "hidden";
+        users cannot interact with these fields,
+        but they can be used to move information back and forth
+        bewteen the server and the browser to maintain state.
+        <span class="fixme">simple example</span>
+      </p>
+
+      <p>
+        While hidden field values don't show up in URLs,
+        they <em>are</em> posted to the web server,
+        and as we saw in the <a href="web.html">web programming chapter</a>,
+        constructing an HTTP POST with particular values
+        is almost as easy as writing a URL.
+        The right way to maintain state is to use
+        <a class="dfn" href="glossary.html#cookie">cookies</a>,
+        and to encrypt and decrypt them on the server.
+      </p>
+
+      <div class="box">
+        <p class="boxtitle">
+          Cookies
+        </p>
+
+        <p class="fixme">
+          Explain cookies.
+        </p>
+      </div>
+
+      <p>
+        <strong>SQL injection.</strong>
+        WebDTR's data probably isn't stored in files;
+        it's probably stored in a database,
+        and that means that the program handling our requests
+        is probably constructing <a href="databases.html">SQL queries</a>
+        to get it for us.
+        Suppose the SQL query looks like this:
+      </p>
+
+<pre>
+SELECT DosageDate, DosageAmount
+FROM   Experiments
+WHERE  PersonID = "%1";
+</pre>
+
+      <p class="continue">
+        The <code>%1</code> marker is meant to be filled in with a particular patient's ID,
+        such as <code>QR-1772</code>,
+        and then the query is sent to the database.
+        As discussed in the section on <a href="databases.html#s:programming">programming database</a>,
+        though,
+        an attacker might send an HTTP POST that contains a "patient ID" like this:
+      </p>
+
+<pre>
+QR-1772&quot;; SELECT * FROM Passwords WHERE TRUE OR &quot;
+</pre>
+
+      <p class="continue">
+        If we insert this string in place of the <code>%1</code> marker,
+        the result is:
+      </p>
+
+<pre>
+SELECT DosageDate, DosageAmount
+FROM   Experiments
+WHERE  PersonID = "QR-1772&quot;; SELECT * FROM Passwords WHERE TRUE OR &quot;";
+</pre>
+
+      <p class="continue">
+        Our program is now sending two SQL queries to the database;
+        the first gets some legitimate data,
+        while the second returns everything in the password table.
+        (The <code>WHERE TRUE OR &quot;</code> phrase is needed
+        to ensure that the closing quote around the <code>%1</code> marker
+        is properly balanced.)
+      </p>
+
+      <p>
+        We can defend against this attack
+        by sanitizing all input values before using them.
+        Here,
+        "sanitizing" means "escaping all special characters",
+        such as quotation marks.
+        We should <em>not</em> write functions to do this ourselves,
+        any more than we should write our own encryption functions.
+        Instead,
+        we should use something out of the standard library of
+        whatever language we're working with,
+        since that will probably have been written and tested by someone
+        who knows more about the range of possible attacks
+        than we do.
+      </p>
+
+      <p>
+        <strong>Go phishing.</strong>
+        The text in a hyperlink has nothing to do with what the hyperlink actually refers to;
+        for example, I can write a link as
+        <code>&lt;a href="http://attackthissite.com"&gt;http://nature.com&lt;/a&gt;</code>;
+        the text appears as <code><u>http://nature.com</u></code>,
+        but the link actually goes to <code>http://attachthissite.com</code>.
+      </p>
+
+      <p>
+        What good is this?
+        Well,
+        I can easily make a copy of the home page of <cite>Nature</cite>
+        and put it on <code>attackthissite.com</code>,
+        complete with title images and everything else.
+        If a user goes to that page
+        and isn't careful to check the actual URL in the browser's address bar,
+        she might then enter her username and password,
+        thinking that she's logging in to her <cite>Nature</cite> account.
+        Instead,
+        her username and password are being sent to the attacker's computer,
+        which records them,
+        then redirects her to the real <cite>Nature</cite> site
+        with a "login failed" message.
+      </p>
+
+      <p>
+        How does the attacker get the user to click on the link in the first place?
+        One way is to send it by email,
+        since most mail programs now display HTML as formatted text.
+        This is particularly effective if the attacker uses a similar trick in the email header
+        to make it appear as though the message came from a trusted person
+        (such as the chair of the department).
+      </p>
+
+      <p>
+        <strong>Social engineering.</strong>
+        People will often hold open
+        the door of an apartment building
+        rather than insist that a stranger punch in their keycode&mdash;it
+        just feels rude to do the latter.
+        There are many computational variations on this theme,
+        most of which start something like,
+        "Hi, look, I really don't want to bother you,
+        but I need to get my paper in by six o'clock
+        or my supervisor is going to toss me out of the lab,
+        and the sys admin isn't answering his phone,
+        and I can't log in,
+        and I only need a couple of files.
+        Could you do me a huge favor, and..."
+      </p>
+
+      <p>
+        Another attack of this kind requires little more than a company phone book.
+        If an attacker starts calling people at random,
+        saying,
+        "Hi, this is tech support&mdash;you were having a problem?"
+        the odds are pretty good that sooner or later
+        they'll find someone who actually <em>does</em> have a legitimate problem.
+        As part of "helping" to resolve the issue,
+        the attacker gets the target to type in commands,
+        go to hacked web sites,
+        install a virus
+        (often under the guise of "upgrading the virus scanner"),
+        and so on.
+      </p>
+
+      <p>
+        Finally,
+        atackers can always try to
+        <strong>flood the application with login requests.</strong>
+        This won't give them any information,
+        but it will make WebDTR unusable.
+        Doing this is often a useful precursor to a social engineering attack:
+        if a site has been down for a couple of days,
+        system administrators may be more likely to do a favor for
+        a seemingly-irate "user".
+      </p>
+
+    </section>
+
+    <section id="s:action">
+
+      <h2>Keep Calm and Carry On</h2>
+
+      <p>
+        So how does all of this apply to scientists?
+        In brief,
+        we have to do everything that regular people do to stay safe:
+        not running software of uncertain origin,
+        keeping firewalls and anti-viruses up to date,
+        and assuming the worst when someone we don't know calls us up
+        and offers to help us fix our computer.
+      </p>
+
+      <p>
+        We also have to do everything programmers do&mdash;at least,
+        the competent ones&mdash;when
+        creating web services,
+        sharing code,
+        and so on.
+        (Are you <em>sure</em> that the FFT library you downloaded last week
+        doesn't contain an attack?
+        And is its author sure that the compiler she used,
+        which she downloaded a month ago,
+        doesn't inject attacks without her knowing about them?)
+      </p>
+
+      <p>
+        And if that wasn't enough,
+        we have to do many of the things IT departments do
+        when managing data.
+        People who work with patient records and other sensitive information
+        are usually aware of this,
+        and are usuallyy required to follow some sort of institutional guidelines.
+        But as ClimateGate showed,
+        anyone can be a victim:
+        if your science actually matters,
+        someone will want to cast doubt on it,
+        honestly or otherwise.
+      </p>
+
+      <p>
+        It's easy to be crippled by fear.
+        It's also easy to use fear as an excuse for not trying new things,
+        or for insisting on so many checks and balances
+        that new things become practically impossible.
+        But this would be a tragedy:
+        the web could accelerate science
+        as nothing else has since the invention of the printing press,
+        and we're still just starting to explore all its possibilities.
+      </p>
+
+      <p>
+        The best way to think about computer security is in economic terms.
+        We must always ask ourselves what the right balance is between
+        the cost of preventing damage and the potential cost of the damage itself,
+        just as people working in public health must balance
+        the one-in-a-million risk of an adverse reaction to a measles vaccine
+        against the lives that could be lost to the disease
+        if it took hold in an unvaccinated population.
+        This can be done systematically,
+        and to some extent quantitatively,
+        as the table below shows.
+      </p>
+
+      <table>
+        <tr>
+          <th>Risk</th>
+          <th>Importance</th>
+          <th>Discussion</th>
+        </tr>
+        <tr>
+          <td>Denial of service</td>
+          <td>Minor</td>
+          <td>Researchers can wait until the system comes back up</td>
+        </tr>
+        <tr>
+          <td>Data in database destroyed</td>
+          <td>Minor</td>
+          <td>Restore from backup</td>
+        </tr>
+        <tr>
+          <td>Unauthorized data access</td>
+          <td>Major</td>
+          <td>If competitors access data, competitive advantage may be lost</td>
+        </tr>
+        <tr>
+          <td>Backups corrupted, so that data is permanently lost</td>
+          <td>Major</td>
+          <td>Redoing trials may cost millions of dollars</td>
+        </tr>
+        <tr>
+          <td>Data corrupted, and corruption not immediately detected</td>
+          <td>Critical</td>
+          <td>Researchers may make recommendations or diagnoses that lead to injury or death</td>
+        </tr>
+      </table>
+
+      <p>
+        In the long term,
+        what society (including scientists) really needs
+        is legislative changes.
+        For a start,
+        the law should make whoever first collects data liable for its loss,
+        no matter who it's actually stolen from,
+        so that companies and governments will be less promiscuous
+        about giving one another sensitive information.
+        The law should also say that the makers of software must either:
+      </p>
+
+      <ol>
+        <li>
+          accept liability for losses due to flaws in their software,
+          or
+        </li>
+        <li>
+          give users the complete source for that software,
+          so that they can inspect it for vulnerabilities thesmelves.
+        </li>
+      </ol>
+
+      <p>
+        If implemented on their own,
+        such changes would stifle open science,
+        since scientists don't have a lot of money
+        and university bureaucrats don't like risk.
+        Scientific computing therefore needs two more things:
+      </p>
+
+      <ul>
+        <li>
+          some equivalent of copyright's "fair use" provisions,
+          and
+        </li>
+        <li>
+          meaningful academic credit (i.e., points toward tenure)
+          for creating data and software that people use.
+        </li>
+      </ul>
+
+      <p>
+        In the short term,
+        the best advice we can give is to get professional help.
+        This is the only time in this course that we've said that,
+        so please take it seriously.
+        If you intend to distribute your software to other people,
+        please have someone do a code review;
+        if you are creating any kind of web service,
+        please have someone who knows what they're doing look it over
+        and try to break it.
+        You probably won't enjoy the experience,
+        but as the scientists at the CRU can testify,
+        you'll enjoy the alternative a lot less.
+      </p>
+
+    </section>
+
+    <section id="s:summary">
+
+      <h2>Summing Up</h2>
+
+      <p>
+        To close,
+        here are
+        <a href="http://technet.microsoft.com/en-us/library/cc722487.aspx">ten immutable laws of security</a>
+        taken from Microsoft's Security Response Center:
+      </p>
+
+      <ol>
+        <li>
+          If a bad guy can persuade you to run his program on your computer, it's not your computer anymore.
+        </li>
+        <li>
+          If a bad guy can alter the operating system on your computer, it's not your computer anymore.
+        </li>
+        <li>
+          If a bad guy has unrestricted physical access to your computer, it's not your computer anymore.
+        </li>
+        <li>
+          If you allow a bad guy to upload programs to your website, it's not your website any more.
+        </li>
+        <li>
+          Weak passwords trump strong security.
+        </li>
+        <li>
+          A computer is only as secure as the administrator is trustworthy.
+        </li>
+        <li>
+          Encrypted data is only as secure as the decryption key.
+        </li>
+        <li>
+          An out of date virus scanner is only marginally better than no virus scanner at all.
+        </li>
+        <li>
+          Absolute anonymity isn't practical, in real life or on the Web.
+        </li>
+        <li>
+          Technology is not a panacea.
+        </li>
+      </ol>
+
+      <p>
+        Reading lists like this can easily make us want to cut ourselves off from computers entirely,
+        just as reading about
+        <a class="bookcite" href="bibliography.html#diclaudio-horrible-diseases">strange diseases</a>
+        can make you want to live in a plastic bubble
+        eating your own hydroponically-grown food.
+        Neither is a rational response, though;
+        in both cases,
+        the rational response is to make hygiene a habit,
+        have the right medicine handy,
+        and get insurance against the unpreventable losses.
+      </p>
+
+    </section>
+
+    <section>
+      <h2>Feedback from Blake Winton</h2>
+
+      <p>
+        What a Firewall Does: explain what anti-virus software does. No, your Mac/Linux machine is not magically immune to all viruses.
+      </p>
+
+      <p>
+        That second comment doesn't seem quite right.
+        Also,
+        I suspect these kind of fall under Social Engineering,
+        but often the easiest way to get data is to threaten or pay someone who has access to it.
+      </p>
+
+      <p>
+        Finally, most of the time I see risk-assessment tables,
+        they have both Importance and Likelihood,
+        so that might be something that you want to add.
+        (Your vaccine example is using likeliness instead of importance,
+        by talking about the one-in-a-million chance instead of the adverse mutating-into-world-devouring-super-colossus reaction.)
+      </p>
+
+    </section>
+
+    <div class="footer">
+      <table>
+        <tr>
+          <td valign="middle">
+            <img src="../img/logo/creative-commons-attribution-license.png" alt="CC-A license" />
+          </td>
+          <td valign="middle">
+            This material is provided under the
+            <a href="http://creativecommons.org/licenses/by/3.0/legalcode">Creative Commons Attribution</a> license.
+            <br/>
+            Please contact <a href="mailto:info@software-carpentry.org">info@software-carpentry.org</a> for details.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </body>
+</html>

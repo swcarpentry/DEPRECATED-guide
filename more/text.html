@@ -1,0 +1,215 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../common/scb.css" type="text/css" />
+    <title>Software Carpentry / Interlude: Text</title>
+    <meta name="id" content="$Id: text.html 2293 2011-11-02 13:24:49Z gvw $" />
+    <meta name="type" content="interlude" />
+  </head>
+  <body class="chapter">
+    <div class="header">
+      <a href="index.html"><img src="../img/logo/software-carpentry-banner.jpg" alt="Software Carpentry logo" class="logo" /></a>
+      <h1>Interlude: Text</h1>
+    </div>
+
+    <p>
+      Text must be simpler than numbers, right?
+      After all, it's just characters&hellip;.
+      But how should a computer represent single characters?
+    </p>
+
+    <p>
+      For American English in the 1960s, the solution was simple:
+      there are 26 characters (which have upper and lower case representations),
+      ten digits,
+      some punctuation, and a few special "characters" for controlling the teletype terminals of the period
+      (meaning "go to a new line", "move back to the start of the line", "start a new page", "ring the bell", and so on).
+      There were fewer than 128 of these, so the ASCII committee standardized on an encoding that used 7 bits per character
+      (since 2<sup>7</sup> is 128).
+    </p>
+
+    <p>
+      Next question: how should text containing many characters be represented?
+      The first choice,
+      which was dictated by the punch card technology of the 1940s and 1950s,
+      was to use <em>fixed-width records</em>,
+      in which each line was exactly the same length.
+      For example, a computer would lay out this haiku in three records as shown here (where the dot character means "unused").
+      <span class="fixme">still used in databases</span>
+    </p>
+
+    <p>
+      This representation makes it easy to skip forward or backward by N lines,
+      since each is exactly the same size,
+      but it may waste space,
+      and no matter what maximum length we choose,
+      we'll eventually have to deal with lines that are longer.
+    </p>
+
+    <p>
+      Over time most programmers switched to a different representation,
+      in which text is just a stream of bytes,
+      some of which mean "the current line ends here".
+      With this representation, our haiku would be stored like this, where the gray cells mean "end of line".
+      This is more flexible,
+      and wastes less space,
+      but skipping forward or backward by N lines is harder,
+      since each one might be a different length.
+      And of course, we have to decide what to use to mark the ends of lines.
+    </p>
+
+    <p>
+      Unfortunately, different groups picked different things.
+      On Unix, the end of line is marked by a single newline character, which is written <code>'\n'</code>.
+      On Windows, the end of line is marked with a carriage return followed by a newline,
+      which is written <code>'\r\n'</code>.
+    </p>
+
+    <p>
+      Most editors can detect and handle the difference, but it's still annoying for programmers, who need to be able to handle both.
+      Python tries to help by converting <code>'\r\n'</code> to <code>'\n'</code> when it's reading data from a file on Windows,
+      and converting the other way when it's writing.
+      This is the right behavior for text,
+      but if you're reading an image, an audio file,
+      or some other binary file that might just happen to have
+      the numbers representing <code>'\r'</code> and <code>'\n'</code> after each other,
+      you definitely <em>don't</em> want this conversion to happen.
+    </p>
+
+    <p>
+      To prevent it, you must open the file in <dfn>binary mode</dfn>.
+      To do this, put the letter <code>'b'</code> after the <code>'r'</code> or <code>'w'</code>
+      when you call <code>open</code>, as shown here.
+    </p>
+
+    <p>
+      Now, back to characters&hellip;
+      ASCII is fine for the digit 2, the letter 'q', or a circumflex '^', but how should we store '&#x0115;', '&#x03B2;', or '&#x042F;'?
+      Well, 7 bits gives us the numbers from 0 to 127, but an 8-bit byte can represent numbers up to 255,
+      so why not extend the ASCII standard to define meanings for those "extra" 128 numbers?
+    </p>
+
+    <p>
+      Unfortunately, everyone did, but in different and incompatible ways.
+      The result was a mess:
+      if a program assumed characters were encoded using Spanish rules when they were actually encoded in Bulgarian,
+      what it got was gibberish.
+      And setting that aside, many languages&mdash;particularly those of East Asia&mdash;use a lot more than 256 distinct symbols.
+    </p>
+
+    <p>
+      The solution that emerged in the 1990s is called <dfn>Unicode</dfn>.
+      It defines integer values to represent tens of thousands of different characters and symbols.
+      However, it does <em>not</em> define how to store those integers in a file,
+      or as a string in memory.
+    </p>
+
+    <p>
+      The simplest choice would be to switch from using an 8-bit byte for each character to using a 32-bit integer,
+      but that would waste a lot of space for alphabetic languages like English, Estonian, and Brazilian Portuguese.
+      32 bits per character is often used in memory where access speed is important,
+      but most programs and programmers use something else when saving data to a file or sending it over the Internet.
+    </p>
+
+    <p>
+      That something else is (almost) always an encoding called <em>UTF-8</em>,
+      which uses a variable number of bytes per character.
+      For backward compatibility's sake,
+      the first 128 characters (i.e., the old ASCII character set) are stored in one byte each.
+      The next 1920 characters are stored using two bytes each;
+      the next 61,000-odd in three bytes each,
+      and so on.
+    </p>
+
+    <p>
+      If you're curious, the way this works is shown in this table, but you don't have to know or care.
+      What you <em>do</em> have to know these days is Python 2.* provides two kinds of strings.
+      A "classic" string uses one byte per character, just as it always did.
+      A "Unicode" string, on the other hand, uses enough memory per character to store any kind of text.
+      (In Python 3.*, all strings are Unicode;
+      if you want to read or write a bunch of bytes,
+      you have to specify the encoding,
+      which is often a pain.)
+    </p>
+
+    <p>
+      Unicode strings are indicated by putting a lower-case 'u' in front of the opening quote.
+      If we want to convert a Unicode string to a string of bytes, we must specify an encoding.
+      You should always use UTF-8 unless you have a very, very good reason to do something else.
+      And even then, you should think twice.
+    </p>
+
+    <p class="fixme">
+      Margaret Menzin's presentation at the SIGCSE 2008 conference about the sorting rules used by libraries.
+    </p>
+
+    <ol>
+      <li>
+        <strong>L</strong>eonardo da Vinci ("da Vinci" just means "from Vinci")
+      </li>
+      <li>
+        Catherine de <strong>Medici</strong> (family name)
+      </li>
+      <li>
+        Juan <strong>Ponce de Leon</strong> (full family name is "Ponce de Leon")
+      </li>
+      <li>
+        Jean de <strong>La Fontaine</strong> (family name is "La Fontaine")
+      </li>
+      <li>
+        Gabriel <strong>Garcia Marquez</strong> (double-barrelled Spanish surnames)
+      </li>
+      <li>
+        Wernher <strong>v</strong>on <strong>B</strong>raun (depending on whether he was in Germany or the US)
+      </li>
+      <li>
+        <strong>Elizabeth</strong> Alexandra May Windsor (monarchs sort by the name under which they took the throne)
+      </li>
+      <li>
+        <strong>Thomas</strong> a Beckett (there are special rules for saints, too)
+      </li>
+      <li>
+        <strong>Mao</strong> Tse-tung (Chinese family names come first)
+      </li>
+    </ol>
+
+    <p>
+      And if we have names written in multiple languages,
+      we sort the languages first,
+      according to their names in English,
+      then sort within each language using its own rules.
+      And we haven't even started on:
+    </p>
+
+    <ul>
+      <li>
+        Hon. Father Robert F. Drinan, S.J., L.L.D.
+      </li>
+      <li>
+        Rev. Dr. Martin Luther King, Jr.
+      </li>
+      <li>
+        Augusta Ada Byron King, Lady Lovelace
+      </li>
+      <li>
+        Major General Horace Stanley
+      </li>
+    </ul>
+
+    <div class="footer">
+      <table>
+        <tr>
+          <td valign="middle">
+            <img src="../img/logo/creative-commons-attribution-license.png" alt="CC-A license" />
+          </td>
+          <td valign="middle">
+            This material is provided under the
+            <a href="http://creativecommons.org/licenses/by/3.0/legalcode">Creative Commons Attribution</a> license.
+            <br/>
+            Please contact <a href="mailto:info@software-carpentry.org">info@software-carpentry.org</a> for details.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </body>
+</html>

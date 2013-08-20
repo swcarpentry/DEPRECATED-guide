@@ -1,0 +1,130 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../common/scb.css" type="text/css" />
+    <title>Software Carpentry / Case Study: Steganography</title>
+    <meta name="id" content="$Id: steganography.html 2293 2011-11-02 13:24:49Z gvw $" />
+    <meta name="type" content="interlude" />
+  </head>
+  <body class="chapter">
+    <div class="header">
+      <a href="index.html"><img src="../img/logo/software-carpentry-banner.jpg" alt="Software Carpentry logo" class="logo" /></a>
+      <h1>Case Study: Steganography</h1>
+    </div>
+
+    It's commonplace to say that data is just 1's and 0's, but what does that actually mean?
+    We normally think of those 1's and 0's as integers, characters, and so on,
+    but that's our interpretation: there's nothing intrinsic to a particular 1 or 0 that says, "I'm part of a character."
+    To show what this means in practice, we're going to write a program that hides a text message in an image.
+    This is an example of steganography,
+    which is the art of hiding messages in plain sight,
+    and which is often used these days to put digital watermarks in audio and video files.
+
+    Let's start with this picture of the world's cutest child being kissed by her dad.
+    If we pick a single pixel at random, its RGB color values will be something like 53, 64, 22.
+    Each of those three values is stored in eight bits.
+    And coincidentally, each character in the Latin alphabet is also usually stored in 8 bits:
+    56 for the digit '8', 32 for a space, 98 for a lower-case 'b', and so on.
+
+    So as a first step to hiding strings of text in images, let's replace some of the color bytes with character bytes.
+    The main driver for our program looks like this.
+    If the first argument is '-e', then the second is the string we want to put in the image, the third is the image we're hiding it in, and the fourth is where to save the output.
+(Remember, the zero'th command-line argument is the name of the program itself.)
+    If the first argument is '-d', on the other hand, then there's only one other argument: the name of the image file containing the secret message that we're to extract.
+
+    The real work is done by these two functions, encode and decode.
+    Let's write 'encode' first. Its arguments are the message to hide, which is a string, and the picture to hide it in.
+    To keep things simple, we'll only modify the red component of each pixel. We'll come back and write a function to update pixels' red values in a few moments.
+    Since messages may be of different lengths, we'll store the number of characters in the message in the red component of the pixel at location (0, 0).
+    Since each color value is only 8 bits large, this means that the longest message we can store is 256 characters, so we'd better check that our string's length is less than this.
+    Once the length is stored, the main body of our function stores each character by overwriting the red component of successive pixels.
+    Notice that we use the 'ord' function to turn a single-character string into the integer that represents that character's value. We'll use a corresponding function to turn integers back into characters in a moment.
+    And as promised, here's the 'set_red' function that overwrites the red component of a pixel.
+    It uses getpixel to get the RGB triple for the pixel, then setpixel to write a new triple with the value to store and the original green and blue values.
+
+    That was easy enough: how about decoding?
+    The first step is to get the message's length from the pixel at (0, 0).
+    Once we have that, we loop that many times, getting the red component of each successive pixel, translating it from an integer into a single-character string, and appending that string to our message.
+    As promised, we use the 'chr' function to turn the integer encoding of a character into a string.
+    As an exercise, see if you can figure out why we have to use 'chr', and why we cannot use 'str' to do this conversion.
+
+    Finally, here's the 'get_red' function. It grabs the pixel at (x, y), then returns the red component.
+    Let's try it out. We'll take a white rectangle as our test image, and encode the message 'ABCDEF'.
+    The result is an image with blue in the upper left corner.
+
+    Hm... all right, blue makes sense: the characters' values are all less than 255, so we have effectively reduced the red in the white image, leaving blue-green.
+    But if we expand that corner and look at it more closely, something is very wrong. We should only have changed seven pixels:
+    One for the message's size, and six more for the characters.
+    Why have all those other pixels changed color?
+
+    The answer lies in the fact that JPEG is a lossy format.
+    It changes or throws away information in order to improve compression.
+    Human eyes can't tell the difference between the original and JPEG'd images---its algorithm is carefully designed to ensure that, but it does mean that the values we get back after we save and re-load the image aren't exactly the ones we intended to write out.
+    This makes JPEG a poor choice for hiding messages: after all, we'd like to get back exactly the message we stored.
+    We should therefore use a lossless format like PNG instead, in which every pixel's value is always saved exactly.
+
+    Given the way our program is written, it should work without any changes on PNGs.
+    But when we try it, we get this rather cryptic error message.
+    When we run the program in the debugger, we see that the problem is on this line.
+    For some reason, we can't unpack the result of getpixel into its component red, green, and blue values.
+    The reason turns out to be that the pixel's value actually has four components, not three.
+    The fourth is called alpha, and measures the transparency of the pixel. Alpha is used for blending images together to create effects like fog and glass.
+    An alpha of 255 (the maximum possible value) means that the pixel isn't transparent at all, but that's not important right now.
+
+    All that matters to us is that we need to unpack and repack four values instead of three.
+    Sure enough, if we modify our program to use (r, g, b, a), our message is saved and restored exactly as it should be.
+    However, it's not very well hidden: completely overwriting the red values of successive pixels is pretty obvious to the human eye.
+    The solution is to only change the least significant bit of each byte instead of changing the whole value.
+    Even the best human eyes cannot see the difference between red=140 and red=141 when other things are going on.
+
+    To do this, we'll once again make use of the fact that each character in the Latin alphabet is encoded in a single byte of eight bits.
+    With eight bits per character, and three bytes per pixel, we can encode each character of our message in three pixels
+    with one bit left over.
+
+    Let's start by writing a function that turns a single character into a list of eight 1's and 0's.
+    Once again, we use 'ord' to turn the character into an integer, and then inside a loop, use remainder to check whether the number is odd or not.
+    If it is, then its low bit is a 1; if it isn't, the low bit is a 0.
+    Once we've checked, we divide the number by 2 to shift it down one place so that we can check the next bit.
+
+    Let's watch that function in action.
+    When our loop index is 0, we're checking to see whether 65 (the integer representation of an upper-case 'A') is odd.
+    It is, which means the low bit is a 1, so we put 1 in our result.
+
+    On the next loop, when i is 1, our number is 32 (the result of dividing 65 by 2 and rounding down). It is even, so the low bit must be 0.
+    Next loop: our number is 16, which is another 0.
+    We keep going like this, putting in 1s or 0s, until we've extracted all 8 bits.
+
+    Now let's combine those bits with pixels. This function takes a single pixel and a list containing as many bits as there are values in the pixel.
+    Remember, some pixels may contain three values for red/green/blue, while others may be four elements long: red, green, blue, and an alpha for transparency.
+    We start by turning the pixel into a list, so that we can overwrite elements (something we can't do with tuples).
+    We'll turn the list back into a tuple at the end when we return it.
+    For each of the bits, we figure out what value the corresponding color in the pixel should have if the bit is a zero.
+    We do this using a trick: when we divide by 2, Python throws away the remainder, so when we multiply by 2, we get back either the original number if it was even, or that value rounded down by 1 if it was originally odd.
+    If the bit we want to store is a 1, we then add 1 to the pixel to make sure its value is odd.
+    If the bit is a 0, we leave the evened-off pixel value alone.
+    It's a bit of a hack, but if you trace the calculation for a few values, you'll see that it does the right thing.
+
+    Here are some tests that combine pixels with different RGB values and bits with varying combinations of 1 and 0.
+    Sure enough, the output is always even when the bit being saved is 0, and 1 when the bit being saved is odd.
+    As an exercise, write the other functions needed to encode a message in an image bit by bit, and then write the inverse function that recovers the message.
+    As you're doing this, keep in mind the real lesson of this episode.
+    The bits that make up our data don't have any intrinsic meaning:
+    their meaning comes entirely from how we act on them and interpret them.
+
+    <div class="footer">
+      <table>
+        <tr>
+          <td valign="middle">
+            <img src="../img/logo/creative-commons-attribution-license.png" alt="CC-A license" />
+          </td>
+          <td valign="middle">
+            This material is provided under the
+            <a href="http://creativecommons.org/licenses/by/3.0/legalcode">Creative Commons Attribution</a> license.
+            <br/>
+            Please contact <a href="mailto:info@software-carpentry.org">info@software-carpentry.org</a> for details.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </body>
+</html>

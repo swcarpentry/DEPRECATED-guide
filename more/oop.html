@@ -1,0 +1,1199 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../common/scb.css" type="text/css" />
+    <title>Software Carpentry / Classes and Objects</title>
+    <meta name="id" content="$Id: oop.html 2293 2011-11-02 13:24:49Z gvw $" />
+    <meta name="type" content="chapter" />
+  </head>
+  <body class="chapter">
+    <div class="header">
+      <a href="index.html"><img src="../img/logo/software-carpentry-banner.jpg" alt="Software Carpentry logo" class="logo" /></a>
+      <h1>Classes and Objects</h1>
+    </div>
+
+    <ol class="toc">
+      <li><a href="#s:turtle">Turtles All the Way Down</a></li>
+      <li><a href="#s:encapsulation">Keeping Track of Colors</a></li>
+      <li><a href="#s:inheritance">New Turtles from Old</a></li>
+      <li><a href="#s:polymorphism">If It Walks Like a Turtle...</a></li>
+      <li><a href="#s:design">Design</a></li>
+      <li><a href="#s:summary">Summing Up</a></li>
+    </ol>
+
+    <p>
+      Once upon a time (actually, the late 1960s),
+      a group of scientists at MIT led by Seymour Papert
+      were exploring new ways of teaching and learning mathematics and programming.
+      As part of their work,
+      they built robotic "turtles" that could be controlled by simple computer programs.
+      Turtles could move forward or backward and turn left or right;
+      each one also had a pen,
+      which it could raise or lower to draw on a sheet of paper.
+    </p>
+
+    <p>
+      As simple as they were,
+      these turtles turned out to be a wonderful way to help children discover mathematics.
+      The core ideas have since been reproduced in many different programming languages,
+      from Logo (another of Papert's creations)
+      to the Python <code>turtle</code> library we will use in this chapter.
+    </p>
+
+    <p>
+      Our real goal is not to explore mathematics, though.
+      Instead,
+      we are going to use turtles to introduce
+      yet another way to structure large (and small) programs.
+      This technique is called
+      <a class="dfn" href="glossary.html#object-oriented-programming">object-oriented programming</a> (OOP),
+      because it encourages programmers to build programs out of small, interchangeable components,
+      each of which does a few things, and <em>only</em> a few things.
+    </p>
+
+    <p>
+      We have been using objects since our first programming exercise:
+      strings, lists, files, and so on are all objects.
+      (Even numbers are objects,
+      albeit very plain ones.)
+      After a quick introduction to turtle graphics,
+      we will look at how to create objects of our own,
+      and then at how to figure out what objects we ought to create.
+    </p>
+
+    <section id="s:turtle">
+
+      <h2>Turtles All the Way Down</h2>
+
+      <p>
+        Let's start with a simple program:
+      </p>
+
+<pre src="../src/oop/straight-line.py">
+from turtle import *
+forward(50)
+mainloop()
+</pre>
+
+      <p class="continue">
+        If everything is installed correctly,
+        a small window should open on your screen
+        showing a straight black arrow from left to right.
+        Let's add a few more commands:
+      </p>
+
+<pre src="../src/oop/red-right-angle.py">
+from turtle import *
+pencolor("red")
+forward(50)
+left(90)
+forward(50)
+mainloop()
+</pre>
+
+      <p class="continue">
+        This one should show a right-angle turn
+        with a black-on-red arrowhead at its upper right end.
+        Let's go through the program line by line to see what it does:
+      </p>
+
+      <ol>
+        <li>
+          The first line imports all the commands in the <code>turtle</code> library.
+          (We'll be a bit more selective about our imports later on.)
+        </li>
+        <li>
+          The next line tells the library that we want to draw with a red pen
+          rather than the default black.
+          If we run the first and second command interactively,
+          this is the point at which the drawing window will open up:
+          the library automatically creates the window
+          as soon as there's something worth drawing.
+        </li>
+        <li>
+          That <code>pencolor</code> command implicitly applies to
+          the default turtle that the library creates.
+          This command tells that turtle to move forward 50 units.
+          Since the turtle's pen is down by default,
+          and since the turtle starts life facing due east,
+          this draws a horizontal red line.
+        </li>
+        <li>
+          As you can probably guess,
+          <code>left(90)</code> tells the turtle to turn left 90&deg;,
+          which in this case makes it point north.
+          If we run these commands interactively,
+          we can actually see the turtle rotate.
+        </li>
+        <li>
+          Repeating the <code>forward(50)</code> command
+          makes the turtle draw another straight line.
+          Since its heading has changed,
+          though,
+          this line goes north,
+          making the vertical leg of our backward 'L'.
+        </li>
+        <li>
+          The final <code>mainloop</code> call is needed
+          to keep the drawing window open on the screen.
+          Without it,
+          the program will finish as soon as the leg of the 'L' is drawn,
+          and the picture will disappear.
+        </li>
+      </ol>
+
+      <p>
+        And that's basically it.
+        The library does provide functions to move the turtle backward,
+        make it turn right instead of left,
+        and so on,
+        but we already have enough to create some interesting pictures:
+      </p>
+
+<pre src="../src/oop/spirograph.py">
+from turtle import *
+
+def box(length):
+    for i in range(4):
+        forward(length)
+        left(90)
+
+def fan(count, length):
+    for i in range(count):
+        box(length)
+        left(22.5)
+        length *= 0.8
+
+fan(8, 100)
+mainloop()
+</pre>
+
+      <p>
+        We can also use turtle graphics to explore some interesting physical problems,
+        but before we do that,
+        let's go back and clean up a little bit.
+        The functions we have seen so far all operate on a default turtle
+        that we didn't create.
+        Let's create a turtle of our own instead,
+        and then call its methods instead of calling functions that work by magic:
+      </p>
+
+<pre src="../src/oop/create-turtle.py">
+from turtle import Turtle, mainloop
+
+def box(t, length):
+    for i in range(4):
+        t.forward(length)
+        t.left(90)
+
+def fan(t, count, length):
+    for i in range(count):
+        box(t, length)
+        t.left(22.5)
+        length *= 0.8
+
+t = Turtle()
+fan(t, 8, 100)
+mainloop()
+</pre>
+
+      <p class="continue">
+        That's better:
+        we create a turtle,
+        then pass it to our functions,
+        each of which then asks that turtle to move or turn.
+      </p>
+
+      <p>
+        Why is this better?
+        Well, suppose we are studying the mathematics of pursuit and evasion,
+        i.e.,
+        what happens when a velociraptor chases a hadrosaur.
+        The logical way to simulate this is to create one turtle to represent the velociraptor,
+        and another for its duck-billed prey.
+        Let's build up to that in stages.
+        First,
+        we'll create and position the two dinosaurs:
+      </p>
+
+<pre src="../src/oop/position-dinosaurs.py">
+from turtle import Turtle, mainloop
+
+raptor = Turtle()
+raptor.pencolor("red")
+raptor.backward(200)
+
+duckbill = Turtle()
+duckbill.pencolor("green")
+duckbill.forward(200)
+
+mainloop()
+</pre>
+
+      <p class="continue">
+        Whoops: we didn't want to draw lines while moving them into position.
+        Let's raise their pens while positioning them,
+        then lower the pens again for drawing:
+      </p>
+
+<pre src="../src/oop/raise-lower-pens.py">
+from turtle import Turtle, mainloop
+
+raptor = Turtle()
+raptor.pencolor("red")
+raptor.penup()
+raptor.backward(200)
+raptor.pendown()
+
+duckbill = Turtle()
+duckbill.pencolor("green")
+duckbill.penup()
+duckbill.forward(200)
+duckbill.pendown()
+
+mainloop()
+</pre>
+
+      <p class="continue">
+        Of course,
+        since we're doing almost exactly the same thing twice,
+        we should refactor the shared code into a function:
+      </p>
+
+<pre src="../src/oop/initialize-func.py">
+from turtle import Turtle, mainloop
+
+def setup(color, distance):
+    t = Turtle()
+    t.pencolor(color)
+    t.penup()
+    t.forward(distance)
+    t.pendown()
+    return t
+
+raptor = setup("red", -200)
+duckbill = setup("green", 200)
+
+mainloop()
+</pre>
+
+      <p>
+        Now let's make the velociraptor chase the hadrosaur.
+        We'll assume their velocities are constant and equal:
+      </p>
+
+<pre src="../src/oop/constant-chase.py">
+from turtle import Turtle, mainloop
+
+def setup(color, distance):
+    ...as before...
+
+raptor = setup("red", -200)
+duckbill = setup("green", 200)
+
+for i in range(20):
+    raptor.forward(10)
+    duckbill.forward(10)
+
+mainloop()
+</pre>
+
+      <p>
+        So far, so boring.
+        But what if we change things a bit?
+        What if the duckbill is running due north,
+        and the raptor keeps changing direction toward it?
+      </p>
+
+<pre src="../src/oop/right-angle-change.py">
+raptor = setup("red", -200)
+duckbill = setup("green", 200)
+duckbill.left(90)
+
+for i in range(80):
+    target = duckbill.pos()
+    angle = raptor.towards(target)
+    raptor.setheading(angle)
+    raptor.forward(5)
+    duckbill.forward(5)
+</pre>
+
+      <p class="continue">
+        This is much more interesting:
+        at each timestep,
+        we change the raptor's heading to point it at the current position of the duckbill,
+        then move both dinosaurs forward.
+        (We've dropped the distance moved in each step to produce a smoother curve.)
+        The result is an asymptotic approach curve;
+        for bonus marks,
+        try to figure out how close the raptor comes to the duckbill at t<sub>&#8734;</sub>.
+      </p>
+
+      <p>
+        Let's try one more chase before we move on.
+        This time,
+        we'll have the hadrosaur run in a circle.
+        We'll also give it a bit of a speed advantage over the raptor:
+      </p>
+
+<pre src="../src/oop/running-in-circle.py">
+
+raptor = setup("red", -200)
+duckbill = setup("green", 200)
+duckbill.left(90)
+
+for i in range(240):
+    # Move the velociraptor toward the hadrosaur.
+    target = duckbill.pos()
+    angle = raptor.towards(target)
+    raptor.setheading(angle)
+    raptor.forward(5)
+
+    # Move the hadrosaur in a circle.
+    duckbill.forward(8)
+    duckbill.left(6)
+</pre>
+
+      <p class="continue">
+        It looks like the raptor has settled down into a circle inside the duckbill's orbit;
+        does that always happen?
+        Let's refactor this program to put the movement instructions in functions:
+      </p>
+
+<pre src="../src/oop/circle-refactored.py">
+def move_raptor(raptor, duckbill, distance):
+    target = duckbill.pos()
+    angle = raptor.towards(target)
+    raptor.setheading(angle)
+    raptor.forward(distance)
+
+def move_duckbill(duckbill, distance, angle):
+    duckbill.forward(distance)
+    duckbill.left(angle)
+
+raptor = setup("red", -200)
+duckbill = setup("green", 200)
+duckbill.left(90)
+
+for i in range(240):
+    move_raptor(raptor, duckbill, 5)
+    move_duckbill(duckbill, 8, 6)
+</pre>
+
+      <p class="continue">
+        (remember, refactoring doesn't change what the program does, just how it does it),
+        and then add some more raptors of varying speeds:
+      </p>
+
+<pre src="../src/oop/flock-pursuit.py">
+Raptor_Specs = [
+    ["red",    5],
+    ["orange", 7],
+    ["yellow", 9]
+]
+
+raptors = []
+for (color, speed) in Raptor_Specs:
+    r = setup(color, -200)
+    raptors.append(r)
+
+duckbill = setup("green", 200)
+duckbill.left(90)
+
+for i in range(240):
+    for i in range(len(Raptor_Specs)):
+        speed = Raptor_Specs[i][1]
+        move_raptor(raptors[i], duckbill, speed)
+    move_duckbill(duckbill, 8, 6)
+</pre>
+
+      <p class="continue">
+        There are two things to notice about this program:
+      </p>
+
+      <ol>
+        <li>
+          It looks like the raptor's path might almost be forming a cusp
+          when its speed is just a little bit less than the duckbill's.
+        </li>
+        <li>
+          This code is becoming unwieldy.
+          We have to be careful to pass raptors and hadrosaurs to the right functions,
+          keep track of which raptor is moving at what speed,
+          and so on.
+        </li>
+      </ol>
+
+      <p>
+        What we really need is some way to combine
+        the functions that operate on different kinds of dinosaurs
+        with each dinosaur's data.
+        That's where objects come in.
+      </p>
+
+    </section>
+
+    <section id="s:encapsulation">
+
+      <h2>Keeping Track of Colors</h2>
+
+      <p>
+        The two basic concepts in object-oriented programming are
+        the <a class="dfn" href="glossary.html#class">class</a>
+        and the <a class="dfn" href="glossary.html#object">object</a>.
+        A class defines a new kind of thing:
+        more specifically,
+        what information it has,
+        and what kinds of things it can do.
+        An object is then a particular thing with a particular set of properties
+        that behaves the way its class tells it to.
+      </p>
+
+      <p>
+        This probably seems hopelessly vague, so let's look at an analogy with biology.
+        There, the general category is the species,
+        such as <em>Velociraptor mongoliensis</em>,
+        and the specific "thing" is a particular raptor like Cuddles here.
+        The species keeps track of things like gait (it's bipedal) and diet (carnivorous),
+        while Cuddles herself keeps track of things like her current position.
+      </p>
+
+      <p>
+        Let's create a new class to keep track of our dinosaurs:
+      </p>
+
+<pre src="src/oop/naked-object.py">
+class Dinosaur(object):
+    pass
+
+cuddles = Dinosaur()
+print "type(cuddles):", type(cuddles)
+<span class="out">type(cuddles): &lt;class '__main__.Dinosaur'&gt;</span>
+
+cuddles.species = "Velociraptor mongoliensis"
+cuddles.color = "red"
+cuddles.speed = 8
+print "Cuddles is a", cuddles.color, cuddles.species
+<span class="out">Cuddles is a red Velociraptor mongoliensis</span>
+</pre>
+
+      <p class="continue">
+        We define a new class using the keyword <code>class</code>,
+        followed by the name of the new class.
+        Our new class is a kind of object,
+        so we put the word <code>object</code> in parentheses after the class's name;
+        we'll come back and explain why in the <a href="#s:inheritance">next section</a>.
+        Finally,
+        we use the keyword <code>pass</code> to indicate that
+        our new class doesn't have any special data or capabilities just yet;
+        we'll fix this in a few paragraphs.
+      </p>
+
+      <p>
+        Once a class has been defined,
+        we can create objects of that class
+        by using the class's name as if it were a function.
+        We have done this before,
+        for example,
+        when we create new turtles using <code>Turtle()</code>.
+        Given an object,
+        Python's built-in <code>type</code> function will tell us what class it belongs to.
+      </p>
+
+      <p>
+        Once we have created a new dinosaur,
+        we can store values in it by assigning to <code>cuddles.color</code>,
+        <code>cuddles.species</code>,
+        and so on.
+        The values stored by an object are called its <a class="dfn" href="glossary.html#member">member variables</a>,
+        or just "members" for short.
+        <span class="fixme">memory diagram</span>
+        In our example,
+        <code>cuddles</code> has three members:
+        <code>species</code> and <code>color</code> are strings,
+        while <code>speed</code> is an integer.
+        If we want to make Cuddles go faster or slower,
+        we just assign a new value to <code>cuddles.speed</code>:
+        it's a variable like any other
+        that just happens to be stored inside an object.
+      </p>
+
+      <p>
+        But why use four lines of code to create a dinosaur when one will do?
+        Let's change our class so that we can create a new object,
+        and initialize its member variables,
+        in a single step:
+      </p>
+
+<pre src="../src/oop/constructor.py">
+class Dinosaur(object):
+    def __init__(self, my_species, my_color, my_speed):
+        self.species = my_species
+        self.color = my_color
+        self.speed = my_speed
+
+cuddles = Dinosaur("Velociraptor mongoliensis", "red", 8)
+print "Cuddles is a", cuddles.color, cuddles.species
+<span class="out">Cuddles is a red Velociraptor mongoliensis</span>
+</pre>
+
+      <p class="continue">
+        This code is actually easiest to understand if we go through it backward.
+        We want to be able to refer to <code>cuddles.color</code>,
+        <code>cuddles.species</code>, and so on in the last line.
+        In order to do that,
+        we have to give our object members with those names,
+        so we pass the values for those members as arguments to
+        the call to <code>Dinosaur(...)</code>,
+        just as we would pass arguments to any other function.
+      </p>
+
+      <p>
+        In order for that to work,
+        we need a way to define a function that Python will run
+        when it's creating a new dinosaur.
+        Such a function is called a <a class="dfn" href="glossary.html#constructor">constructor</a>.
+        In Python,
+        we create a constructor for a class
+        by defining a function called <code>__init__</code> inside the class.
+        This function must always have exactly that name
+        so that Python knows to call it when constructing a new object.
+        Its argument are the values that we want to use to initialize the object:
+        in this case, the new dinosaur's species, color, and speed.
+      </p>
+
+      <p>
+        What is <code>self</code>?
+        It's the object we're in the process of creating&mdash;the thing that will contain
+        the new member variables we're about to define.
+        In practice,
+        when we call:
+      </p>
+
+<pre>
+Dinosaur("Velociraptor mongoliensis", "red", 8)
+</pre>
+
+      <p class="continue">
+        what Python is doing behind the scenes is:
+      </p>
+
+<pre>
+temp = ...make a new empty object of type Dinosaur...
+Dinosaur.__init__(temp, "Velociraptor mongoliensis", "red", 8)
+</pre>
+
+      <p>
+        That expression <code>Dinosaur.__init__(...)</code> should be familiar by now:
+        it looks exactly like a method call because it <em>is</em> a method call.
+        Let's go back and give our dinosaur another method:
+      </p>
+
+<pre src="../src/oop/method.py">
+class Dinosaur(object):
+    def __init__(self, my_species, my_color, my_speed):
+        self.species = my_species
+        self.color = my_color
+        self.speed = my_speed
+
+    def stats(self):
+        return "%s %s with speed %d" % (self.color, self.species, self.speed)
+
+cuddles = Dinosaur("Velociraptor mongoliensis", "red", 8)
+print "Cuddles is a", cuddles.stats()
+<span class="out">Cuddles is a red Velociraptor mongoliensis with speed 8</span>
+</pre>
+
+      <p>
+        Again, we have to give the method <code>stats</code> an extra argument
+        (which doesn't actually have to be called <code>self</code>,
+        but that's what everybody calls it)
+        so that inside <code>stats</code> we'll know which dinosaur we're talking about.
+        This is what lets us do:
+      </p>
+
+<pre src="../src/oop/method.py">
+stumbles = Dinosaur("Saurolophus osborni", "blue", 10)
+print "Stumbles is a", stumbles.stats()
+<span class="out">Stumbles is a blue Saurolophus osborni with speed 10</span>
+</pre>
+
+      <p>
+        With classes and objects in hand,
+        we can go back and clean up some of our earlier program.
+        We'll start by defining a class to represent hadrosaurs running in circles:
+      </p>
+
+<pre src="../src/oop/object-duckbill.py">
+from turtle import Turtle, mainloop
+
+class Duckbill(object):
+    def __init__(self, distance, color, speed, angle):
+        self.turtle = Turtle()
+        self.turtle.pencolor(color)
+        self.speed = speed
+        self.angle = angle
+
+        self.turtle.penup()
+        self.turtle.forward(distance)
+        self.turtle.pendown()
+        self.turtle.left(90)
+
+    def move(self):
+        self.turtle.forward(self.speed)
+        self.turtle.left(self.angle)
+
+duckbill = Duckbill(200, "green", 8, 6)
+for i in range(120):
+    duckbill.move()
+
+mainloop()
+</pre>
+
+      <p class="continue">
+        Again,
+        this code makes the most sense if we read it from the bottom up.
+        What we want to be able to do is
+        create a hadrosaur with a single line of code,
+        then tell that hadrosaur to move itself
+        <em>without having to keep track of how it's going to do that</em>.
+        That qualification is the whole point of object-oriented programming:
+        we want to set things up so that we don't have to worry about
+        the details of how hadrosaurs move&mdash;not even
+        the information the hadrosaur needs in order to move.
+        All we have to do once the hadrosaur is created is say, "Hadrosaur, move thyself."
+      </p>
+
+      <p>
+        Of course,
+        nothing is free:
+        in order to have hadrosaurs move themselves,
+        we have to give them the information they need to do that,
+        and make sure they're in the right starting place.
+        That's where the constructor comes in:
+        it creates the turtle that the hadrosaur will use to draw itself,
+        positions that turtle,
+        and stores the information the hadrosaur will need later on.
+      </p>
+
+      <p class="fixme">difference between values stored in the hadrosaur and values stored in the turtle</p>
+
+    </section>
+
+    <section id="s:inheritance">
+
+      <h2>New Turtles from Old</h2>
+
+      <p>
+        It's a bit annoying to have to type <code>self.turtle.forward</code>,
+        <code>self.turtle.left</code>,
+        and so on.
+        Let's change our <code>Duckbill</code> class so that isn't necessary:
+      </p>
+
+<pre src="../src/oop/inherit-duckbill.py">
+from turtle import Turtle, mainloop
+
+class Duckbill(<span class="highlight">Turtle</span>):
+    def __init__(self, distance, color, speed, angle):
+        <span class="highlight">Turtle.__init__(self)</span>
+        self.pencolor(color)
+        self.speed = speed
+        self.angle = angle
+
+        self.penup()
+        self.forward(distance)
+        self.pendown()
+        self.left(90)
+
+    def move(self):
+        self.forward(self.speed)
+        self.left(self.angle)
+
+duckbill = Duckbill(200, "green", 8, 6)
+
+for i in range(120):
+    duckbill.move()
+
+mainloop()
+</pre>
+
+      <p class="continue">
+        The two key changes are highlighted.
+        First,
+        instead of putting the name <code>object</code> in parentheses
+        when we are defining <code>Duckbill</code>,
+        we put the name <code>Turtle</code>.
+        This is our way of telling Python that a duckbill isn't just any old object:
+        we want it to <a class="dfn" href="glossary.html#inheritance">inherit</a>
+        everything that was defined for <code>Turtle</code>.
+        It's like saying that a wolf is a mammal:
+        that immediately implies that wolves are warm-blooded,
+        give birth to live young,
+        nurse them,
+        and so on.
+        Similarly,
+        when we say that a <code>Duckbill</code> is a <code>Turtle</code>
+        it means that any object of class <code>Duckbill</code>
+        automatically gets methods like <code>penup</code>,
+        <code>forward</code>,
+        <code>left</code>,
+        and everything else that <code>Turtle</code> objects have.
+      </p>
+
+      <p>
+        This is why we need that funny line:
+      </p>
+
+<pre>
+        <span class="highlight">Turtle.__init__(self)</span>
+</pre>
+
+      <p class="continue">
+        inside <code>Duckbill</code>'s constructor.
+        In order for a duckbill to work properly,
+        all the things it inherits from <code>Turtle</code> must be set up properly.
+        The code to set up a <code>Turtle</code> is in that class's constructor,
+        <code>Turtle.__init__</code>,
+        so we have to be sure to call that.
+        We also have to remember to pass in <code>self</code>,
+        the object being constructed.
+      </p>
+
+      <p class="fixme">memory model here</p>
+
+      <p>
+        Now that we have a class for duckbills,
+        let's create a class for raptors.
+        We start the same way:
+      </p>
+
+<pre src="../src/oop/object-raptor-1.py">
+class Raptor(object):
+    def __init__(self, distance, color, speed):
+        self.turtle = Turtle()
+        self.turtle.pencolor(color)
+        self.speed = speed
+
+        self.turtle.penup()
+        self.turtle.forward(distance)
+        self.turtle.pendown()
+</pre>
+
+      <p class="continue">
+        This is almost exactly the same as <code>Duckbill</code>'s constructor:
+        the only difference is that we're not recording an angle,
+        and we're not turning the raptor 90&deg; when we position it.
+        Can we share this code somewhow?
+      </p>
+
+      <p>
+        The answer is yes,
+        and the way to do it is once again to use inheritance.
+        Let's create a new class called <code>Dinosaur</code> to hold the shared code:
+      </p>
+
+<pre src="../src/oop/object-raptor-2.py">
+class Dinosaur(Turtle):
+    def __init__(self, distance, color, speed):
+        Turtle.__init__(self)
+        self.pencolor(color)
+        self.speed = speed
+        self.penup()
+        self.forward(distance)
+        self.pendown()
+</pre>
+
+      <p class="continue">
+        When a duckbill initializes itself,
+        it does everything in this list of instructions,
+        but also records its turning angle,
+        and turns itself 90&deg; at the start:
+      </p>
+
+<pre src="../src/oop/object-raptor-2.py">
+class Duckbill(Dinosaur):
+    def __init__(self, distance, color, speed, angle):
+        Dinosaur.__init__(self, distance, color, speed)
+        self.angle = angle
+        self.left(90)
+</pre>
+
+      <p class="continue">
+        To move,
+        a duckbill goes forward a certain amount,
+        then turns a certain amount:
+      </p>
+
+<pre src="../src/oop/object-raptor-2.py">
+class Duckbill(Dinosaur):
+    def __init__(self, distance, color, speed, angle):
+        ...as above...
+
+    def move(self):
+        self.forward(self.speed)
+        self.left(self.angle)
+</pre>
+
+      <p>
+        What about velociraptors?
+        They don't do anything extra to initialize themselves,
+        so their constructor just says,
+        "Do whatever a <code>Dinosaur</code> does."
+        To move,
+        though,
+        a raptor needs to know what it's chasing:
+      </p>
+
+<pre src="../src/oop/object-raptor-2.py">
+class Raptor(Dinosaur):
+    def __init__(self, distance, color, speed):
+        Dinosaur.__init__(self, distance, color, speed)
+
+    def move(self, target):
+        angle = self.towards(target)
+        self.setheading(angle)
+        self.forward(self.speed)
+</pre>
+
+      <p>
+        With these classes in hand,
+        the main body of our program becomes a <em>lot</em> easier to read:
+      </p>
+
+<pre src="../src/oop/object-raptor-2.py">
+duckbill = Duckbill(200, "green", 8, 6)
+raptor = Raptor(-200, "red", 7.5)
+for i in range(120):
+    raptor.move(duckbill.pos())
+    duckbill.move()
+</pre>
+
+      <p class="continue">
+        This is one reason we use classes and objects:
+        they make programs easier to understand.
+        If two types of things behave more or less the same way,
+        we put the stuff that's the same in a class
+        so that we only have to think about it once.
+        And if we don't need to know the details of how something moves,
+        we put the commands to move it in a method,
+        then ask the object to move itself.
+        Yes,
+        creating classes requires a bit of work,
+        but the larger or more complicated the program,
+        the greater the payoff.
+      </p>
+
+      <p id="liskov-substitution-princple" class="fixme">
+        <span class="fixme">Liskov Substitution Principle</span>
+      </p>
+
+    </section>
+
+    <section id="s:polymorphism">
+
+      <h2>If It Walks Like a Turtle...</h2>
+
+      <p>
+        Hiding details inside objects helps in another way as well:
+        it lets us replace one object with another
+        without changing the rest of the program.
+        This is called <a class="dfn" href="glossary.html#polymorphism">polymorphism</a>,
+        which means, "Having more than one form,"
+        and is exactly like swapping one resistor for another in a circuit board.
+      </p>
+
+      <p>
+        For example,
+        suppose that we want to see whether smarter velociraptors
+        will actually catch more hadrosaurs.
+        To do this,
+        we want to create a new <code>SmartRaptor</code> class
+        whose <code>move</code> method looks at where its prey is going to be
+        and tries to move to there.
+      </p>
+
+      <p>
+        But wait a second:
+        who should calculate the hadrosaur's next position?
+        And where should this calculation take place?
+        <code>SmartRaptor</code> could look at
+        <code>Duckbill</code>'s current position and heading
+        and do the math itself,
+        but then if we change how the duckbills move,
+        we'll have to remember to update the <code>SmartRaptor</code> class as well.
+        There's a good chance we'll forget to do this.
+      </p>
+
+      <p>
+        Instead,
+        we should give <code>Duckbill</code> a new method to report its next position.
+        We can then call that method and pass the result into <code>SmartRaptor</code> as its target,
+        so that the main body of our program looks like this:
+      </p>
+
+<pre>
+duckbill = Duckbill(200, "green", 8, 6)
+raptor = Raptor(-200, "red", 7.5)
+smart_raptor = SmartRaptor(-200, "orange", 7.5)
+for i in range(120):
+    raptor.move(duckbill.pos())
+    smart_raptor.move(duckbill.next_pos())
+    duckbill.move()
+</pre>
+
+      <p>
+        The upside of this design is that
+        we don't actually need to define a new class for smart raptors:
+        <code>SmartRaptor.move</code> is exactly the same as <code>Raptor.move</code>,
+        it just takes a different value as its target.
+        But that's also the downside of this design,
+        and it's a big one:
+        once again,
+        the program that uses the object has to do something different for that object,
+        which makes the code more fragile.
+      </p>
+
+      <p>
+        The right answer is to go back and change our <code>Raptor</code> class
+        so that its <code>move</code> method takes the duckbill the raptor is chasing as an argument,
+        and moves toward that:
+      </p>
+
+<pre src="../src/oop/smart-raptor.py">
+class Raptor(Dinosaur):
+    def __init__(self, distance, color, speed):
+        Dinosaur.__init__(self, distance, color, speed)
+
+    def move(self, target):
+        angle = self.towards(target.pos())
+        self.setheading(angle)
+        self.forward(self.speed)
+
+...
+
+duckbill = Duckbill(200, "green", 8, 6)
+raptor = Raptor(-200, "red", 7.5)
+...
+for i in range(120):
+    raptor.move(duckbill)
+    ...
+    duckbill.move()
+</pre>
+
+      <p>
+        The smart raptor class is now almost the same:
+        it just asks the target
+        (which is now the hadrosaur itself)
+        for its next position:
+      </p>
+
+<pre src="../src/oop/smart-raptor.py">
+class SmartRaptor(Dinosaur):
+    def __init__(self, distance, color, speed):
+        Dinosaur.__init__(self, distance, color, speed)
+
+    def move(self, target):
+        angle = self.towards(<span class="highlight">target.next_pos()</span>)
+        self.setheading(angle)
+        self.forward(self.speed)
+</pre>
+
+      <p class="continue">
+        Our main loop is now:
+      </p>
+
+<pre src="../src/oop/smart-raptor.py">
+duckbill = Duckbill(200, "green", 8, 6)
+raptor = Raptor(-200, "red", 7.5)
+<span class="highlight">smart_raptor = SmartRaptor(-200, "orange", 7.5)</span>
+for i in range(120):
+    raptor.move(duckbill)
+    <span class="highlight">smart_raptor.move(duckbill)</span>
+    duckbill.move()
+</pre>
+
+      <p>
+        It's now time for the payoff.
+        Once we have created a smart raptor,
+        we do exactly the same things with it as we do with a regular raptor.
+        The two objects are interchangeable,
+        or,
+        in programming jargon,
+        polymorphic.
+        We can therefore do things like this:
+      </p>
+
+<pre src="../src/oop/smart-raptor-polymorphic.py">
+duckbill = Duckbill(200, "green", 8, 6)
+raptors = [Raptor(-200, "red", 7.5),
+           SmartRaptor(-200, "orange", 7.5)]
+for i in range(120):
+    for r in raptors:
+        r.move(duckbill)
+    duckbill.move()
+</pre>
+
+      <p>
+        We can now create any kind of predator we want.
+        As long as it has a <code>move</code> method
+        that takes a hadrosaur as an argument,
+        all we have to do is add it to our list
+        and the main body of our program won't need to be changed.
+      </p>
+
+      <p>
+        We can go even further.
+        The raptor classes <code>move</code> methods don't actually care
+        if its argument is a hadrosaur or not.
+        They only care whether the things they're chasing
+        have methods called <code>pos</code> and <code>next_pos</code>.
+        We have actually created a plug-and-play system where
+        the things on the left and the things on the right
+        are almost completely insulated from each other:
+      </p>
+
+      <p class="fixme">picture</p>
+
+      <p>
+        Once again,
+        the real benefits are that we can now
+        ignore most of our program at any given time,
+        and replace things incrementally without changing anything else.
+      </p>
+
+    </section>
+
+    <section id="s:design">
+
+      <h2>Design</h2>
+
+      <p>
+        Deciding which class does what is clearly the key
+        to writing object-oriented programs;
+        what's the best way to do that?
+        In particular,
+        how do you come up with an initial guess of the classes you need?
+      </p>
+
+      <p>
+        One of the best ways is to write a paragraph or two about how the program will work,
+        then go through it circling the major nouns and verbs.
+        The nouns turn into classes;
+        the verbs become their methods.
+        Once they have those,
+        many programmers use <a class="dfn" href="glossary.html#crc-cards">CRC cards</a>.
+        The acronym stands for "class, responsibility, collaborator."
+        These are just standard 3&times;5 index cards
+        (the kind you might use to write down a recipe)
+        divided into three parts.
+        At the top is the name of the class;
+        on the left is a point-form description of what the class can do (its responsibilities),
+        and on the right is a list of the other classes it interacts with.
+      </p>
+
+      <p class="fixme">picture of CRC cards</p>
+
+      <p>
+        When you are designing a program
+        (either on your own or with other people),
+        you lay the cards out on a table and talk through your program's execution.
+        As you do so,
+        move the cards around,
+        scribble on them,
+        throw them away and replace them with new ones, and so on.
+        CRC cards are deliberately simple so that you <em>won't</em> take them too seriously,
+        and won't hesitate to change your design
+        because it took two hours to create all of the diagrams and PowerPoint slides
+        that document the current one.
+      </p>
+
+      <p class="fixme">example: solar system</p>
+
+    </section>
+
+    <section id="s:summary">
+
+      <h2>Summing Up</h2>
+
+      <p class="fixme"><a href="http://blog.codekills.net/2011/09/26/checking-types-in-python">don't check types: check interfaces</a></p>
+
+      <p class="fixme">summarize chapter</p>
+
+      <dl class="summary">
+        <dt id="Q01">Q01: How can I manage this data?</dt>
+        <dd>
+          <ol>
+            <li>point</li>
+          </ol>
+        </dd>
+
+        <dt id="Q02">Q02: How can I process it?</dt>
+        <dd>
+          <ol>
+            <li>point</li>
+          </ol>
+        </dd>
+
+        <dt id="Q03">Q03: How can I tell if I've processed it correctly?</dt>
+        <dd>
+          <ol>
+            <li>point</li>
+          </ol>
+        </dd>
+
+        <dt id="Q04">Q04: How can I find and fix bugs when I haven't?</dt>
+        <dd>
+          <ol>
+            <li>point</li>
+          </ol>
+        </dd>
+
+        <dt id="Q05">Q05: How can I keep track of what I've done?</dt>
+        <dd>
+          <ol>
+            <li>point</li>
+          </ol>
+        </dd>
+
+        <dt id="Q06">Q06: How can I find and use other people's work?</dt>
+        <dd>
+          <ol>
+            <li>point</li>
+          </ol>
+        </dd>
+
+        <dt id="Q07">Q07: How can other people find and use mine?</dt>
+        <dd>
+          <ol>
+            <li>point</li>
+          </ol>
+        </dd>
+
+        <dt id="Q08">Q08: How can I do all these things faster?</dt>
+        <dd>
+          <ol>
+            <li>point</li>
+          </ol>
+        </dd>
+      </dl>
+
+    </section>
+
+    <div class="footer">
+      <table>
+        <tr>
+          <td valign="middle">
+            <img src="../img/logo/creative-commons-attribution-license.png" alt="CC-A license" />
+          </td>
+          <td valign="middle">
+            This material is provided under the
+            <a href="http://creativecommons.org/licenses/by/3.0/legalcode">Creative Commons Attribution</a> license.
+            <br/>
+            Please contact <a href="mailto:info@software-carpentry.org">info@software-carpentry.org</a> for details.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </body>
+</html>

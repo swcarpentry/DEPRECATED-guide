@@ -1,0 +1,844 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../common/scb.css" type="text/css" />
+    <title>Software Carpentry / Spreadsheets</title>
+    <meta name="id" content="$Id: spreadsheets.html 2293 2011-11-02 13:24:49Z gvw $" />
+    <meta name="type" content="chapter" />
+  </head>
+  <body class="chapter">
+    <div class="header">
+      <a href="index.html"><img src="../img/logo/software-carpentry-banner.jpg" alt="Software Carpentry logo" class="logo" /></a>
+      <h1>Spreadsheets</h1>
+    </div>
+
+    <div class="toc">
+      <p class="fixme">table of contents</p>
+    </div>
+
+    <p><span class="fixme">Describe CO2 emissions analysis problem.</span></p>
+
+    <p>
+      A spreadsheet is a tool for performing computations on tables of data.
+      They're most useful when your data is numeric, and organized into rows and columns.
+      We will use Microsoft Excel for our examples,
+      since it is by far the most popular spreadsheet among scientists.
+      Open source alternatives like OpenOffice Calc and Gnumeric have similar features,
+      as do newer web-based tools like the Google Docs spreadsheets.
+    </p>
+
+    <section id="s:basic">
+
+      <h2>Basic Operation</h2>
+
+      <p>
+        We will use Canadian CO2 emissions as a running example in this chapter.
+        Our spreadsheet looks like this:
+      </p>
+
+      <img src="../img/spreadsheets/initial.png" alt="Initial Spreadsheet" />
+
+      <p class="continue">
+        Each rectangle in a spreadsheet is called a <a class="dfn" href="glossary.html#cell">cell</a>.
+        Cells can contains numbers, dates, plain text, or a wide variety of other kinds of data.
+        Information for each province and territory is in a single row;
+        the columns hold their areas, populations, and CO2 emissions for 1990 and 2008.
+        Nothing requires us to organize our data this way&mdash;we
+        could scatter values wherever we wanted&mdash;but organizing things by row and column
+        makes information easier to input, easier to update, and easier to find.
+      </p>
+
+      <p>
+        Those CO2 emissions are measured in megatons.
+        If we want the 2008 values in kilotons, we can put formulas in cells to do the conversions.
+      </p>
+
+      <p>
+        We'll start by adding a heading for our new emissions column in cell F1.
+        We want each cell in this column to contain the corresponding cell value in column E times 1000.
+        For example, we want F2 to contain the value in E2 times a thousand,
+        so let's put the cursor in F2 and type <code>=E2*1000</code>:
+      </p>
+
+      <img src="../img/spreadsheets/first-formula.png" alt="First Formula" />
+
+      <p class="continue">
+        Every formula starts with an equals sign.
+        As usual, <code>*</code> is the multiplication operator,
+        and E2 is a <a class="dfn" href="glossary.html#cell-reference">cell reference</a>:
+        it means "the value located in that cell."
+      </p>
+
+      <p>
+        We could emissions in kilotons for the other regions by typing a new formula for each,
+        but that would be tedious,
+        and we'd probably make mistakes.
+        Instead, let's copy the formula in cell F2 and paste it into cell F3:
+      </p>
+
+      <img src="../img/spreadsheets/second-formula.png" alt="Copying and Pasting a Formula" />
+
+      <p class="continue">
+        If you look at the formula bar,
+        you'll see that Excel automatically changed the formula to a thousand times E3, which is what we want.
+      </p>
+
+      <p>
+        Let's copy it again, then select the other the cells in column F, and paste the formula into all of them at once.
+        Excel automatically adjusts the cell reference in each so that F4 refers to E4, F5 to E5, and so on:
+      </p>
+
+      <img src="../img/spreadsheets/multi-paste.png" alt="Pasting into Multiple Cells" />
+
+      <p>
+        If this was a program, we wouldn't repeat the number 1000 in each cell.
+        Instead, we would put it in a variable of its own and reference that.
+        We can and should do that in a spreadsheet as well.
+        Let's go down to row 16 and create a new heading "megatons to kilotons"
+        and put the value 1000 in cell B16:
+      </p>
+
+      <img src="../img/spreadsheets/defining-scaling-factor.png" alt="Defining a Scaling Factor" />
+
+      <p class="continue">
+        (Excel doesn't require us to create headings,
+        but it's a good habit to get into,
+        since a spreadsheet with thousands of cells and no labels is pretty hard to figure out.)
+        Now that the scaling factor is in one place,
+        let's delete the formulas in column F and enter <code>=E2*B16</code> in cell F2:
+      </p>
+
+      <img src="../img/spreadsheets/using-scaling-factor.png" alt="Using a Scaling Factor" />
+
+      <p>
+        That does what we want,
+        but when we copy the formula and paste it into cell F3,
+        we get zero instead of 244,300:
+      </p>
+
+      <img src="../img/spreadsheets/pasting-scaling-factor.png" alt="Pasting the Scaling Factor" />
+
+      <p class="continue">
+        What's gone wrong?
+      </p>
+
+      <p>
+        Looking at the formula bar,
+        we can see that Excel has adjusted the cell references so that the formula is <code>=E3*B17</code>.
+        The first change is right, but the second makes the formula refer to an empty cell.
+        We can prevent the spreadsheet from adjusting the reference to B16
+        by using an <a class="dfn" href="glossary.html#absolute-reference">absolute reference</a>
+        with a dollar sign before the column name, row number, or both.
+      </p>
+
+      <p>
+        In our case, since we don't want B16 to be translated in any direction, we'll refer to it as $B$16,
+        so the formula in F2 becomes <code>=E2*$B$16</code>:
+      </p>
+
+      <img src="../img/spreadsheets/one-absolute-ref.png" alt="A Single Absolute Reference" />
+
+      <p class="continue">
+        When we copy this formula into other cells,
+        Excel updates the first of the references,
+        but not the second,
+        which is what we want:
+      </p>
+
+      <img src="../img/spreadsheets/paste-absolute-ref.png" alt="Copying Absolute References" />
+
+      <p>
+        If we now want emissions in tons instead of kilotons,
+        all we have to do is change the value in B16 from a thousand to a million,
+        and all of the cells that depend on it are automatically updated:
+      </p>
+
+      <img src="../img/spreadsheets/changing-scaling-factor.png" alt="Changing the Scaling Factor" />
+
+      <p class="continue">
+        When we change the value back, the cells are updated again.
+        This is why people use spreadsheets:
+        they automatically keep track of what depends on what,
+        and update things as needed whenever any values change.
+      </p>
+
+    </section>
+
+    <section id="s:aggregate">
+
+      <h2>Aggregation</h2>
+
+      <p>
+        To <a class="dfn" href="glossary.html#aggregate">aggregate</a> means
+        to combine several values into a single result.
+        Computing the sum, average, or standard deviation of a set of values are examples of aggregation.
+      </p>
+
+      <p>
+        Suppose we want to compute total areas and emissions for all of Canada's provinces and territories.
+        The total area is the sum of the values in cells B2 to B14.
+        The formula we write is almost exactly what we'd say: <code>=SUM(B2:B14)</code>:
+      </p>
+
+      <img src="../img/spreadsheets/sum-areas.png" alt="Sum of Areas" />
+
+      <p class="continue">
+        <code>SUM</code> is a function that totals the values in zero or more cells.
+        The expression <code>B2:B14</code> specifies a <a class="dfn" href="glossary.html#range">range</a>,
+        a rectangular block of cells with column B row 2 as its top left corner,
+        and column B row 14 as its bottom right.
+      </p>
+
+      <p>
+        If we copy and paste the formula we just wrote and then edit the function name,
+        Excel updates the cell range, which isn't what we want.
+        We could use an absolute range,
+        but then if we copy the formula to other columns,
+        Excel <em>won't</em> update the range when we <em>do</em> want it to.
+      </p>
+
+      <p>
+        The best solution is to use <a class="dfn" href="glossary.html#mixed-reference">mixed references</a>
+        in our range.
+        If we write it as <code>B$2:B$14</code>,
+        then the column (B) will be updated when we copy the formula to other locations,
+        but the row limits (2&ndash;14) will not.
+        Let's make this row bold and italic so that it's easier to see,
+        and then calculate the minimum, average, and maximum values for column B
+        using mixed references:
+      </p>
+
+      <img src="../img/spreadsheets/mixed-reference.png" alt="Using Mixed References" />
+
+      <p class="continue">
+        We can now paste the formulas below the other columns and get the right behavior:
+      </p>
+        
+      <img src="../img/spreadsheets/paste-mixed-reference.png" alt="Pasting Mixed References" />
+
+      <p>
+        Making formulas behave the way we want is only one of the problems we have to solve.
+        Another, larger issue is to figure out what we actually want.
+        Look at cell D14,
+        we can see that some of our data is actually missing:
+        Nunavut was part of the Northwest Territories before 1999,
+        so there is no emissions data for it for 1990.
+        Real-world data always has gaps like this:
+        sometimes it's physically impossible, too expensive, or too dangerous to collect values,
+        and sometimes, as in this case, those values don't actually exist.
+      </p>
+
+      <p>
+        Excel treats gaps and zeroes differently.
+        For example, to compute an average, we divide the sum of the values we have by the number of values.
+        Zeroes count as values, but gaps do not.
+        This is why entering zero for Nunavut's CO2 emissions in 1990 changes the average emissions for that year:
+        Excel is now adding up 14 values and dividing by 14,
+        rather than adding up 13 values and dividing by 13.
+        If we put a non-numeric value in the cell,
+        such as the string "no data",
+        we get the same result:
+        Excel acts as if the cell was empty.
+      </p>
+
+      <p>
+        It is easy to agree in this case that dividing by 13 is the "right" answer.
+        It is much harder in others.
+        For example,
+        if we want to count how many Russians won Nobel Prizes in the 20th Century,
+        should we include all winners from the Soviet Union,
+        or only those from the Russian Soviet Federative Socialist Republic?
+        Should East and West German totals be combined for the years 1945&ndash;1990?
+        If so,
+        should winners from regions that were part of the German Empire between 1871 and 1918
+        all be counted as German,
+        or should some of them be considered Czechoslovakian
+        (which is problematic in its own right,
+        since Czechoslovakia is now two separate countries)?
+        We can only put the right formula in the right cell
+        once we have decided what the right formula is.
+      </p>
+
+    </section>
+
+    <section id="s:display">
+
+      <h2>Display</h2>
+
+      <p>
+        Our spreadsheet is small enough to easily fit on a screen,
+        but others may have thousands of rows or columns.
+        If we want to keep row or column headings visible as we scroll around,
+        we can do so using the "Freeze Panes" feature.
+        From the "View" tab, we select "Freeze Panes", and choose "Freeze Top Row":
+      </p>
+
+      <img src="../img/spreadsheets/select-freeze-top-row.png" alt="Freezing the Top Row" />
+
+      <p class="continue">
+        A subtle dark gray border tells us which cells are frozen.
+        If we now scroll up and down, the top row stays in place:
+      </p>
+
+      <img src="../img/spreadsheets/scrolling-after-freezing.png" alt="Scrolling After Freezing" />
+
+      <p>
+        Let's put things back the way they were,
+        then make the values more readable by changing how numbers are displayed.
+        We select the cells we want to format,
+        then right-click to bring up a context menu and select "Format Cells":
+      </p>
+
+      <img src="../img/spreadsheets/format-cells-context-menu.png" alt="Context Menu to Format Cells" />
+
+      <p class="continue">
+        Under "Category" we choose "Number",
+        then change the number of decimal place to zero and tick off "Use thousands separator".
+        When we click "OK" on this dialog, the cells displaying areas are reformatted:
+      </p>
+
+      <img src="../img/spreadsheets/formatting-numbers.png" alt="Formatting Numbers" />
+
+      <p class="continue">
+        Dozens of other options are available,
+        the easiest of which to abuse is color.
+      </p>
+
+    </section>
+
+    <section id="s:chart">
+
+      <h2>Charting</h2>
+
+      <p>
+        Changing the way numbers are displayed improves readability,
+        but if we really want to see what's in our data,
+        we should create a chart.
+        Excel and other spreadsheets do simple charts very well,
+        though if we need something complex,
+        it may be easier to write a program to drive a graph-plotting package.
+        Numerical programming environments like MATLAB are a happy medium between the two,
+        which is one of the many reasons they are the programming tool of choice
+        for many numerical analysts.
+      </p>
+
+      <p>
+        Let's start by selecting the population and emissions for 2008, including column headers,
+        then go to the insert menu and select a scatter plot:
+      </p>
+
+      <img src="../img/spreadsheets/create-scatter-plot.png" alt="Creating a Scatter Plot" />
+
+      <p class="continue">
+        Excel creates a plot and places it on top of our data.
+        Let's go to "Layout" and add titles for the horizontal and vertical axes,
+        then cut the chart,
+        create a new sheet in our spreadsheet named "charts",
+        and paste the chart there so that it isn't sitting on top of our data:
+      </p>
+
+      <img src="../img/spreadsheets/scatter-plot.png" alt="A Simple Scatter Plot" />
+
+      <p>
+        This chart isn't actually very helpful because
+        too many data points are crowded together in the bottom left corner.
+        If we change both axes to be logarithmic rather than linear,
+        we can see a clear pattern:
+        emissions grow in proportion to population,
+        with a couple of outliers above and below the main trend line.
+        This kind of insight is what charts are for.
+      </p>
+
+      <img src="../img/spreadsheets/log-scatter-plot.png" alt="A Logarithmic Scatter Plot" />
+
+      <p>
+        Let's shrink our chart to make room for another one, then go back to our data.
+        Select the provinces and 2008 emissions, then go to "Insert" and choose "Bar Chart".
+        Once we have created it,
+        let's cut it and paste it beside the other chart:
+      </p>
+
+      <img src="../img/spreadsheets/bar-chart.png" alt="A Simple Bar Chart" />
+
+      <p class="continue">
+        At first glance it looks like there are no emissions at all
+        from Prince Edward Island or the three northern territories.
+        If we log-scale the emissions axis, though,
+        we can see that there are columns&mdash;they're just very short compared to the others:
+      </p>
+
+      <img src="../img/spreadsheets/log-bar-chart.png" alt="A Semi-Log Bar Chart" />
+
+      <p class="continue">
+        This highlights one of the dangers of visualization:
+        how we display data determines the conclusions we're likely to draw.
+      </p>
+
+    </section>
+
+    <section id="s:sort">
+
+      <h2>Sorting</h2>
+
+      <p>
+        Our CO2 spreadsheet is currently organized geographically from west to east,
+        with the northern territories tacked on at the end.
+        We can make things easier to find by sorting data alphabetically.
+        To do this,
+        we select the range of rows we want to sort by clicking on row numbers 1 to 14,
+        then go to the "Data" tab and choose "Sort".
+        Under "Sort by", we choose "Name":
+      </p>
+
+      <img src="../img/spreadsheets/sort-by-dialog.png" alt="Sorting Dialog" />
+
+      <p class="continue">
+        Voil&agrave;! The rows have been rearranged:
+      </p>
+
+      <img src="../img/spreadsheets/sorted-by-name.png" alt="Rows Sorted by Name" />
+
+      <p class="fixme">model-view separation</p>
+
+      <p>
+        Suppose we now want to know which provinces emitted the most CO2 per capita in 2008.
+        We'll start by hiding column D,
+        which holds the 1990 emissions,
+        so that the extra columns we're about to add will fit on the screen:
+      </p>
+
+      <img src="../img/spreadsheets/hiding-column.png" alt="Hiding a Column" />
+
+      <p class="continue">
+        Next, we calculate emissions per capita using a formula in column F:
+      </p>
+
+      <img src="../img/spreadsheets/emissions-per-capita.png" alt="Emissions per Capita" />
+
+      <p class="continue">
+        And then, in column G,
+        we use the <code>Rank</code> function to find each cell's rank in its column.
+        Its first parameter is the value whose rank we want:
+        in this case, the region's emissions per capita.
+        The second is the range of values we're finding that rank in:
+        in our case, cells F2 to F14.
+        Finally, we can specify whether the rankings are descending or ascending.
+        Since we want the region with the highest emissions to be ranked first,
+        we specify descending order, which is zero:
+      </p>
+
+      <img src="../img/spreadsheets/rank-first-cell.png" alt="Ranking the First Cell" />
+
+      <p class="continue">
+        The first rank looks plausible.
+        When we fill down to rank all of the regions, though, there are several ties:
+      </p>
+
+      <img src="../img/spreadsheets/rank-all-cells-wrong.png" alt="Ranking All Cells Incorrectly" />
+
+      <p class="continue">
+        What has gone wrong?
+      </p>
+
+      <p>
+        We can find out using Excel's built-in debugging tools.
+        Let's select cell G2, then go to "Formulas... Formula Auditing... Trace Precedents":
+      </p>
+
+      <img src="../img/spreadsheets/selecting-trace-precedents.png" alt="Selecting 'Trace Precedents'" />
+
+      <p class="continue">
+        This shows all the cells referenced by the formula in the chosen cell:
+      </p>
+
+      <img src="../img/spreadsheets/trace-precedents-first-cell.png" alt="Immediate Precedents of First Cell" />
+
+      <p class="continue">
+        Clicking again shows the values that those cells depend on:
+      </p>
+
+      <img src="../img/spreadsheets/all-precedents-first-cell.png" alt="All Precedents of First Cell" />
+
+      <p>
+        That looks right, so let's clear the display with "Remove Arrows" and look at the last cell:
+      </p>
+
+      <img src="../img/spreadsheets/trace-precedents-second-cell.png" alt="Immediate Precedents of Second Cell" />
+
+      <p class="continue">
+        The value is being ranked in the wrong range:
+        the formula used relative references rather than absolute references,
+        so Excel adjusted it when we copied it.
+        No matter which cell we're in, we always want to rank it in the range F2 to F14.
+        If we change our formula to use absolute references and re-rank,
+        our rankings look reasonable:
+      </p>
+
+      <img src="../img/spreadsheets/ranked-correctly.png" alt="Cells Ranked Correctly" />
+
+      <p class="continue">
+        We can now go back to the sorting menu and sort our regions by emissions per capita:
+      </p>
+
+      <img src="../img/spreadsheets/sorted-by-rank.png" alt="Cells Sorted by Rank" />
+
+    </section>
+
+    <section id="s:conditional">
+
+      <h2>Conditionals</h2>
+
+      <p>
+        Here's a version of our spreadsheet in which
+        each province and territory assigned to one of five regions:
+      </p>
+
+      <img src="../img/spreadsheets/regions.png" alt="Territories by Region" />
+
+      <p class="continue">
+        To find how many are in each region, we can use the <code>COUNTIF</code> function.
+        Its first argument is the range of cells we want to look at,
+        and its second is a single value.
+        Its result is the number of cells in that region that have that value,
+        so <code>COUNTIF</code> of B2:B14 and the string "Western"
+        is the number of provinces and territories in the west,
+        while <code>COUNTIF</code> of B2:B14 and "Prairies" is the number in the Prairies,
+        and so on:
+      </p>
+
+      <img src="../img/spreadsheets/countif-direct.png" alt="Counting Territories with Immediate Values" />
+
+      <p class="continue">
+        Rather than putting the region names in the formula,
+        we should refer to the row headings in our formula&mdash;again,
+        any data that's duplicated will eventually be wrong somewhere.
+        Notice that we use an absolute reference for the range of cells that we're counting in,
+        so that it isn't translated when we paste the formula,
+        but a relative reference for the label,
+        so that it is:
+      </p>
+
+      <img src="../img/spreadsheets/countif-relative.png" alt="Counting Territories with Relative References" />
+
+      <p>
+        Now let's add another column for the total CO2 emission in each region in 2008.
+        To calculate this, we use the <code>SUMIF</code> function.
+        Instead of counting the number of cells with a certain property,
+        it adds up the values of cells in one set
+        that correspond to cells in another set that pass some test.
+        The first argument is the range of cells we're testing:
+        in our case,
+        the name of the region in column B.
+        The second is what we're comparing those values to,
+        which is the region name in cells A17 to A21.
+        The third argument specifies the cells whose values Excel should add up:
+        in our case, the emissions in column F.
+        Excel only adds the ones that correspond to cells in the first range
+        that are equal to the value specified as the second argument:
+      </p>
+
+      <img src="../img/spreadsheets/sumif.png" alt="Using SUMIF" />
+
+      <p class="continue">
+        Tracing the precedents of the total emissions for the Prairie region
+        may make this clearer:
+      </p>
+
+      <img src="../img/spreadsheets/sumif-precedents.png" alt="Precedents for SUMIF" />
+
+      <p class="continue">
+        To find the value for C18 (the total emissions for the Prairies),
+        Excel has compared the value in A18 (the name "Prairies")
+        to the values in the range B2:B14 (the names of the regions the territories are in).
+        Wherever there is a match,
+        it has added the corresponding value in column F to the total it displays&mdash;in
+        this case, the values in F3, F4, and F5.
+      </p>
+
+      <p>
+        We can apply multiple tests in a single function call
+        using the functions <code>COUNTIFS</code> (with an "S" on the end)
+        and <code>SUMIFS</code>,
+        both of which take one or more pairs of arguments.
+        The first argument in each pair is a range, and the second specifies the test.
+        All of the ranges must have the same shape,
+        i.e., the same number of cells in the same rectangular pattern.
+      </p>
+
+      <p>
+        For example,
+        let's count how many provinces or territories in each region
+        were over their CO2 per capita limit in 2008.
+        We'll hide columns C and E (the area and 1990 emissions) to make some space,
+        then use a formula to calculate 2008 emissions per person in column G:
+      </p>
+
+      <img src="../img/spreadsheets/emissions-per-capita-2008.png" alt="Emissions per Capita 2008" />
+
+      <p class="continue">
+        Now let's put our <code>COUNTIFS</code> formula in column H.
+        The first range is B2 to B14, which must be equal to the region name.
+        The second range is G2 to G14, which is the emissions per capita.
+        These cell pass the test if their values are greater than 0.02:
+      </p>
+
+      <img src="../img/spreadsheets/over-per-capita-2008.png" alt="Number Over Limit per Capita 2008" />
+
+      <p>
+        Notice the double quotes around the second test:
+        without them,
+        Excel sees "nothing &gt; 0.02" and complains that the formula is incorrect.
+      </p>
+
+    </section>
+
+    <section id="s:named">
+
+      <h2>Named Ranges</h2>
+
+      <p>
+        Another way to manage the data in a spreadsheet is
+        to use <a class="dfn" href="glossary.html#named-range">named ranges</a>.
+        Let's go down to the bottom of our spreadsheet
+        and insert formulas for the minimum, average, and maximum values of each column.
+        The minimum area is <code>MIN(B$2:B$14)</code>,
+        while the average and maximum are <code>AVERAGE</code> and <code>MAX</code> of the same range.
+      </p>
+
+      <p>
+        At this point, your alarm bells should be ringing.
+        Any time information is duplicated, it will eventually be wrong in one or more places.
+        We've specified the range B2:B14 three times;
+        what we <em>should</em> do is give that range of cells a name,
+        so that if we ever want to change it,
+        we only have to change it in one place.
+      </p>
+
+      <p>
+        Let's erase our three formulas, then select the range of cells B2:B14.
+        If we go to the upper left corner of the formula bar,
+        we can give this range the name "Areas":
+      </p>
+
+      <img src="../img/spreadsheets/creating-named-range.png" alt="Creating a Named Range" />
+
+      <p class="continue">
+        We can now rewrite our formulas as <code>MIN(Areas)</code>,
+        <code>AVERAGE(Areas)</code>, and <code>MAX(Areas)</code>:
+      </p>
+
+      <img src="../img/spreadsheets/named-range-area.png" alt="Using Named Ranges in Formulas" />
+
+      <p class="continue">
+        Doing this guarantees that all three formulas are referring to exactly the same range of cells:
+        if we typed in the range three separate times,
+        we could all too easily type B2:B4 instead of B2:B14.
+        It's also easier to understand, since the formula tells us we're calculating with areas.
+      </p>
+
+      <p>
+        Using named ranges also makes it easier for us to manipulate our spreadsheet.
+        If we go to the Name Manager,
+        it shows us that this spreadsheet has one named range called "Areas":
+      </p>
+
+      <img src="../img/spreadsheets/name-manager.png" alt="The Name Manager" />
+
+      <p class="continue">
+        If we were exploring our data,
+        we could change the range of cells that "Areas" refers to
+        so that it only included only the Western and Prairie provinces,
+        look at the aggregate values for those two regions,
+        then change the range back.
+        Working this way is faster and safer than editing multiple formulas.
+      </p>
+
+      <p>
+        It is also possible to create
+        <a class="dfn" href="glossary.html#dynamic-named-range">dynamic named ranges</a>
+        using the <code>OFFSET</code> function.
+        Dynamic ranges automatically adjust their size to include all the values in a row or column,
+        and are very useful when you're using spreadsheets to analyze experimental data.
+        If we want to go even further,
+        Excel can import "live" data from a Microsoft Access database,
+        which allows it to serve as a graphical data analysis front-end
+        for very complex data sets.
+      </p>
+
+    </section>
+
+    <section id="s:lookup">
+
+      <h2>Lookup</h2>
+
+      <p>
+        Scientists often need to classify and organize data.
+        The easiest way to do this in a spreadsheet is to use a
+        <a class="dfn" href="glossary.html#lookup-function">lookup function</a>.
+      </p>
+
+      <p>
+        Let's start by creating a small table of per capita CO2 emissions and regulatory ratings.
+        The lowest rating is "minimal";
+        at 0.005 megatons per capita, the rating changes to "low",
+        then to "legal" at 0.01,
+        and 0.02 or higher is "excessive":
+      </p>
+
+      <img src="../img/spreadsheets/classify.png" alt="Emission Classification Table" />
+
+      <p>
+        After hiding column D and putting emissions per capita in column F,
+        we can write a formula in column G
+        to give each province a rating based on the table we just created.
+        This formula uses the <code>LOOKUP</code> function, which takes three arguments.
+        The first is the value we're looking up&mdash;for cell G2, the value in F2.
+        The second is the range we're looking in, which are the limits on each rating range in cells B16:B19.
+        The values in this range must be sorted:
+        Excel will check them one by one to find the largest one that is less than or equal to the search value,
+        i.e., the last one that isn't greater than what we're looking for.
+        The third argument is the range of values we're selecting from:
+        in this case, the rating names:
+      </p>
+
+      <img src="../img/spreadsheets/rating-one-cell.png" alt="Rating for One Cell" />
+
+      <p>
+        Sure enough,
+        British Columbia's emissions per capita is legal.
+        if we paste this formula into the remaining cells,
+        we see that five provinces have excessive emissions,
+        and that only the Yukon's rating is "low":
+      </p>
+
+      <img src="../img/spreadsheets/rating-all-cells.png" alt="Rating All Cells" />
+
+      <p>
+        The typical bureaucratic response to news like this is to move the goalposts,
+        so let's pretend we care more about our ratings in the polls
+        than the world our children are going to inherit
+        and make it easier to get good ratings.
+        As we raise the thresholds,
+        Excel automatically re-selects ratings,
+        until lo and behold,
+        every single province and territory is in the legal range:
+      </p>
+
+      <img src="../img/spreadsheets/changing-ratings.png" alt="Changing Ratings" />
+
+    </section>
+
+    <section id="s:pivot">
+
+      <h2>Pivot Tables</h2>
+
+      <p>
+        Suppose we want to see how many provinces and territories in each geographical region
+        fell into each of our original CO2 emission categories.
+        With five regions and four categories we would have to write 20 <code>SUMIF</code> formulas,
+        but we can get the answers we want with a single
+        <a class="dfn" href="glossary.html#pivot-table">pivot table</a>.
+      </p>
+
+      <p>
+        To create a pivot table,
+        we select all of the data that we want to include in the table,
+        then go to "Insert" and choose "Pivot Table":
+      </p>
+
+      <img src="../img/spreadsheets/create-pivot-table.png" alt="Creating a Pivot Table" />
+
+      <p class="continue">
+        As the popup says,
+        pivot tables make it easy to arrange and summarize complicated data and drill down on details.
+        When we click, the dialog asks us what data we want to include in the table:
+      </p>
+
+      <img src="../img/spreadsheets/pivot-table-dialog.png" alt="Pivot Table Creation Dialog" />
+
+      <p class="continue">
+        Since we have already selected a range of cells,
+        Excel fills this in automatically.
+        We can also choose whether to put the pivot table in a new worksheet or add it to an existing one.
+        We'll do the former so that everything fits on one screen.
+      </p>
+
+      <p>
+        When we click "OK", Excel creates a new worksheet and inserts a placeholder for our table.
+        It also creates a list of the titles in our columns.
+        Let's drag the "Region" title to the "Column Labels" field,
+        and then drag "Rating" to "Row Labels":
+      </p>
+
+      <img src="../img/spreadsheets/partial-pivot-table.png" alt="Partially-Created Pivot Table" />
+
+      <p class="continue">
+        Our pivot table now has one column for each of the unique regions,
+        and a row for each of the ratings that actually appear in the data.
+        Since no province or territory has an "excessive" rating at the moment,
+        there isn't a row for it.
+      </p>
+
+      <p>
+        Now let's drag the "Territory" heading to the "&Sigma;&nbsp;Values" field.
+        As soon as we drop it, Excel fills in the pivot table:
+      </p>
+
+      <img src="../img/spreadsheets/completed-pivot-table.png" alt="Completed Pivot Table" />
+
+      <p class="continue">
+        The value for column "Northern" and row "low" is
+        the number of cells with "Northern" in the "Region" column of the original data
+        and "low" in the "Rating" column.
+        In other words,
+        Excel has treated each row of the original data as a record,
+        and counted how many records belong in each cell of the pivot table.
+      </p>
+
+      <p>
+        Pivot tables can do more than just count entries;
+        they can also calculate averages and other <a href="#s:aggregate">aggregate values</a>.
+        One thing they <em>can't</em> easily do is handle more than two dimensions' worth of data.
+        If we want to analyze medical data by year, region, gender, and blood type,
+        we must either do it two axes at a time,
+        or switch to a more sophisticated tool.
+      </p>
+
+      <p>
+        Another thing they don't do (at least not by default) is update themselves automatically.
+        If we go back to the worksheet that holds our data
+        and change the rating boundaries to their politicized levels,
+        the counts in the pivot table do <em>not</em> change
+        until we right-click on the pivot table's title and select "Refresh".
+        This default behavior has been a source of head-scratching,
+        and eventually foul language,
+        for more than a few scientists.
+      </p>
+
+    </section>
+
+    <section id="s:summary">
+
+      <h2>Summing Up</h2>
+
+      <p><span class="fixme">Summarize concepts: indirection, declarative programming, structuring code for human readability.</span></p>
+
+    </section>
+
+    <div class="footer">
+      <table>
+        <tr>
+          <td valign="middle">
+            <img src="../img/logo/creative-commons-attribution-license.png" alt="CC-A license" />
+          </td>
+          <td valign="middle">
+            This material is provided under the
+            <a href="http://creativecommons.org/licenses/by/3.0/legalcode">Creative Commons Attribution</a> license.
+            <br/>
+            Please contact <a href="mailto:info@software-carpentry.org">info@software-carpentry.org</a> for details.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </body>
+</html>

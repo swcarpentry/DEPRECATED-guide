@@ -268,10 +268,15 @@ print x = 1 + 2
     assigning something to <code>x</code> changes what it points to,
     but does not change anything else.
     In particular,
-    <code>y</code> still has the value 4 after this assignment:
-    it is not automatically updated when <code>x</code>'s value changes,
-    as it would in a spreadsheet.
+    <code>y</code> still has the value 4 after this assignment&mdash;it
+    is not automatically updated when <code>x</code>'s value changes,
+    as it would in a spreadsheet:
   </p>
+
+<pre>
+<span class="in">print y</span>
+<span class="out">4</span>
+</pre>
 
   <figure id="f:assign_new_value">
     <img src="pymedia/assign_new_value.png" alt="Assigning a New Value" />
@@ -328,8 +333,8 @@ print 'body temperature in Kelvin:', temp_kelvin</span>
     (hence its name).
     It calculates a value for this variable
     that depends on the value of <code>temp_fahr</code>.
-    The last line prints the result.
-    The <a href="glossary.html#string">character string</a>
+    The last line prints the result;
+    the <a href="glossary.html#string">character string</a>
     (or just "string" for short)
     inside quotes is printed as-is,
     followed by the value of <code>temp_kelvin</code>.

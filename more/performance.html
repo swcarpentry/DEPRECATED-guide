@@ -1,0 +1,1714 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../common/scb.css" type="text/css" />
+    <title>Software Carpentry / Performance</title>
+    <meta name="id" content="$Id: performance.html 2293 2011-11-02 13:24:49Z gvw $" />
+    <meta name="type" content="chapter" />
+  </head>
+  <body class="chapter">
+    <div class="header">
+      <a href="index.html"><img src="../img/logo/software-carpentry-banner.jpg" alt="Software Carpentry logo" class="logo" /></a>
+      <h1>Performance</h1>
+    </div>
+
+    <div class="toc">
+      <ol>
+        <li><a href="#s:invperc">Invasion Percolation Revisted</a></li>
+        <li><a href="#s:fail">Speeding It Up</a></li>
+        <li><a href="#s:lazy">A New Beginning</a></li>
+        <li><a href="#s:profile">Profiling</a></li>
+        <li><a href="#s:terms">What Performance Really Means</a></li>
+        <li><a href="#s:arch">Architecture</a></li>
+        <li><a href="#s:summary">Summing Up</a></li>
+      </ol>
+    </div>
+
+    <blockquote>
+      <p class="quotatoin">
+        Machine-independent code has machine-independent performance.
+      </p>
+      <p class="attribution">
+        &mdash; anonymous
+      </p>
+    </blockquote>
+
+    <p>
+      When people talk about a computer's performance, they almost always mean its speed.
+      In fact, speed is why computers were invented:
+      until fancy graphics and networking came along,
+      the reason computers existed was
+      to do in minutes or hours what would take human beings weeks or years.
+    </p>
+
+    <p>
+      Scientists usually want programs to go faster for three reasons.
+      First, they want a solution to a single large problem, such as, "What's the lift of this wing?"
+      Second, they have many problems to solve, and need answers to all of them.
+      A typical example is,
+      "Compare this DNA sequences to every one in the database and tell me what the closest matches are."
+      Finally, scientists may have a deadline and a fixed set of resources
+      and want to solve as big a problem as possible within the constraints.
+      Weather prediction falls into this category:
+      given more computing power,
+      scientists use more accurate (and more computationally demanding) models,
+      rather than solving the old models faster.
+    </p>
+
+    <p>
+      "High performance computing" should just mean "computing that is noticeably faster than normal".
+      Over the last forty years, though it has come to be synonymous with big, expensive supercomputers
+      that are notoriously difficult to program.
+      Before we tackle those difficulties,
+      we will look at where programs spend their time
+      and what we can do to speed them up on conventional hardware.
+      Before <em>that</em>, though, there are two questions we should always ask ourselves.
+      First, does our program actually need to go faster?
+      If we only use it once a day,
+      getting it to run in ten seconds instead of five minutes probably isn't worthwhile.
+    </p>
+
+    <p>
+      Second, is our program correct?
+      There's no point making a buggy program faster:
+      more wrong answers per unit time doesn't move science forward
+      (although it may help us track down a bug).
+      Just as importantly,
+      almost everything we do to make programs faster also makes them more complicated,
+      and therefore harder to debug.
+      If our starting point is correct,
+      we can use its output to check the output of our optimized version.
+      If it isn't, we've probably made our life more difficult.
+    </p>
+
+    <section id="s:invperc">
+
+      <h2>Invasion Percolation Revisted</h2>
+
+      <p>
+        As a running example,
+        let's revisit the <a href="invperc.html">invasion percolation</a> program we wrote a few chapters ago.
+        It simulated the spread of a pollutant through fractured rock.
+        The rock is modeled as a two-dimensional grid of random numbers.
+        Initially, the grid's center cell is marked as being filled.
+        On each time step,
+        we find the lowest-valued cells on the perimeter of the filled region,
+        pick one at random,
+        and fill it in.
+        We stop filling when we reach the edge of the grid.
+      </p>
+
+      <p class="fixme">invasion percolation picture</p>
+
+      <p>
+        We need to do thousands of simulations
+        in order to calculate meaningful statistics about the fractal dimension of the filled-in region
+        (which tells us how fast and how far the pollutant will spread),
+        so speed is definitely an issue.
+        To find out whether our program is fast enough,
+        let's add a few lines to the program's main driver:
+      </p>
+
+<pre>
+if __name__ == '__main__':
+
+    &hellip;get simulation parameters from command-line arguments&hellip;
+
+    # Run simulation.
+<span class="highlight">    start_time = time.time()</span>
+    random.seed(random_seed)
+    grid = create_random_grid(grid_size, value_range)
+    mark_filled(grid, grid_size/2, grid_size/2)
+    num_filled = fill_grid(grid) + 1
+<span class="highlight">    elapsed_time = time.time() - start_time</span>
+<span class="highlight">    print 'program=%s size=%d range=%d seed=%d filled=%d time=%f' % \</span>
+<span class="highlight">          (sys.argv[0], grid_size, value_range, random_seed, num_filled, elapsed_time)</span>
+    if graphics:
+        show_grid(grid)
+</pre>
+
+      <p class="continue">
+        The first new line records the time when the program starts running.
+        The other new lines use that to calculate how long the simulation took,
+        and then display the program's parameters and running time.
+      </p>
+
+      <p>
+        We need to make one more change
+        before we start running lots of simulation.
+        We were seeding the random number generator using the computer's clock time:
+      </p>
+
+<pre>
+    start_time = time.time()
+    &hellip;
+    random_seed = int(start_time)
+</pre>
+
+      <p class="continue">
+        But what if a simulation runs very quickly?
+        <code>time.time()</code> returns a floating point number;
+        <code>int</code> truncates this by throwing away the fractional part,
+        so if our simulation runs in less than a second,
+        two (or more) might wind up with the same seed,
+        which in turn will mean they have the same "random" values in their grids.
+        (This isn't a theoretical problem&mdash;we actually tripped over it while writing this chapter.)
+      </p>
+
+      <p>
+        One way to fix this is to to shift those numbers up.
+        For now let's guess that every simulation will take at least a tenth of a millisecond to run,
+        so we'll multiply the start time by ten thousand,
+        then truncate it so that it is less than a million:
+      </p>
+
+<pre>
+RAND_SCALE = 10000    # Try to make sure random seeds are distinct.
+RAND_RANGE = 1000000  # Range of random seeds.
+&hellip;
+    random_seed = int(start_time * RAND_SCALE) % RAND_RANGE
+</pre>
+
+      <p>
+        The final step is to write a shell script that runs the program multiple times
+        for various grid sizes:
+      </p>
+
+<pre>
+#!/usr/bin/env bash
+for size in {11..81..10}
+do
+  for counter in {1..20}
+  do
+    python invperc.py -g -n $size -v 100
+  done
+done
+</pre>
+
+      <p class="continue">
+        (We could equally well have added a few more lines to the program itself
+        to run a specified number of simulations
+        instead of just one.)
+        If we average the 20 values for each grid size, we get the following:
+      </p>
+
+      <table class="performance">
+        <tr><td></td><td>11</td><td>21</td><td>31</td><td>41</td><td>51</td><td>61</td><td>71</td><td>81</td></tr>
+        <tr><td>cells&nbsp;filled</td><td>16.60000000</td><td>45.75000000</td><td>95.85000000</td><td>157.90000000</td><td>270.50000000</td><td>305.75000000</td><td>416.85000000</td><td>532.05000000</td></tr>
+        <tr><td>time&nbsp;taken</td><td>0.00397100</td><td>0.03538100</td><td>0.15588500</td><td>0.44416000</td><td>1.15735000</td><td>1.90951600</td><td>3.50955500</td><td>5.80960200</td></tr>
+        <tr><td>time/cell</td><td>0.00023900</td><td>0.00077300</td><td>0.00162600</td><td>0.00281300</td><td>0.00427900</td><td>0.00624500</td><td>0.00841900</td><td>0.01091900</td></tr>
+      </table>
+
+      <p>
+        Is that good enough?
+        <span class="fixme">talk about expected runtime here</span>
+      </p>
+
+      <p>
+        Let's fit a fourth-order polynomial to our data:
+      </p>
+
+      <table class="performance">
+        <tr><td></td><td><em>x<sup>4</sup></em></td><td><em>x<sup>3</sup></em></td><td><em>x<sup>2</sup></em></td><td><em>x<sup>1</sup></em></td><td><em>x<sup>0</sup></em></td></tr>
+        <tr><td>time&nbsp;taken</td><td>2.678&times;10<sup>-07</sup></td><td>-2.692&times;10<sup>-05</sup></td><td>1.760&times;10<sup>-03</sup></td><td>-3.983&times;10<sup>-02</sup></td><td>2.681&times;10<sup>-01</sup></td></tr>
+        <tr><td>time/cell</td><td>-1.112&times;10<sup>-10</sup></td><td>1.996&times;10<sup>-08</sup></td><td>4.796&times;10<sup>-07</sup></td><td>2.566&times;10<sup>-05</sup></td><td>-1.295&times;10<sup>-04</sup></td></tr>
+      </table>
+
+      <p>
+        According to the first polynomial, a single run on a 1001&times;1001 grid will take almost 68 hours.
+        What can we do to make it faster?
+      </p>
+
+    </section>
+
+    <section id="s:fail">
+
+      <h2>Speeding It Up</h2>
+
+      <p>
+        Let's start by looking at that grid.
+        Instead of using a list of lists, we could use a single flat list and translate (x,y) coordinates into list indices
+        using the formula x&times;N+y.
+      </p>
+
+      <p class="fixme">flat list picture</p>
+
+      <p>
+        Implementing this is awkward: every time we want to access a cell, we have to write <code>grid[translate(x, y, N)]</code>.
+        Since we access cells a lot, that means a lot of low-level changes scattered throughout our program.
+        And if we want to try another idea later, we'll have to go back and make changes in all those places again.
+      </p>
+
+      <p>
+        Let's refactor our program to make future changes easier.
+        Instead of passing around a naked data structure, like a list or a list of lists,
+        let's create a class called <code>Grid</code> that will manage the grid for us.
+        In outline, the class is:
+      </p>
+
+<pre>
+class Grid(object):
+    '''Implement an NxN grid.'''
+
+    def __init__(self, N, Z):
+        '''Create a random NxN grid filled with random integers in 1..Z.
+        Assumes the RNG has already been seeded.'''
+        &hellip;
+
+    def __getitem__(self, coords):
+        '''Get value at location.'''
+        &hellip;
+
+    def __setitem__(self, coords, value):
+        '''Set value at location.'''
+        &hellip;
+
+    def mark_filled(self, x, y):
+        &hellip;
+</pre>
+
+      <p>
+        Nothing in this class's interface is tied to any particular data representation.
+        Once we create a grid using:
+      </p>
+
+<pre>
+grid = Grid(grid_size, value_range)
+</pre>
+
+      <p class="continue">
+        we can get and set cell values using:
+      </p>
+
+<pre>
+corner_cell = grid[0, 0]
+grid[N-1, N-1] = 1
+</pre>
+
+      <p class="continue">
+        All of the details are encapsulated by the class,
+        so if we change things again in the future,
+        we only have to make changes in one place&mdash;none of the rest of our program
+        will need to know or care.
+      </p>
+
+      <p>
+        Let's fill in the <code>Grid</code> class's methods.
+        The constructor checks that the size is odd, then creates a flat list of N&times;N random numbers:
+      </p>
+
+<pre>
+    def __init__(self, N, Z):
+        '''Create a random NxN grid filled with random integers in 1..Z.
+        Assumes the RNG has already been seeded.'''
+
+        assert N > 0, 'Grid size must be positive'
+        assert N%2 == 1, 'Grid size must be odd'
+        self.size = N
+        self.grid = []
+        for i in range(N*N):
+            self.grid.append(random.randint(1, Z))
+</pre>
+
+      <p>
+        <code>__getitem__</code> and <code>__setitem__</code>
+        (the methods that allow grids to be subscripted like arrays)
+        are next:
+      </p>
+
+<pre>
+    def __getitem__(self, coords):
+        '''Get value at location.'''
+        return self.grid[self.index(coords)]
+
+    def __setitem__(self, coords, value):
+        '''Set value at location.'''
+        self.grid[self.index(coords)] = value
+</pre>
+
+      <p>
+        Given those, <code>mark_filled</code> is just:
+      </p>
+
+<pre>
+def mark_filled(self, x, y):
+    self[x, y] = FILLED
+</pre>
+
+      <p class="continue">
+        Remember, <code>self[x, y] = FILLED</code> is actually a call to <code>self.__setitem__((x, y), FILLED)</code>.
+        And finally, we implement the index calculation:
+      </p>
+
+<pre>
+    def index(self, coords):
+        '''Check (x,y) coordinates and convert to scalar.'''
+        x, y = coords
+        assert 0 &lt;= x &lt; self.size, \
+               'X coordinate out of range (%d vs %d)' % (x, self.size)
+        assert 0 &lt;= y &lt; self.size, \
+               'Y coordinate out of range (%d vs %d)' % (y, self.size)
+        return x * self.size + y
+</pre>
+
+      <p>
+        We don't actually need the <code>mark_filled</code> method:
+        since we have a <code>__setitem__</code> method,
+        we could just assign <code>FILLED</code> to location (x,y).
+        However,
+        the whole point of reorganizing the code is to make future changes easier.
+        "Mark a cell as filled" is always going to be part of our algorithm;
+        exactly how we do that might change,
+        so we encapsulate that change in a method.
+      </p>
+
+      <p>
+        We do have to  update the rest of the program to use our grid class
+        instead of accessing the list directly, though.
+        This is a one-time cost,
+        and if we had encapsulated the grid properly in the first place,
+        no change would be necessary.
+        Here are the new versions of the two core functions:
+      </p>
+
+<pre>
+def is_candidate(grid, x, y):
+    '''Is a cell a candidate for filling?'''
+    return (x &gt; 0)           and (grid[x-1, y  ] == FILLED) \
+        or (x &lt; grid.size-1) and (grid[x+1, y  ] == FILLED) \
+        or (y &gt; 0)           and (grid[x,   y-1] == FILLED) \
+        or (y &lt; grid.size-1) and (grid[x,   y+1] == FILLED)
+
+def find_candidates(grid):
+    '''Find low-valued neighbor cells suitable for filling.'''
+
+    min_val = sys.maxint
+    min_set = set()
+    for x in range(grid.size):
+        for y in range(grid.size):
+            if grid[x, y] == FILLED:
+                continue
+            if is_candidate(grid, x, y):
+                if grid[x, y] == min_val:
+                    min_set.add((x, y))
+                elif grid[x, y] &lt; min_val:
+                    min_val = grid[x, y]
+                    min_set = set([(x, y)])
+
+    return list(min_set)
+</pre>
+
+      <p>
+        All right, how fast is this?
+      </p>
+
+      <table class="performance">
+        <tr><td></td><td>11</td><td>21</td><td>31</td><td>41</td><td>51</td><td>61</td><td>71</td><td>81</td></tr>
+        <tr><td>list&nbsp;of&nbsp;lists</td><td>0.00033300</td><td>0.02566700</td><td>0.08883300</td><td>0.22716700</td><td>0.45500000</td><td>1.36266700</td><td>1.89550000</td><td>3.53583300</td></tr> 
+        <tr><td>flat&nbsp;list</td><td>0.01400000</td><td>0.11900000</td><td>0.42766700</td><td>1.33883300</td><td>3.26200000</td><td>6.06050000</td><td>12.47450000</td><td>21.35900000</td></tr>
+      </table>
+
+      <p>
+        Ouch: we've actually made things several times worse.
+        To understand why, let's have a look at what Python actually does when we look things up.
+        If we want the i<sup>th</sup> element of a plain old list, Python has to:
+      </p>
+
+      <ol>
+
+        <li>
+          get the data object that <code>i</code> refers to
+        </li>
+
+        <li>
+          get the integer out of that object
+        </li>
+
+        <li>
+          get the object at that location in the list
+        </li>
+
+        <li>
+          get the value of that object
+        </li>
+
+      </ol>
+
+      <p>
+        All right, what about a list of lists?
+        Or a flat list using (x&times;N+y) to figure out which element corresponds to (x,y)?
+      </p>
+
+      <table>
+        <tr>
+          <td>List of Lists</td>
+          <td>Flat List</td>
+        </tr>
+        <tr>
+           <td valign="top">
+             <ol>
+               <li>
+                 get object <code>x</code> refers to
+               </li>
+               <li>
+                 extract integer value
+               </li>
+               <li>
+                 get object <code>grid</code> refers to
+               </li>
+               <li>
+                 look up sublist <code>grid[x]</code>
+               </li>
+               <li>
+                 get object <code>y</code> refers to
+               </li>
+               <li>
+                 extract integer value
+               </li>
+               <li>
+                 get object <code>sublist[y]</code>
+               </li>
+               <li>
+                 get value
+               </li>
+             </ol>
+           </td>
+           <td valign="top">
+             <ol>
+               <li>
+                 get object <code>x</code> refers to
+               </li>
+               <li>
+                 extract integer value
+               </li>
+               <li>
+                 get object <code>N</code> refers to
+               </li>
+               <li>
+                 extract integer value
+               </li>
+               <li>
+                 multiply
+               </li>
+               <li>
+                 get object <code>y</code> refers to
+               </li>
+               <li>
+                 extract integer value
+               </li>
+               <li>
+                 add
+               </li>
+               <li>
+                 get object <code>grid</code>
+               </li>
+               <li>
+                 get object at calculated location
+               </li>
+               <li>
+                 get value
+               </li>
+             </ol>
+           </td>
+        </tr>
+      </table>
+
+      <p>
+        Looking something up in a flat list takes more steps,
+        but that doesn't guarantee it will take more time,
+        since different kinds of operation have different costs.
+        Even experienced programmers find it hard to predict what will be fast or slow.
+        That's what benchmarking is for:
+        instead of guessing,
+        or relying on past experience (which may or may not apply to the hardware we're using today),
+        we can collect a few timings and let the machine tell us what's fast and what isn't.
+      </p>
+
+      <p>
+        All right, if a flattened list is slower, what about a NumPy array?
+        This is where switching to a class for the grid pays off:
+        all we have to do is change the internals of <code>Grid</code>,
+        and everything else just works.
+        The new <code>Grid</code> class looks like this:
+      </p>
+
+<pre>
+class Grid(object):
+    '''Implement an NxN grid.'''
+
+    def __init__(self, N, Z):
+        '''Create a random NxN grid filled with random integers in 1..Z.
+        Assumes the RNG has already been seeded.'''
+
+        assert N > 0, 'Grid size must be positive'
+        assert N%2 == 1, 'Grid size must be odd'
+        self.size = N
+        self.grid = numpy.random.random_integers(1, Z, (N, N))
+
+    def __getitem__(self, coords):
+        '''Get value at location.'''
+        x, y = coords
+        return self.grid[x, y]
+
+    def __setitem__(self, coords, value):
+        '''Set value at location.'''
+        x, y = coords
+        self.grid[x, y] = value
+
+    def mark_filled(self, x, y):
+        self.grid[x, y] = FILLED
+</pre>
+
+      <p>
+        Other than <code>import numpy</code> in the file header,
+        nothing else changes except the performance.
+        Unfortunately,
+        that's also worse that our original list of lists,
+        though not as bad as our flattened list:
+      </p>
+
+      <table class="performance">
+        <tr><td></td><td>11</td><td>21</td><td>31</td><td>41</td><td>51</td><td>61</td><td>71</td><td>81</td></tr>
+        <tr><td>list&nbsp;of&nbsp;lists</td><td>0.00033300</td><td>0.02566700</td><td>0.08883300</td><td>0.22716700</td><td>0.45500000</td><td>1.36266700</td><td>1.89550000</td><td>3.53583300</td></tr> 
+        <tr><td>numpy</td><td>0.00566700</td><td>0.11716700</td><td>0.63833300</td><td>1.58833300</td><td>3.24733300</td><td>6.35983300</td><td>15.00416700</td><td>19.24000000</td></tr>
+      </table> 
+
+      <p>
+        This implementation is slow for a different reason than the flat list.
+        Instead of storing each value in its own Python object,
+        NumPy stores all of the values in an array in a single block of memory.
+        Doing operations on two arrays stored like this is a lot faster than operating on two lists of Python values,
+        but accessing elements one at a time is actually slower,
+        because each time a value is pulled out of the array for use in the main program,
+        Python has to create a "box" to put it in.
+        Allocating and initializing the bits of memory used by those boxes takes time.
+        Since we're never adding or multiplying corresponding elements of two NumPy arrays (which is what it's fast at),
+        the "fast" array package doesn't actually help us in this case.
+      </p>
+
+      <p class="fixme">picture of element access in NumPy</p>
+
+    </section>
+
+    <section id="s:lazy">
+
+      <h2>A New Beginning</h2>
+
+      <p>
+        Let's try a completely different approach.
+        Instead of re-examining every cell in the grid each time we want to fill one,
+        let's keep track of which cells are currently on the boundary in some kind of auxiliary data structure,
+        then choose randomly from all the cells in that set that share the current lowest value.
+        When we fill in a cell,
+        we add its neighbors to the "pool" of neighbors (unless they're already there).
+      </p>
+
+      <p>
+        Here's the modified <code>fill_grid</code> function:
+      </p>
+
+<pre>
+def fill_grid(grid):
+    '''Fill an NxN grid until filled region hits boundary.'''
+
+    x, y = grid.size/2, grid.size/2
+    pool = set()
+    pool.add((grid[x, y], x, y))
+    num_filled = 0
+    on_edge = False
+    while not on_edge:
+        x, y = get_next(pool)
+        grid.mark_filled(x, y)
+        num_filled += 1
+        if (x == 0) or (x == grid.size-1) or (y == 0) or (y == grid.size-1):
+            on_edge = True
+        else:
+            if x &gt; 0:           make_candidate(grid, pool, x-1, y)
+            if x &lt; grid.size-1: make_candidate(grid, pool, x+1, y)
+            if y &gt; 0:           make_candidate(grid, pool, x,   y-1)
+            if y &lt; grid.size-1: make_candidate(grid, pool, x,   y+1)
+
+    return num_filled
+</pre>
+
+      <p class="continue">
+        This function creates a set called <code>pool</code>
+        that keeps track of the cells currently on the edge of the filled region.
+        Each loop iteration gets the next cell out of this pool,
+        fills it in,
+        and (potentially) adds its neighbors to the set.
+      </p>
+
+      <p>
+        This function is 21 lines long,
+        compared to 15 for our original <code>fill_grid</code> function,
+        but four of those six lines are the calls to <code>make_candidate</code>,
+        which adds a neighbor to the pool if it isn't already there.
+        Let's have a look at <code>get_next</code> and <code>make_candidate</code>:
+      </p>
+
+<pre>
+def get_next(pool):
+    '''Take a cell randomly from the equal-valued front section.'''
+    temp = list(pool)
+    temp.sort()
+    v = temp[0][0]
+    i = 1
+    while (i &lt; len(temp)) and (temp[i][0] == v):
+        i += 1
+    i = random.randint(0, i-1)
+    v, x, y = temp[i]
+    pool.discard((v, x, y))
+    return x, y
+
+def make_candidate(grid, pool, x, y):
+    '''Ensure that (x, y, v) is a candidate.'''
+    v = grid[x, y]
+    if v == FILLED:
+        return
+    pool.add((v, x, y))
+</pre>
+
+      <p>
+        This is definitely more complicated that what we started with:
+        we now have to keep a second data structure (the pool) up to date,
+        and in sync with the grid.
+        But look at the payoff:
+      </p>
+
+      <table class="performance">
+        <tr><td></td><td>11</td><td>21</td><td>31</td><td>41</td><td>51</td><td>61</td><td>71</td><td>81</td></tr>
+        <tr><td>list&nbsp;of&nbsp;lists</td><td>0.00033300</td><td>0.02566700</td><td>0.08883300</td><td>0.22716700</td><td>0.45500000</td><td>1.36266700</td><td>1.89550000</td><td>3.53583300</td></tr> 
+        <tr><td>set&nbsp;pool</td><td>0.00005000</td><td>0.00300000</td><td>0.00910000</td><td>0.01613000</td><td>0.01200000</td><td>0.02705000</td><td>0.06800000</td><td>0.08300000</td></tr>
+      </table>
+
+      <p>
+        Now <em>that</em> is an improvement.
+        Instead of looking at N<sup>2</sup> cells each time we want to fill one,
+        then looking at the same N<sup>2</sup> cells in the next loop iteration,
+        we're only ever checking four cells (at most).
+        As a result, the bigger our grids get, the bigger our savings are.
+      </p>
+
+      <p>
+        We can do even better.
+        <code>get_next</code> turns the set into a list each time it is called.
+        We have to do this because sets can't be ordered,
+        and we need the candidate cells ordered by value so that we can find the ones that share the lowest value.
+        Instead of converting every time,
+        let's store the pool of candidates in a list,
+        and insert each new candidate in the right place to keep the list sorted:
+      </p>
+
+      <p class="fixme">picture of sorted list used as priority queue</p>
+
+      <p>
+        A list that's used this way is called a <a class="dfn" href="glossary.html#priority-queue">priority queue</a>,
+        since it keeps items queued up according to some priority (in this case, the order in which they should be filled).
+        Python has a library called <code>bisect</code> that will find the right place to insert an item
+        in log<sub>2</sub>(N) steps using binary search.
+        To use it, we change two lines in <code>fill_grid</code>:
+      </p>
+
+      <table>
+        <tr>
+          <td><strong>Old</strong></td>
+          <td><strong>New</strong></td>
+        </tr>
+        <tr>
+          <td valign="top">
+<pre>
+pool = set()
+pool.add((grid[x, y], x, y))
+</pre>
+          </td>
+          <td valign="top">
+<pre>
+pool = []
+pool.append((grid[x, y], x, y))
+</pre>
+          </td>
+        </tr>
+      </table>
+
+      <p class="continue">
+        and then update <code>get_next</code> and <code>make_candidate</code>:
+      </p>
+
+<pre>
+def get_next(pool):
+    '''Take a cell randomly from the equal-valued front section.'''
+    v = pool[0][0]
+    i = 1
+    while (i &lt; len(pool)) and (pool[i][0] == v):
+        i += 1
+    i = random.randint(0, i-1)
+    v, x, y = pool[i]
+    del pool[i]
+    return x, y
+
+def make_candidate(grid, pool, x, y):
+    '''Ensure that (x, y, v) is a candidate.'''
+    v = grid[x, y]
+    if v == FILLED:
+        return
+    entry = (v, x, y)
+    i = bisect.bisect_left(pool, entry)
+    if i == len(pool):
+        pool.append(entry)
+    elif pool[i] == entry:
+        pass
+    else:
+        pool.insert(i, entry)
+</pre>
+
+      <p>
+        The results are:
+      </p>
+
+      <table>
+        <tr><td></td><td>11</td><td>21</td><td>31</td><td>41</td><td>51</td><td>61</td><td>71</td><td>81</td></tr>
+        <tr><td>list&nbsp;of&nbsp;lists</td><td>0.00033300</td><td>0.02566700</td><td>0.08883300</td><td>0.22716700</td><td>0.45500000</td><td>1.36266700</td><td>1.89550000</td><td>3.53583300</td></tr> 
+        <tr><td>set&nbsp;pool</td><td>0.00005000</td><td>0.00300000</td><td>0.00910000</td><td>0.01613000</td><td>0.01200000</td><td>0.02705000</td><td>0.06800000</td><td>0.08300000</td></tr> 
+        <tr><td>priority&nbsp;queue</td><td>0.00016700</td><td>0.00033300</td><td>0.01066700</td><td>0.01550000</td><td>0.01550000</td><td>0.01566700</td><td>0.01583300</td><td>0.02083300</td></tr>
+      </table> 
+
+      <p class="continue">
+        That's interesting:
+        on small grids, a priority queue isn't always better,
+        but on larger grids, it pulls ahead of our set-based implementation.
+      </p>
+
+      <p>
+        We're now almost one hundred and fifty times faster than our original list-of-lists implementation;
+        can we do better still?
+        The answer is "yes", but let's refactor some more before making further changes.
+        We turned our grid into a class so that we could change it without needing to change anything else in our program.
+        Let's do the same with our pool,
+        so that we don't need to change anything in <code>fill_grid</code>
+        when we want to try new ways of keeping track of the cells we might fill next.
+        Our <code>Pool</code> class's interface looks like this:
+      </p>
+
+<pre>
+class Pool(object):
+    '''Keep track of a pool of cells from a grid.'''
+
+    def __init__(self, grid):
+        &hellip;
+
+    def add(self, x, y):
+        &hellip;
+
+    def choose(self):
+        &hellip;
+</pre>
+
+      <p>
+        It's straightforward to fill this in for either the set-based or priority queue-based approach,
+        and then to modify the rest of the program to use it:
+      </p>
+
+<pre>
+def fill_grid(grid):
+    '''Fill an NxN grid until filled region hits boundary.'''
+
+    x, y = grid.size/2, grid.size/2
+    pool = Pool(grid)
+    pool.add(x, y)
+    num_filled = 0
+    on_edge = False
+    while not on_edge:
+        x, y = pool.choose()
+        grid.mark_filled(x, y)
+        num_filled += 1
+        if (x == 0) or (x == grid.size-1) or (y == 0) or (y == grid.size-1):
+            on_edge = True
+        else:
+            if x &gt; 0:           pool.add(x-1, y)
+            if x &lt; grid.size-1: pool.add(x+1, y)
+            if y &gt; 0:           pool.add(x,   y-1)
+            if y &lt; grid.size-1: pool.add(x,   y+1)
+
+    return num_filled
+</pre>
+
+      <p>
+        Notice, by the way, that the pool knows which grid it's a pool for.
+        That way, whenever we add (x,y) to the pool,
+        we don't have to know whether the pool is also storing the value at (x,y),
+        or leaving it in the grid,
+        or doing something else entirely.
+        If the pool wants to know whether that cell is already filled,
+        or what its value is,
+        it can look in the grid itself.
+      </p>
+
+      <p>
+        Let's make our final change.
+        If we use a profiler to find out where the program is spending its time
+        (something we will discuss in the next section),
+        it turns out that initializing the grid with random numbers
+        is one of the most expensive parts.
+        We actually never look at a lot of those numbers:
+        if the fractal grows in one direction,
+        all the cells in the other direction are ignored.
+        Let's go back to our grid class and have it generate values only when needed:
+      </p>
+
+<pre>
+class Grid(object):
+    '''Implement an NxN grid.'''
+
+    def __init__(self, N, Z):
+        '''Create a random NxN grid filled with random integers in 1..Z.
+        Assumes the RNG has already been seeded.'''
+
+        assert N &gt; 0, 'Grid size must be positive'
+        assert N%2 == 1, 'Grid size must be odd'
+        self.size = N
+        self.range = Z
+        self.values = {}
+
+    def __getitem__(self, coords):
+        '''Get value at location.'''
+        if coords not in self.values:
+            self.values[coords] = random.randint(1, self.range)
+        return self.values[coords]
+
+    def __setitem__(self, coords, value):
+        '''Set value at location.'''
+        self.values[coords] = value
+
+    def mark_filled(self, x, y):
+        self[x, y] = FILLED
+</pre>
+
+      <p>
+        This is a radical departure from our previous implementations.
+        Instead of a list of lists, we're storing values in a dictionary
+        that maps (x,y) cell coordinates to random values.
+        Whenever the program stores a value,
+        we insert it into the dictionary (or overwrite what's already there).
+        When the program reads a value,
+        we check to see if there's already something stored for that location.
+        If so, we return it; if not, we generate a random value then and there.
+        This ensures that we only generate values that we're actually going to use.
+      </p>
+
+      <p>
+        The most important thing to notice, though,
+        is that we don't have to change a single line of code
+        anywhere else in our program.
+        Modularizing our program has saved us time:
+        programming time, testing time, and debugging time.
+        And look at the performance:
+      </p>
+
+      <table class="performance">
+        <tr><td></td><td>11</td><td>21</td><td>31</td><td>41</td><td>51</td><td>61</td><td>71</td><td>81</td></tr>
+        <tr><td>list&nbsp;of&nbsp;lists</td><td>0.00033300</td><td>0.02566700</td><td>0.08883300</td><td>0.22716700</td><td>0.45500000</td><td>1.36266700</td><td>1.89550000</td><td>3.53583300</td></tr> 
+        <tr><td>set&nbsp;pool</td><td>0.00005000</td><td>0.00300000</td><td>0.00910000</td><td>0.01613000</td><td>0.01200000</td><td>0.02705000</td><td>0.06800000</td><td>0.08300000</td></tr>
+        <tr><td>priority&nbsp;queue</td><td>0.00016700</td><td>0.00033300</td><td>0.01066700</td><td>0.01550000</td><td>0.01550000</td><td>0.01566700</td><td>0.01583300</td><td>0.02083300</td></tr> 
+        <tr><td>lazy</td><td>0.00016700</td><td>0.00016700</td><td>0.00283300</td><td>0.00718000</td><td>0.01300000</td><td>0.01316700</td><td>0.01316700</td><td>0.01583300</td></tr>
+      </table>
+
+      <p class="continue">
+        Again, the payoff is uneven,
+        but for larger grids this is twice as fast as our priority queue version,
+        or about three hundred times faster than what we started with.
+        Extrapolating, our 68 hours has become 15 minutes.
+        That's not bad at all for three and a half hours of work&hellip;
+      </p>
+
+      <p>
+        There are three important lessons to take away from this exercise.
+        First, choosing the right algorithms and data structures can yield enormous speedups,
+        so we should always look there first for performance gains.
+        This is where a broad knowledge of computer science comes in handy:
+        any good book on data structures and algorithms describes dozens or hundreds of things
+        that are exactly what's needed to solve some obscure but vital performance problem.
+        (We're fond of Sedgewick's <a class="bookcite" href="bibliography.html#sedgewick-algorithms-c">Algorithms in C</a>
+        and <span class="fixme">Python algorithms book</span>.)
+      </p>
+
+      <p>
+        Second, well-structured programs are easier to optimize than poorly-structured ones.
+        In this case we now have one abstraction for the grid,
+        and another for the pool of cells we might want to fill next.
+        We can now change those two things more or less independently,
+        and even if we don't,
+        having those abstractions makes it easier to change <code>fill_grid</code>.
+        As is almost always the case, improving quality improves performance:
+        it is the opposite of an either/or tradeoff.
+      </p>
+
+      <p>
+        Finally, optimizing performance requires some understanding of what the machine is actually doing when it runs a program,
+        and almost always involves making the program more complex.
+        Taking advantage of parallelism or rewriting parts of the program in a lower-level language is also more complex,
+        though,
+        so it's a question of where we want to pay that price, not whether.
+      </p>
+
+    </section>
+
+    <section id="s:profile">
+
+      <h2>Profiling</h2>
+
+      <p>
+        Timing an entire program is a good way to find out if we're making things better or not,
+        but some way to know where the time is going would be even better.
+        The tool that will do that for us is called a <a class="dfn" href="glossary.html#profiler">profiler</a>
+        because it creates a profile of a program's execution time,
+        i.e.,
+        it reports how much time is spent in each function in the program, or even on each line.
+      </p>
+
+      <p>
+        There are two kinds of profilers.
+        A <a class="dfn" href="glossary.html#deterministic-profiler">deterministic</a> profiler inserts instructions in a program
+        to record the clock time at the start and end of every function.
+        It doesn't actually modify the source code:
+        instead, it adds those instructions behind the scenes after the code has been translated into something the computer can actually run.
+        For example, suppose our program looks like this:
+      </p>
+
+<pre>
+def swap(values):
+    for i in range(len(values)/2):
+        values[i], values[-1-i] = values[-1-i], values[i]
+
+def upto(N):
+    for i in xrange(1, N):
+        temp = [0] * i
+        swap(temp)
+
+upto(100)
+</pre>
+
+      <p class="continue">
+        A deterministic profiler would insert timing calls that worked like this:
+      </p>
+
+<pre>
+def swap(values):
+<span class="highlight">    _num_calls['swap'] += 1</span>
+<span class="highlight">    _start_time = time.time()</span>
+    for i in range(len(values)/2):
+        values[i], values[-1-i] = values[-1-i], values[i]
+<span class="highlight">    _total_time['swap'] += (time.time() - _start_time)</span>
+
+def upto(N):
+<span class="highlight">    _num_calls['upto'] += 1</span>
+<span class="highlight">    _start_time = time.time()</span>
+    for i in xrange(1, N):
+        temp = [0] * i
+        swap(temp)
+<span class="highlight">    _total_time['upto'] += (time.time() - _start_time)</span>
+
+<span class="highlight">_num_calls['swap'] = 0</span>
+<span class="highlight">_total_time['swap'] = 0</span>
+<span class="highlight">_num_calls['upto'] = 0</span>
+<span class="highlight">_total_time['upto'] = 0</span>
+upto(100)
+</pre>
+
+      <p class="continue">
+        (Note that the profiler wouldn't actually change the source of our program;
+        these extra operations are inserted after the program has been loaded into memory.)
+      </p>
+
+      <p>
+        Once the program has been run,
+        the profiler can use the two dictionaries <code>_num_calls</code> and <code>_total_time</code>
+        to report the average running time per function call.
+        Going further, the profiler can also keep track of which functions are calling which,
+        so that (for example) it can report times for calls to <code>swap</code> from <code>upto</code>
+        separately from calls to <code>swap</code> from some other function <code>downfrom</code>.
+      </p>
+
+      <p>
+        The problem with deterministic profiling is that
+        adding those timing calls changes the runtime of the functions being measured,
+        since reading the computer's clock and recording the result both take time.
+        The smaller the function's runtime, the larger the distortion.
+        This can be avoided by using a <a class="dfn" href="glossary.html#statistical-profiler">statistical</a> profiler.
+        Instead of adding timing calls to the code,
+        it freezes the program every millisecond or so and makes a note of what function is running.
+        Like any sampling procedure,
+        this produces become more accurate as more data is collected,
+        so statistical profilers work well on long-running programs,
+        but can produce misleading results for short ones.
+      </p>
+
+      <p>
+        Python's <code>cProfile</code> module is a deterministic profiler.
+        It records times and call counts and saves data in a file for later analysis.
+        We can use it to see where time goes in our initial list-of-lists invasion percolation program:
+      </p>
+
+<pre>
+import cProfile, pstats                                  <span class="comment"># 1</span>
+from invperc_09_listoflists import run as list_run       <span class="comment"># 2</span>
+cProfile.run('list_run(127391, 51, 100)', 'list.prof')   <span class="comment"># 3</span>
+p = pstats.Stats('list.prof')                            <span class="comment"># 4</span>
+p.strip_dirs().sort_stats('time').print_stats()          <span class="comment"># 5</span>
+</pre>
+
+      <p>
+        We start by importing <code>cProfile</code>, the actual profiling tool, on line 1.
+        We also import <code>pstats</code>,
+        a helper module for analyzing the data files <code>cProfile</code> produces.
+      </p>
+
+      <p>
+        The second line imports a function called <code>run</code>
+        from a refactored list-of-lists version of invasion percolation.
+        This function is simply:
+      </p>
+
+<pre>
+def run(random_seed, grid_size, value_range):
+    random.seed(random_seed)
+    grid = create_random_grid(grid_size, value_range)
+    mark_filled(grid, grid_size/2, grid_size/2)
+    return fill_grid(grid) + 1
+</pre>
+
+      <p class="continue">
+        We have to put the main simulation code into a single function
+        because <code>cProfile.run</code> needs exactly one function call as a starting point.
+      </p>
+
+      <p>
+        We give that starting point to <code>cProfile.run</code> on line 3,
+        along with the name of the file we want the profiling results stored in.
+        Notice that the call is passed as a string:
+        <code>cProfile</code> uses Python's built-in <code>eval</code> function
+        to run the command in this string,
+        just as if we had typed it into the interpreter.
+      </p>
+
+      <p>
+        Line 4 reads the profiling data back into our program
+        and wraps it up in a <code>pstats.Stats</code> object.
+        It may seem silly to write the data out only to read it back in,
+        but the two activities are often completely separate:
+        we can accumulate profiling data across many different runs of a program,
+        then analyze it all at once.
+      </p>
+
+      <p>
+        Finally, line 5 strips directory names off the accumulated data,
+        sorts them according to run time, and prints the result.
+        We strip directory names because all of the code we're profiling is in a single file;
+        in larger programs, we'll keep the directory information
+        (even though it makes the output a bit harder to read)
+        so that we can separate <code>fred.calculate</code>'s running time from <code>jane.calculate</code>'s.
+      </p>
+
+      <p>
+        Here's what the output looks like for our original list-of-lists implementation:
+      </p>
+
+<pre>
+         697576 function calls in 0.483 CPU seconds
+
+   Ordered by: internal time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+   339489    0.328    0.000    0.347    0.000 invperc_listoflists.py:56(is_candidate)
+      134    0.125    0.001    0.476    0.004 invperc_listoflists.py:64(find_candidates)
+   340028    0.019    0.000    0.019    0.000 {len}
+     7020    0.004    0.000    0.004    0.000 {range}
+     2601    0.003    0.000    0.004    0.000 random.py:160(randrange)
+        1    0.002    0.002    0.007    0.007 invperc_listoflists.py:30(create_random_grid)
+     2601    0.001    0.000    0.005    0.000 random.py:224(randint)
+     2652    0.000    0.000    0.000    0.000 {method 'append' of 'list' objects}
+     2735    0.000    0.000    0.000    0.000 {method 'random' of '_random.Random' objects}
+        1    0.000    0.000    0.476    0.476 invperc_listoflists.py:83(fill_grid)
+      134    0.000    0.000    0.000    0.000 random.py:259(choice)
+      135    0.000    0.000    0.000    0.000 invperc_listoflists.py:44(mark_filled)
+        1    0.000    0.000    0.000    0.000 {function seed at 0x023B0E70}
+        1    0.000    0.000    0.483    0.483 &lt;string&gt;:1(&lt;module&gt;)
+        1    0.000    0.000    0.000    0.000 random.py:99(seed)
+        1    0.000    0.000    0.483    0.483 invperc_listoflists.py:101(run)
+       40    0.000    0.000    0.000    0.000 {method 'add' of 'set' objects}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+</pre>
+
+      <p>
+        The columns are the number of calls,
+        the total time spent in that function,
+        the time per call,
+        the total cumulative time (i.e., the total time for that function and everything it calls),
+        the cumulative time per call,
+        and then which function the stat is for.
+        As we can see, <code>is_candidate</code> accounts for two thirds of our runtime:
+        if we want to make this program faster,
+        that's what we should speed up.
+      </p>
+
+      <div class="box">
+        <p class="boxtitle">Wall Clock Time vs. CPU Time</p>
+
+        <p class="fixme">
+          explain wall clock and CPU time
+        </p>
+      </div>
+
+      <p>
+        Now let's have a look at the fast implementation
+        that combined a candidate pool with lazy random number generation.
+        After refactoring it to put the main simulation calls in a single function,
+        its profile is:
+      </p>
+
+<pre>
+         7485 function calls in 0.007 CPU seconds
+
+   Ordered by: internal time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+     1221    0.002    0.000    0.004    0.000 invperc_lazy.py:63(add)
+        1    0.001    0.001    0.007    0.007 invperc_lazy.py:83(fill_grid)
+      579    0.001    0.000    0.001    0.000 random.py:160(randrange)
+     1221    0.001    0.000    0.002    0.000 invperc_lazy.py:43(__getitem__)
+      306    0.001    0.000    0.002    0.000 invperc_lazy.py:72(choose)
+      306    0.000    0.000    0.000    0.000 {method 'sort' of 'list' objects}
+      579    0.000    0.000    0.001    0.000 random.py:224(randint)
+      306    0.000    0.000    0.000    0.000 random.py:259(choice)
+      306    0.000    0.000    0.000    0.000 invperc_lazy.py:53(mark_filled)
+      306    0.000    0.000    0.000    0.000 {method 'keys' of 'dict' objects}
+      544    0.000    0.000    0.000    0.000 {method 'add' of 'set' objects}
+      885    0.000    0.000    0.000    0.000 {method 'random' of '_random.Random' objects}
+      306    0.000    0.000    0.000    0.000 invperc_lazy.py:49(__setitem__)
+      306    0.000    0.000    0.000    0.000 {len}
+      306    0.000    0.000    0.000    0.000 {method 'discard' of 'set' objects}
+        1    0.000    0.000    0.007    0.007 &lt;string&gt;:1(&lt;module&gt;)
+        1    0.000    0.000    0.007    0.007 invperc_lazy.py:106(run)
+        1    0.000    0.000    0.000    0.000 {function seed at 0x023B0E70}
+        1    0.000    0.000    0.000    0.000 random.py:99(seed)
+        1    0.000    0.000    0.000    0.000 invperc_lazy.py:33(__init__)
+        1    0.000    0.000    0.000    0.000 invperc_lazy.py:59(__init__)
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+</pre>
+
+      <p class="continue">
+        The total run time is less than that of the list-of-lists version by a factor of of 70.
+        What's more, the profile is much flatter:
+        no single function stands out as an obvious performance bottleneck.
+        But is that just a reflection of the fact that we're down near the resolution of the clock?
+        Let's try a longer run, say, for a 501&times;501 grid:
+      </p>
+
+<pre>
+         300551 function calls in 0.258 CPU seconds
+
+   Ordered by: internal time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+    50041    0.053    0.000    0.133    0.000 invperc_lazy.py:63(add)
+        1    0.044    0.044    0.256    0.256 invperc_lazy.py:83(fill_grid)
+    50041    0.032    0.000    0.076    0.000 invperc_lazy.py:43(__getitem__)
+    12511    0.031    0.000    0.067    0.000 invperc_lazy.py:72(choose)
+    21454    0.030    0.000    0.033    0.000 random.py:160(randrange)
+    12511    0.014    0.000    0.014    0.000 {method 'sort' of 'list' objects}
+    12511    0.011    0.000    0.013    0.000 random.py:259(choice)
+    21454    0.011    0.000    0.044    0.000 random.py:224(randint)
+    12511    0.009    0.000    0.013    0.000 invperc_lazy.py:53(mark_filled)
+    12511    0.007    0.000    0.007    0.000 {method 'keys' of 'dict' objects}
+    23500    0.004    0.000    0.004    0.000 {method 'add' of 'set' objects}
+    12511    0.004    0.000    0.004    0.000 invperc_lazy.py:49(__setitem__)
+    33965    0.004    0.000    0.004    0.000 {method 'random' of '_random.Random' objects}
+    12511    0.001    0.000    0.001    0.000 {method 'discard' of 'set' objects}
+        1    0.001    0.001    0.258    0.258 &lt;string&gt;:1(&lt;module&gt;)
+    12511    0.001    0.000    0.001    0.000 {len}
+        1    0.000    0.000    0.256    0.256 invperc_lazy.py:106(run)
+        1    0.000    0.000    0.000    0.000 {function seed at 0x02201E70}
+        1    0.000    0.000    0.000    0.000 random.py:99(seed)
+        1    0.000    0.000    0.000    0.000 invperc_lazy.py:59(__init__)
+        1    0.000    0.000    0.000    0.000 invperc_lazy.py:33(__init__)
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+</pre>
+
+      <p class="continue">
+        Good: the profile is still pretty flat,
+        and in fact the single most expensive function is the built-in <code>set.add</code>,
+        which we can't speed up anyway
+        (though we could try to think of ways to call it less often).
+      </p>
+
+      <p>
+        A small confession is in order here.
+        We cheated a bit when we presented the successively faster versions of invasion percolation in the previous section.
+        In reality, we ran each through a profiler as soon as it was working in order to find out where it was spending time,
+        and used that information to guide the construction of the next version.
+        This is how good programmers tune performance:
+        rather than guessing what the bottlenecks might be,
+        they get the computer to tell them where time is going,
+        so that they can tackle the actual problems.
+        As we'll see in the next two sections,
+        knowing a little computer science can help a lot as well.
+      </p>
+
+    </section>
+
+    <section id="s:terms">
+
+      <h2>What Performance Really Means</h2>
+
+      <p>
+        As we said in the introduction,
+        when people talk about a computer's performance,
+        they almost always mean its speed.
+        However, the word "speed" can be interpreted several different ways.
+        The simplest is <a class="dfn" href="glossary.html#response-time">response time</a>:
+        how long the user has to wait between starting a program and getting its results.
+        For interactive work, this is what people care about most.
+      </p>
+
+      <p>
+        Another measure of speed is just as important.
+        The <a class="dfn" href="glossary.html#throughput">throughput</a> of a system is how many results it can produce per unit time.
+        If each run of the program starts after the previous run finishes,
+        the throughput is just one over the response time,
+        but if successive tasks can be overlapped,
+        it's possible to speed things up,
+        just as an assembly line can speed up construction of bicycles.
+      </p>
+
+      <p>
+        For example,
+        let's imagine that five steps are needed to produce one set of results,
+        and that each step takes one second.
+        If the steps cannot be overlapped,
+        the response time is five seconds,
+        and the throughput is 0.2 results per second.
+        If each step is independent, though,
+        the system can be working on five jobs at once.
+        The response time is therefore still five seconds for any particular job,
+        but the throughput is one result per second,
+        which is a five-fold improvement.
+      </p>
+
+      <p class="fixme">diagram of overlap</p>
+
+      <p>
+        For many scientific applications, throughput matters as much as response time, or even more.
+        The invasion percolation program is a good example:
+        we need to run it several hundred times for each range of random values,
+        and have to vary that range as well,
+        so we care more about how long it takes to run the program ten thousand times
+        than about how long any individual run takes.
+      </p>
+
+      <p>
+        The most common way to overlap jobs is to run them on separate processors
+        using a <a class="dfn" href="glossary.html#pipeline">pipeline</a>,
+        a <a class="dfn" href="glossary.html#task-farm">task farm</a>,
+        or via <a class="dfn" href="glossary.html#domain-decomposition">domain decomposition</a>.
+        Pipelines are used when each jobs has several distinct stages,
+        all of which can be run simultaneously for different jobs:
+      </p>
+
+      <p class="fixme">pipeline diagram</p>
+
+      <p>
+        In a task farm,
+        the whole of each job is done on one computer,
+        but several different jobs are run simultaneously.
+        Each time a processor finishes a job,
+        it takes another one from the job pool,
+        so that work is automatically balanced among the available processors:
+      </p>
+
+      <p class="fixme">task farm diagram</p>
+
+      <p>
+        Finally, domain decomposition breaks a single problem up into pieces
+        and works on all of those pieces simultaneously.
+        For example, if we're running a global climate simulation or doing fluid dynamics,
+        each processor can handle one part of the grid.
+        At each time step it updates its portion of the grid
+        and exchanges information with the computers responsible for neighboring portions:
+      </p>
+
+      <p class="fixme">domain decomposition diagram</p>
+
+      <p>
+        Regardless of which technique we use,
+        there is a fundamental limit on how much speedup is possible called <a class="dfn" href="glossary.html#amdahls-law">Amdahl's Law</a>.
+        Suppose our program is made up of two kinds of calculations:
+        those that can be done in parallel, and those that can't.
+        Even if we have an infinite number of computers available,
+        the second part won't go any faster,
+        so the best speedup we can hope for is one over the so-called <a class="dfn" href="glossary.html#serial-fraction">serial fraction</a> of our program.
+      </p>
+
+      <p>
+        For example, suppose that we're using a task farm to process some images.
+        Each image can be processed independently,
+        but the results can only be combined one image at a time.
+        If the combining is 5% of the program's run time,
+        the best speedup we can hope for is a factor of 20 (i.e., 1/0.05).
+      </p>
+
+      <p>
+        Amdahl's Law isn't always as firm a limit as it might seem,
+        since we can always try to change our algorithm to use one that has a smaller serial fraction.
+        For example, suppose we need to add up N numbers that are distributed across P processors.
+        Naively, it will take N/P operations for each processor to add its values,
+        then P-1 steps for those processors
+        to send their partial sums back to a master processor that calculates the final sum.
+        However,
+        we can speed up the second part of the calculation by combining results pairwise:
+      </p>
+
+      <p class="fixme">pairwise combining diagram</p>
+
+      <p class="continue">
+        This takes log<sub>2</sub>(P) steps instead of P-1, which is a big saving if P is large
+        (or if it takes a long time for processors to exchange data, which it usually does).
+      </p>
+
+      <p>
+        Another way to improve scaling is solve a larger problem.
+        Scientists and engineers almost always want to do this anyway:
+        in global climate modeling, for example, a grid whose cells are 10 kilometers on a side
+        will reveal phenomena that simply don't show up in a grid that's 100km on a side,
+        but such a grid requires 10<sup>3</sup>=1000 times more calculations.
+        Since the amount of communication between processors only increases linearly with the grid size,
+        solving a large problem may be more efficient (though it may have a longer response time).
+      </p>
+
+      <p>
+        This leads to our last two definitions.
+        A program or algorithm is <a class="dfn" href="glossary.html#strong-scalability">strongly scalable</a>
+        if its solution time decreases as the number of processors increases <em>for a fixed problem size</em>.
+        It is <a class="dfn" href="glossary.html#weak-scalability">weakly scalable</a> if that time decreases when the problem size per processor is fixed,
+        i.e., when the total problem size grows.
+      </p>
+
+    </section>
+
+    <section id="s:arch">
+
+      <h2>Architecture</h2>
+
+      <p>
+        Once we have good algorithms and data structures in place,
+        the only way to make our program faster is
+        to take into acount the hardware it's running on.
+        In this section,
+        we'll have a look at what's actually in a modern computer,
+        and how it affects performance.
+      </p>
+
+      <p>
+        As a first approximation, a computer consists of a processor,
+        some memory,
+        a disk,
+        a network interface,
+        and a graphics card,
+        which are connected by a bus that moves data from one component to another:
+      </p>
+
+      <p class="fixme">diagram of simple architecture</p>
+
+      <p class="continue">
+        Programs are stored as files on disk, just like any other kind of data.
+        In order to run a program,
+        the computer copies its instructions from disk into memory,
+        and sets aside some more memory for the program's variables.
+        It then puts the memory <a class="dfn" href="glossary.html#address">address</a> of the program's first instruction
+        in a <a class="dfn" href="glossary.html#program-counter">program counter</a> built into the processor.
+        Each time the clock ticks,
+        the processor does whatever the instruction at that address tells it to,
+        then advances the program counter to the next instruction.
+      </p>
+
+      <p class="fixme">diagram of process execution</p>
+
+      <p>
+        Some instructions tell the processor to read values from memory,
+        do arithmetic on them,
+        and write the results back to memory.
+        Other instructions tell the processor to check a condition&mdash;for example,
+        to see whether some value is equal to zero or not.
+        Depending on the result of the test,
+        the processor may jump to an instruction far away instead of advancing to the next one.
+        (This is how processors do <code>if</code> and <code>else</code>, call functions, and so on.)
+        Still other instructions cause the computer to move data from memory to the disk or vice versa,
+        to communicate with the outside world by reading data from the network interface,
+        or writing data to it,
+        or to send data to the graphics card,
+        which turns that data into on/off instructions for the pixels on the screen.
+      </p>
+
+      <p>
+        No real computer has actually been built like this for decades.
+        To see why,
+        take a look at how fast (or slow) the operations we've discussed are on a modern machine:
+      </p>
+
+      <table>
+        <tr>
+          <td align="left">execute one instruction</td>
+          <td align="right">1 nanosec</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td align="left">read one value from memory</td>
+          <td align="right">100 nanosec</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td align="left">move to new location on disk</td>
+          <td align="right">8,000,000 nanosec</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td align="left">read 1 MByte once there</td>
+          <td align="right">20,000,000 nanosec</td>
+          <td align="left">(20 nanosec/byte)</td>
+        </tr>
+      </table>
+
+      <p>
+        Let's have a closer look at those numbers.
+        First, the processor can operate on numbers 100 times faster
+        than it can fetch those numbers from random locations in memory.
+        For reasons we won't go into,
+        the time required per value drops if the processor reads a lot of data from consecutive memory locations,
+        but not enough to prevent the processor from starving.
+        That's problem number one.
+      </p>
+
+      <p>
+        Problem number two is the disk.
+        Once data is actually flowing it flows pretty fast,
+        but moving the disk's read head from one spot to another takes a very long time.
+        Solid-state disks that don't have moving parts are starting to change this,
+        but for now,
+        anyone working with very large data sets has to think carefully about how that data is physically arranged.
+      </p>
+
+      <p>
+        Most computers solve problem #1 by putting a <a class="dfn" href="glossary.html#cache">cache</a> between the processor and main memory:
+      </p>
+
+      <p class="fixme">diagram of cache</p>
+
+      <p class="continue">
+        At any time, the cache holds copies of a subset of the locations in main memory.
+        Instead of reading directly from memory,
+        the processor only ever reads from (or writes to) the cache.
+        If the data the processor wants isn't currently there,
+        the cache automatically fetches it from main memory.
+        This helps because the cache is much faster than main memory:
+        read times can be as low as half a nanosecond, which is enough to keep the processor busy.
+      </p>
+
+      <p>
+        So if cache is so much faster, why don't computers use it for everything?
+        The answer is cost:
+        It takes a lot of transistors to look things up that quickly,
+        so the faster memory is, the higher its price tag.
+        These days, computer architects often strike a balance between speed and price
+        by using two caches instead of one.
+        The one closest to the processor might have a read time of only half a nanosec,
+        but can only hold a hundred kilobytes or less.
+        The level-2 cache might hold a megabyte or two,
+        but have a 7-nanosecond read time, and so on.
+      </p>
+
+      <p>
+        But hang on: how can the computer squeeze 4 GByte of main memory into a 1 MByte cache?
+        The simplest strategy is to map actual addresses to cache locations using a round-robin strategy.
+        Whenever the processor needs a value, there's only one place it could be:
+      </p>
+
+      <p class="fixme">diagram of round-robin cache</p>
+
+      <p class="continue">
+        There are many other caching strategies&mdash;in fact,
+        whole theses have been written on the topic.
+        What they all have in common is that in order to use a cache effectively,
+        a program has to use cached values as many times as possible.
+        <span class="fixme">cache example</span>
+      </p>
+
+      <p>
+        Exactly the same principles apply to data that's stored on disk;
+        in fact, main memory is to disk what cache is to main memory.
+        Modern file systems do their best to optimize access,
+        but if we are working with large files,
+        the code on the right,
+        which reads and writes the data just once,
+        will be noticeably faster than the code on the left:
+      </p>
+
+      <table>
+        <tr>
+          <td><strong>Many Reads and Writes</strong></td>
+          <td><strong>Single Read and Write</strong></td>
+        </tr>
+        <tr>
+          <td>
+<pre>
+for func in (func_1, func_2, func_3):
+    for f in filenames:
+        reader = open(f, 'r')
+        data = reader.read()
+        reader.close()
+        func(data)
+        writer = open(f, 'w')
+        writer.write(data)
+        write.close()
+</pre>
+          </td>
+          <td>
+<pre>
+for f in filenames:
+    reader = open(f, 'r')
+    data = reader.read()
+    reader.close()
+    for func in (func_1, func_2, func_3):
+        func(data)
+    writer = open(f, 'w')
+    writer.write(data)
+    write.close()
+</pre>
+          </td>
+        </tr>
+      </table>
+
+      <p>
+        There's another level of "caching" these days as well.
+        The data on the disk inside a computer usually comes from somewhere else on the Internet,
+        and as fast as computer networks are,
+        they're much slower than the connections inside a machine.
+        Once again, the way to speed things up is to reduce and re-use:
+        anything that has to be downloaded should be used
+        as many times as possible
+        before being discarded to make room for something else.
+      </p>
+
+      <p>
+        This brings us to the central tension of this lecture.
+        Combining operations is fast,
+        but programs are easier to write, debug, and maintain if we keep those operations separate.
+        For example, suppose we have some photographs of blood samples.
+        We need to rescale each one,
+        crop them,
+        adjust their colors,
+        and then count the blobs that might be red blood cells.
+        The simplest way to implement this is to write four independent tools,
+        each of which reads a photo from a file,
+        does exactly one thing to it,
+        and writes out the result.
+        The <em>fastest</em> implementation, though,
+        would combine those operations into a single program.
+        Such a program won't be as reusable (or as easy to test) as our single-purpose tools.
+      </p>
+
+      <p>
+        Reduce, re-use&hellip; what about recycling?
+        It turns out to be part of how computers work too,
+        and another thing programmers have to understand
+        if they want to know why programs are fast or slow.
+        A typical modern desktop machine has 4 GByte of memory,
+        but may run dozens of programs at once.
+        It would be painful if every programmer had to worry about which memory they were allowed to use.
+        In fact,
+        since the mix of programs is potentially different on every machine,
+        it could well be impossible.
+      </p>
+
+      <p>
+        The solution is to use <a class="dfn" href="glossary.html#virtual-memory">virtual memory</a>.
+        Every program thinks that all of physical memory belongs to it.
+        In reality, though, the computer manages a lookup table
+        that maps each program's <a class="dfn" href="glossary.html#logical-address">logical addresses</a>
+        to <a class="dfn" href="glossary.html#physical-address">physical addresses</a> of real locations in memory.
+        It also keeps track of which logical addresses are actually in physical memory at any given time,
+        and stores data for the ones that aren't on disk:
+      </p>
+
+      <p class="fixme">diagram of virtual memory</p>
+
+      <p>
+        If a program needs to read or write something that isn't currently in physical memory,
+        the computer copies something that hasn't been used recently back to disk,
+        then loads the disk copy of the required data into physical memory.
+        This process is called <a class="dfn" href="glossary.html#paging">paging</a>,
+        since the mapping between logical and physical memory is usually done
+        in <a class="dfn" href="glossary.html#page">pages</a> that are a kilobyte or so in size.
+        Paging takes time:
+        the data that's being swapped out has to be saved to disk,
+        the data that's needed has to be read in,
+        the lookup table has to be updated,
+        and so on.
+      </p>
+
+      <p>
+        No discussion of paging (or caching) would be complete
+        without some mention of <a class="dfn" href="glossary.html#thrashing">thrashing</a>.
+        Suppose our program is operating on a vector that is too large to fit into physical memory,
+        and that our main loop always processes the vector items from start to finish.
+        Each time that loop runs,
+        the operating system brings the page containing the first part of the vector into memory,
+        then the second,
+        and so on:
+      </p>
+
+      <p class="fixme">picture of thrashing</p>
+
+      <p class="continue">
+        By the time the program is part-way through the vector,
+        physical memory is full,
+        so the operating system has to write some of those pages back to the disk
+        to free up space for more pages.
+        The next time the loop runs,
+        none of the pages it needs are left in memory,
+        so the operating system has to read them all back in once again.
+        When this starts happening,
+        the computer can easily spend 99% of its time moving data back and forth
+        instead of doing useful calculations.
+        The solution, as always,
+        is to think hard about how data is laid out in memory,
+        and try to re-use values as many times as possible before moving on to the next ones.
+        Unfortunately,
+        that has to be done application by application&hellip;
+      </p>
+
+    </section>
+
+    <section id="s:summary">
+
+      <h2>Summing Up</h2>
+
+      <p class="fixme">sum up performance chapter</p>
+
+    </section>
+
+    <div class="footer">
+      <table>
+        <tr>
+          <td valign="middle">
+            <img src="../img/logo/creative-commons-attribution-license.png" alt="CC-A license" />
+          </td>
+          <td valign="middle">
+            This material is provided under the
+            <a href="http://creativecommons.org/licenses/by/3.0/legalcode">Creative Commons Attribution</a> license.
+            <br/>
+            Please contact <a href="mailto:info@software-carpentry.org">info@software-carpentry.org</a> for details.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </body>
+</html>

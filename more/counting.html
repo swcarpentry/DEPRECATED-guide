@@ -1,0 +1,226 @@
+
+      <div class="box">
+
+        <h3>How Long is a File?</h3>
+
+        <p>
+          Why do we need to count lines ourselves?
+          Why can't we simply use:
+        </p>
+
+<pre>
+num_lines = len(reader)
+</pre>
+
+        <p class="continue">
+          The first reason is that the question is ambiguous:
+          what exactly do we mean by the length of a file?
+          Is it the number of bytes the file contains,
+          or the number of lines of text?
+          The latter isn't even a sensible question to ask
+          if the file is an image or an audio clip.
+        </p>
+
+        <p>
+          Some older systems use exactly the same number of characters for each line,
+          so that they can count lines by dividing the length of the file by that length,
+          or skip ahead a certain number of lines
+          just by multiplying the line length by the number of lines to skip.
+          This scheme fell out of fashion for a couple of decades,
+          but is making something of a comeback in databases and other high-performance systems.
+        </p>
+
+      </div>
+
+
+    <section id="s:provenance">
+
+      <h2>Provenance Once Again</h2>
+
+      <p>
+        We now know enough to build a simple data provenance system on top of that.
+        Again,
+        suppose that Aurora's data looks like this:
+      </p>
+
+<pre>
+# Cochlear test data
+Experiment-Date: 2012-10-29
+Experiment-Site: Hornings Mills
+8.3
+7.2
+9.6
+4.0
+8.2
+7.0
+</pre>
+
+      <p>
+        Let's modify the comment to be something more useful:
+      </p>
+
+<pre>
+# Cochlear test data <span class="highlight">$Revision: 143$</span>
+Experiment-Date: 2012-10-29
+Experiment-Site: Hornings Mills
+8.3
+7.2
+9.6
+4.0
+8.2
+7.0
+</pre>
+
+      <p>
+        Why make this change?
+        Because now any program that reads this data file will know what version of that file it has,
+        <em>and can copy that version number forward to its output</em>.
+        Here's our new code:
+      </p>
+
+<pre>
+reader = file("data.txt", "r")
+data = []
+for line in reader:
+
+    # Comment.
+    if line[0] == '#':
+        if "$Revision:" in line:
+            print line.rstrip()
+        else:
+            pass
+
+    # Blank line.
+    elif line.strip() == '':
+        pass
+
+    # Information about experiment.
+    elif ':' in line:
+        pass
+
+    # Data.
+    else:
+        value = float(line)
+        data.append(value)
+
+reader.close()
+print sum(data) / len(data)
+</pre>
+
+      <p class="continue">
+        If we run this program on our sample data file,
+        its output is:
+      </p>
+
+<pre>
+# Cochlear test data $Revision: 143$
+44.3
+</pre>
+
+      <p>
+        It's a small change,
+        but a significant one,
+        because now our output tell us something about where it came from.
+        We still only know the revision number of the input, though,
+        not what the input file actually was.
+      </p>
+
+<pre>
+reader = file("data.txt", "r")
+data = []
+for line in reader:
+
+    # Information to be copied forward.
+    if line.startswith('#') and '$' in line:
+        print line.rstrip()
+
+    # Comment.
+    elif line[0] == '#':
+        pass
+
+    # Blank line.
+    elif line.strip() == '':
+        pass
+
+    # Information about experiment.
+    elif ':' in line:
+        pass
+
+    # Data.
+    else:
+        value = float(line)
+        data.append(value)
+
+reader.close()
+print sum(data) / len(data)
+</pre>
+
+      <p class="continue">
+        If we run this program on our sample data file,
+        its output is:
+      </p>
+
+<pre>
+# $URL: http://cochlear.net/repos/data/A1722.txt$
+# $Revision: 143$
+44.3
+</pre>
+
+      <p>
+        Let's make one more change to our program:
+      </p>
+
+<pre>
+version = "$Id: lists.html 2597 2012-04-14 00:47:19Z gvw $"
+
+print "# Program", version
+reader = file("data.txt", "r")
+data = []
+for line in reader:
+
+    # Information to be copied forward.
+    if line.startswith('#') and '$' in line:
+        print line.rstrip()
+
+    # Blank line.
+    elif line.strip() == '':
+        pass
+
+    # Comment.
+    elif line[0] == '#':
+        pass
+
+    # Information about experiment.
+    elif ':' in line:
+        pass
+
+    # Data.
+    else:
+        value = float(line)
+        data.append(value)
+
+reader.close()
+print sum(data) / len(data)
+</pre>
+
+      <p class="continue">
+        This program's output is:
+      </p>
+
+<pre>
+# Program $Id: lists.html 2597 2012-04-14 00:47:19Z gvw $
+# $URL: http://cochlear.net/repos/data/A1722.txt$
+# $Revision: 143$
+44.3
+</pre>
+
+      <p>
+        Doing everything by hand is a lot of work, though.
+        What we really want is some way to make this happen consistently
+        in all our programs
+        without any duplicated code.
+        How to achieve that is the subject of
+        <a href="funclib.html">the next chapter</a>.
+      </p>
+
+    </section>

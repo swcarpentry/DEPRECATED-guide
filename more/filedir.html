@@ -1,0 +1,1409 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../common/scb.css" type="text/css" />
+    <title>Software Carpentry / Files and Directories</title>
+    <meta name="id" content="$Id: filedir.html 2293 2011-11-02 13:24:49Z gvw $" />
+    <meta name="type" content="chapter" />
+  </head>
+  <body class="chapter">
+    <div class="header">
+      <a href="index.html"><img src="../img/logo/software-carpentry-banner.jpg" alt="Software Carpentry logo" class="logo" /></a>
+      <h1>Files and Directories</h1>
+    </div>
+
+    <div class="toc">
+      <p class="fixme">table of contents</p>
+    </div>
+
+    <p class="fixme">Use data management as an example for file/directory manipulation.</p>
+
+    <section id="s:intro">
+
+      <h2>Files and Directories</h2>
+
+      <p>
+        Hello and welcome to the first episode of the Software Carpentry
+        lectures on handling directories and files in Python. In this
+        episode, we'll have a look at how directories can be browsed in
+        Python.
+      </p>
+
+      <p>
+        We have seen how Python allows us to save data into files.
+      </p>
+
+      <p>
+        And, read data from files.
+      </p>
+
+      <p>
+        But we might also want to do a number of other things. For
+        example, see what files we have. For example if offering a choice of
+        files for users to select.
+      </p>
+
+      <p>
+        We might wish to delete files.
+      </p>
+
+      <p>
+        Group files into directories.
+      </p>
+
+      <p>
+        And, structure these directories into a tree. For example we
+        might want to create a directory containing a set of input files
+        holding data for processing.
+      </p>
+
+      <p>
+        Now, we could use the shell to do these directory and file
+        manipulations, but then we would need both our Python program,  and our shell commands.
+      </p>
+
+      <p>
+        Our program would not be very portable. If we wanted to run it
+        on both Linux and Windows we'd need two sets of shell commands.
+      </p>
+
+      <p>
+        Fortunately, we can do it all in Python.
+      </p>
+
+      <p>
+        As a simple example we'll start by accessing the current
+        directory. First, we import the getcwd function from the os
+        module.
+      </p>
+
+      <p>
+        If we then run getcwd, Python will show us the current working directory. That is,
+        the directory in which Python was started.
+      </p>
+
+      <p>
+        getcwd is a function and it returns the current directory, so we
+        can assign that to a variable.
+      </p>
+
+      <p>
+        Then we can use that variable.
+      </p>
+
+      <p>
+        For example, print it.
+      </p>
+
+      <p>
+        To list the contents of a directory we can use the listdir
+        function. So let us import that.
+      </p>
+
+      <p>
+        Listdir takes one argument, the path of the directory to
+        list. This can be relative or absolute.
+      </p>
+
+      <p>
+        So let us use a dot to state that we want to list the current
+        working directory.
+      </p>
+
+      <p>
+        Listdir returns a list of the contents of the current directory.
+      </p>
+
+      <p>
+        Note that the file and directories in the list are not in
+        alphabetical order.
+      </p>
+
+      <p>
+        Instead of using the dot convention for the current directory,
+        it's cleaner, and more portable, if we use getcwd.
+      </p>
+
+      <p>
+        As we can see, the result is the same.
+      </p>
+
+      <p>
+        And, here we use listdir but with the originaldir variable in
+        which we stored the value of getcwd.
+      </p>
+
+      <p>
+        As for getcwd, we can save the output of listdir in a
+        variable. So, we can list the directory whose name is in
+        originaldir and save this list in a variable called files. Files
+        will now contain a list of the files and directories in
+        originaldir.
+      </p>
+
+      <p>
+        We can then print files.
+      </p>
+
+      <p>
+        We can use a for-in loop to print each file in the list in
+        turn. So, here we say we want to consider each element of files
+        in turn.  Remember the colon.
+      </p>
+
+      <p>
+        We then provide our loop body. Here, we will just print the
+        variable, file. Remember that we need to type in four spaces
+        before print.
+      </p>
+
+      <p>
+        Then we just press return on a blank line. The loop is now
+        finished and will execute.
+      </p>
+
+      <p>
+        And, as we can see, each member of files is printed.
+      </p>
+
+      <p>
+        To change the current working directory we use the chdir
+        function. So let us import that.
+      </p>
+
+      <p>
+        This function takes one argument, the path of the directory to
+        be the new current working directory. This can be an absolute or
+        a relative path. Let's run it to change into the data directory.
+      </p>
+
+      <p>
+        We can use getcwd to check that we have indeed changed the
+        working directory.
+      </p>
+
+      <p>
+        And then we can use listdir to see the what's in data.
+      </p>
+
+      <p>
+        As we saved our original directory in the variable originaldir
+        we can use this with chdir to get back to where we came from.
+      </p>
+
+      <p>
+        And use getcwd to show that this has indeed happened.
+      </p>
+
+      <p>
+        When we call chdir in Python it only changes the current working
+        directory as known to Python. What the shell, within which we
+        started Python, considers to be the current working directory
+        remains unchanged. For example, let us again change into the
+        data directory.
+      </p>
+
+      <p>
+        Using getcwd we can see that as far as Python is concerned we are now in users vlad data.
+      </p>
+
+      <p>
+        If we exit Python using control-D.
+      </p>
+
+      <p>
+        And run the Linux pwd command.
+      </p>
+
+      <p>
+        We see that as far as the shell is concerned we are still in
+        users vlad, which is the directory in which we started Python.
+      </p>
+
+      <p>
+        To summarize, we used the following functions in the Python os
+        module to browse directories. Getcwd allows us to get the
+        current working directory. Listdir allows us to list the
+        contents of a specific directory. And, chdir allows us to change
+        the current working directory to be a specific directory.
+      </p>
+
+    </section>
+    
+    <section id="s:walk">
+
+      <h2>Walking Directories</h2>
+
+      <p>
+        Hello, in this second episode of the Software Carpentry lectures
+        on handling directories and files in Python we'll take a look at
+        Python's walk command which explores a directory and builds a
+        list of all the sub-directories, files, sub-sub-directories,
+        indeed, everything, within that directory.
+      </p>
+
+      <p>
+        Walk takes in a directory and returns a list of tuples. As walk
+        uses recursion, and this can be a quite complex concept to
+        understand if you've not encountered it before, we'll walk
+        through how walk works, which may help us understand its output
+        more easily.
+      </p>
+
+      <p>
+        So, given this directory structure, walk would create a tuple
+        with the path to the current directory, for example, dot.
+      </p>
+
+      <p>
+        There would be a list of the directories in the current
+        directory, in this case A, B and C. As for listdir, the list of
+        the directories is in no specific order.
+      </p>
+
+      <p>
+        And there would be a list of the files in the current
+        directory. In this case there are none so the list is empty.
+      </p>
+
+      <p>
+        Walk then recurses. That is to say, it calls itself, using each
+        directory in the current directory in turn. So it calls itself
+        on the first directory which is C.
+      </p>
+
+      <p>
+        In this case, the path to the directory is dot C.
+      </p>
+
+      <p>
+        C has no sub-directories so the directory list is empty.
+      </p>
+
+      <p>
+        And C has one file, c.txt.
+      </p>
+
+      <p>
+        As C has no sub-directories, the call to walk on C exits.
+      </p>
+
+      <p>
+        And we're back in the original call to walk. This now moves onto
+        the next directory in the list which is A.
+      </p>
+
+      <p>
+        A has no directories and two files, a1.txt and a2.txt.
+      </p>
+
+      <p>
+        A has no sub-directories so the call to walk on A exits.
+      </p>
+
+      <p>
+        And again we're back in the original call to walk. This now
+        moves onto the next directory in the list, which is B.
+      </p>
+
+      <p>
+        B has one file, b.txt, and two directories, P and Q.
+      </p>
+
+      <p>
+        The sub-directories of B are then "walked" in turn. So, starting
+        with P, P has one file and no directories.
+      </p>
+
+      <p>
+        As P has no directories, we return up a level and move onto the
+        next directory of B's, which is Q which has no directories and two files.
+      </p>
+
+      <p>
+        As Q has no directories, we return up to B.
+      </p>
+
+      <p>
+        As we're done both P and Q we're finished with B and so we return
+        to our original directory.
+      </p>
+
+      <p>
+        And as we've now done A, B and C, we're finished.
+      </p>
+
+      <p>
+        So, here's how we'd call walk in our code.
+      </p>
+
+      <p>
+        We now know that walk returns a list of tuples so let's save
+        them in a variable.
+      </p>
+
+      <p>
+        We know that each tuple consists of a directory path, a list of
+        sub-directories in that directory, and a list of files. So we
+        can use a for-in loop to print each tuple in the list in turn.
+      </p>
+
+      <p>
+        And here is the result.
+      </p>
+
+      <p>
+        Remember, each tuple contains a directory, which is
+        the list of subdirectories in each directory. If there are none
+        then this is an empty list.
+      </p>
+
+      <p>
+        And, each tuple also contains the list of files in each
+        directory, again an empty list if there are none.
+      </p>
+
+      <p>
+        For each directory, the directory name given to walk is used as
+        a prefix, in this case the dot.
+      </p>
+
+      <p>
+        So, if we use walk with getcwd to get the current working
+        directory, and print the results,
+        we can see that the current working directory is the prefix.
+      </p>
+
+      <p>
+        walk supports an optional topdown argument which by default is
+        true.  If we set this to false then tuples from child directories appear before their parents in
+        the list.
+      </p>
+
+      <p>
+        P and Q's tuples appear before that of their parent, B.
+      </p>
+
+      <p>
+        And A, B and C's tuples appear in the list before those of the
+        original directory.
+      </p>
+
+      <p>
+        To summarize, in this episode we saw how the walk function
+        allows us to recursively explore a directory's contents and
+        gather a complete list of all the directories and files beneath
+        it.
+      </p>
+
+    </section>
+    
+    <section id="s:query">
+
+      <h2>Queries</h2>
+
+      <p>
+        Hello and welcome to the third episode of the Software Carpentry
+        lectures on handling directories and files in Python. Here,
+        we'll continue to look at how we can explore directories by
+        looking at the ways in which Python allows us to find out more
+        about the contents of directories.
+      </p>
+
+      <p>
+        We now know how to move around directories and see what's in them.
+      </p>
+
+      <p>
+        But there are many other things we might want to find out.
+      </p>
+
+      <p>
+        We might want to check whether a file or directory already
+        exists. This can be useful before saving a file to allow the
+        user to decide if the file is to be overwritten.
+      </p>
+
+      <p>
+        We may have a variable and want to see whether that refers to a
+        file or a directory.
+      </p>
+
+      <p>
+        We may want to see if two variables refer to the same file or
+        directory.
+      </p>
+
+      <p>
+        We may want to find out what we can do with a file or
+        directory. Are we allowed to read it, to update it, or delete
+        it?
+      </p>
+
+      <p>
+        And, we may want to get information such as the file size, who
+        owns it and when it was last modified.
+      </p>
+
+      <p>
+        A simple check we often want to do is to see whether a file or
+        directory exists.  Python provides the exists function that does this
+        check.  This takes an argument which can be an absolute or relative
+        path and returns true if it exists as a file or directory and false
+        otherwise.
+      </p>
+
+      <p>
+        Let's start with a relative path to a file.
+      </p>
+
+      <p></p>
+
+      <p>
+        And now an absolute path.
+      </p>
+
+      <p></p>
+
+      <p>
+        And a relative path to a directory.
+      </p>
+
+      <p></p>
+
+      <p>
+        And the absolute path.
+      </p>
+
+      <p></p>
+
+      <p>
+        And something that does not exist.
+      </p>
+
+      <p></p>
+
+      <p>
+        And the absolute path to something that does not exist.
+      </p>
+
+      <p></p>
+
+      <p>
+        Now, let's look at telling apart files and directories. Python
+        provides two functions, isfile and isdir, which check whether
+        their argument is a path to a file or a directory. They can take
+        relative or absolute paths. Let's import these.
+      </p>
+
+      <p>
+        Now, let's call isfile on a relative path to a file.
+      </p>
+
+      <p>
+        As expected, it returns true.
+      </p>
+
+      <p>
+        And, for a path to a directory.
+      </p>
+
+      <p>
+        This time, it returns false.
+      </p>
+
+      <p>
+        And for a path to something that does not exist.
+      </p>
+
+      <p>
+        It also returns false.
+      </p>
+
+      <p>
+        Isdir is much the same. When given the path to a directory it returns true.
+      </p>
+
+      <p>
+        And for a file it returns false.
+      </p>
+
+      <p>
+        And when given a nonexistent directory again, it returns false.
+      </p>
+
+      <p>
+        As isfile and isdir are just functions that return true or false
+        we can use them in conditionals. So here is one example where we
+        define a simple function to print whether the path it is given
+        is a file, a directory, or does not exist.
+      </p>
+
+      <p>
+        And here we see it running on a path to a file. This time we use
+        an absolute path, just for a change.
+      </p>
+
+      <p></p>
+
+      <p>
+        And here it is with a path to a directory.
+      </p>
+
+      <p></p>
+
+      <p>
+        And with a path something that does not exist.
+      </p>
+
+      <p></p>
+
+      <p>
+        Samefile allows us to check whether two paths point to the same
+        file or directory. This is useful when paths are held in
+        variables. So, let's import it.
+      </p>
+
+      <p>
+        And create some variables with file paths.
+      </p>
+
+      <p>
+        If we compare file1 and file2, which contain relative and
+        absolute paths to the same file, then we get the expected result of true.
+      </p>
+
+      <p>
+        And if we compare file1 to a different path, file3, then we get false.
+      </p>
+
+      <p>
+        Before trying to perform operations on a file, for example to
+        open it for reading or writing, to delete it, or, for files that
+        are executable binaries, to execute it, it can be useful to
+        check if we are allowed to do these operations. Python's access
+        function allows us to do these checks. So let's import access.
+      </p>
+
+      <p>
+        Access takes two arguments, the path to a file or directory and
+        a flag that specifies what access permissions we want to
+        check. So let's import the flags. There are four.
+      </p>
+
+      <p>
+        As an example of each in turn. F_OK allows us to check if the
+        file or directory exists.
+      </p>
+
+      <p></p>
+
+      <p>
+        R_OK is for checking if we have permission to read the file or
+        directory.
+      </p>
+
+      <p></p>
+
+      <p>
+        W_OK is for checking if we can edit, update, or delete it.
+      </p>
+
+      <p></p>
+
+      <p>
+        And, X_OK is for checking if we can execute a file.
+      </p>
+
+      <p></p>
+
+      <p>
+        We can combine conditions using the logical OR, vertical bar,
+        operator. So we can check if we can both read and write a file.
+      </p>
+
+      <p></p>
+
+      <p>
+        Or check if we can both read and execute a file.
+      </p>
+
+      <p></p>
+
+      <p>
+        Or if a file exists and we can read it and write it.
+      </p>
+
+      <p></p>
+
+      <p>
+        It can also be useful to get operating system information about
+        files and directories.
+      </p>
+
+      <p>
+        The stat function returns a record holding various information
+        about a file.
+      </p>
+
+      <p>
+        The information in this record can then be accessed. This
+        includes its protection bits.
+      </p>
+
+      <p>
+        Inode number.
+      </p>
+
+      <p>
+        Device.
+      </p>
+
+      <p>
+        Number of hard links.
+      </p>
+
+      <p>
+        Owner's user ID.
+      </p>
+
+      <p>
+        Owner's group ID.
+      </p>
+
+      <p>
+        File size in bytes.
+      </p>
+
+      <p>
+        Most recent access time. The meaning is operating system
+        dependant.
+      </p>
+
+      <p>
+        Most recent modification time. Again, operating system
+        dependant.
+      </p>
+
+      <p>
+        The time of the most recent change to metadata, under Linux, or
+        creation time, under Windows.
+      </p>
+
+      <p>
+        These times may be floats or integers. You can check this by
+        calling the stat_float_times function. Here, it says the values
+        are integers.
+      </p>
+
+      <p>
+        The stat record may also contain operating system-specific
+        information.
+      </p>
+
+      <p>
+        For example, for Linux this can include the number of blocks
+        used by the file.
+      </p>
+
+      <p>
+        And the file system block size.
+      </p>
+
+      <p>
+        We've looked at a number of Python functions to find out more
+        information about files and directories. From the os.path module
+        we used. Exists to see if a file or directory exists. Isfile and
+        isdir to determine whether a path specifies a file or a
+        directory. And, samefile to see whether two paths point to the
+        same file or directory. From the os module we used. Access to
+        see what access permissions we have to a file or directory and
+        determine if we can read it, write to it, delete it, or, for
+        files, execute it. And, we used stat to get low-level operating
+        system-specific information such as file sizes, permission bits,
+        user and group IDs and creation and modification times.
+      </p>
+
+    </section>
+    
+    <section id="s:path">
+
+      <h2>Paths</h2>
+
+      <p>
+        Hello and welcome to the fourth episode of the Software
+        Carpentry lectures on handling directories and files in
+        Python. In the previous episodes, we've seen how to explore
+        directories and enquire about their contents. In this one we'll
+        look more at handling directory and file paths, again using the
+        os.path module.
+      </p>
+
+      <p>
+        We may want to build up paths from variables containing
+        directory or file names. These variables might come from other
+        functions, from configuration files or from the user, via a GUI,
+        or the command-line. For example, here we have three variables
+        we might use to build a file path.
+      </p>
+
+      <p>
+        We could create a new variable, path by appending base, a string
+        with a file separator, user, another file separator string and
+        datadir. This would work just fine.
+      </p>
+
+      <p>
+        But the use of the file separator string isn't very clean. More
+        seriously, it assumes we're running on Linux or UNIX which means
+        our code isn't very portable. What if we want to run on Windows
+        too, which uses a backslash as its file separator?
+      </p>
+
+      <p>
+        Python provides a join function in its os.path module that means
+        we don't have to worry about file separators.
+      </p>
+
+      <p>
+        Join is one of those useful functions that takes two or more
+        arguments.
+      </p>
+
+      <p>
+        Join picks a file separator based upon what it knows to be the
+        current operating system.
+      </p>
+
+      <p>
+        And if we ran this on Windows, this is what we would get.
+      </p>
+
+      <p>
+        Note the backslashes in the path. Actually they are double
+        backslashes but this is only because we are printing them.
+      </p>
+
+      <p>
+        But, you might say, what about that initial forward slash. How
+        do we handle that?
+      </p>
+
+      <p>
+        Python again comes to our rescue with its normpath
+        function. Normpath converts paths to be consistent with the
+        current operating system.
+      </p>
+
+      <p>
+        So for Windows it will convert forward slashes to backslashes.
+      </p>
+
+      <p>
+        And here's another example.
+      </p>
+
+      <p>
+        Normpath does more than just convert file separators. Take, for
+        example this messy looking path. Putting this into normpath
+        gives us something far cleaner.
+      </p>
+
+      <p>
+        Normpath also removes duplicated file separators,
+        and removes the dot shorthand for the current directory.
+      </p>
+
+      <p>
+        It also tries to resolve the double dot short-hand that
+        represents parent directories.
+      </p>
+
+      <p>
+        Sometimes we might have a path and want to get the last part of
+        the path, for example the file name or the last
+        directory. Python provides the dirname and basename functions to
+        do this.
+      </p>
+
+      <p>
+        Here is a path.
+      </p>
+
+      <p>
+        Dirname extracts the directories up to but not including the
+        last component, in this example a file, in the path.
+      </p>
+
+      <p>
+        Basename returns the last component in the path, in this case
+        it's a file name.
+      </p>
+
+      <p>
+        Split combines the behaviour of both dirname and basename and
+        returns a pair.
+      </p>
+
+      <p>
+        The first element in the pair is the same as what dirname
+        returns.
+      </p>
+
+      <p>
+        And the second, the same as what basename returns.
+      </p>
+
+      <p>
+        Another similar function is splitext.
+      </p>
+
+      <p>
+        Splitext returns a pair consisting of all of the path up to but not including the file extension.
+      </p>
+
+      <p>
+        And, the file extension itself. If there is no file extension
+        then this is just an empty string.
+      </p>
+
+      <p>
+        Splitdrive also returns a pair.
+      </p>
+
+      <p>
+        This consists of a drive name. This will be an empty string if
+        running on Linux or Unix.
+      </p>
+
+      <p>
+        And it also returns the rest of the path.
+      </p>
+
+      <p>
+        We may not know if a path is relative or absolute.
+      </p>
+
+      <p>
+        isabs is a function that checks this.
+      </p>
+
+      <p>
+        It just checks whether the path begins with a forward slash, for
+        Linux and Unix, or a backslash, after the drive has been
+        removed, for Windows.
+      </p>
+
+      <p>
+        Abspath converts a relative path to an absolute path.
+      </p>
+
+      <p>
+        It uses the current working directory, returned by getcwd which
+        we saw in an earlier episode. It just adds this directory to the
+        front of the path. Then it normalizes the path in a similar way
+        to normpath. And let's check that it is indeed now an absolute
+        path.
+      </p>
+
+      <p>
+        It is.
+      </p>
+
+      <p>
+        And here's another example, with more normalisation needed.
+      </p>
+
+      <p>
+        This sets the absolute path to be users vlad data dot-dot
+        dot-dot
+      </p>
+
+      <p>
+        But then normalizes the dot-dot parent directory short-hand to
+        get to users.
+      </p>
+
+      <p>
+        It is important to remember that none of these operations check
+        whether the directories or files in the paths actually
+        exist. They are useful, though, as they allow you to build paths
+        for directories or files you will create later.
+      </p>
+
+      <p>
+        But it also means you need to do these checks yourself.  So,
+        remember os.path's exists function.
+      </p>
+
+      <p>
+        In this episode we saw a number of useful os.path
+        functions. Join can join relative paths together using the file
+        separator of the current operating system. Normpath allows us to
+        convert a path to be consistent with the current operating
+        system as well as cleaning it up and removing
+        redundancy. Dirname can get the path to the final directory or
+        file in a path. Basename can get the name of the final directory
+        or file in a path. Split combines the dirname and basename,
+        accessing both the path to the final directory or file and this
+        directory or file itself. Splitext allows us to get a file
+        extension. And, splitdrive allows us to get a drive
+        name. Finally, isabs allows us to see whether a path is relative
+        or absolute and abspath converts a relative path to an absolute
+        one.
+      </p>
+
+    </section>
+    
+    <section id="s:manage">
+
+      <h2>File Management</h2>
+
+      <p>
+        Hello and welcome to the fifth episode of the Software Carpentry
+        lectures on handling files and directories in Python. We'll now
+        look at creating and deleting directories, and moving
+        directories and files around.
+      </p>
+
+      <p>
+        Let us assume we are in an empty directory called user. And we
+        want to create one called data.  For this we use the mkdir
+        function from the os module.
+      </p>
+
+      <p>
+      </p>
+
+      <p>
+        We can use listdir to see that we indeed have a new directory
+        called data.
+      </p>
+
+      <p>
+        And, that this new directory is empty.
+      </p>
+
+      <p>
+        Now, if we try to use mkdir again, we get an error since it already exists.
+      </p>
+
+      <p>
+        Suppose we want to make a nested set of directories for a more
+        complex organisation of files. Let's give that a try.
+      </p>
+
+      <p>
+        It fails.
+      </p>
+
+      <p>
+        But, no matter, as we can use the makedirs function.
+      </p>
+
+      <p>
+        This will create all the directories in the path if they don't
+        already exist.
+      </p>
+
+      <p>
+        Rmdir allows us to remove directories. So let's remove towns.
+      </p>
+
+      <p>
+        Now let's try and remove country and its children.
+      </p>
+
+      <p>
+        This fails. Rmdir only removes empty directories and is not
+        recursive.
+      </p>
+
+      <p>
+        But there is a removedirs function that operates
+        recursively. This removes each directory in the path up to and
+        including the first one mentioned.
+      </p>
+
+      <p>
+        So it removes regions.
+      </p>
+
+      <p>
+        Then country.
+      </p>
+
+      <p>
+        But removedirs only works if the directories are empty. Suppose
+        we had some data files in regions. Then if we call removedirs, we'd get an error. Removedirs cannot remove directories that
+        have files.
+      </p>
+
+      <p>
+        But rmtree in the shutil module can.
+      </p>
+
+      <p>
+        Now that we've mentioned it, what about deleting files? Well we
+        could use rmtree on individual files too. But there is the
+        simpler, remove function. So, if we had two files in data and
+        wanted to remove one.
+      </p>
+
+      <p>
+        We just use remove.
+      </p>
+
+      <p>
+        We can rename and move directories and files too using the
+        rename function. We can rename a directory.
+      </p>
+
+      <p>
+        Note that the destination directory must not exist. If it does
+        exist we get an error.
+      </p>
+
+      <p>
+      </p>
+
+      <p>
+        To keep the same directory name after the rename, we must
+        provide it explicitly.
+      </p>
+
+      <p>
+      </p>
+
+      <p>
+        Rename also renames files.
+      </p>
+
+      <p>
+      </p>
+
+      <p>
+        Unlike for directories, a destination file name does not need to
+        be given.
+      </p>
+
+      <p>
+        As, in that case, the source file name will be used.
+      </p>
+
+      <p>
+        Alternatively, we can rename files and directories using the
+        shutil module's move function. This is more powerful. Asides
+        from moving the file or directory, it also preserves permission bits, the group and owner.
+      </p>
+
+      <p>
+        The last access and modification times.
+      </p>
+
+      <p>
+        And other flags.
+      </p>
+
+      <p>
+        Renames behaves like both rename and makedirs.
+      </p>
+
+      <p>
+        In that it creates any intermediate directories, that do not
+        already exist, like D.
+      </p>
+
+      <p>
+        We can copy directories via copytree from shutil.
+      </p>
+
+      <p>
+        This copies the entire contents of the directory
+        recursively. Like move, it preserves permission bits, groups and
+        owners, last access and modification times and other flags.
+      </p>
+
+      <p>
+        We can copy files via copyfile from shutil.
+      </p>
+
+      <p>
+      </p>
+
+      <p>
+        Like move and rename for directories, a destination file name must always be given
+      </p>
+
+      <p>
+        Shutil's copy function also copies files.
+      </p>
+
+      <p>
+        It is like copyfile but we don't have to provide a destination
+        file name.
+      </p>
+
+      <p>
+        It also copies the existing file permissions.
+      </p>
+
+      <p>
+        Shutil also has a copy2 function.
+      </p>
+
+      <p>
+        This preserves permission bits, groups and owners, last access
+        and modification times and other flags. Copytree, which we saw
+        earlier, uses copy2.
+      </p>
+
+      <p>
+        In this episode we have seen how to create, move, copy and
+        delete directories and files using a variety of functions from
+        the os and shutil modules.
+      </p>
+
+    </section>
+
+    <section id="s:ce">
+
+      <h2>Compression and Encryption</h2>
+
+      <p class="fixme">Elaborate example using zip files and encryption.</p>
+
+    </section>
+
+    <section id="s:organize">
+
+      <h2>Staying Organized</h2>
+
+      <p>
+        Hello, and welcome to our Software Carpentry lecture on data management.
+        A lot of inspiration and ideas were taken from William Stafford Noble's <a class="papercite" href="bibliography.html#noble-organizing-comp-bio">"A Quick Guide to Organizing Computational Biology Projects"</a>.
+      </p>
+
+      <p>
+        In this lecture, we'll discuss how best manage multiple versions of data files, since the same method that you use for source code probably doesn't work well for your data as well.
+      </p>
+
+      <p>
+        In my experience, data file management usually goes something like the following.
+        First, you have one data file.
+        All is well with the world.
+      </p>
+
+      <p>
+        Then, you come out with a revision.
+        Some people directly overwrite the old data, but eventually you'll want to compare the new and old data or you'll find out the new data actually isn't correct and the old data is better or something will come up and you'll wish you hadn't deleted it.
+      </p>
+
+      <p>
+        You know this, so rather than overwriting the old file, you add "old" to the name and put the new file in the same spot the old one was.
+        This is still pretty clear, but hopefully your Spidey-sense is warning you of danger.
+      </p>
+
+      <p>
+        Inevitably, you come out with another version.
+        At this point it's clear what to do.
+        You've already set a precedent, so you go along with it.
+      </p>
+
+      <p>
+        One problem, from a scientific perspective, is that any experiment that was run on "samples.
+        mat", if re-run, will now get a different result. Further, which old "samples.mat" was it run on?
+        Once you have more than one "old" version, it all gets worse.
+      </p>
+
+      <p>
+        More than should be the case, a file's path and name is very much its identity, especially as far as other scripts (and links) are concerned.
+      </p>
+
+      <p>
+        As a result, scientists (and website developers) tend not to rename or move existing files, but instead pick up a habit that is almost as bad.
+      </p>
+
+      <p>
+        Which one is the most recent?
+        Well, you guess.
+      </p>
+
+      <p>
+        You could look at the data. Or you could check the last modified date, but if you're going to do that, don't ever move or copy the data.
+      </p>
+
+      <p>
+        This sounds like a job for version control.
+      </p>
+
+      <p>
+        Or is it?
+      </p>
+
+      <p>
+        Why shouldn't we just use Subversion to manage our data files?
+        Subversion is good for keeping track of simultaneous modification, archiving, merging, branching, and diffing;
+        what makes sense for data?
+      </p>
+
+      <p>
+        Well, archiving.
+      </p>
+
+      <p>
+        We really just want a clear, stable way to archive data so that we can find and access it
+      </p>
+
+      <p>
+        Despite the rapidly decreasing cost of storage, it is still possible to run out of disk space.
+        In my lab, we can easy go through 2 TB/month, if we're not careful.
+        Since version control tools usually store revisions in terms of lines, with binary data files, they end up essentially storing every revision separately.
+        This isn't that bad (it's what we'd be doing anyway), but it means version control isn't doing what it likes to do, and the repository can get very large very quickly.
+        Another concern is that, in the event that very old data will no longer be used, it can be nice to zip/tar/or straight-up delete old data files.
+        This is not possible if your data is version controlled. Your repository will only increase in size.
+      </p>
+
+      <p>
+        The solution most people agree on is to set up a directory structure in a way that keeps different versions of the data separate, while allowing you to track down and use old versions of the data.
+        For example, a lot of people will move all the old data into a subdirectory to archive it and always keep the latest version right into the top (with all the problems noted before):
+      </p>
+
+      <p>
+        Or else they will, realizing the problems of the above, create subdirectories for all the new versions, but leave the oldest version in the root.
+      </p>
+
+      <p>
+        But there are many problems with this. We can do better.
+      </p>
+
+      <p>
+        A much better approach is to, from the start, add a chronological layer to our data.
+        Structuring folder names this way (yyyy-mm-dd) ensures that they are always printed in chronological order.
+        Also, scripts and UNIX commands can all take advantage of the same number of levels:
+        summarize_samples data/*/samples.mat vs. summarize_samples data/samples.mat data/*/samples.mat and often:
+        find data -type f -name "samples.mat" | xargs summarize_samples
+      </p>
+
+      <p>
+        But we are missing something critical.
+        What if we give data access to a collaborator, a new student joins the project, or it's three years later and we have forgotten when the various stages of the project happened?
+      </p>
+
+      <p>
+        We need context, and we usually add it with some metadata (even better is to have a notebook as well, but it should also be in metadata).
+      </p>
+
+      <p>
+        Metadata records who the data is from, when was it generated, what were the experimental conditions, and so on.
+        We <em>could</em> put a header inside the file&mdash;we discuss that in our essay on provenance&mdash;but this doesn't work too well with binary files.
+        We <em>could</em> create a separate metadata file for each data file, but this can quickly get out of sync or out of hand.
+      </p>
+
+      <p>
+        I think of metadata files as information kiosks.
+        You place a small number in strategic places so that people who are lost can find what they want.
+        For a more scientific description, I use them as flat databases to list various attributes that I might be interested in searching by later.
+      </p>
+
+      <p>
+        For example, the previous approach can be improved by adding a README file.
+      </p>
+
+      <p>
+        If you have more than a few data files, or you are downloading data files from various websites, it quickly becomes critical to add metadata files to describe all the files in each directory, as well:
+        where they came from, their versions, and any other important information.
+      </p>
+
+      <p>
+        Because these metadata files undergo many changes, might be edited and revised by multiple people at a time, and are usually line-based text files, they are perfect candidates for version control.
+      </p>
+
+      <p>
+        Then, even if you later remove data files for space reasons, you can leave the metadata files that describe the data that had been there, and the exact steps that one should take to reacquire it (if that is possible).
+      </p>
+
+      <p>
+        A useful layout for a project is to have a data directory with chronological subfolders, and metadata version controlled.
+      </p>
+
+      <p>
+        All scripts and source code go into a separate branch, where everything is version controlled.
+      </p>
+
+      <p>
+        And then the results and experiments are chronologically recorded in a different directory, where nothing is version controlled.
+      </p>
+
+      <p>
+        These techniques all revolve around the idea of sensible archiving, because even if you're the only one working on a project, you'll forget the details of what you're working on several years later.
+      </p>
+
+      <p>
+        For example, it had been a year since I worked on a project and a colleague asked me precisely how I generated a data file.
+      </p>
+
+      <p>
+        I found that having the following directory structure helped immensely.
+        The README listed where I downloaded "filenameExactlyAsDownloaded.tkq" from, when I downloaded it, and the version of it,
+        and "get_targets.sh" listed all the commands (including the "wget" commands to download "otherNecessaryFile.dat") I entered to create targets.gff from filenameExactlyAsDownloaded.tkq.
+        Rerunning "get_targets.sh" would recreate the "targets.gff" file exactly, and looking at it shows the precise parameters used in the process.
+      </p>
+
+      <p>
+        I was able to say exactly how I had generated targets.gff, and to easily try to recreate it from the raw data files.
+      </p>
+
+      <p>
+        A final point is that not all projects lend themselves to this exact directory structure, and that thinking hard about the directory structure at the beginning can save huge amounts of pain and suffering down the road.
+      </p>
+
+      <p>
+        What we've talked about so far is extremely useful for a "bag-of-experiments" sort of project.
+      </p>
+
+      <p>
+        But what if our project is a pipeline with variations at each level, like the following.
+      </p>
+
+      <p>
+        One solution I have seen is to do something like the following.
+        This works reasonably well if your pipeline is relatively small and you usually run all of it.
+        It suffers from the fact that it isn't obvious the order in which the steps are done, but we could document that in a README file.
+      </p>
+
+      <p>
+        It's not uncommon to have more than one way of doing a step in a pipeline, but we'll quickly run into trouble with many iterations of a more complex pipeline.
+        The problem is that this directory structure doesn't capture the dependency structure of the process.
+      </p>
+
+      <p>
+        Since the data at one point in a pipeline is dependent upon the configurations of all the previous steps, this can be represented cleanly and robustly with the following organization.
+      </p>
+
+      <p>
+        To summarize, please think hard at the beginning of your project about how you are going to organize your data as it grows.
+        Something that works well for one file, or for two files, won't necessarily work well for a hundred files.
+        Second, version control your metadata, not your data files&mdash;use a conventional backup system for those.
+        Third, an intelligent structure not only makes your data easier to archive, track, and manage, but it also reduces the chance that the paths in the pipeline get crossed and the data out the end isn't what you think it is.
+        That can save you embarrassment as well as time.
+      </p>
+
+    </section>
+
+    <div class="footer">
+      <table>
+        <tr>
+          <td valign="middle">
+            <img src="../img/logo/creative-commons-attribution-license.png" alt="CC-A license" />
+          </td>
+          <td valign="middle">
+            This material is provided under the
+            <a href="http://creativecommons.org/licenses/by/3.0/legalcode">Creative Commons Attribution</a> license.
+            <br/>
+            Please contact <a href="mailto:info@software-carpentry.org">info@software-carpentry.org</a> for details.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </body>
+</html>

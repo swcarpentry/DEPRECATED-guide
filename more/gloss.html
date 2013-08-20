@@ -1,0 +1,1911 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="scb.css" type="text/css" />
+    <title>Software Carpentry / More Glossary</title>
+    <meta name="id" content="$Id: gloss.html 2494 2012-03-14 18:13:41Z gvw $" />
+    <meta name="type" content="appendix" />
+  </head>
+  <body class="appendix">
+    <div class="header">
+      <a href="index.html"><img src="../img/logo/software-carpentry-banner-with-hammer-380x80.png" alt="Software Carpentry logo" class="logo" /></a>
+      <h1>More Glossary</h1>
+    </div>
+
+    <section id="A">
+
+      <h2>A</h2>
+
+      <dl class="gloss">
+
+        <dt id="absolute-path">absolute path</dt>
+        <dd>A <a href="#path">path</a> that refers to a particular location in a file system.  Absolute paths are usually written with respect to the file system's <a href="#root-directory">root directory</a>, and begin with either "/" (on Unix) or "\" (on Microsoft Windows). See also: <a href="#relative-path">relative path</a>.</dd>
+
+        <dt id="absolute-reference">absolute reference</dt>
+        <dd>A <a href="#spreadsheet">spreadsheet</a> cell reference that is not automatically adjusted when a formula is moved from one location to another.  Absolute references are created by putting <code>$</code> in front of the row and/or column designation, as in <code>$C$4</code>. See also: <a href="#relative-reference">relative reference</a>.</dd>
+
+        <dt id="abstract-data-type">abstract data type (ADT)</dt>
+        <dd>A specification of a set of values, and the operations that can be performed on them.  The term "abstract" means that the implementation of the ADT is hidden from other code.</dd>
+
+        <dt id="abstract-syntax-tree">abstract syntax tree (AST)</dt>
+        <dd>A data structure that represents the structure of a program or program fragment.  Its leaves are literals, such as numbers and variable names, while its internal nodes represent higher-level structures, such as loops and expressions.</dd>
+
+        <dt id="access-control">access control</dt>
+        <dd>A way to specify who has permission to view, edit, delete, run, or otherwise interact with something, by explicitly listing what rights each individual or group has.  This is in contrast with the standard Unix <a href="#authorization">authorization</a> mechanism, which only allows a fixed set of privileges to be listed for owner, one group, and everyone else.</dd>
+
+        <dt id="access-control-list">access control list (ACL)</dt>
+        <dd>A list that explicitly describes who can do what to a file, directory, or other entity.  ACLs permit finer control over a computer's resources than Unix's classic user/group/all system, but are more complicated to administer.</dd>
+
+        <dt id="acid">ACID</dt>
+        <dd>An acronym for atomic, consistent, isolated, and durable, which are the properties that a <a href="#transaction">database transaction</a> must guarantee.</dd>
+
+        <dt id="acquire-lock">acquire a lock</dt>
+        <dd>To claim a <a href="#lock">lock</a> in order to establish exclusive access to some resource. See also: <a href="#release-lock">release a lock</a>.</dd>
+
+        <dt id="action">action</dt>
+        <dd>The steps a <a href="#build-tool">build tool</a> must take to bring a file or other object up to date. See also: <a href="#dependency">dependency</a>, <a href="#prerequisite">prerequisite</a>, <a href="#target">target</a>.</dd>
+
+        <dt id="active-listening">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="active-variable">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="address">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="actual-outcome">actual outcome</dt>
+        <dd>The actual result of a <a href="#unit-test">unit test</a>. If this matches the <a href="#expected-outcome">expected outcome</a>, the test passes.</dd>
+
+        <dt id="aggregate">aggregate</dt>
+        <dd>To create a single value by combining multiple values, e.g. by adding or averaging.</dd>
+
+        <dt id="agile-development">agile development</dt>
+        <dd>A software development methodology built on short iterations and rapid feedback.  See also: <a href="#pair-programming">pair programming</a>, <a href="#standup-meeting">stand-up meeting</a>, <a href="#sturdy-development">sturdy development</a>.</dd>
+
+        <dt id="algorithmic-complexity">algorithmic complexity</dt>
+        <dd>The rate at which the work performed by an algorithm grows as a function of problem size, ignoring constant factors.  Algorithmic complexity is usually expressed using <em>O</em>-notation; for example, the time required to compare each value in a list to each other value is <em>O(N<sup>2</sup>)</em>.</dd>
+
+        <dt id="alias">alias</dt>
+        <dd>A second (or subsequent) reference to a single piece of data. Aliasing can make programs more difficult to understand, since changes made through one reference "magically" affect the other.</dd>
+
+        <dt id="amdahls-law">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="analysis-and-estimation">analysis and estimation (A&amp;E)</dt>
+        <dd>The step in a software development process in which developers figure out how they're going to implement the desired features, and how long they expect it will take.  The term is also applied to the summary documents this process produces.</dd>
+
+        <dt id="anchor">anchor</dt>
+        <dd>An element of a <a href="#regular-expression">regular expression</a> that matches a location, rather than a sequence of characters.      <code>^</code> matches the beginning of a line, <code>\b</code> matches the break between word and non-word characters, and <code>$</code> matches the end of a line.</dd>
+
+        <dt id="anchoring-effect">anchoring effect</dt>
+        <dd>FIXME</dd>
+
+        <dt id="abi">Application Binary Interface (ABI)</dt>
+        <dd>The calling conventions, data structures, and other interface elements that compiled code exposes to other programs. See also: <a href="#api">Application Programming Interface (API)</a>.</dd>
+
+        <dt id="api">Application Programming Interface (API)</dt>
+        <dd>The source-level external interface that a library or operating system provides for other programs to use. See also: <a href="#abi">Application Binary Interface (API)</a>.</dd>
+
+        <dt id="arc">arc</dt>
+        <dd>A connection between two <a href="#node">nodes</a> in a <a href="#graph">graph</a>.  Arcs may be directed (i.e., unidirectional) or undirected (i.e., bidirectional).</dd>
+
+        <dt id="assertion">assertion</dt>
+        <dd>An expression which is supposed to be true at a particular point in a program.  Programmers typically put assertions in their code to check for errors; if the assertion fails (i.e., if the expression evaluates as false), the program halts and produces an error message.</dd>
+
+        <dt id="asymmetric-cipher">asymmetric cipher</dt>
+        <dd>A <a href="#cipher">cipher</a> which has two <a href="#key">keys</a>, each of which undoes the other's effects. See also: <a href="#symmetric-cipher">symmetric cipher</a>.</dd>
+
+        <dt id="atomic-operation">atomic operation</dt>
+        <dd>Not interruptible.  An atomic operation is one that always takes effect as a whole, no matter what else the system is doing.</dd>
+
+        <dt id="atomic-value">atomic value</dt>
+        <dd>FIXME</dd>
+
+        <dt id="attribute">attribute</dt>
+        <dd>An extra property added to an XML <a href="#element">element</a>.  Attributes are represented as name/value pairs; a given name may appear at most once for any particular element.</dd>
+
+        <dt id="authentication">authentication</dt>
+        <dd>The act of establishing someone's identity.  This is almost always done by requiring them to produce some credentials, such as a password. See also: <a href="#authorization">authorization</a>, <a href="#access-control">access control</a>.</dd>
+
+        <dt id="authorization">authorization</dt>
+        <dd>The part of a computer security system that keeps track of who's allowed to do what. See also: <a href="#authentication">authentication</a>, <a href="#access-control">access control</a>.</dd>
+
+        <dt id="automatic-variable">automatic variable</dt>
+        <dd>In <a href="#bib:make">Make</a>, a variable whose value is automatically redefined for each rule.  Automatic variables include <code>$@</code>, which holds the rule's <a href="#target">target</a>, and <code>$^</code>, which holds its <a href="#prerequisite">prerequisites</a>.  Automatic variables are typically used in <a href="#pattern-rule">pattern rules</a>.</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="B">
+
+      <h2>B</h2>
+
+      <dl class="gloss">
+
+        <dt id="background">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="basic-authentication">basic authentication</dt>
+        <dd>A simple username/password <a href="#authentication">authentication</a> mechanism that is part of the HTTP standard.  It sends passwords as cleartext (actually, as base-64 encoded text), so it should never be used.</dd>
+
+        <dt id="bduf">Big Design Up Front (BDUF)</dt>
+        <dd>A somewhat pejorative term applied to development processes that rely on careful up-front analysis and design to prevent errors from occurring.</dd>
+
+        <dt id="big-endian">big-endian</dt>
+        <dd>Having the most significant byte in the memory location with the lowest address.  In a big-endian system, the integer <code>0x12345678</code> is stored as <code>[0x78, 0x45, 0x34, 0x12]</code>. See also: <a href="#little-endian">little-endian</a>.</dd>
+
+        <dt id="binary-data">binary data</dt>
+        <dd>Non-textual data.  All data is "binary", in the sense that it's represented as 1's and 0's, but many tools distinguish between 1's and 0's that represent printable characters, and 1's and 0's that don't.</dd>
+
+        <dt id="binary-mode">binary mode</dt>
+        <dd>Python (and some other programming languages) automatically convert Windows-style line endings (carriage return followed by newline) to Unix-style line endings (newline only) when reading and writing files.  This is appropriate for textual data, but not for <a href="#binary-data">binary data</a>, such as images. If the file is in binary mode, this conversion is not done.</dd>
+
+        <dt id="binary-search">binary search</dt>
+        <dd>A search technique which divides the values being searched in half at each step, just as a person would go to the middle of a phonebook, then the middle of either the upper or lower half, and so on when looking for a name.  The <a href="#algorithmic-complexity">algorithmic complexity</a> of binary search is <em class="math">O(log<sub>2</sub> N)</em>.</dd>
+
+        <dt id="binding">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="bitwise-operations">bitwise operations</dt>
+        <dd>Operations that act at the level of the bits making up a value, rather than on what those bits mean.  The four most common bitwise operations are and, or, xor, and not.</dd>
+
+        <dt id="blacklist">blacklist</dt>
+        <dd>A list of addresses from which email will not be accepted, which is part of an "allow unless forbidden" <a href="#authorization">authorization</a> policy. See also: <a href="#whitelist">whitelist</a>.</dd>
+
+        <dt id="blog">blog</dt>
+        <dd>Short for <a href="#weblog">weblog</a>; an on-line diary or forum to which authors append new content.  Unlike <a href="#mailing-list">mailing lists</a>, blogs use a <a href="#publish-subscribe">publish-subscribe</a> model: readers pull content when they want it, rather than having it sent to them.</dd>
+
+        <dt id="boehms-curve">Boehm's Curve</dt>
+        <dd>FIXME</dd>
+
+        <dt id="boilerplate">boilerplate</dt>
+        <dd>The standardized parts of a family of programs that don't change from instance to instance.</dd>
+
+        <dt id="branch">branch</dt>
+        <dd>A separate line of development managed by a <a href="#version-control-system">version control system</a>. Branches help projects manage incompatible sets of changes that are being made concurrently. See also: <a href="#merge">merge</a>.</dd>
+
+        <dt id="breakpoint">breakpoint</dt>
+        <dd>A marker put in a program by a <a href="#debugger">debugger</a> that causes it to pause so that the program's internal state can be inspected (and possibly modified).</dd>
+
+        <dt id="broadcast">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="buffer">buffer</dt>
+        <dd>A block of memory used to store values temporarily in order to "smooth out" communication.</dd>
+
+        <dt id="buffer-overflow-attack">buffer overflow attack</dt>
+        <dd>A method used to attack programs (primarily those written in C and C++) that injects code by writing past the end of a buffer.</dd>
+
+        <dt id="bug-tracker">bug tracker</dt>
+        <dd>See <a href="#issue-tracker">issue tracker</a>.</dd>
+
+        <dt id="build-file">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="build-manager">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="build-tool">build tool</dt>
+        <dd>A piece of software, such as <a href="#bib:make">Make</a>, whose main purpose is to rebuild software, documentation, web sites, and other things after changes have been made.</dd>
+
+        <dt id="burn-down-chart">burn-down chart</dt>
+        <dd>A graphical display of a project's <a href="#burn-rate">burn rate</a>.</dd>
+
+        <dt id="burn-rate">burn rate</dt>
+        <dd>The rate at which project tasks are actually being completed. Comparing a project's actual burn rate with its schedule tells developers when to start scaling back their plans, and/or moving their deadlines.  See also: <a href="#burn-down-chart">burn-down chart</a>.</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="C">
+
+      <h2>C</h2>
+
+      <dl class="gloss">
+
+        <dt id="cache">cache</dt>
+        <dd>A data structure, or portion of a disk, that stores temporary copies of values.  Caches are normally used when fetching items is expensive: keeping copies of values that are likely to be needed again close at hand can make a program much faster, at the cost of requiring extra synchronization effort.</dd>
+
+        <dt id="call-stack">call stack</dt>
+        <dd>A data structure used to keep track of functions that are currently being executed.  Each time a function is called, a new <a href="#stack-frame">stack frame</a> is put on the top of the stack to hold that function's local variables.  When the function returns, the stack frame is discarded. See also: <a href="#heap">heap</a>, <a href="#static-space">static space</a>.</dd>
+
+        <dt id="camel-case">camel case</dt>
+        <dd>Text that is formatted with InternalCapitalLetters.</dd>
+
+        <dt id="cascading-delete">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="case-insensitive">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="case-sensitive">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="css">Cascading Style Sheets (CSS)</dt>
+        <dd>A language used to describe how HTML pages should be formatted for display.</dd>
+
+        <dt id="catch-exception">catch exception</dt>
+        <dd>To handle an <a href="#exception">exception</a>. See also: <a href="#raise-exception">raise exception</a>.</dd>
+
+        <dt id="cell">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="cell-range">cell range</dt>
+        <dd>An expression specifying a contiguous block of cells in a <a href="#spreadsheet">spreadsheet</a>.  The cell range <code>C4:E5</code>, for example, includes all the cells in the rectangle bounded by C4 (upper left corner) and E5 (lower right corner).</dd>
+
+        <dt id="cell-reference">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="chain-call">chained calls</dt>
+        <dd>A sequence of method calls, each of which uses the result of the previous one, as in <code>"x".upper().center(5)</code>.</dd>
+
+        <dt id="changeset">changeset</dt>
+        <dd>A set of changes to files <a href="#commit">committed</a> to a <a href="#repository">repository</a> in a single operation.</dd>
+
+        <dt id="check-out">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="checkpoint">checkpoint</dt>
+        <dd>To save the state of a program so that it can be restarted later (for example, in case of a computer crash).  The saved state is also called a checkpoint. See also: <a href="#persistence">persistence</a>.</dd>
+
+        <dt id="child-class">child class</dt>
+        <dd>In <a href="#object-oriented-programming">object-oriented programming</a>, a new class derived from an existing one (called the <a href="#parent-class">parent class</a>). See also: <a href="#inheritance">inheritance</a>.</dd>
+
+        <dt id="chunk">chunk</dt>
+        <dd>A group of objects that are stored together in short-term memory, such as the seven digits in a North American phone number.</dd>
+
+        <dt id="cipher">cipher</dt>
+        <dd>An algorithm used to <a href="#encryption">encrypt</a> and <a href="#decryption">decrypt</a> data.</dd>
+
+        <dt id="ciphertext">ciphertext</dt>
+        <dd>The <a href="#encryption">encrypted</a> form of a message. Ciphertext is usually produced from <a href="#plaintext">plaintext</a> by a combination of a <a href="#cipher">cipher</a> algorithm and a <a href="#key">key</a>.</dd>
+
+        <dt id="class">class</dt>
+        <dd>A definition that specifies the properties of a set of <a href="#object">objects</a>.</dd>
+
+        <dt id="class-browser">class browser</dt>
+        <dd>A tool that shows an outline view of the classes making up a software project, their methods, and their inheritance relations; usually part of an <a href="#integrated-development-environment">integrated development environment</a>.</dd>
+
+        <dt id="client">client</dt>
+        <dd>A software application that accesses data over a network.  The provider is called a <a href="#server">server</a>.</dd>
+
+        <dt id="client-server-architecture">client/server architecture</dt>
+        <dd>An asymmetric system in which many <a href="#client">clients</a> communicate with a single centralized <a href="#server">server</a>.</dd>
+
+        <dt id="clui">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="code-assistant">code assistant</dt>
+        <dd>FIXME</dd>
+
+        <dt id="code-review">code review</dt>
+        <dd>The act of inspecting code to find errors, violations of style guidelines, etc.  While labor intensive, code reviews are a good way to transfer knowledge between project members, and can be more effective at finding bugs than testing.</dd>
+
+        <dt id="collision">collision</dt>
+        <dd>A situation in which one or more values are mapped to the same location by a <a href="#hash-function">hash function</a>. <a href="#hash-table">Has tables</a> typically handle this by storing colliding values in a sublist.</dd>
+
+        <dt id="column-major-order">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="comma-separated-values">comma-separated values</dt>
+        <dd>A format for representing tabular data.  Each row in the table is represented by a line of text; the values in that row are separated by commas.</dd>
+
+        <dt id="command-line-arguments">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="command-line-flag">command-line flag</dt>
+        <dd>A terse way to specify an option or setting to a command-line program.  By convention, Unix applications use a dash followed by a single letter, such as <code>-v</code>, or two dashes followed by a word, such as <code>--verbose</code>, while DOS applications use a slash, such as <code>/V</code>.  Depending on the application, a flag may be followed by a single argument, as in <code>-o /tmp/output.txt</code>.</dd>
+
+        <dt id="comment-spam">comment spam</dt>
+        <dd>The practice of posting comments on blog entries that contain HTML links to external pages.  The purpose is to enhance the page rank of the spammer's site with Google and similar search engines.  This method also works in web forums, guestbooks, and other web applications that allow users to add comments.</dd>
+
+        <dt id="commit">commit</dt>
+        <dd>To send changes from a <a href="#working-copy">working copy</a> to a <a href="#version-control-system">version control</a>'s <a href="#repository">repository</a> to create a new <a href="#revision">revision</a> of the affected file(s).  Changes must be committed in order for other users to see them. See also: <a href="#update">update</a>.</dd>
+
+        <dt id="content-length">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="continuous-integration">continuous integration</dt>
+        <dd>The practice of using an automated process or system to rebuild and re-test software every time a change is made.</dd>
+
+        <dt id="controller">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="cgi">Common Gateway Interface (CGI)</dt>
+        <dd>A protocol for communication between <a href="#server">web servers</a> and external programs.  The web server passes data to the external program through <a href="#environment-variable">environment variables</a> and <a href="#standard-input">standard input</a>, and reads the data to be sent back to the <a href="#client">client</a> from the external program's <a href="#standard-output">standard output</a>.</dd>
+
+        <dt id="command-completion">command completion</dt>
+        <dd>definition</dd>
+
+        <dt id="component-object-model">component object model</dt>
+        <dd>A software architecture that specifies how components communicate with each other, without specifying how they are implemented. Microsoft's COM is the most widely used desktop example; modern web services are increasingly emulating its most important features.</dd>
+
+        <dt id="concurrency">concurrency</dt>
+        <dd>The situation in which two or more things are going on at once. See also: <a href="#serialization">serialization</a>.</dd>
+
+        <dt id="conditional-breakpoint">conditional breakpoint</dt>
+        <dd>A <a href="#breakpoint">breakpoint</a> that only causes the program to pause under certain conditions.  For example, a <a href="#debugger">debugger</a> may specify that the program is to pause only when a certain function parameter is an empty string, or when a loop index is greater than a specified value.</dd>
+
+        <dt id="conditional-expression">conditional expression</dt>
+        <dd>An expression that yields one of two values, depending on whether a sub-expression is true or false.  Conditional expressions are used in place of if/then/else in <a href="#spreadsheet">spreadsheet</a>, and as a shorthand in most modern programming languages.</dd>
+
+        <dt id="conflict">conflict</dt>
+        <dd>A change made by one user of a <a href="#version-control-system">version control system</a> that is incompatible with changes made by other users.  Helping users <a href="#resolve">resolve</a> conflicts is one of the <a href="#version-control-system">version control system</a>'s major tasks.</dd>
+
+        <dt id="conflict-marker">conflict marker</dt>
+        <dd>A string such as <code>&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>======</code>, or <code>&gt;&gt;&gt;&gt;&gt;&gt;</code> put into a local copy of a file by a <a href="#version-control-system">version control system</a> to indicate where local changes overlap with incompatible changes made by someone else.  The <a href="#version-control-system">version control system</a> will typically not allow the user to <a href="#commit">commit</a> changes until all conflicts have been <a href="#resolve">resolved</a>.</dd>
+
+        <dt id="connection">connection</dt>
+        <dd>A communication channel between a program and a database.</dd>
+
+        <dt id="constructor">constructor</dt>
+        <dd>A special method called when creating a new instance of a class that initializes the instance's state.</dd>
+
+        <dt id="cookie">cookie</dt>
+        <dd>A short piece of text created by a <a href="#server">server</a> and passed to a <a href="#client">client</a>, which the <a href="#client">client</a> can later return in order to identify itself.  Cookies were invented to get around the fact that <a href="#http">Hypertext Transfer Protocol (HTTP)</a> is a <a href="#stateless-protocol">stateless protocol</a>.</dd>
+
+        <dt id="coordinated-universal-time">Coordinated Universal Time</dt>
+        <dd>See <a href="#utc">Coordinated Universal Time (UTC)</a>.</dd>
+
+        <dt id="copy-on-write">copy on write</dt>
+        <dd>FIXME</dd>
+
+        <dt id="core-dump">core dump</dt>
+        <dd>A file containing a byte-for-byte representation of the contents of a program's memory.  On some <a href="#operating-system">operating systems</a>, programs produce core dumps whenever they terminate abnormally (e.g., try to divide by zero, or access memory that is out of bounds).  Core dumps are often used as the basis for <a href="#post-mortem-debugging">post mortem debugging</a>.</dd>
+
+        <dt id="coupling">coupling</dt>
+        <dd>FIXME</dd>
+
+        <dt id="crc-cards">CRC cards</dt>
+        <dd>A design aid used in <a href="#object-oriented-programming">object-oriented programming</a>, in which the responsibilities and collaborators of each class are written out on a 3&times;5 index card <a href="#bib:beck-cunningham-crc-cards">CITE</a>.</dd>
+
+        <dt id="cross-product">cross product</dt>
+        <dd>A pairing of all elements of one set with all elements of another. The cross product of two <em class="math">N</em>-element vectors <em class="math">L</em> and <em class="math">R</em> is an <em class="math">N&times;N</em> matrix <em class="math">M</em>, in which <em class="math">M<sub>i,j</sub>=L<sub>i</sub>R<sub>j</sub></em>.</dd>
+
+        <dt id="current-working-directory">current working directory</dt>
+        <dd>The directory that <a href="#relative-path">relative paths</a> are calculated from; equivalently, the place where files referenced by name only are searched for.  Every <a href="#process">process</a> has a current working directory.  The current working directory is usually referred to using the shorthand notation <code>.</code> (pronounced "dot").</dd>
+
+        <dt id="cursor">cursor</dt>
+        <dd>A pointer into a database that keeps track of outstanding transactions and other operations.</dd>
+
+        <dt id="cvs">CVS</dt>
+        <dd>A version control system that pioneered the use of <a href="#optimistic-concurrency">optimistic concurrency</a> in the late 1980s and 1990s.  CVS was the backbone of most open source software projects until the advent of <a href="#bib:subversion">CITE</a>.</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="D">
+
+      <h2>D</h2>
+
+      <dl class="gloss">
+
+        <dt id="data-parallel">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="data-scrubbing">data scrubbing</dt>
+        <dd>Reformatting, rescaling, or otherwise cleaning up data to make it easier to process.</dd>
+
+        <dt id="database-column">database column</dt>
+        <dd>A set of data values of a particular type, one for each row in the <a href="#database-table">table</a>. See also: <a href="#database-row">database row</a>.</dd>
+
+        <dt id="database-row">database row</dt>
+        <dd>A set of related values making up a single entry in a <a href="#database-table">database table</a>. See also: <a href="#database-column">database column</a>, <a href="#record">record</a>.</dd>
+
+        <dt id="database-table">database table</dt>
+        <dd>A set of values in a <a href="#relational-database">relational database</a> that are organized into <a href="#database-column">columns</a> and <a href="#database-row">rows</a>.</dd>
+
+        <dt id="dbms">database management system (DBMS)</dt>
+        <dd>A software package that manages access to a <a href="#relational-database">relational database</a>.</dd>
+
+        <dt id="dead-code">dead code</dt>
+        <dd>A block of code which can never be reached, such as the body of an <code>if</code> statement whose conditional expression is always false.  Dead code often occurs when programmers modifying an inherited program leave something in because they're not sure it's safe to take out.</dd>
+
+        <dt id="deadlock">deadlock</dt>
+        <dd>Any situation in which no one can proceed unless someone else does first (analogous to having two locked boxes, each of which holds the key to the other). See also: <a href="#race-condition">race condition</a>.</dd>
+
+        <dt id="debuggee">debuggee</dt>
+        <dd>See <a href="#target-program">target program</a>.</dd>
+
+        <dt id="debugger">debugger</dt>
+        <dd>A computer program that is used to control and inspect another program (called the <a href="#target-program">target program</a>).  Most debuggers are <em>symbolic</em> debuggers that show the target program's state in terms of the variables that the programmer created, rather than showing the raw contents of memory.</dd>
+
+        <dt id="declarative-programming">declarative</dt>
+        <dd>A programming system in which the relationships between values are stated, rather than the algorithm used to compute or update those values.  All widely-used programming languages are <a href="#imperative">imperative</a>, but <a href="#build-tool">build tools</a> like <a href="#bib:make">Make</a>, <a href="#spreadsheet">spreadsheets</a>, and some high-level programming languages, are declarative.</dd>
+
+        <dt id="decorator">decorator</dt>
+        <dd>An advanced programming construct in Python that allows one function to wrap or modify another.</dd>
+
+        <dt id="decryption">decryption</dt>
+        <dd>The process of translating <a href="#encryption">encrypted</a> <a href="#ciphertext">ciphertext</a> back into the original <a href="#plaintext">plaintext</a>. See also: <a href="#cipher">cipher</a>, <a href="#key">key</a>.</dd>
+
+        <dt id="default-rule">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="default-value">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="default-target">default target</dt>
+        <dd>The <a href="#target">target</a> that a build system will try to bring up to date if no other target is specified.</dd>
+
+        <dt id="defensive-programming">defensive programming</dt>
+        <dd>The practice of checking input values, <a href="#invariant">invariants</a>, and other aspects of a program in order to catch errors as early as possible.</dd>
+
+        <dt id="denial-of-service">denial of service (DoS)</dt>
+        <dd>An attack designed to overwhelm a system so that it cannot service legitimate requests.  DoS does not destroy data, or reveal secrets, but making a site or service unavailable can be just as damaging.</dd>
+
+        <dt id="dependency">dependency</dt>
+        <dd>In a build system, a file whose state some other file depends on.  If any of a file's dependencies are newer than the file itself, the file must be updated.  A file's dependencies are also called its <a href="#prerequisite">prerequisites</a>. See also: <a href="#action">action</a>, <a href="#target">target</a>.</dd>
+
+        <dt id="derive">derive</dt>
+        <dd>To create one class from another using <a href="#inheritance">inheritance</a>.</dd>
+
+        <dt id="design-by-contract">design by contract</dt>
+        <dd>A design methodology in which programmers define checkable interface specifications using <a href="#pre-condition">pre-conditions</a>, <a href="#post-condition">post-conditions</a>, and <a href="#invariant">invariants</a>.</dd>
+
+        <dt id="design-pattern">design pattern</dt>
+        <dd>A standard solution to a commonly-occurring problem.</dd>
+
+        <dt id="deterministic-profiler">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="dictionary">dictionary</dt>
+        <dd>A mutable unordered collection that pairs each <a href="#key">key</a> with a single value.  Dictionaries are also known as maps, hashes, or associative arrays, and are typically implemented using <a href="#hash-table">hash tables</a>.</dd>
+
+        <dt id="diff">diff</dt>
+        <dd>As a noun, the differences between two artifacts (typically two files); as a verb, the act of creating those differences.  Diffs are often used in <a href="#version-control-system">version control systems</a> to manage and <a href="#merge">merge</a> concurrent changes. See also: <a href="#patch">patch</a>.</dd>
+
+        <dt id="digital-signature">digital signature</dt>
+        <dd>A block of data attached to a message to prove that the message was created by a particular person, and has not been tampered with.  Digital signatures are usually created by <a href="#encryption">encrypting</a> a <a href="#message-digest">message digest</a> with the <a href="#private-key">private key</a> of an <a href="#asymmetric-cipher">asymmetric cipher</a>.</dd>
+
+        <dt id="directed-graph">directed graph</dt>
+        <dd>A <a href="#graph">graph</a> whose <a href="#arc">arcs</a> have a direction, i.e., if an <a href="#arc">arc</a> connects two <a href="#node">nodes</a> A and B, then it is possible to reach B from A, but not necessarily possible to reach A from B. Directed graphs are often used to visualize <a href="#dependency">dependencies</a> in build systems.</dd>
+
+        <dt id="directory-tree">directory tree</dt>
+        <dd>File system directories are normally organized hierarchically: each directory except the <a href="#root-directory">root</a> has a single parent, and each may have zero or more children.  This means that directories may be viewed as a tree.  Since files may not contain directories or other files, they are always leaf nodes of this tree.</dd>
+
+        <dt id="dla">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="dns">Domain Name System (DNS)</dt>
+        <dd>A system which maps numeric <a href="#internet-protocol">Internet Protocol</a> addresses, such as <code>128.100.171.16</code>, to human-readable names, such as <code>pyre.third-bit.com</code>.</dd>
+
+        <dt id="docstring">docstring</dt>
+        <dd>Short for "documentation string", this refers to textual documentation embedded in Python programs.  Unlike comments, docstrings are preserved in the running program, and can be examined in interactive sessions.</dd>
+
+        <dt id="document">document</dt>
+        <dd>A well-formed instance of <a href="#xml">XML</a>.  Documents can be represented as trees (using <a href="#document-object-model">DOM</a>), stored as files on disk, etc.</dd>
+
+        <dt id="document-object-model">Document Object Model (DOM)</dt>
+        <dd>A cross-language standard for representing XML documents as trees.</dd>
+
+        <dt id="domain-decomposition">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="drive">drive</dt>
+        <dd>A disk drive is a piece of computer hardware used to store data on a rotating disk.  In older operating systems, each drive was a separate <a href="#file-system">file system</a>; modern version of Microsoft Windows still use this notion, placing one or more <a href="#file-system">file systems</a> on each physical drive, and giving each a separate <a href="#drive-letter">drive letter</a> (such as the familiar <code>C:</code>).</dd>
+
+        <dt id="drive-letter">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="driver">driver</dt>
+        <dd>A software module designed to communicate with an external device or software package.  A device driver is a piece of software that can control a piece of hardware; a database driver is one that knows how to open connections and send commands to a particular <a href="#dbms">database manager</a>.</dd>
+
+        <dt id="duck-typing">duck typing</dt>
+        <dd>An informal name for dynamic type systems that relies on objects being able to do the same things, rather than on <a href="#inheritance">inheritance</a> or formal specification of properties.  The term comes from the saying, "If it walks like a duck, and quacks like a duck, it's a duck."</dd>
+
+        <dt id="dynamic-named-range">FIXME</dt>
+        <dd>definition</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="E">
+
+      <h2>E</h2>
+
+      <dl class="gloss">
+
+        <dt id="element">element</dt>
+        <dd>A named item in an <a href="#xml">XML</a> <a href="#document">document</a>, which has a unique parent, and may contain <a href="#attribute">attributes</a>, text, and other elements. See also: <a href="#tag-xml">tag (in XML)</a>.</dd>
+
+        <dt id="elevator-pitch">elevator pitch</dt>
+        <dd>Another name for a <a href="#vision-statement">vision statement</a>.</dd>
+
+        <dt id="embed">embed</dt>
+        <dd>To place code written in one programming language inside code written in another.</dd>
+
+        <dt id="encapsulation">encapsulation</dt>
+        <dd>The practice of hiding the implementation details of a class or module; one of the three defining principles of object-oriented programming. See also: <a href="#inheritance">inheritance</a>, <a href="#polymorphism">polymorphism</a>.</dd>
+
+        <dt id="encryption">encryption</dt>
+        <dd>The process of translating <a href="#plaintext">plaintext</a> that anyone can understand into <a href="#ciphertext">ciphertext</a> that can only be understood by someone possessing the correct <a href="#cipher">cipher</a> and <a href="#key">key</a>.</dd>
+
+        <dt id="environment-variable">environment variable</dt>
+        <dd>A named value associated with a running process by the operating system.  Typical environment variables include <code>HOME</code> (the user's home directory) and <code>PWD</code> (the process's present working directory).  Environment variables are typically used to specify things that many applications may want to know, or to provide default configuration values.</dd>
+
+        <dt id="epoch">epoch</dt>
+        <dd>The moment from which times are measured.  On Unix, the epoch is midnight, January 1, 1970; on Windows, the epoch is January 1, 1601 (further proof that Microsoft takes backward compatibility very seriously).</dd>
+
+        <dt id="escape-sequence">escape sequence</dt>
+        <dd>A sequence of characters that represents some other character or special entity.      <code>\t</code> and <code>\n</code> are escape sequences in normal Python strings that represent tab and newline characters respectively; <code>&amp;lt;</code> and <code>&amp;amp;</code> are escape sequences in HTML and XML that represents the less than sign and ampersand.</dd>
+
+        <dt id="event-driven-programming">event-driven programming</dt>
+        <dd>A style of programming in which a <a href="#framework">framework</a> triggers events in the user's program.  Event-driven programming is used by most graphical user interfaces, and by <a href="#cgi">CGI</a> programs.</dd>
+
+        <dt id="event-log">event log</dt>
+        <dd>A chronological list of recent events in a project, such as <a href="#repository">repository</a> <a href="#update">updates</a>, changes to <a href="#ticket">tickets</a>, messages to <a href="#mailing-list">mailing lists</a>, <a href="#wiki">wiki</a> page edits, and so on.  A project's event log is often provided as a <a href="#blog">blog</a>.</dd>
+
+        <dt id="event-loop">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="exception">exception</dt>
+        <dd>An object that represents an error condition.  As a program executes, it creates a stack of <a href="#exception-handler">exception handlers</a>.  When an exception is <a href="#raise-exception">raised</a>, the program searches this stack for the top-most handler, which <a href="#catch-exception">catches</a> and handles the exception. Exceptions typically contain information such as the file and line where the error occurred, the type of the error, and an error message.</dd>
+
+        <dt id="exception-handler">exception handler</dt>
+        <dd>A block of code that deals with the error signaled by an <a href="#exception">exception</a>. See also: <a href="#catch-exception">catch exception</a>, <a href="#raise-exception">raise exception</a>.</dd>
+
+        <dt id="exclusive-or">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="expected-outcome">expected outcome</dt>
+        <dd>The outcome a test must produce in order to pass.  If the <a href="#actual-outcome">actual outcome</a> is different, the test fails.</dd>
+
+        <dt id="exponent">exponent</dt>
+        <dd>The power by which the <a href="#mantissa">mantissa</a> in a floating-point number is multiplied.  The exponent in <em class="math">2.7&times;10<sup>3</sup></em> is 3.</dd>
+
+        <dt id="extreme-programming">Extreme Programming</dt>
+        <dd>A programming methodology which emphasizes quick reaction over forward planning.  Its most widely-known components are probably <a href="#pair-programming">pair programming</a> and relentless <a href="#refactor">refactoring</a>.</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="F">
+
+      <h2>F</h2>
+
+      <dl class="gloss">
+
+        <dt id="fall-through">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="false-dependency">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="favicon">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="feature-creep">feature creep</dt>
+        <dd>Changes in the aims or scope of a project over time.  The usual result is that everyone spends so much time rewriting code that the project never moves closer to completion.</dd>
+
+        <dt id="field">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="file-number">file number</dt>
+        <dd>An integer that represents an open resource.  On some operating systems like Unix, files and file-like resources are assigned a number when they are opened.  The first three numbers, 0, 1, and 2, are usually reserved for <a href="#standard-input">standard input</a>, <a href="#standard-output">standard output</a>, and <a href="#standard-error">standard error</a>, respectively.</dd>
+
+        <dt id="file-system">file system</dt>
+        <dd>A set of files, directories, and I/O devices (such as keyboards, screens, printers, and so on).  A file system may be spread across many physical devices, or many file systems may be stored on a single physical device.  The <a href="#operating-system">operating system</a> will only allow some file operations (such as copying, or creating symbolic links or shortcuts) within a file system.</dd>
+
+        <dt id="filename-extension">filename extension</dt>
+        <dd>The portion of a file's name that comes after the final "." character.  By convention, this identifies the file's type: <code>.txt</code> means "text file", <code>.png</code> means "Portable Network Graphics file", and so on.  These conventions are <em>not</em> enforced by most operating systems: it is perfectly possible to name an MP3 sound file <code>homepage.html</code>.  Since many applications use filename extensions to identify the <a href="#mime">MIME type</a> of the file, misnaming files may cause those applications to fail.</dd>
+
+        <dt id="filter">filter</dt>
+        <dd>A program that transforms a stream of data.  Many Unix command-line tools are written as filters: they read data from <a href="#standard-input">standard input</a>, process it, and write the result to <a href="#standard-output">standard output</a>.  Image processing applications are often constructed by connecting filters to one another.</dd>
+
+        <dt id="finite-state-machine">finite state machine (FSM)</dt>
+        <dd>A mathematical model of computation consisting of a finite number of discrete states connected by transitions.  FSMs are often visualized as <a href="#directed-graph">directed graphs</a>, in which the nodes are states, and the arcs are transitions. See also: <a href="#regular-expression">regular expression (RE)</a>.</dd>
+
+        <dt id="fixture">fixture</dt>
+        <dd>The particular configuration of a system that is the subject of a <a href="#unit-test">unit test</a>.  It is a good practice to create a fresh fixture for each test, so that the actions and outcomes of early tests cannot affect later ones.</dd>
+
+        <dt id="float">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="for-loop">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="foreign-key">foreign key</dt>
+        <dd>One or more values in a <a href="#database-table">database table</a> that identify a <a href="#database-row">row</a> in another table.</dd>
+
+        <dt id="form">form</dt>
+        <dd>A web page that allows users to enter data. See also: <a href="#cgi">Common Gateway Interface (CGI)</a>, <a href="#http">Hypertext Transfer Protocol (HTTP)</a>.</dd>
+
+        <dt id="framework">framework</dt>
+        <dd>A library, or set of libraries, that implements the generic parts of a family of applications.  Developers customize the framework for a particular application by replacing generic placeholders with more specific code.</dd>
+
+        <dt id="freeze">freeze</dt>
+        <dd>To make an object immutable.  Once a Python set is frozen, for example, values cannot be inserted or removed, and so its hash code cannot change.</dd>
+
+        <dt id="function">FIXME</dt>
+        <dd>definition</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="G">
+
+      <h2>G</h2>
+
+      <dl class="gloss">
+
+        <dt id="garbage-collection">garbage collection</dt>
+        <dd>Automatically reclaiming objects in memory when they are no longer being used. See also: <a href="#reference-counting">reference counting</a>.</dd>
+
+        <dt id="gather">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="getter">getter</dt>
+        <dd>A <a href="#method">method</a> used to read the value of a <a href="#member">member</a>.</dd>
+
+        <dt id="global-scope">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="gold-plating">gold plating</dt>
+        <dd>Adding more features to the system than it needs, or making parts of it much more elaborate than is required.</dd>
+
+        <dt id="graph">graph</dt>
+        <dd>A mathematical structure that consists of <a href="#node">nodes</a> connected by <a href="#arc">arcs</a>. Graphs may be directed (i.e., the arcs are unidirectional) or undirected (i.e, the arcs are bidirectional), and are used to represent everything from program structure to bus routes.</dd>
+
+        <dt id="greedy-matching">greedy matching</dt>
+        <dd>In a <a href="#regular-expression">regular expression</a>, the policy of matching as much as possible, as early as possible. See also: <a href="#reluctant-matching">reluctant matching</a>.</dd>
+
+        <dt id="group">group</dt>
+        <dd>A sub-match in a <a href="#regular-expression">regular expression</a>.</dd>
+
+        <dt id="gui">FIXME</dt>
+        <dd>definition</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="H">
+
+      <h2>H</h2>
+
+      <dl class="gloss">
+
+        <dt id="hash-code">hash code</dt>
+        <dd>The output of a <a href="#hash-function">hash function</a>.  Typically, a hash code is a seemingly-random integer, which is then used to determine to put or look for an object in a <a href="#hash-table">hash table</a>.</dd>
+
+        <dt id="hash-function">hash function</dt>
+        <dd>A function which takes an object as its input, and produces an integer value as its output.  Good hash functions produce outputs that are as random as possible, i.e., they have the property that different inputs are likely to produce different outputs.</dd>
+
+        <dt id="hash-table">hash table</dt>
+        <dd>A data structure which allows programs to look up objects by value, rather than by location.  Hash tables do this by using a <a href="#hash-function">hash function</a> to calculate seemingly-random identifiers for values, and using those as indices into an array.  Under normal conditions, it takes constant time to find a value in a hash table.</dd>
+
+        <dt id="head">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="heap">heap</dt>
+        <dd>An area of memory out of which a program can dynamically allocate blocks of various sizes in order to store values. See also: <a href="#call-stack">call stack</a>, <a href="#static-space">static space</a>.</dd>
+
+        <dt id="heisenbug">heisenbug</dt>
+        <dd>A bug that hides when you are looking for it.  Bugs can arise in sequential programs (for example, adding a <code>printf</code> call to a C program may move things around in memory so that the bug is no longer triggered), but are much more common in <a href="#concurrency">concurrent</a> programs.</dd>
+
+        <dt id="hexadecimal">hexadecimal</dt>
+        <dd>A base-16 numeric representation in which the letters A-F (or a-f) are used to represent the "digits" 10-15.  The decimal integer 61 is 3D in hexadecimal: <em class="math">3&times;16<sup>1</sup>+D(=13)&times;16<sup>0</sup></em>.</dd>
+
+        <dt id="higher-order-functions">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="hijack">hijack</dt>
+        <dd>To take control of a connection between a user and a web application after the user has authenticated, e.g., to impersonate a user after he or she logs in.</dd>
+
+        <dt id="host-address">host address</dt>
+        <dd>A computer's Internet address.</dd>
+
+        <dt id="html">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="html-encode">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="html-form">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="http">Hypertext Transfer Protocol (HTTP)</dt>
+        <dd>A set of rules for exchanging data (especially files) on the World Wide Web.</dd>
+
+        <dt id="http-content-type">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="http-header">HTTP header</dt>
+        <dd>A name/value pair at the start of an HTTP request or response. Unlike dictionary keys, names are not required to be unique.</dd>
+
+        <dt id="http-request-body">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="http-request-header">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="http-request-method">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="http-response">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="http-status-code">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="http-status-phrase">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="http-version-number">FIXME</dt>
+        <dd>definition</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="I">
+
+      <h2>I</h2>
+
+      <dl class="gloss">
+
+        <dt id="idiom">idiom</dt>
+        <dd>A manner of expression commonly used by native speakers of a language.  A programming language's idioms are the ways that most programmers habitually express their ideas.</dd>
+
+        <dt id="immutable">immutable</dt>
+        <dd>Unchangeable.  The value of immutable data cannot be altered after it has been created. See also: <a href="#mutable">mutable</a>.</dd>
+
+        <dt id="imperative-programming">imperative</dt>
+        <dd>A programming system in which the steps taken to calculate values are specified explicitly.  All widely-used programming languages are imperative. See also: <a href="#declarative-programming">declarative</a>.</dd>
+
+        <dt id="implied-operator">implied operator</dt>
+        <dd>An operator that isn't written out, such as the multiplication "operator" in the expression <em>ab</em> (a times b). See also: <a href="#infix-operator">infix operator</a>, <a href="#postfix-operator">postfix operator</a>, <a href="#prefix-operator">prefix operator</a>.</dd>
+
+        <dt id="in-place-operator">in-place operator</dt>
+        <dd>An operator such as <code>+=</code> that provides a shorthand notation for the common case in which the variable being assigned to is also an operand on the right hand side of the assignment. The statement <code>x += 3</code> means the same thing as <code>x = x + 3</code>.</dd>
+
+        <dt id="inclusive-or">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="infix-operator">infix operator</dt>
+        <dd>An operator that is written between its operands, such as the '+' in the expression <em>a+b</em>. See also: <a href="#implied-operator">implied operator</a>, <a href="#postfix-operator">postfix operator</a>, <a href="#prefix-operator">prefix operator</a>.</dd>
+
+        <dt id="inheritance">inheritance</dt>
+        <dd>In object-oriented programming, the practice of defining a new <a href="#class">class</a> as an extension or specialization of an existing one. See also: <a href="#encapsulation">encapsulation</a>, <a href="#polymorphism">polymorphism</a>.</dd>
+
+        <dt id="inner-join">inner join</dt>
+        <dd>A <a href="#join">join</a> in which rows are combined only where values in corresponding columns satisfy some condition (usually equality).</dd>
+
+        <dt id="invariant">invariant</dt>
+        <dd>An expression whose value doesn't change during the execution of a program.  For example, an invariant property of a loop indexed by a variable <code>i</code> might be that the value of the variable <code>M</code> is always greater than or equal to the values of the array elements whose indices are less than <code>i</code>. See also: <a href="#pre-condition">pre-condition</a>, <a href="#post-condition">post-condition</a>.</dd>
+
+        <dt id="invasion-percolation">invasion percolation</dt>
+        <dd>A physical process in which a fluid seeps into a porous material, displacing anything that might already be there.</dd>
+
+        <dt id="instance">instance</dt>
+        <dd>An <a href="#object">object</a> created from a specific <a href="#class">class</a> is called an instance of that class.</dd>
+
+        <dt id="instruction-pointer">instruction pointer</dt>
+        <dd>A <a href="#register">register</a> that points at either the instruction the program is currently executing, or the one that it is to execute next (depending on the computer).  When a function is called, the instruction pointer's value is copied onto the <a href="#call-stack">call stack</a>, along with the values of the function's parameters, so that the program can return to the point of the call when the function finishes.</dd>
+
+        <dt id="integrated-development-environment">Integrated Development Environment (IDE)</dt>
+        <dd>A program that combines several software development tools into one.  Typically, an IDE contains a "smart" editor (that automatically indents and colorizes code), a build system (for languages that need to be compiled), a <a href="#class-browser">class browser</a>, a <a href="#debugger">debugger</a>, and a graphical GUI designer.</dd>
+
+        <dt id="integration-test">integration test</dt>
+        <dd>A test that checks whether the parts of a program work together. See also: <a href="#unit-test">unit test</a>.</dd>
+
+        <dt id="internet-protocol">Internet Protocol (IP)</dt>
+        <dd>A family of communication protocols, the most widely used of which are <a href="#udp">UDP</a> and <a href="#tcp">TCP</a>.</dd>
+
+        <dt id="invert">invert</dt>
+        <dd>To invert a <a href="#dictionary">dictionary</a> is to swap its keys and values; in mathematical terms, this is the same as inverting the discrete function that the dictionary represents.  Any inversion algorithm must deal with the fact that values are not guaranteed to be unique.</dd>
+
+        <dt id="issue-tracker">issue tracker</dt>
+        <dd>A tool that keeps track of a project's outstanding work items, or <a href="#ticket">tickets</a>; a to-do list for the project. Issue trackers are sometimes called <a href="#bug-tracker">bug trackers</a>, since many of the items they record are bugs.</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="J">
+
+      <h2>J</h2>
+
+      <dl class="gloss">
+
+        <dt id="job-control">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="join">join</dt>
+        <dd>A database operation that combines values from two or more <a href="#database-table">tables</a>. See also: <a href="#inner-join">inner join</a>.</dd>
+
+        <dt id="jsp">Java Server Page (JSP)</dt>
+        <dd>A Java-based <a href="#template">template</a> system, in which programmers mix HTML and Java code in a single file.  The file is automatically translated to create a pure Java program that prints pure HTML.</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="K">
+
+      <h2>K</h2>
+
+      <dl class="gloss">
+
+        <dt id="key">key</dt>
+        <dd>The data that is used to index a particular entry in a <a href="#dictionary">dictionary</a>.  In a phone book, for example, people's names are keys.</dd>
+
+        <dt id="key-pair">FIXME</dt>
+        <dd>definition</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="L">
+
+      <h2>L</h2>
+
+      <dl class="gloss">
+
+        <dt id="library">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="linking">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="liskov-substitution-principle">Liskov Substitution Principle</dt>
+        <dd>The principle that it should be possible to use an instance of a <a href="#child-class">child class</a> anywhere that instances of any of its <a href="#parent-class">parent classes</a> can be used. See also: <a href="#inheritance">inheritance</a>, <a href="#polymorphism">polymorphism</a>, <a href="#post-condition">post-condition</a>, <a href="#pre-condition">pre-condition</a>.</dd>
+
+        <dt id="list">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="list-indexing">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="literate-programming">literate programming</dt>
+        <dd>The practice of writing computer programs using a mix of natural language, mathematics, and code, in order to make them easier for human beings to read.  Tools are used to translate literate programs into code (for compilation and execution) and documentation (for human consumption).</dd>
+
+        <dt id="little-endian">little-endian</dt>
+        <dd>Having the least significant byte in the memory location with the lowest address.  In a little-endian system, the integer <code>0x12345678</code> is stored as <code>[0x12, 0x34, 0x56, 0x78]</code>. See also: <a href="#big-endian">big-endian</a>.</dd>
+
+        <dt id="local-scope">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="lock">lock</dt>
+        <dd>A mechanism used to control access to resources in <a href="#concurrency">concurrent systems</a>.  If a <a href="#process">process</a> A tries to <a href="#acquire-lock">acquire</a> a lock held by some other <a href="#process">process</a> B, A is forced to wait until B releases it.</dd>
+
+        <dt id="logging">logging</dt>
+        <dd>The act of recording program events in a systematic way so that they can be examined later; a morally-defensible refinement of the practice of using <code>print</code> statements to debug.</dd>
+
+        <dt id="logical-address">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="long-integer">long integer</dt>
+        <dd>An integer whose value takes up as many words of computer memory as necessary.  Most programming languages use 32 bits to represent integers, which permits values in the range <em class="math">-2<sup>31</sup>...2<sup>31</sup>-1</em> (or -2147483648 to 2147483647).  In contrast, a language will allocate as many words of computer memory to a long integer's value as that value needs. The advantage is that very large values can be represented and manipulated; the disadvantage is that operating on such values is much slower than operating on native ones.</dd>
+
+        <dt id="lookup-function">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="lookup-table">lookup table</dt>
+        <dd>In a <a href="#spreadsheet">spreadsheet</a>, a pair of rows or columns in which the first is used to select a value from the second.</dd>
+
+        <dt id="loop-body">FIXME</dt>
+        <dd>definition</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="M">
+
+      <h2>M</h2>
+
+      <dl class="gloss">
+
+        <dt id="macro">macro</dt>
+        <dd>A variable in a <a href="#makefile">Makefile</a>.</dd>
+
+        <dt id="mailing-list">mailing list</dt>
+        <dd>A set of addresses used to send email to many recipients at once. Most mailing lists keep a searchable archive of past messages. See also: <a href="#blacklist">blacklist</a>, <a href="#whitelist">whitelist</a>.</dd>
+
+        <dt id="main-line">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="makefile">Makefile</dt>
+        <dd>A configuration file for <a href="#bib:make">Make</a> that describes what <a href="#dependency">depends</a> on what, and how to bring things up to date.</dd>
+
+        <dt id="mantissa">mantissa</dt>
+        <dd>The fractional part of a floating-point number.  The mantissa in <em class="math">2.7&times;10<sup>3</sup></em> is 2.7.</dd>
+
+        <dt id="markup-language">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="mask">mask</dt>
+        <dd>FIXME</dd>
+
+        <dt id="match-object">match object</dt>
+        <dd>The object returned after a successful match by a <a href="#regular-expression">regular expression</a> that contains information about which parts of the text were matched by which parts of the RE.</dd>
+
+        <dt id="member">member</dt>
+        <dd>A variable contained within an <a href="#object">object</a> that stores part of the object's state.</dd>
+
+        <dt id="merge">merge</dt>
+        <dd>To combine the contents of two or more versions of a file in order to <a href="#resolve">resolve</a> overlapping edits; also, to combine material from two or more <a href="#branch">branches</a>.</dd>
+
+        <dt id="message-digest">message digest</dt>
+        <dd>A fixed-length summary of a message whose value appears to be random, so that it is practically impossible to construct a message with a specific digest.      <a href="#digital-signature">Digital signatures</a> are usually created by <a href="#encryption">encrypting</a> message digests using <a href="#asymmetric-cipher">asymmetric ciphers</a>.</dd>
+
+        <dt id="message-passing">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="metadata">metadata</dt>
+        <dd>Literally, "data about data", i.e., data such as a format descriptor, which describes other data.</dd>
+
+        <dt id="method">method</dt>
+        <dd>In object-oriented programming, a function which is tied to a particular <a href="#object">object</a>.  Typically, each of an object's methods implements one of the things it can do, or one of the questions it can answer.</dd>
+
+        <dt id="milestone">milestone</dt>
+        <dd>A date by which some work has to be completed.  Milestones are usually given symbolic names, such as "First Beta Release", to accommodate date changes.</dd>
+
+        <dt id="mixed-reference">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="model">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="module">module</dt>
+        <dd>A set of functions and variables that are grouped together to make them more manageable.  In Python, every source file is automatically a module; in other languages, source files may contain many modules, or a single module may span several files.</dd>
+
+        <dt id="moores-law">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="multi-valued-assignment">multi-valued assignment</dt>
+        <dd>An assignment statement which changes several values at once. For example, <code>a,b = 2,3</code> sets <code>a</code> to 2 and <code>b</code> to 3, while <code>a,b = b,a</code> swaps those variables' values.</dd>
+
+        <dt id="mime">Multipurpose Internet Mail Extensions</dt>
+        <dd>An Internet standard for the format of email that also specifies which filename suffixes should be used to identify particular types of content (such as <code>.png</code> for a PNG-format image).</dd>
+
+        <dt id="mock-object">mock object</dt>
+        <dd>A stand-in for a real object that mimics behavior using a fixed set of preprogrammed responses.  Mock objects are used in testing in order to isolate components, and/or improve performance.</dd>
+
+        <dt id="mutable">mutable</dt>
+        <dd>Changeable.  The value of mutable data can be updated in place. See also: <a href="#immutable">immutable</a>.</dd>
+
+        <dt id="mvc">FIXME</dt>
+        <dd>definition</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="N">
+
+      <h2>N</h2>
+
+      <dl class="gloss">
+
+        <dt id="named-range">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="namespace">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="nested-loop">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="nested-query">nested query</dt>
+        <dd>A <a href="#query">query</a> whose results are used as input by some other query.</dd>
+
+        <dt id="nimble-language">nimble language</dt>
+        <dd>A language designed to facilitate rapid development, rather than high performance or static safety checks.  Nimble languages are often called "scripting" or "agile" languages, and include Python, Perl, Ruby, Tcl, Rexx, and Scheme. See also: <a href="#sturdy-language">sturdy language</a>.</dd>
+
+        <dt id="node">node</dt>
+        <dd>An element in a <a href="#graph">graph</a> that may be connected to other nodes by <a href="#arc">arcs</a>.</dd>
+
+        <dt id="normal-form">normal form</dt>
+        <dd>One of the conditions a database must satisfy to conform with best practices.</dd>
+
+        <dt id="normalize">normalize</dt>
+        <dd>To make a database satisfy widely-used <a href="#normal-form">normal forms</a>.</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="O">
+
+      <h2>O</h2>
+
+      <dl class="gloss">
+
+        <dt id="object">object</dt>
+        <dd>A combination of data and functions (called <a href="#method">methods</a>) that are meant to work together. In most programming languages, objects are instances of <a href="#class">classes</a>; each object represents one "thing" that the program can operate on.</dd>
+
+        <dt id="object-file">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="object-oriented-programming">object-oriented programming</dt>
+        <dd>A way to structure programs as collections of <a href="#object">objects</a> that invoke one another's <a href="#method">methods</a>. See also: <a href="#class">class</a>, <a href="#procedural-programming">procedural programming</a>.</dd>
+
+        <dt id="object-relational-mapping">object-relational mapping</dt>
+        <dd>A <a href="#persistence">persistence</a> strategy that stores objects in database tables, then translates the rows in those tables back into objects as necessary.</dd>
+
+        <dt id="operating-system">operating system</dt>
+        <dd>The software responsible for managing a computer's hardware and other processes.  Operating systems are also responsible for making different computers present the same interface to other programs, so that applications like word processors and compilers don't have to be re-written each time a new generation of chips comes out.  Popular desktop operating systems include Microsoft Windows, Linux, and Mac OS X.</dd>
+
+        <dt id="operator-overloading">operator overloading</dt>
+        <dd>Redefining the behavior of a built-in operator, such as <code>+</code>, by <a href="#override">overriding</a> a specially-named method.  C++ and Python permit it; Java does not.</dd>
+
+        <dt id="optimistic-concurrency">optimistic concurrency</dt>
+        <dd>Any scheme in which different processes are allowed to make changes that may prove incompatible, so long as they <a href="#resolve">resolve</a> them later. See also: <a href="#pessimistic-concurrency">pessimistic concurrency</a>.</dd>
+
+        <dt id="override">override</dt>
+        <dd>To replace a <a href="#method">method</a> in a <a href="#parent-class">parent class</a> with one in a <a href="#child-class">child class</a>. See also: <a href="#inheritance">inheritance</a>, <a href="#polymorphism">polymorphism</a>.</dd>
+
+        <dt id="oracle">FIXME</dt>
+        <dd>definition</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="P">
+
+      <h2>P</h2>
+
+      <dl class="gloss">
+
+        <dt id="pack">pack</dt>
+        <dd>To put data in a contiguous block of memory; also called marshalling.</dd>
+
+        <dt id="packet">packet</dt>
+        <dd>The smallest unit of data exchange on a computer network.  A packet consists of a header specifying its length, destination, and other values, and a payload containing the data to be transmitted. See also: <a href="#internet-protocol">Internet Protocol (IP)</a>, <a href="#tcp">Transmission Control Protocol (TCP)</a>, <a href="#udp">User Datagram Protocol (UDP)</a>.</dd>
+
+        <dt id="page">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="paging">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="pair-programming">pair programming</dt>
+        <dd>The practice of having two programmers sit together in front of a single keyboard when writing code.  Pair programming is part of the core of <a href="#extreme-programming">extreme programming</a>; its advocates claim that it improves code quality and intra-project communication <a href="#bib:williams-kessler-pair-programming">cite</a>.</dd>
+
+        <dt id="paper-prototyping">paper prototyping</dt>
+        <dd>A user interface design technique in which designers create low-fidelity sketches of UI features, then assign users tasks and "play computer".</dd>
+
+        <dt id="parameter">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="parent-class">parent class</dt>
+        <dd>In object-oriented programming, the class from which a new <a href="#child-class">child class</a> is <a href="#derive">derived</a>.</dd>
+
+        <dt id="parent-directory">parent directory</dt>
+        <dd>The directory "above" a particular directory; equivalently, the directory that "contains" the one in question.  Every directory in a file system except the <a href="#root-directory">root</a> must a unique parent.  A directory's parent is usually referred to using the shorthand notation <code>..</code> (pronounced "dot dot").</dd>
+
+        <dt id="partial-failure">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="patch">patch</dt>
+        <dd>A stand-alone representation of the differences between two artifacts (typically, two source files).  See also: <a href="#diff">diff</a>.</dd>
+
+        <dt id="path">path</dt>
+        <dd>A non-empty string specifying a single file or directory. Paths consist of zero or more directory names, optionally followed by a filename.  Directory and file names are separated by "/" (on Unix) or "\" (on Microsoft Windows).  If the path begins with this character, it is an <a href="#absolute-path">absolute path</a>; otherwise, it is a <a href="#relative-path">relative path</a>. On Microsoft Windows, a path may optionally begin with a <a href="#drive-letter">drive letter</a>.</dd>
+
+        <dt id="pattern-rule">pattern rule</dt>
+        <dd>In <a href="#bib:make">Make</a>, a rule that specifies a general way to manage an entire class of files.  For example, a pattern rule might specify how to compile any C file, rather than just a particular C file.  Pattern rules typically make use of <a href="#automatic-variable">automatic variables</a>.</dd>
+
+        <dt id="peer-to-peer-architecture">peer-to-peer architecture</dt>
+        <dd>A symmetric system in which all participants communicate equally.</dd>
+
+        <dt id="persistence">persistence</dt>
+        <dd>Saving data structures on disk, or in other long-term storage, so that they can be recreated later. See also: <a href="#checkpoint">checkpoint</a>, <a href="#object-relational-mapping">object-relational mapping</a>.</dd>
+
+        <dt id="personal-software-process">Personal Software Process (PSP)</dt>
+        <dd>An approach to improving software development practices in which programmers record how long they spend on every task, how many errors they make, and so on.</dd>
+
+        <dt id="pessimistic-concurrency">pessimistic concurrency</dt>
+        <dd>Any scheme which prevents different processes from ever making conflicting changes to a shared resource. See also: <a href="#optimistic-concurrency">optimistic concurrency</a>.</dd>
+
+        <dt id="phishing">phishing</dt>
+        <dd>Tricking someone into providing information they shouldn't, e.g., by impersonating a trusted web site.</dd>
+
+        <dt id="phony-target">phony target</dt>
+        <dd>In a build system, a <a href="#target">target</a> that does not correspond to a file or other object.  Phony targets are usually just symbolic names for sequences of actions.</dd>
+
+        <dt id="physical-address">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="pipe">pipe</dt>
+        <dd>A connection from the output of one program to the input of another.  When two or more programs are connected in this way, they are called a "pipeline".</dd>
+
+        <dt id="pipe-and-filter">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="pipeline">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="pivot-table">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="plaintext">plaintext</dt>
+        <dd>Data that has not been <a href="#encryption">encrypted</a>, i.e., data that is in its original, readable, form. See also: <a href="#cipher">cipher</a>, <a href="#ciphertext">ciphertext</a>.</dd>
+
+        <dt id="polymorphism">polymorphism</dt>
+        <dd>A mechanism that allows <a href="#object">objects</a> of different <a href="#class">classes</a> to be treated in the same way.  In most languages, polymorphism depends on <a href="#inheritance">inheritance</a>, but some languages (such as Python) allow <a href="#duck-typing">duck typing</a>, so that classes without a common ancestor that implement the same methods can be treated polymorphically. See also: <a href="#encapsulation">encapsulation</a>, <a href="#inheritance">inheritance</a>.</dd>
+
+        <dt id="port">port</dt>
+        <dd>A non-negative integer that identifies a socket connection on a particular machine.  Ports 0-1023 are reserved for the operating system's use.</dd>
+
+        <dt id="post-mortem">post mortem</dt>
+        <dd>The final phase of a software project, in which the team discusses what went right and what went wrong.</dd>
+
+        <dt id="post-mortem-debugging">post mortem debugging</dt>
+        <dd>The act of debugging a program after it has terminated, typically by inspecting a <a href="#core-dump">core dump</a>.</dd>
+
+        <dt id="post-condition">post-condition</dt>
+        <dd>A condition which a function or method guarantees will be true if it terminates normally. See also: <a href="#design-by-contract">design by contract</a>, <a href="#invariant">invariant</a>, <a href="#pre-condition">pre-condition</a>.</dd>
+
+        <dt id="postfix-operator">postfix operator</dt>
+        <dd>An operator that comes after the thing it applies to, such as the exponent 2 in <em>x<sup>2</sup></em>. See also: <a href="#implied-operator">implied operator</a>, <a href="#infix-operator">infix operator</a>, <a href="#prefix-operator">prefix operator</a>.</dd>
+
+        <dt id="pre-condition">pre-condition</dt>
+        <dd>A condition which must be true at the start of a function or method in order for it to execute correctly. See also: <a href="#design-by-contract">design by contract</a>, <a href="#invariant">invariant</a>, <a href="#post-condition">post-condition</a>.</dd>
+
+        <dt id="prefix-operator">prefix operator</dt>
+        <dd>An operator that is written before its operand, such as the '-' in the expression <em>-b</em>. See also: <a href="#implied-operator">implied operator</a>, <a href="#infix-operator">infix operator</a>, <a href="#postfix-operator">postfix operator</a>.</dd>
+
+        <dt id="prepared-statement">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="prerequisite">prerequisite</dt>
+        <dd>In a build system, a file whose state some other file depends on.  If any of a file's prerequisites are newer than the file itself, the file must be updated.  A file's prerequisites are also called its <a href="#dependency">dependencies</a>. See also: <a href="#action">action</a>, <a href="#target">target</a>.</dd>
+
+        <dt id="primary-key">primary key</dt>
+        <dd>One or more <a href="#database-column">columns</a> in a <a href="#database-table">database table</a> whose values are guaranteed to be unique for each <a href="#database-row">row</a>, i.e., whose values uniquely identify the entry.</dd>
+
+        <dt id="priority-queue">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="principle-of-least-privilege">principle of least privilege</dt>
+        <dd>Granting users only the privileges they actually need in order to accomplish a specific operation, and no others.</dd>
+
+        <dt id="private-key">private key</dt>
+        <dd>One of the two <a href="#key">keys</a> used in an <a href="#asymmetric-cipher">asymmetric cipher</a>.  The private key is kept secret, while the <a href="#public-key">public key</a> is shared with anyone the key's owner wishes to communicate with.</dd>
+
+        <dt id="procedural-programming">procedural programming</dt>
+        <dd>A way to structure programs that separates data (the "what") from functions (the "how"). See also: <a href="#object-oriented-programming">object-oriented programming</a>.</dd>
+
+        <dt id="process">process</dt>
+        <dd>A running instance of a program, containing code, variable values, open files and network connections, and so on.  Processes are the "actors" that the <a href="#operating-system">operating system</a> manages; typically, the OS runs each process for a few milliseconds at a time to give the impression that they are executing simultaneously.</dd>
+
+        <dt id="product-manager">product manager</dt>
+        <dd>The person responsible for what is in a product and why.  See also: <a href="#project-manager">project manager</a>.</dd>
+
+        <dt id="profiler">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="program-counter">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="project-manager">project manager</dt>
+        <dd>The person responsible for ensuring that the product is built to spec and on schedule.  See also: <a href="#product-manager">product manager</a>.</dd>
+
+        <dt id="prompt">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="protocol">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="provenance">provenance</dt>
+        <dd>in art, the history of the ownership and location of an object; in computing, the record of how a particular data value was created.  Computational provenance is intended to provide an audit trail allowing every result to be traced back to the program or programs that produced it, the settings or parameters used by those programs, the raw input values that were processed, etc.</dd>
+
+        <dt id="program-slice">program slice</dt>
+        <dd>The subset of a program's statements which can affect the value of a particular variable at some point in a program.</dd>
+
+        <dt id="public-key">public key</dt>
+        <dd>One of the two <a href="#key">keys</a> used in an <a href="#asymmetric-cipher">asymmetric cipher</a>.  The public key is shared with anyone the key's owner wishes to communicate with, while the <a href="#private-key">private key</a> is kept secret.</dd>
+
+        <dt id="public-key-cryptography">public key cryptography</dt>
+        <dd>A cryptographic system based on an <a href="#asymmetric-cipher">asymmetric cipher</a>, in which the keys used for <a href="#encryption">encryption</a> and <a href="#decryption">decryption</a> are different, and one cannot be guessed or calculated from the other. See also: <a href="#private-key">private key</a>, <a href="#public-key">public key</a>.</dd>
+
+        <dt id="publish-subscribe">publish-subscribe</dt>
+        <dd>A technique for sharing content, in which an author makes the material available, and readers download it when they want it (rather than having it sent to them automatically). Publish-subscribe is sometimes called "content pull", to distinguish it from the "content push" model of <a href="#mailing-list">mailing lists</a>.</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="Q">
+
+      <h2>Q</h2>
+
+      <dl class="gloss">
+
+        <dt id="query">query</dt>
+        <dd>A database operation that reads values, but does not modify anything.  Queries are expressed in a special-purpose language called <a href="#sql">SQL</a>.</dd>
+
+        <dt id="query-parameters">FIXME</dt>
+        <dd>definition</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="R">
+
+      <h2>R</h2>
+
+      <dl class="gloss">
+
+        <dt id="race-condition">race condition</dt>
+        <dd>A situation in which the final state of a system depends on the order in which two or more competing processes modifies the state last.  For example, if two people make changes to a shared file, the final contents of the file depends on who saves their changes last.  Race conditions are usually bugs, and are notoriously hard to track down.</dd>
+
+        <dt id="raise-exception">raise exception</dt>
+        <dd>To signal an error by creating an <a href="#exception">exception</a>, and triggering the process by which the program searches for a matching <a href="#exception-handler">handler</a>. See also: <a href="#catch-exception">catch exception</a>.</dd>
+
+        <dt id="range">range</dt>
+        <dd>FIXME</dd>
+
+        <dt id="raw-string">raw string</dt>
+        <dd>In Python, a string in which the backslash character represents itself, rather than introducing an <a href="#escape-sequence">escape sequence</a>.  Raw strings are written with a leading <code>r</code>, as in <code>r"a\nb"</code>.</dd>
+
+        <dt id="record">record</dt>
+        <dd>A synonym for a <a href="#database-row">database row</a>.</dd>
+
+        <dt id="redirection">redirection</dt>
+        <dd>definition</dd>
+
+        <dt id="reduce">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="refactor">refactor</dt>
+        <dd>To rewrite or reorganize software in order to improve its structure or readability <a href="#bib:fowler-refactoring">cite</a>.</dd>
+
+        <dt id="reference-counting">reference counting</dt>
+        <dd>Keeping track of the number of references to an object while a program is running, so that it can automatically be destroyed when it is no longer in use.  Reference counting is an easy way to do <a href="#garbage-collection">garbage collection</a>, but isn't guaranteed to collect all objects: if A and B refer to each other, but nothing else refers to them, their reference counts will not be zero, and they will not be recycled.</dd>
+
+        <dt id="referential-integrity">referential integrity</dt>
+        <dd>The internal consistency of values in a database.  If an entry in one table contains a <a href="#foreign-key">foreign key</a>, but the <a href="#record">record</a> that key is supposed to identify doesn't exist, referential integrity has been violated.</dd>
+
+        <dt id="reflection">reflection</dt>
+        <dd>Having a program treat itself as data, i.e., examine or manipulate its own state.</dd>
+
+        <dt id="register">register</dt>
+        <dd>A small amount (typically only 4 or 8 bytes in size) of very fast memory that is built into a microprocessor.  Most modern computer architectures only operate on values in registers; data must be moved from memory into registers, and results moved the other way.  The term is also used to refer to variables in <a href="#virtual-machine">virtual machines</a> that play a similar role.</dd>
+
+        <dt id="regression-test">regression test</dt>
+        <dd>A test that checks whether things that used to work are still working; equivalently, a test that checks whether errors that had been eliminated have been reintroduced. See also: <a href="#integration-test">integration test</a>, <a href="#unit-test">unit test</a>.</dd>
+
+        <dt id="regular-expression">regular expression (RE)</dt>
+        <dd>A pattern that specifies a set of character strings.  In programs, REs are most often used to find sequences of characters in strings. See also: <a href="#anchor">anchor</a>, <a href="#group">group</a>, <a href="#match-object">match object</a>.</dd>
+
+        <dt id="relation">relation</dt>
+        <dd>In mathematical terms, a subset of the <a href="#cross-product">cross product</a> of several sets; in human terms, a set of values which are connected in some logical way.</dd>
+
+        <dt id="relational-database">relational database</dt>
+        <dd>A collection of data organized into <a href="#database-table">tables</a>, each of which is made up of <a href="#database-column">columns</a> and <a href="#database-row">rows</a>.</dd>
+
+        <dt id="relative-path">relative path</dt>
+        <dd>A <a href="#path">path</a> that specifies the location of a file or directory with respect to the <a href="#current-working-directory">current working directory</a>.  Any <a href="#path">path</a> that does <em>not</em> begin with a separator character ("/" or "\") is a relative path. See also: <a href="#absolute-path">absolute path</a>.</dd>
+
+        <dt id="relative-reference">relative reference</dt>
+        <dd>A <a href="#spreadsheet">spreadsheet</a> cell reference that is automatically adjusted when a formula is moved from one location to another.  Relative references are created simply by naming the cell, as in <code>C4</code>. See also: <a href="#absolute-reference">absolute reference</a>.</dd>
+
+        <dt id="release-lock">release a lock</dt>
+        <dd>To relinquish a <a href="#lock">lock</a> in order to signal that other <a href="#process">processes</a> may now use a shared resource. See also: <a href="#acquire-lock">acquire a lock</a>.</dd>
+
+        <dt id="release-log">release log</dt>
+        <dd>A file (often a <a href="#spreadsheet">spreadsheet</a>) that records exactly what was shipped to whom, when.</dd>
+
+        <dt id="reluctant-matching">reluctant matching</dt>
+        <dd>In a <a href="#regular-expression">regular expression</a>, the policy of matching as little as possible, while still satisfying the match. See also: <a href="#greedy-matching">greedy matching</a>.</dd>
+
+        <dt id="remote-login">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="replay-attack">replay attack</dt>
+        <dd>An attack in which messages are recorded, then played back at a later date.  For example, an attacker might record the signal that means "open the vault", then use it to fool the system into opening the vault door several hours later.</dd>
+
+        <dt id="repository">repository</dt>
+        <dd>A central storage area where a <a href="#version-control-system">version control system</a> stores old <a href="#revision">revisions</a> of files, along with information about who created them and when.</dd>
+
+        <dt id="repository-browser">repository browser</dt>
+        <dd>A read-only interface (usually web-based) to a <a href="#version-control-system">version control</a> <a href="#repository">repository</a>.</dd>
+
+        <dt id="resolve">resolve</dt>
+        <dd>To eliminate the <a href="#conflict">conflicts</a> between two or more incompatible changes to a file or set of files being managed by a <a href="#version-control-system">version control system</a>.</dd>
+
+        <dt id="response-time">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="reverse-merge">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="revert">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="revision">revision</dt>
+        <dd>A particular state of a file, or a set of files, being managed by a <a href="#version-control-system">version control system</a>.</dd>
+
+        <dt id="revision-number">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="risk-assessment">risk assessment</dt>
+        <dd>The process of determining how a system's security could be attacked, and what the effects of different failures would be.</dd>
+
+        <dt id="roadmap">roadmap</dt>
+        <dd>A display that shows a project's future <a href="#milestone">milestones</a>.</dd>
+
+        <dt id="role">role</dt>
+        <dd>A description of what some class of users can and cannot do to a system.  A role is typically described by listing the actions its members can perform; they simplify administration by making it possible to redefine the capabilities of an entire group in a single step.</dd>
+
+        <dt id="roll-back">roll back</dt>
+        <dd>To undo a set of <a href="#revision">revisions</a> in a <a href="#version-control-system">version control system</a> in order to return content to a previous state.</dd>
+
+        <dt id="root-directory">root directory</dt>
+        <dd>The top-most directory in a <a href="#file-system">file system</a>'s <a href="#directory-tree">directory tree</a>.  Its name is the <a href="#operating-system">operating system</a>'s separator character, i.e., "/" on Unix (including Linux and Mac OS X), and "\" on Microsoft Windows.</dd>
+
+        <dt id="root-element">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="row-major-order">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="rss">RSS</dt>
+        <dd>An XML data format used for syndicating content, such as <a href="#blog">blogs</a>: the acronym stands for Rich Site Summary, RDF Site Summary, or Really Simple Syndication.  Someone who wishes to publish a blog creates an RSS file (typically using off-the-shelf software) and places it on their web server. Blog readers can then periodically check for updates, and, if there are any, download and display the associated articles.</dd>
+
+        <dt id="rule">rule</dt>
+        <dd>In a build system, a specification of a <a href="#target">target</a>'s <a href="#prerequisite">prerequisites</a>, and what <a href="#action">action(s)</a> to take to bring the <a href="#target">target</a> up to date.</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="S">
+
+      <h2>S</h2>
+
+      <dl class="gloss">
+
+        <dt id="scatter">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="scope">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="screen-scraping">screen scraping</dt>
+        <dd>Using a program to extract information from an HTML page intended for human viewing.  Screen scraping is a quick way to solve simple problems, but breaks down when the pages are complex, or their format changes frequently. See also: <a href="#web-services">web services</a>, <a href="#web-spider">web spider</a>.</dd>
+
+        <dt id="search-path">search path</dt>
+        <dd>The list of directories that the operating system searches when the user asks to run a program.  The search path is usually stored in the user's <code>PATH</code> <a href="#environment-variable">environment-variable</a>.  On Unix, entries are separated by ":", while on Windows, they are separated by ";".</dd>
+
+        <dt id="secure-shell">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="seek">seek</dt>
+        <dd>To move to an arbitrary location in a file.</dd>
+
+        <dt id="self-join">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="separation-of-concerns">separation of concerns</dt>
+        <dd>The practice of breaking programs into pieces that overlap as little as possible.</dd>
+
+        <dt id="sequence">sequence</dt>
+        <dd>A set of objects arranged in a dense, linear fashion, so that they may be referred to by their index.  In Python, strings, lists, and tuples are built-in sequence types, since the elements of each may be referred to as <code>s[0]</code>, <code>s[1]</code>, and so on up to <code>s[N-1]</code>, where <code>N</code> is the sequence's length.</dd>
+
+        <dt id="serial-fraction">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="serialization">serialization</dt>
+        <dd>The act of forcing operations to execute one at a time, instead of <a href="#concurrency">concurrently</a>.</dd>
+
+        <dt id="server">server</dt>
+        <dd>A software application that provides data to other programs.  The consumer is called a <a href="#client">client</a>. See also: <a href="#web-server">web server</a>.</dd>
+
+        <dt id="servlet">servlet</dt>
+        <dd>A Java class that is loaded and run by a <a href="#servlet-container">servlet container</a> to generate web content.  Servlets are an alternative to <a href="#cgi">CGI</a> scripts.</dd>
+
+        <dt id="servlet-container">servlet container</dt>
+        <dd>A long-running server application, similar to a <a href="#web-server">web server</a>, that loads and runs Java classes called <a href="#servlet">servlets</a> to produce web content.</dd>
+
+        <dt id="set">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="setter">setter</dt>
+        <dd>A <a href="#method">method</a> used to change the value of a <a href="#member">member</a>.</dd>
+
+        <dt id="sgml">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="shared-library">shared library</dt>
+        <dd>A compiled library that is loaded into memory at most once, and whose contents are shared by all running programs that reference it.  Shared libraries are implemented on Windows by <code>.dll</code> files, and on Linux by <code>.so</code> files.</dd>
+
+        <dt id="shell">shell</dt>
+        <dd>A command-line user interface program, such as Bash (the Bourne-Again Shell) or the Microsoft Windows DOS shell.  Shells commonly execute a read-evaluate-print cycle: when the user enters a command in response to a <a href="#prompt">prompt</a>, the shell either executes the command itself, or runs the program that the command has specified.  In either case, output is sent to the shell window, and the user is prompted to enter another command.  Most shells include commands for looping, conditionals, and defining functions, so that small (and sometimes large) programs can be written by putting a sequence of shell commands in a file.</dd>
+
+        <dt id="shell-script">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="short-circuit-evaluation">short-circuit evaluation</dt>
+        <dd>Evaluation of an expression from left to right that stops as soon as the expression's final value is known.  For example, if <code>x</code> is false, the computer does not call the function <code>f</code> in the expression <code>x and f(x)</code>.  Similarly, if <code>x</code> is true, <code>f</code> does not have to be called in <code>x or f(x)</code>.</dd>
+
+        <dt id="silver-bullet">silver bullet</dt>
+        <dd>A tool or technique that purports to solve a hard problem, but which is too good to be true.  The term comes from the myth that only silver bullets can kill werewolves (in fact, ruthenium, rhodium, and palladium are equally effective).</dd>
+
+        <dt id="simple-api-for-xml">Simple API for XML (SAX)</dt>
+        <dd>A stream-oriented way to process XML documents.  Instead of presenting the document as a tree, SAX presents it as a sequence of events, such as "start of element", "text", and "end of element".  The application programmer is responsible for writing functions to handle each type of event.  Its main advantage is that it does not require programs to store entire documents in memory.  The disadvantage is that any moderately complex application therefore winds up building some sort of tree in memory anyway. See also: <a href="#document-object-model">Document Object Model (DOM)</a>.</dd>
+
+        <dt id="single-step">single-step</dt>
+        <dd>To advance a program by one instruction, or one line, while debugging. See also: <a href="#step-into">step into</a>, <a href="#step-over">step over</a>.</dd>
+
+        <dt id="slice">slice</dt>
+        <dd>A regular subsequence of a larger <a href="#sequence">sequence</a>, such as the first five elements, or every second element.</dd>
+
+        <dt id="soap">Simple Object Access Protocol (SOAP)</dt>
+        <dd>A misleadingly-named standard for exchanging XML documents between programs over the Internet.  SOAP is the building block for most modern <a href="#web-services">web services</a>.</dd>
+
+        <dt id="social-engineering">social engineering</dt>
+        <dd>An attack based on deceiving users, or on relying on social conventions.  Posing as an old lady in distress, or as a bank official who is checking information, are both attacks of this kind.</dd>
+
+        <dt id="socket">socket</dt>
+        <dd>One end of an <a href="#internet-protocol">IP</a> communication channel.</dd>
+
+        <dt id="software-architecture">software architecture</dt>
+        <dd>The overarching pattern or principle of a software application which guides the design of particular modules.</dd>
+
+        <dt id="sparse">sparse</dt>
+        <dd>Being mostly empty.  A sparse vector or matrix is one in which most values are zero.</dd>
+
+        <dt id="special-method">special method</dt>
+        <dd>In Python, a <a href="#method">method</a> which has a special meaning to the interpreter.  By conventions, these methods' names begin and end with two underscore characters. For example, if an object has a <code>--str--</code> method, Python automatically calls it whenever it needs a text representation of the object.</dd>
+
+        <dt id="specification">specification</dt>
+        <dd>A formal or semi-formal description of what a piece of software is supposed to do.  Specifications may include everything from English prose ("The system must be able to handle at least 100 requests per second") to algebra so complex that neither customers nor developers really understand it.</dd>
+
+        <dt id="spiral-model">spiral model</dt>
+        <dd>A software development process which creates successively larger prototypes on the way to delivering the final application.  The development of each prototype goes through the steps of the <a href="#waterfall-model">waterfall model</a>.</dd>
+
+        <dt id="spreadsheet">spreadsheet</dt>
+        <dd>A program for manipulating tabular numeric data, or the data manipulated in that way.  Microsoft Excel is the most widely used spreadsheet in the world, but many others (such as <a href="#bib:gnumeric">Gnumeric</a>) also exist.</dd>
+
+        <dt id="sql">SQL</dt>
+        <dd>A special-purpose language for describing operations on <a href="#relational-database">relational databases</a>.  SQL is <em>not</em> actually an acronym for "Structured Query Language".</dd>
+
+        <dt id="sql-injection">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="stack-frame">stack frame</dt>
+        <dd>A data structure that provides storage for a function's local variables.  Each time a function is called, a new stack frame is created and put on the top of the <a href="#call-stack">call stack</a>.  When the function returns, the stack frame is discarded.</dd>
+
+        <dt id="stack-pointer">stack pointer</dt>
+        <dd>A <a href="#register">register</a> that points at the top of the <a href="#call-stack">call stack</a>.</dd>
+
+        <dt id="standup-meeting">stand-up meeting</dt>
+        <dd>A status meeting, usually held at the start of the day, in which everyone stands up (which helps keep the meeting brief). See also: <a href="#agile-development">agile development</a>.</dd>
+
+        <dt id="standard-error">standard error</dt>
+        <dd>A process's "other" default output stream, typically used for error messages. See also: <a href="#standard-output">standard output</a>.</dd>
+
+        <dt id="standard-input">standard input</dt>
+        <dd>A process's default input stream.  In interactive command-line applications, it is typically connected to the keyboard; in a <a href="#pipe">pipeline</a>, it receives data from the <a href="#standard-output">standard output</a> of the preceding process.</dd>
+
+        <dt id="standard-output">standard output</dt>
+        <dd>A process's default output stream.  In interactive command-line applications, data sent to standard output is displayed on the screen; in a <a href="#pipe">pipeline</a>, it is passed to the <a href="#standard-input">standard input</a> of the next process.</dd>
+
+        <dt id="starvation">starvation</dt>
+        <dd>A situation in which a process never completes a task because other processes are continually being given access to a resource that the starving process needs.  Starvation is not the same as <a href="#deadlock">deadlock</a>, although the symptoms are similar.</dd>
+
+        <dt id="stateless-protocol">stateless protocol</dt>
+        <dd>A communication protocol in which each basic operation is independent of each other.      <a href="#http">HTTP</a> is the best-known example: <a href="#server">servers</a> do not remember anything about <a href="#client">clients</a> between requests.</dd>
+
+        <dt id="static-space">static space</dt>
+        <dd>A portion of a program's memory reserved for storing values that are allocated even before the program starts to run, such as constant strings. See also: <a href="#call-stack">call stack</a>, <a href="#heap">heap</a>.</dd>
+
+        <dt id="static-linking">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="statistical-profiler">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="status-code">status code</dt>
+        <dd>An integer value returned to the operating system by a program when that program terminates, which indicates whether the program terminated normally or abnormally.  By convention, 0 is used to indicate normal termination ("zero errors"), while non-zero values indicate specific problems (e.g., 1 for "file not found", 2 for "no permission", etc.).</dd>
+
+        <dt id="stdin">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="stdout">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="step-into">step into</dt>
+        <dd>To go into a function call when debugging. See also: <a href="#single-step">single-step</a>, <a href="#step-over">step over</a>.</dd>
+
+        <dt id="step-over">step over</dt>
+        <dd>To execute a function without going into it when debugging. See also: <a href="#single-step">single-step</a>, <a href="#step-into">step into</a>.</dd>
+
+        <dt id="stockholm-syndrome">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="stored-procedure">stored procedure</dt>
+        <dd>A function or program that has been compiled and stored in a database for more efficient execution.</dd>
+
+        <dt id="stride">stride</dt>
+        <dd>FIXME</dd>
+
+        <dt id="string">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="strong-scalability">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="stub">stub</dt>
+        <dd>A temporary placeholder for a function or method that hasn't been written yet.  Stubs typically return the same value on every call, or (less often) a random value.</dd>
+
+        <dt id="sturdy-development">sturdy development</dt>
+        <dd>A software development methodology based on up-front planning.  See also: <a href="#agile-development">agile development</a>.</dd>
+
+        <dt id="sturdy-language">sturdy language</dt>
+        <dd>A language that separates compilation from execution in order to maximize performance, check safety conditions, or both.  Sturdy languages typically have longer turnaround times than <a href="#nimble-language">nimble languages</a>, but scale up to very large problems better.  Sturdy languages include C/C++, Fortran, Java, and C#.</dd>
+
+        <dt id="subquery">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="submodule">submodule</dt>
+        <dd>A <a href="#module">module</a> that is contained inside another module.  Large software libraries are divided into submodules for the same reason that large programs are divided into functions.</dd>
+
+        <dt id="suspended-process">suspended process</dt>
+        <dd>A <a href="#process">process</a> which is not running.  A process may be suspended because some other process is using the CPU, or because it is waiting to <a href="#acquire-lock">acquire a lock</a>.</dd>
+
+        <dt id="symmetric-cipher">symmetric cipher</dt>
+        <dd>A <a href="#cipher">cipher</a> in which a single key is used for both <a href="#encryption">encryption</a> and <a href="#decryption">decryption</a>.  Symmetric ciphers are less secure than <a href="#asymmetric-cipher">asymmetric</a> ones, but are typically much faster.</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="T">
+
+      <h2>T</h2>
+
+      <dl class="gloss">
+
+        <dt id="table">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="tag-version">tag (in version control)</dt>
+        <dd>A symbolic label in a version control system that uniquely identifies a particular state of the repository. See also: <a href="#branch">branch</a>.</dd>
+
+        <dt id="tag-xml">tag (in XML)</dt>
+        <dd>A textual representation of an <a href="#xml">XML</a> <a href="#element">element</a>.  Tags come in matched opening and closing pairs, such as <code>&lt;x&gt;</code> and <code>&lt;/x&gt;</code>; if the element the tag pair represents does not contain text or other elements, the short form <code>&lt;x/&gt;</code> may be used. See also: <a href="#branch">branch</a>.</dd>
+
+        <dt id="target">target</dt>
+        <dd>In a build system, a thing that may be created or updated. Targets typically have <a href="#prerequisite">prerequisites</a> that must be up to date before the target itself can be updated.  Targets may also be symbolic, i.e., there may be targets that do not correspond to files or other objects.  In this case, the target is simply a symbolic name for a set of actions. See also: <a href="#action">action</a>, <a href="#default-target">default target</a>, <a href="#dependency">dependency</a>, <a href="#phony-target">phony target</a>.</dd>
+
+        <dt id="target-program">target program</dt>
+        <dd>The program being controlled by a <a href="#debugger">debugger</a>; also called the <a href="#debuggee">debuggee</a>.</dd>
+
+        <dt id="task">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="task-farm">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="template">template</dt>
+        <dd>An outline of a web page, which a program then fills in with specific content.  In older systems, templates contain a mix of program code and HTML; newer systems try to keep the two separate in order to simplify maintenance.</dd>
+
+        <dt id="test-suite">test suite</dt>
+        <dd>A collection of <a href="#unit-test">unit tests</a>.  Tests are grouped into test suites in order to make them easier to manage, and so that developers can easily re-run logically-connected sets of tests.</dd>
+
+        <dt id="test-driven-development">test-driven development (TDD)</dt>
+        <dd>The practice of writing unit tests <em>before</em> writing application code.  TDD is a core practice in <a href="#extreme-programming">Extreme Programming</a>, but has been around since at least the 1970s.  Its main advantage is that it helps programmers clarify their ideas about what their code is supposed to do before they have become emotionally attached to that code.  It also increases the odds of some tests actually being written, and gives programmers a finish line to aim for: when all the tests pass, the code must be done.</dd>
+
+        <dt id="text">text</dt>
+        <dd>The non-<a href="#element">element</a> content of an <a href="#xml">XML</a> <a href="#document">document</a>; in an HTML page, the text is what is displayed, while the <a href="#tag-xml">tags</a> control its formatting.</dd>
+
+        <dt id="thrashing">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="three-tier-architecture">three-tier architecture</dt>
+        <dd>An architecture in which data is stored in a database (tier 1), which is manipulated by a <a href="#server">server</a> (tier 2), and viewed in a web browser (tier 3).</dd>
+
+        <dt id="throughput">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="ticket">ticket</dt>
+        <dd>A single work item in an <a href="#issue-tracker">issue tracker</a>.  A ticket may describe a bug that needs to be fixed, an enhancement that is to be added, a question that needs to be answered, or any other task. See also: <a href="#ticket-closed">ticket, closed</a>, <a href="#ticket-open">ticket, open</a>.</dd>
+
+        <dt id="ticket-assigned">ticket, assigned</dt>
+        <dd>A ticket that someone is currently responsible for.</dd>
+
+        <dt id="ticket-closed">ticket, closed</dt>
+        <dd>A <a href="#ticket">ticket</a> that has been completed. (Note, however, that closed tickets may later be reopened if it turns out that a bug fix doesn't work, or that an enhancement is incomplete.)</dd>
+
+        <dt id="ticket-open">ticket, open</dt>
+        <dd>A <a href="#ticket">ticket</a> that has not yet been completed.</dd>
+
+        <dt id="time-complexity">time complexity</dt>
+        <dd>FIXME</dd>
+
+        <dt id="traceability">traceability</dt>
+        <dd>The ability to determine where a piece of code or data came from, and/or how it was produced.</dd>
+
+        <dt id="transaction">transaction</dt>
+        <dd>A set of operations which take effect in a reliable, consistent manner.  If a transaction cannot be completed (e.g., because of a system failure), it is guaranteed to have no effect.</dd>
+
+        <dt id="tree">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="tcp">Transmission Control Protocol (TCP)</dt>
+        <dd>A communication protocol in the <a href="#internet-protocol">IP</a> family that provides reliable in-order delivery of data.  Programs communicating via TCP can read and write as they would with files (at least, until something goes wrong). See also: <a href="#socket">socket</a>, <a href="#udp">User Datagram Protocol (UDP)</a>.</dd>
+
+        <dt id="triage">triage</dt>
+        <dd>The process of sorting, prioritizing, and assigning <a href="#ticket">tickets</a>.  As the project deadline approaches, triage is done more frequently, in order to keep the team focused on things that actually need to be done.</dd>
+
+        <dt id="trigger">trigger</dt>
+        <dd>A procedure which is automatically invoked when a database table is modified.  The term is also applied to code that runs whenever the content of a version control <a href="#repository">repository</a> are updated.</dd>
+
+        <dt id="tuple">tuple</dt>
+        <dd>An immutable <a href="#sequence">sequence</a>.</dd>
+
+        <dt id="twos-complement">two's complement</dt>
+        <dd>A way to represent signed integers in computer memory.  The most significant bit in positive integers is 0; the other bits are used to store magnitude.  Negative values "wrap around", like a car's odometer, so that -1 is the bit string 111...111, -2 is 111...110, and so on, all the way to the most negative number, which is 100...000.  Note that two's complement is asymmetric: since zero counts as a positive number, the absolute value of the most negative number is one greater than the absolute value of the most positive number.  Put another way, N bits can represent values from <em class="math">-(2<sup>N-1</sup>)</em> to <em class="math">2<sup>N-1</sup>-1</em>.  Thus, three bits can represent the integers -4...3.</dd>
+
+        <dt id="type">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="type-switch">type-switch</dt>
+        <dd>A <a href="#procedural-programming">procedural</a> way to implement <a href="#polymorphism">polymorphism</a>, in which the program tests the type of the data, then chooses which function to call.</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="U">
+
+      <h2>U</h2>
+
+      <dl class="gloss">
+
+        <dt id="udp">User Datagram Protocol (UDP)</dt>
+        <dd>A communication protocol in the <a href="#internet-protocol">IP</a> family that guarantees neither reliability nor ordering.  The network does its best to deliver <a href="#packet">packets</a>, but they may arrive out of order, or not at all. See also: <a href="#socket">socket</a>, <a href="#tcp">Transmission Control Protocol (TCP)</a>.</dd>
+
+        <dt id="unicode">Unicode</dt>
+        <dd>An international standard for representing characters and other symbols.  Each symbol is assigned a unique number; those numbers are then encoded in any of several standard ways (such as <a href="#utf-8">UTF-8</a>).</dd>
+
+        <dt id="unit-test">unit test</dt>
+        <dd>A test that exercises a single basic element of a program, such as a particular function or method. See also: <a href="#integration-test">integration test</a>.</dd>
+
+        <dt id="unpack">unpack</dt>
+        <dd>To take data that has been <a href="#pack">packed</a> into a contiguous block of memory, and put it back in the language's native storage format; also called unmarshalling.</dd>
+
+        <dt id="update">update</dt>
+        <dd>To update a <a href="#working-copy">working copy</a> with the most recent changes in a <a href="#version-control-system">version control system</a> <a href="#repository">repository</a>. See also: <a href="#commit">commit</a>.</dd>
+
+        <dt id="url">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="url-encoding">URL encoding</dt>
+        <dd>A translation standard that replaces characters that are meaningful in URLs (such as <code>&amp;</code> and <code>?</code>) with their hexadecimal encodings.</dd>
+
+        <dt id="user-group">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="user-group-id">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="user-group-name">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="user-id">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="user-name">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="utc">Coordinated Universal Time (UTC)</dt>
+        <dd>The standard time that others are defined against; formerly known as Greenwich Mean Time (GMT).</dd>
+
+        <dt id="utf-8">UTF-8</dt>
+        <dd>A standard for encoding character data; the acronym is short for "<a href="#unicode">Unicode</a> Transformation Format, 8-bit encoding form".      <a href="#bib:spolsky-unicode">CITE</a> presents the details, and explains why UTF-8 is currently the best choice for character encoding on the web.</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="V">
+
+      <h2>V</h2>
+
+      <dl class="gloss">
+
+        <dt id="validate">validate</dt>
+        <dd>To check that input data is of the right type, in range, etc. Failing to validate data is a common source of security problems.</dd>
+
+        <dt id="variable">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="verifiable-deliverable">verifiable deliverable</dt>
+        <dd>A project task (such as implementation of a particular feature) whose completion can be checked by an independent observer.  Where possible, features should be described in terms of verifiable deliverables, so that there is some way to tell what's actually done at any time.</dd>
+
+        <dt id="version-control-system">version control system</dt>
+        <dd>A tool for managing changes to a set of files.  Each set of changes creates a new <a href="#revision">revision</a> of the files; the version control system allows users to recover old <a href="#revision">revisions</a> reliably, and helps manage conflicting changes made by different users.</dd>
+
+        <dt id="version-number">version number</dt>
+        <dd>A multi-part number used to identify a software release. "6.2.3.1407" means major version 6, minor version 2, patch 3, build 1407.  By convention, the major number is only incremented when changes make this version incompatible with previous versions.  Minor version numbers are for backward-compatible releases that add new features, while patches usually identify partial releases (typically, bug fixes). Finally, the build number is incremented every time a new installer is created, so that testers can uniquely identify it.</dd>
+
+        <dt id="view">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="virtual-machine">virtual machine (VM)</dt>
+        <dd>A program that makes a computer behave as if it were some other type of computer.  Many modern programming languages, such as Java and Python, run on virtual machines, rather than directly on the computer's hardware.  The main advantages are portability (once the VM has been ported to a new machine, all of the programs running on it will also run on that machine) and security (the VM can enforce much more complicated safety rules than today's hardware).  The main disadvantage is speed: since the VM may have to execute several physical instructions to simulate a single logical instruction, programs running on a VM may be many times slower than programs running natively.</dd>
+
+        <dt id="virtual-memory">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="vision-statement">vision statement</dt>
+        <dd>A one- or two-sentence summary of a project's purpose and plan; also known as an <a href="#elevator-pitch">elevator pitch</a>.</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="W">
+
+      <h2>W</h2>
+
+      <dl class="gloss">
+
+        <dt id="watchpoint">watchpoint</dt>
+        <dd>A <a href="#breakpoint">breakpoint</a> that is associated with a variable, or a region of memory, rather than with a location in the program's source code.  The program suspends execution whenever any of the data associated with a watchpoint is modified. See also: <a href="#conditional-breakpoint">conditional breakpoint</a>.</dd>
+
+        <dt id="waterfall-model">waterfall model</dt>
+        <dd>A software development process in which requirements analysis, design, implementation, and testing are done strictly in that order.  The waterfall model is almost never used in practice; instead, its main reason for existing is to give software engineering professors something to critique.</dd>
+
+        <dt id="weak-scalability">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="web-services">web services</dt>
+        <dd>A software application that exchanges data with others by sending <a href="#xml">XML</a> data via the <a href="#http">HTTP</a> protocol.  Most modern web services encode data using the <a href="#soap">SOAP</a> standard. See also: <a href="#screen-scraping">screen scraping</a>.</dd>
+
+        <dt id="web-server">web server</dt>
+        <dd>A <a href="#server">server</a> that handles <a href="#http">HTTP</a> requests.</dd>
+
+        <dt id="web-spider">web spider</dt>
+        <dd>A program that browses the web on its own by recursively following links in the pages it finds.</dd>
+
+        <dt id="weblog">weblog</dt>
+        <dd>See <a href="#blog">blog</a>.</dd>
+
+        <dt id="whitelist">whitelist</dt>
+        <dd>A list of email addresses from which messages will be accepted, which is part of a "forbid unless allowed" <a href="#authorization">authorization</a> policy. See also: <a href="#blacklist">blacklist</a>.</dd>
+
+        <dt id="widget">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="wiki">wiki</dt>
+        <dd>A web site that allows users to edit pages in place, typically using markup rules much simpler than those of standard HTML.  The name comes from the Hawaiian word for "quickly".</dd>
+
+        <dt id="wildcard">wildcard</dt>
+        <dd>A character used in pattern matching.  In the Unix shell, the wildcard "*" matches zero or more characters, so that <code>*.txt</code> matches all files whose names end in <code>.txt</code>.</dd>
+
+        <dt id="working-copy">working copy</dt>
+        <dd>A personal copy of the files being managed by a <a href="#version-control-system">version control system</a>. Changes the user makes to the working copy do not affect other users until they are <a href="#commit">committed</a> to the <a href="#repository">repository</a>.</dd>
+
+        <dt id="wrapper-function">FIXME</dt>
+        <dd>definition</dd>
+
+        <dt id="wysiwyg">FIXME</dt>
+        <dd>definition</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="X">
+
+      <h2>X</h2>
+
+      <dl class="gloss">
+
+        <dt id="xml">XML</dt>
+        <dd>The Extensible Markup Language; a standard for defining application-specific markup languages. See also: <a href="#attribute">attribute</a>, <a href="#document">document</a>, <a href="#document-object-model">Document Object Model (DOM)</a>, <a href="#element">element</a>.</dd>
+
+        <dt id="xpath">FIXME</dt>
+        <dd>definition</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="Y">
+
+      <h2>Y</h2>
+
+      <dl class="gloss">
+
+        <dt id="yagni">You Ain't Gonna Need It (YAGNI)</dt>
+        <dd>FIXME</dd>
+
+      </dl>
+
+    </section>
+
+    <section id="Z">
+
+      <h2>Z</h2>
+
+    </section>
+
+    <dl>
+
+        <dt id="action">action</dt>
+        <dd>The steps a <a href="#build-tool">build tool</a> must take to bring a file or other object up to date. See also: <a href="#dependency">dependency</a>, <a href="#prerequisite">prerequisite</a>, <a href="#target">target</a>.</dd>
+
+        <dt id="automatic-variable">automatic variable</dt>
+        <dd>In <a href="#bib:make">Make</a>, a variable whose value is automatically redefined for each rule.  Automatic variables include <code>$@</code>, which holds the rule's <a href="#target">target</a>, and <code>$^</code>, which holds its <a href="#prerequisite">prerequisites</a>.  Automatic variables are typically used in <a href="#pattern-rule">pattern rules</a>.</dd>
+
+        <dt id="build-file">build file</dt>
+        <dd class="fixsmall">definition</dd>
+
+        <dt id="build-manager">build manager</dt>
+        <dd class="fixsmall">definition</dd>
+
+        <dt id="default-rule">default rule</dt>
+        <dd class="fixsmall">definition</dd>
+
+        <dt id="dependency">dependency</dt>
+        <dd>In a build system, a file whose state some other file depends on.  If any of a file's dependencies are newer than the file itself, the file must be updated.  A file's dependencies are also called its <a href="#prerequisite">prerequisites</a>. See also: <a href="#action">action</a>, <a href="#target">target</a>.</dd>
+
+        <dt id="false-dependency">false dependency</dt>
+        <dd class="fixsmall">definition</dd>
+
+        <dt id="graph">graph</dt>
+        <dd>A mathematical structure that consists of <a href="#node">nodes</a> connected by <a href="#arc">arcs</a>. Graphs may be directed (i.e., the arcs are unidirectional) or undirected (i.e, the arcs are bidirectional), and are used to represent everything from program structure to bus routes.</dd>
+
+        <dt id="macro">macro</dt>
+        <dd>A variable in a <a href="#makefile">Makefile</a>.</dd>
+
+        <dt id="makefile">Makefile</dt>
+        <dd>A configuration file for <a href="#bib:make">Make</a> that describes what <a href="#dependency">depends</a> on what, and how to bring things up to date.</dd>
+
+        <dt id="pattern-rule">pattern rule</dt>
+        <dd>In <a href="#bib:make">Make</a>, a rule that specifies a general way to manage an entire class of files.  For example, a pattern rule might specify how to compile any C file, rather than just a particular C file.  Pattern rules typically make use of <a href="#automatic-variable">automatic variables</a>.</dd>
+
+        <dt id="phony-target">phony target</dt>
+        <dd>In a build system, a <a href="#target">target</a> that does not correspond to a file or other object.  Phony targets are usually just symbolic names for sequences of actions.</dd>
+
+        <dt id="prerequisite">prerequisite</dt>
+        <dd>In a build system, a file whose state some other file depends on.  If any of a file's prerequisites are newer than the file itself, the file must be updated.  A file's prerequisites are also called its <a href="#dependency">dependencies</a>. See also: <a href="#action">action</a>, <a href="#target">target</a>.</dd>
+
+        <dt id="rule">rule</dt>
+        <dd>In a build system, a specification of a <a href="#target">target</a>'s <a href="#prerequisite">prerequisites</a>, and what <a href="#action">action(s)</a> to take to bring the <a href="#target">target</a> up to date.</dd>
+
+        <dt id="target">target</dt>
+        <dd>In a build system, a thing that may be created or updated. Targets typically have <a href="#prerequisite">prerequisites</a> that must be up to date before the target itself can be updated.  Targets may also be symbolic, i.e., there may be targets that do not correspond to files or other objects.  In this case, the target is simply a symbolic name for a set of actions. See also: <a href="#action">action</a>, <a href="#default-target">default target</a>, <a href="#dependency">dependency</a>, <a href="#phony-target">phony target</a>.</dd>
+
+        <dt id="task">task</dt>
+        <dd class="fixsmall">definition</dd>
+
+    </dl>
+
+    <div class="footer">
+      <table>
+        <tr>
+          <td valign="middle">
+            <img src="../img/logo/creative-commons-attribution-license.png" alt="CC-A license" />
+          </td>
+          <td valign="middle">
+            This material is provided under the
+            <a href="http://creativecommons.org/licenses/by/3.0/legalcode">Creative Commons Attribution</a> license.
+            <br/>
+            Please contact <a href="mailto:info@software-carpentry.org">info@software-carpentry.org</a> for details.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </body>
+</html>

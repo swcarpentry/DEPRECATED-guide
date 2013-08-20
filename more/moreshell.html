@@ -1,0 +1,1002 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="scb.css" type="text/css" />
+    <title>Software Carpentry / More Shell</title>
+    <meta name="id" content="$Id: shell.html 2498 2012-03-16 15:23:55Z gvw $" />
+    <meta name="type" content="chapter" />
+  </head>
+  <body class="chapter">
+    <div class="header">
+      <a href="index.html"><img src="../img/logo/software-carpentry-banner-with-hammer-380x80.png" alt="Software Carpentry logo" class="logo" /></a>
+      <h1>More Shell</h1>
+    </div>
+
+    <ol class="toc">
+      <li><a href="#s:job">Job Control</a></li>
+      <li><a href="#s:var">Variables</a></li>
+      <li><a href="#s:ssh">Working Remotely</a></li>
+      <li><a href="#s:keys">Creating and Managing Keys</a></li>
+      <li><a href="#s:summary">Summing Up</a></li>
+    </ol>
+
+    <p class="fixme">introduction</p>
+
+    <section id="s:ssh">
+  
+      <h2>Working Remotely</h2>
+  
+      <p>
+        Let's take a closer look at what happens when we use a desktop or laptop computer.
+        The first step is to log in
+        so that the operating system knows who we are and what we're allowed to do.
+        We do this by typing our username and password;
+        the operating system checks those values against its records,
+        and if they match,
+        runs a shell for us.
+      </p>
+  
+      <p>
+        As we type commands,
+        the 1's and 0's that represent the characters we're typing are sent from the keyboard to the shell.
+        The shell displays those characters on the screen to represent what we type,
+        and then,
+        if what we typed was a command,
+        the shell executes it and displays its output (if any).
+      </p>
+
+      <img src="img/web/direct-shell-usage.png" alt="Direct Shell Usage" />
+
+      <p>
+        What if we want to run some commands on another machine,
+        such as the server in the basement that manages our database of experimental results?
+        To do this,
+        we have to first log in to that machine.
+        We call this a <a class="gdef" href="gloss.html#remote-login">remote login</a>,
+        and the other computer a remote computer.
+        Once we do this,
+        everything we type is passed to a shell running on the remote computer.
+        That shell interacts runs those commands on our behalf,
+        just as a local shell would,
+        then sends back output for our computer to display:
+      </p>
+
+      <img src="img/web/remote-shell-usage.png" alt="Remote Shell Usage" />
+  
+      <p>
+        The tool we use to log in remotely is the <a class="gdef" href="gloss.html#secure-shell">secure shell</a>, or SSH.
+        In particular, the command <code>ssh username@computer</code>
+        runs SSH and connects to the remote computer we have specified.
+        After we log in,
+        we can use the remote shell to use the remote computer's files and directories.
+        Typing <code>exit</code> or <span class="in">Control-D</span>
+        terminates the remote shell and returns us to our previous shell.
+        In the example below, we use highlighting to show our interaction with the remote shell.
+        We can also see that the remote machine's command prompt is <code>moon&gt;</code>
+        instead of just <code>$</code>,
+        and that it took Vlad a couple of tries to remember his password:
+      </p>
+
+<pre>
+$ <span class="in">pwd</span>
+<span class="out">/users/vlad</span>
+$ <span class="in">ssh vlad@moon</span>
+<span class="highlight"><span class="out">Password:</span><span class="in"> ***</span>
+<span class="err">Access denied</span>
+<span class="out">Password:</span><span class="in"> ********</span>
+moon> <span class="in">pwd</span>
+<span class="out">/home/vlad</span>
+moon> <span class="in">ls -F</span>
+<span class="out">bin/     cheese.txt   dark_side/   rocks.cfg</span>
+moon> <span class="in">exit</span></span>
+$ <span class="in">pwd</span>
+<span class="out">/users/vlad</span>
+$
+</pre>
+  
+      <p>
+        The secure shell is called "secure" to contrast it with an older program called <code>rsh</code>,
+        which stood for "remote shell".
+        Back in the day,
+        when everyone trusted each other and knew every chip in their computer by its first name,
+        people didn't encrypt anything except the most sensitive information when sending it over a network.
+        However,
+        that meant that villains could watch network traffic,
+        steal usernames and passwords,
+        and use them for all manner of nefarious purposes.
+        SSH was invented to prevent this (or at least slow it down).
+        It uses several sophisticated, and heavily tested, encryption protocols
+        to ensure that outsiders can't see what's in the messages
+        going back and forth between different computers.
+        A <a href="security.html">later chapter</a> will talk about how this works,
+        and how secure it really is.
+      </p>
+  
+      <p>
+        <code>ssh</code> has a companion program called <code>scp</code>,
+        which stands for "secure copy".
+        It allows us to copy files to or from a remote computer using the same kind of connection as SSH.
+        The syntax is a simple mix of <code>cp</code>'s and <code>ssh</code>'s.
+        To copy a file,
+        we specify the source and destination paths,
+        either of which may include computer names.
+        If we leave out a computer name,
+        <code>scp</code> assumes we mean the machine we're running on.
+        For example,
+        this command copies our latest results to the backup server in the basement,
+        printing out its progress as it does so:
+      </p>
+
+<pre>
+$ <span class="in">scp results.dat vlad@backupserver:backups/results-2011-11-11.dat</span>
+<span class="out">Password:</span><span class="in"> ********</span>
+<span class="out">results.dat              100%  9  1.0 MB/s 00:00</span>
+$
+</pre>
+  
+      <p>
+        Copying a whole directory is similar:
+        we just use the <code>-r</code> option to signal that we want copying to be recursive.
+        For example,
+        this command copies all of our results from the backup server to our laptop:
+      </p>
+
+<pre>
+$ <span class="in">scp -r vlad@backupserver:backups ./backups</span>
+<span class="out">Password:</span><span class="in"> ********</span>
+<span class="out">results-2011-09-18.dat              100%  7  1.0 MB/s 00:00</span>
+<span class="out">results-2011-10-04.dat              100%  9  1.0 MB/s 00:00</span>
+<span class="out">results-2011-10-28.dat              100%  8  1.0 MB/s 00:00</span>
+<span class="out">results-2011-11-11.dat              100%  9  1.0 MB/s 00:00</span>
+$
+</pre>
+
+      <p>
+        To close off this chapter,
+        let's look at one more thing SSH can do for us.
+        Suppose we want to check whether we have already created the file
+        <code>backups/results-2011-11-12.dat</code> on the backup server.
+        Instead of logging in and then typing <code>ls</code>,
+        we could do this:
+      </p>
+
+<pre>
+$ <span class="in">ssh vlad@backupserver ls results</span>
+<span class="out">Password:</span><span class="in"> ********</span>
+<span class="out">results-2011-09-18.dat  results-2011-10-28.dat
+results-2011-10-04.dat  results-2011-11-11.dat</span>
+$
+</pre>
+  
+      <p class="continue">
+        SSH has taken the arguments after our username and the name of the computer we want to run on
+        and passed them to the shell on the remote computer.
+        Since those arguments are a legal command,
+        the remote shell has run <code>ls results</code> for us
+        and sent the output back to our local shell for display.
+      </p>
+  
+    </section>
+
+    <section id="s:keys">
+
+      <h2>Creating and Managing Keys</h2>
+
+      <p>
+        Typing in our password every time we want to access a remote machine is more than a minor annoyance.
+        Imagine what would happen if we wanted to run a program on a remote machine
+        for all combinations of three different parameters.
+        We want to do something like this:
+      </p>
+
+<pre>
+for density in {20..29}
+do
+  for viscosity in 0.70 0.71 0.72 0.73 0.74
+  do
+    for temperature in 0.001 0.002 0.003 0.004 0.005
+    do
+      ssh vlad@fastmachine ./simulation -x -d $density -v $viscosity -v $temperature
+    done
+  done
+done
+</pre>
+  
+      <p class="continue">
+        If we actually try to do this, though,
+        we will have to sit at our keyboard and type in our password 250 times.
+        What we want is a way to authenticate ourselves to the remote computer automatically.
+      </p>
+
+      <p>
+        We can do this using a technique borrowed from <a class="gdef" href="gloss.html#public-key-cryptography">public key cryptography</a>.
+        More specifically,
+        we will create a <a class="gdef" href="gloss.html#key-pair">key pair</a>
+        consisting of a <a class="gdef" href="gloss.html#public-key">public key</a>
+        and a <a class="gdef" href="gloss.html#private-key">private key</a>.
+        These keys have two interesting properties:
+      </p>
+
+      <ol>
+
+        <li>
+          Anything that one encrypts, the other can decrypt.
+          For example, if we encrypt our password with the private key,
+          only the public key can decrypt it,
+          while if we encrypt the contents of a file with the public key,
+          only the private key can decrypt it.
+        </li>
+
+        <li>
+          Given one key, it is practically impossible to find the other,
+          where "practically impossible" means
+          "can't be done in the expected lifetime of the universe using any computer we can conceive of"
+          (though quantum computing may one day change that&mdash;consult your nearest wild-eyed physicist for details).
+        </li>
+
+      </ol>
+
+      <p>
+        Once we have created a key pair,
+        we can put the public key on the remote machine we want access to,
+        and keep the private key on our local machine.
+        So long as they are where SSH expects them to be,
+        it will use them instead of asking us for a password.
+      </p>
+
+      <p>
+        The first step is to create the key pair,
+        which we do using <code>ssh-keygen</code>:
+      </p>
+
+<pre>
+$ <span class="in">ssh-keygen -t rsa</span>
+<span class="out">Generating public/private rsa key pair.
+Enter file in which to save the key (/users/vlad/.ssh/id_rsa):</span> <span class="in">&#8629;</span>
+<span class="out">Enter passphrase (empty for no passphrase):</span> <span class="in">&#8629;</span>
+<span class="out">Your identification has been saved in /users/vlad/.ssh/id_rsa.
+Your public key has been saved in /users/vlad/.ssh/id_rsa.pub.
+The key fingerprint is: d3:1a:27:38:aa:54:e8:a5:03:db:79:2f:b2:c3:c9:3d</span>
+$
+</pre>
+
+      <p class="continue">
+        The <code>-t rsa</code> option tells <code>ssh-keygen</code> to create an RSA key;
+        there are other types, but this one is the most commonly used.
+        The "&#8629;" character indicates a carriage return:
+        we want to put the key in the default location so that SSH will know where to find it,
+        and we don't want a passphrase (since the whole point is to be able to log in without typing a password),
+        so we just type enter in response to both questions.
+      </p>
+
+      <p>
+        Let's look in the <code>.ssh</code> directory under our home directory:
+      </p>
+
+<pre>
+$ <span class="input">cd</span>
+$ <span class="input">ls .ssh</span>
+<span class="output">id_rsa  id_rsa.pub</span>
+$
+</pre>
+
+      <p>
+        The first file, <code>id_rsa</code>, contains our private key.
+        Never put this on a remote machine,
+        send it by email,
+        or share it with anyone
+        (unless you really want them to be able to impersonate you).
+        The other file, <code>id_rsa.pub</code>,
+        contains the matching public key.
+        Let's copy it onto the remote machine we want to access:
+      </p>
+
+<pre>
+$ <span class="in">scp .ssh/id_rsa.pub vlad@fastmachine:id_rsa.pub</span>
+<span class="out">Password:</span><span class="in"> ********</span>
+<span class="out">id_rsa.pub              100%  1  1.0 MB/s 00:00</span>
+$
+</pre>
+
+      <p>
+        We still have to type our password because
+        the public key isn't in the right place on the remote machine
+        when we run <code>scp</code>.
+        Let's take care of that
+        by logging into the remote machine
+        and creating a <code>.ssh</code> directory there:
+      </p>
+
+<pre>
+$ <span class="in">ssh vlad@fastmachine</span>
+<span class="out">Password:</span><span class="in"> ********</span>
+<span class="highlight">$ <span class="in">mkdir .ssh</span>
+$</span>
+</pre>
+
+      <p>
+        The next step is to copy the public key into a file in the <code>.ssh</code> directory
+        called <code>authorized_keys</code>:
+      </p>
+
+<pre>
+<span class="highlight">$ <span class="in">cp id_rsa.pub .ssh/authorized_keys</span>
+$</span>
+</pre>
+
+      <p>
+        The final step is to make sure that permissions are set properly
+        on <code>.ssh</code> and <code>authorized_keys</code>.
+        This is an extra security measure:
+        if anyone but us can read or modify them,
+        SSH will assume that they aren't secure any longer.
+        The right permissions are:
+      </p>
+
+      <ul>
+
+        <li>
+          owner has read, write, and execute for the <code>.ssh</code> directory;
+        </li>
+
+        <li>
+          owner has read and write for <code>.ssh/authorized_keys</code>; and
+        </li>
+
+        <li>
+          nobody has anything else.
+        </li>
+
+      </ul>
+
+      <p class="continue">
+        The correct commands are:
+      </p>
+
+<pre>
+<span class="highlight">$ <span class="in">chmod u=rwx,g=,o= .ssh</span>
+$ <span class="in">chmod u=rw,g=,o= .ssh/authorized_keys</span>
+$</span>
+</pre>
+
+      <p class="continue">
+        We're all set.
+        Let's exit from the remote shell and try running a command
+        to see if everything is working:
+      </p>
+
+<pre>
+$ <span class="highlight"><span class="in">exit</span></span>
+$ <span class="in">ssh vlad@fastmachine pwd</span>
+<span class="out">/home/vlad</span>
+$
+</pre>
+
+      <p>
+        Here is what is on both machines after we created and installed the keys:
+      </p>
+
+      <img src="img/web/public-private-keys.png" alt="Public/Private Keys" />
+
+      <p>
+        We can now run <code>ssh</code> (and <code>scp</code>) from our local machine
+        to the remote machine without having to authenticate every time.
+        This only works one way, though:
+        having the public key installed in the remote machine's <code>authorized_keys</code> file
+        does <em>not</em> give that machine permission to log in to our local machine.
+        If we wanted to do that,
+        we would have to generate a key pair on the remote machine
+        and copy its <code>id_rsa.pub</code> to our local <code>authorized_keys</code> file.
+      </p>
+
+      <p>
+        What if we want to connect to a machine from several other machines?
+        For example,
+        suppose we want to be able to copy files to and from the backup server from our laptop,
+        our desktop computer,
+        and the machine in the lab.
+        To handle this,
+        we add each machine's <code>id_rsa.pub</code> file
+        to the remote machine's <code>.ssh/authorized_keys</code> file.
+        We can do this with an editor,
+        or more simply use <code>cat</code> and <code>&gt;&gt;</code> to append one file to another:
+      </p>
+
+<pre>
+$ <span class="in">scp id_rsa.pub vlad@backupserver</span>
+<span class="out">Password:</span><span class="in"> ********</span>
+$ <span class="in">ssh vlad@backupserver</span>
+<span class="out">Password:</span><span class="in"> ********</span>
+<span class="highlight">$ <span class="in">cat id_rsa.pub >> .ssh/authorized_keys</span>
+$ <span class="in">rm id_rsa.pub</span>
+$ <span class="in">exit</span></span>
+$
+</pre>
+
+    </section>
+
+    <section id="s:svn">
+
+      <h2>Subversion Repositories Revisited</h2>
+
+      <p>
+        Now let's see how to create a repository on a server.
+        We'll assume that we have a Unix shell account on a server called <code>monstrous.monsters.org</code>,
+        and that our home directory is <code>/u/mummy</code>.
+      </p>
+
+      <p>
+        To create a repository called <code>lair</code>,
+        we log into that computer using SSH,
+        then run <code>svnadmin create lair_repo</code>.
+        (Once again, we would probably actually create a sub-directory called something like <code>repos</code>
+        and put our repository in there,
+        but we'll skip that step here to keep our URLs short.)
+      </p>
+
+      <p>
+        The URL for the repository we just created is <code>monstrous.monsters.org/u/mummy/lair</code>,
+        except that's not a complete URL,
+        because it doesn't specify the protocol we are going to use to connect to the repository.
+        It's very common to use the HTTP protocol to communicate with Subversion,
+        but setting that up requires some knowledge of how web servers work,
+        and permission to change the web server's configuration.
+        Instead,
+        we will use a combination of two protocols to access our repository:
+        SSH (which gives us secure connections)
+        and SVN (which is how Subversion moves information back and forth).
+        Putting them together,
+        the full URL for our repository is <code>svn+ssh://mummy@monstrous.monsters.org/u/mummy/lair</code>.
+        Breaking this back into pieces for review:
+      </p>
+
+      <ul>
+
+        <li>
+          <code>svn+ssh</code> is the protocol.
+          (It has to be spelled exactly this way: "ssh+svn" should work, but doesn't.)
+        </li>
+
+        <li>
+          <code>mummy@monstrous.monsters.org</code> specifies who we are
+          and what machine we're connecting to.
+        </li>
+
+        <li>
+          <code>/u/mummy/lair</code> is where our repository is located.
+        </li>
+
+      </ul>
+
+      <p class="contiue">
+        Every Subversion repository URL has these parts:
+        a protocol,
+        something to identify the server
+        (which may optionally include a user ID if the repository isn't publicly readable),
+        and a path.
+      </p>
+
+      <p>
+        Let's switch back to our local machine and check out a copy of the repository.
+        When we run Subversion's <code>checkout</code> command,
+        our client makes a connection to the server <code>monstrous.monsters.org</code>
+        and then prompts us for the password associated with the <code>mummy</code> account.
+        By entering this password,
+        we are proving to the server that we are the user <code>mummy</code>,
+        or at least that we have the right to read and write the files that belong to <code>mummy</code>.
+      </p>
+
+      <p>
+        Notice that our client gives us the option of saving our password locally,
+        so that we don't have to re-enter it each time we update from or commit to this repository.
+        If we have created a <a href="fixme#s:keys">key pair</a>
+        and installed the public key on the server,
+        the SSH part of the svn+ssh protocol will use that instead of asking for a password.
+      </p>
+
+    </section>
+
+    <section id="s:job">
+  
+      <h2>Job Control</h2>
+  
+      <p>
+        Our next topic is how to control programs <em>once they're running</em>.
+        This is called <a class="dfn" href="glossary.html#job-control">job control</a>,
+        and while it's less important today than it was back in the Dark Ages,
+        it is coming back into its own as more people begin to leverage the power of computer networks.
+      </p>
+  
+      <p>
+        When we talk about controlling programs,
+        what we really mean is controlling <em>processes</em>.
+        As we said earlier, a process is just a program that's in memory and executing.
+        Some of the processes on your computer are yours:
+        they're running programs you explicitly asked for, like your web browser.
+        Many others belong to the operating system that manages your computer for you, or, if you're on a shared machine, to other users.
+        You can use the <code>ps</code> command to list them, just as you use <code>ls</code> to list files and directories:
+      </p>
+
+<pre>
+$ <span class="in">ps</span>
+<span class="out">PID    PPID   PGID   TTY   UID     STIME   COMMAND
+2152      1   2152   con  1000  13:19:07   /usr/bin/bash
+2276   2152   2276   con  1000  14:53:48   /usr/bin/ps</span>
+$
+</pre>
+  
+      <p>
+        Every process has a unique process id (PID).
+        Remember, this is a property of the process, not of the program that process is executing:
+        if you are running three instances of your browser at once, each will have its own process ID.
+      </p>
+  
+      <p>
+        The second column in this listing, PPID, shows the ID of each process's parent.
+        Every process on a computer is spawned by another, which is its parent
+        (except, of course, for the bootstrap process that runs automatically when the computer starts up).
+      </p>
+  
+      <p>
+        The third column (labelled PGID) is the ID of the <em>process group</em> this process belongs to.
+        We won't discuss process groups in this lecture,
+        but they're often used to manage sets of related processes.
+        Column 4 shows the ID of the terminal this process is running in.
+        Once upon a time, this really would have been a terminal connected to a central timeshared computer.
+        It isn't as important these days, except that if a process is a system service, such as a network monitor,
+        <code>ps</code> will display a question mark for its terminal, since it doesn't actually have one.
+      </p>
+  
+      <p>
+        Column 5 is more interesting: it's the user ID of the user this process is being run by.
+        This is the user ID the computer uses when checking permissions:
+        the process is allowed to access exactly the same things as the user, no more, no less.
+      </p>
+  
+      <p>
+        Finally, Column 6 shows when the process started running,
+        and Column 7 shows what program the process is executing.
+        Your version of <code>ps</code> may show more or fewer columns,
+        or may show them in a different order,
+        but the same information is generally available everywhere.
+      </p>
+  
+      <p>
+        The shell provides several commands for stopping, pausing, and resuming processes.
+        To see them in action, let's run our <code>analyze</code> program on our latest data files.
+        After a few minutes go by, we realize that this is going to take a while to finish.
+        Being impatient, we kill the process by typing <span class="in">Control-C</span>.
+        This stops the currently-executing program right away.
+        Any results it had calculated, but not written to disk, are lost.
+      </p>
+
+<pre>
+$ <span class="in">./analyze results*.dat</span>
+<span class="out">...a few minutes pass...
+^C</span>
+$
+</pre>
+  
+      <p>
+        Let's run that same command again,
+        with an ampersand <code>&amp;</code> at the end of the line to tell the shell we want it to run in the <a class="dfn" href="glossary.html#background">background</a>:
+      </p>
+
+<pre>
+$ <span class="in">./analyze results*.dat &amp;</span>
+$
+</pre>
+  
+      <p>
+        When we do this, the shell launches the program as before.
+        Instead of leaving our keyboard and screen connected to the program's standard input and output, though, the shell hangs onto them.
+        This means the shell can give us a fresh command prompt, and start running other commands, right away.
+        Here, for example, we're putting some parameters for the next run of the program in a file:
+      </p>
+
+<pre>
+$ <span class="in">cat &gt; params.txt
+density: 22.0
+viscosity: 0.75
+^D</span>
+$
+</pre>
+
+      <p class="continue">
+        (Remember, <span class="in">^D</span> is the shell's way of showing <span class="in">Control-D</span>,
+        which means "end of input".)
+        Now let's run the <code>jobs</code> command,
+        which tells us what processes are currently running in the background:
+      </p>
+
+<pre>
+$ <span class="in">jobs</span>
+<span class="out">[1] ./analyze results01.dat results02.dat results03.dat</span>
+$
+</pre>
+  
+      <p>
+        Since we're about to go and get coffee, we might as well use the foreground command, <code>fg</code>,
+        to bring our background job into the foreground:
+      </p>
+
+<pre>
+$ <span class="in">fg</span>
+<span class="out">...a few minutes pass...</span>
+$
+</pre>
+  
+      <p class="continue">
+        When <code>analyze</code> finishes running, the shell gives us a fresh prompt as usual.
+        If we had several jobs running in the background,
+        we could control which one we brought to the foreground using <code>fg %1</code>, <code>fg %2</code>, and so on.
+        The IDs are <em>not</em> the process IDs.
+        Instead, they are the job IDs displayed by the <code>jobs</code> command.
+      </p>
+  
+      <p>
+        The shell gives us one more tool for job control:
+        if a process is already running in the foreground,
+        <span class="in">Control-Z</span> will pause it and return control to the shell.
+        We can then use <code>fg</code> to resume it in the foreground,
+        or <code>bg</code> to resume it as a background job.
+        For example, let's run <code>analyze</code> again, and then type <span class="in">Control-Z</span>.
+        The shell immediately tells us that our program has been stopped, and gives us its job number:
+      </p>
+
+<pre>
+$ <span class="in">./analyze results01.dat</span>
+<span class="out">^Z
+[1]  Stopped   ./analyze results01.dat</span>
+$
+</pre>
+  
+      <p class="continue">
+        If we type <code>bg %1</code>, the shell starts the process running again, but in the background.
+        We can check that it's running using <code>jobs</code>,
+        and kill it while it's still in the background using <code>kill</code> and the job number.
+        This has the same effect as bringing it to the foreground and then typing <span class="in">Control-C</span>:
+      </p>
+
+<pre>
+$ <span class="in">bg %1</span>
+$ <span class="in">jobs</span>
+<span class="out">[1] ./analyze results01.dat</span>
+$ <span class="in">kill %1</span>
+$
+</pre>
+  
+      <p>
+        Job control was important when users only had one terminal window at a time.
+        It's less important now: if we want to run another program, it's easy enough to open another window and run it there.
+        However, these ideas and tools are making a comeback,
+        as they're often the easiest way to run and control programs on remote computers elsewhere on the network.
+        We'll look at how to do this <a href="#s:ssh">later in this chapter</a>.
+      </p>
+  
+    </section>
+
+    <section id="s:var">
+  
+      <h2>Variables</h2>
+  
+      <p>
+        The shell is just a program, and like other programs, it has variables.
+        Those variables control its execution, and by changing their values, you can change how the shell and other programs behave.
+      </p>
+  
+      <p>
+        Let's start by running the command <code>set</code> and looking at some of the variables in a typical shell session:
+      </p>
+
+<pre>
+$ <span class="in">set</span>
+<span class="out">COMPUTERNAME=TURING
+HOME=/home/vlad
+HOMEDRIVE=C:
+HOSTNAME=TURING
+HOSTTYPE=i686
+NUMBER_OF_PROCESSORS=4
+OS=Windows_NT
+PATH=/usr/local/bin:/usr/bin:/bin:/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/bin:/cygdrive/c/Python27
+PWD=/home/vlad
+UID=1000
+USERNAME=vlad
+    &#8942;        &#8942;        &#8942;</span>
+</pre>
+
+      <p class="continue">
+        As you can see, there are quite a few&mdash;in fact, four or five times more than what's shown on this slide.
+        And yes,
+        using <code>set</code> to <em>show</em> things might seem a little strange,
+        even for Unix,
+        but if you don't give it any arguments,
+        it might as well show you things you <em>could</em> set.
+      </p>
+  
+      <p>
+        Every variable has a name.
+        By convention, variables that are always present are given upper-case names.
+        All shell variables' values are strings, even those (like <code>UID</code>) that look like numbers.
+        it's up to programs to convert these strings to other types when necessary.
+        For example, if a program wanted to find out how many processors the computer had,
+        it would convert the value of the <code>NUMBER_OF_PROCESSORS</code> variable from a string to an integer.
+      </p>
+
+      <p>
+        Similarly, some variables (like <code>PATH</code>) store lists of values.
+        In this case, the convention is to use a colon ':' as a separator.
+        If a program wants the individual elements of such a list,
+        it's the program's responsibility to split the variable's string value into pieces.
+      </p>
+  
+      <p>
+        Let's have a closer look at that <code>PATH</code> variable.
+        Its value defines the shell's <a class="dfn" href="glossary.html#search-path">search path</a>,
+        i.e., the directories that the shell looks in for runnable programs.
+        If you recall, when we type a command like <code>./analyze</code> that has a specific directory in the path,
+        the shell runs the program that path specifies.
+        Similarly, if we type <code>/bin/analyze</code>, the shell runs that specific program:
+        we've provided a specific path, so it knows what to do.
+        But which one should the shell do if we just type <code>analyze</code>?
+      </p>
+  
+      <p>
+        The rule is simple:
+        the shell checks each directory in the <code>PATH</code> variable in turn,
+        looking for a program with the rqeuested name in that directory.
+        As soon as it finds a match, it stops searching and runs the program.
+      </p>
+  
+      <p>
+        To show how this works, here are the components of <code>PATH</code> broken out one per line:
+      </p>
+
+<pre>
+/usr/local/bin
+/usr/bin
+/bin
+/cygdrive/c/Windows/system32
+/cygdrive/c/Windows
+/cygdrive/c/bin
+/cygdrive/c/Python27
+</pre>
+  
+      <p>
+        On our computer, there are actually three programs called <code>analyze</code> in three different directories:
+        <code>/bin/analyze</code>, <code>/usr/local/bin/analyze</code>, and <code>/users/vlad/analyze</code>.
+        Since the shell searches the directories in order, it finds the one in <code>/bin</code>, not either of the others.
+        Notice that it will <em>never</em> find the program <code>/users/vlad/analyze</code>,
+        since the directory <code>/users/vlad</code> isn't in our path.
+      </p>
+  
+      <p>
+        Before we explore variables any further, let's introduce one more command: <code>echo</code>.
+        All it does is print out its arguments.
+        This doesn't sound very exciting, but we can use it to show variables' values.
+        First, let's make sure it works:
+      </p>
+
+<pre>
+$ <span class="in">echo hello transylvania!</span>
+<span class="out">hello transylvania!</span>
+$
+</pre>
+  
+      <p class="continue">
+        Now let's try to show the value of the variable <code>HOME</code>:
+      </p>
+
+<pre>
+$ <span class="in">echo HOME</span>
+<span class="out">HOME</span>
+$
+</pre>
+  
+      <p class="continue">
+        That just prints "HOME", which isn't what we wanted.
+        Let's try this instead: <code>echo $HOME</code>:
+      </p>
+
+<pre>
+$ <span class="in">echo $HOME</span>
+<span class="out">/home/vlad</span>
+$
+</pre>
+  
+      <p>
+        The dollar sign tells the shell to replace the variable's name with its value.
+        This works just like wildcards:
+        the shell does the replacement <em>before</em> running the program we've asked for.
+        Thanks to this expansion, what we actually run is <code>echo /home/vlad</code>,
+        which displays the right thing.
+      </p>
+  
+      <p>
+        Creating a variable is easy: just assign a value to a name using "=":
+      </p>
+
+<pre>
+$ <span class="in">SECRET_IDENTITY=Dracula</span>
+$ <span class="in">echo $SECRET_IDENTITY</span>
+<span class="out">Dracula</span>
+$
+</pre>
+  
+      <p class="continue">
+        To change the value, just assign a new one:
+      </p>
+
+<pre>
+$ <span class="in">SECRET_IDENTITY=Camilla</span>
+$ <span class="in">echo $SECRET_IDENTITY</span>
+<span class="out">Camilla</span>
+$
+</pre>
+  
+      <p>
+        Now for the complicated bit.
+        Assignment only changes a variable's value in the current shell,
+        not in any other shells that are currently running,
+        or in any shells that are started later.
+        To see what this means,
+        let's go back and set our secret identity once again:
+      </p>
+
+<pre>
+$ <span class="in">SECRET_IDENTITY=Dracula</span>
+$ <span class="in">echo $SECRET_IDENTITY</span>
+<span class="out">Dracula</span>
+$
+</pre>
+  
+      <p class="continue">
+        Once it's set, let's run a fresh copy of the shell by typing the command <code>bash</code>.
+        Remember, the shell is just another program:
+        asking it to run a fresh instance of itself in a new process is no different
+        from asking it to run <code>ls</code>, <code>ps</code>, or anything else.
+      </p>
+
+<pre>
+$ <span class="in">bash</span>
+$
+</pre>
+  
+      <p>
+        Nothing seems to have happened,
+        but we now have two copies of the shell running.
+        We don't see anything signalling this on the screen because the new shell prints the same prompt as the old one,
+        but our keyboard input and screen output are now tied to the child shell.
+      </p>
+
+      <img src="../img/shell/shell-on-shell.png" alt="Running a Shell from the Shell" />
+
+      <p class="continue">
+        If we <code>echo $SECRET_IDENTITY</code> in the child shell,
+        nothing is printed, because the variable doesn't have a value in the child shell:
+        it was only set in the original shell.
+        But if we exit the child shell and return to the original, we can see that yes, the variable does exist.
+        Here's the whole sequence of commands
+        with the ones executed in the child shell highlighted:
+      </p>
+
+<pre>
+$ <span class="in">SECRET_IDENTITY=Dracula</span>
+$ <span class="in">echo $SECRET_IDENTITY</span>
+<span class="out">Dracula</span>
+$ <span class="in">bash</span>
+<span class="highlight">$ <span class="in">echo $SECRET_IDENTITY</span>
+$ <span class="in">exit</span></span>
+$ <span class="in">echo $SECRET_IDENTITY</span>
+<span class="out">Dracula</span>
+$
+</pre>
+  
+      <p>
+        If we really want the shell to pass a variable to the processes it creates,
+        we must use the <code>export</code> command.
+        Let's try the secret identity example again.
+        After giving <code>SECRET_IDENTITY</code> a value,
+        we give the shell the command <code>export SECRET_IDENTITY</code>:
+      </p>
+
+<pre>
+$ <span class="in">SECRET_IDENTITY=Dracula</span>
+$ <span class="in">export SECRET_IDENTITY</span>
+$
+</pre>
+
+      <p class="continue">
+        Note that it's <em>not</em> <code>export $SECRET_IDENTITY</code> with a dollar sign:
+        if we typed that, the shell would expand <code>SECRET_IDENTITY</code>,
+        and our <code>export</code> command would actually be <code>export Dracula</code>,
+        which would do nothing,
+        because there's no variable called <code>Dracula</code>.
+      </p>
+  
+      <p>
+        Now let's run a new shell, and type <code>echo $SECRET_IDENTITY</code>.
+        There's our variable.
+        And of course, exiting brings us back to our original shell.
+      </p>
+
+<pre>
+$ <span class="in">bash</span>
+<span class="highlight">$ <span class="in">echo $SECRET_IDENTITY</span>
+<span class="out">Dracula</span>
+$ <span class="in">exit</span></span>
+$
+</pre>
+
+  
+      <p>
+        If we want to set some variables' values automatically every time we run a shell,
+        we can put the command to do this in a file called <code>.bashrc</code> in our home directory.
+        (The '.' character at the front prevents <code>ls</code> from listing this file
+        unless we specifically ask it to using <code>-a</code>:
+        we normally don't want to worry about it.
+        The "rc" at the end is an abbreviation for "run control",
+        which meant something really important decades ago,
+        and is now just a convention everyone follows without understanding why.)
+        For example, here are two lines in Vlad's <code>.bashrc</code> file,
+        which is in <code>/home/vlad/.bashrc</code>:
+      </p>
+
+<pre>
+export SECRET_IDENTITY=Dracula
+export TEMP_DIR=/tmp
+export BACKUP_DIR=$TEMP_DIR/backup
+</pre>
+
+      <p class="continue">
+        These two lines create the variables <code>SECRET_IDENTITY</code> and <code>BACKUP_DIR</code>,
+        give them values,
+        and export them so that any programs the shell runs can see them as well.
+        Notice that <code>BACKUP_DIR</code>'s definition relies on the value of <code>TEMP_DIR</code>,
+        so that if we change where we put temporary files,
+        our backups will be relocated automatically.
+      </p>
+  
+      <p>
+        While we're here, it's also common to use the <code>alias</code> command to create shortcuts for things we frequently type.
+        For example, we can define the alias <code>backup</code>
+        to run <code>/bin/zback</code> with a specific set of arguments:
+      </p>
+
+<pre>
+alias backup=/bin/zback -v --nostir -R 20000 $HOME $BACKUP_DIR
+</pre>
+
+      <p class="continue">
+        As you can see, aliases can save us a lot of typing, and hence a lot of typing mistakes.
+      </p>
+  
+    </section>
+
+    <section id="s:summary">
+
+      <h2>Summing Up</h2>
+
+      <p class="fixbig">Where to talk about cron?</p>
+
+      <p class="fixme">sum up</p>
+
+    </section>
+
+    <div class="footer">
+      <table>
+        <tr>
+          <td valign="middle">
+            <img src="../img/logo/creative-commons-attribution-license.png" alt="CC-A license" />
+          </td>
+          <td valign="middle">
+            This material is provided under the
+            <a href="http://creativecommons.org/licenses/by/3.0/legalcode">Creative Commons Attribution</a> license.
+            <br/>
+            Please contact <a href="mailto:info@software-carpentry.org">info@software-carpentry.org</a> for details.
+          </td>
+        </tr>
+      </table>
+    </div>
+  
+  </body>
+</html>
